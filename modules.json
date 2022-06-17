@@ -3,14 +3,14 @@
     "homePage": "https://github.com/nf-core/blobtoolkit",
     "repos": {
         "nf-core/modules": {
+            "busco": {
+                "git_sha": "9fa6b6c1fc930830c1d819a9273b4ec12ffacb0a"
+            },
             "custom/dumpsoftwareversions": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
-            "fastqc": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
-            },
-            "multiqc": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            "mosdepth": {
+                "git_sha": "72a31b76eb1b58879e0d91fb1d992e0118693098"
             }
         }
     }
