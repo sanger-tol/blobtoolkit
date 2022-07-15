@@ -3,13 +3,34 @@
     "homePage": "https://github.com/nf-core/blobtoolkit",
     "repos": {
         "nf-core/modules": {
+            "busco": {
+                "git_sha": "9fa6b6c1fc930830c1d819a9273b4ec12ffacb0a"
+            },
             "custom/dumpsoftwareversions": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
-            "fastqc": {
+            "diamond/blastp": {
+                "git_sha": "bd3bfe0817246082525ab93707976676b1fe208b"
+            },
+            "diamond/blastx": {
+                "git_sha": "3531824af826c16cd252bc5aa82ae169b244ebaa"
+            },
+            "entrezdirect/esummary": {
+                "git_sha": "b4452a4881626e8d14fa1b574bb28a2766148be0"
+            },
+            "gunzip": {
+                "git_sha": "fa37e0662690c4ec4260dae282fbce08777503e6"
+            },
+            "minimap2/align": {
+                "git_sha": "1a5a9e7b4009dcf34e6867dd1a5a1d9a718b027b"
+            },
+            "minimap2/index": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
-            "multiqc": {
+            "mosdepth": {
+                "git_sha": "72a31b76eb1b58879e0d91fb1d992e0118693098"
+            },
+            "seqtk/subseq": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             }
         }
