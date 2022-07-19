@@ -12,7 +12,7 @@ process GOAT_TAXONSEARCH {
 
     output:
     tuple val(meta), path("*.tsv"), emit: taxonsearch
-    val lineages            , emit: busco_lineages
+    val lineages                  , emit: busco_lineages
     path "versions.yml"           , emit: versions
 
     when:
