@@ -12,6 +12,7 @@ process GOAT_TAXONSEARCH {
 
     output:
     tuple val(meta), path("*.tsv"), emit: taxonsearch
+    val lineages            , emit: busco_lineages
     path "versions.yml"           , emit: versions
 
     when:
@@ -23,10 +24,15 @@ process GOAT_TAXONSEARCH {
     input = taxa_file ? "-f ${taxa_file}" : "-t ${taxon}"
     if (!taxon && !taxa_file) error "No input. Valid input: single taxon identifier or a .txt file with identifiers"
     if (taxon && taxa_file ) error "Only one input is required: a single taxon identifier or a .txt file with identifiers"
+    // lineages: string containing the list of BUSCO lineages with format: "..,metazoa_odb10,eukaryota_odb10,bacteria_odb10,archaea_odb10"
     """
     goat-cli taxon search \\
         $args \\
         $input > ${prefix}.tsv
+
+    eukaryotes=$(cat ${prefix}.tsv | cut -f5 | sed '1d' | uniq | tr '\n' ',' )
+    prokaryotes="bacteria_odb10,archaea_odb10"
+    lineages=${eukaryotes}${prokaryotes}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
