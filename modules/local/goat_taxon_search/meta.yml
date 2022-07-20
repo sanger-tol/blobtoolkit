@@ -46,6 +46,10 @@ output:
       type: file
       description: TSV file containing search results.
       pattern: "*.tsv"
+  - busco_lineages:
+      type: file
+      description: TXT file containing lineages for busco search.
+      pattern: "*.txt"
 
 authors:
   - "@alxndrdiaz"
