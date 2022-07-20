@@ -24,13 +24,13 @@ process GOAT_TAXONSEARCH {
     input = taxa_file ? "-f ${taxa_file}" : "-t ${taxon}"
     if (!taxon && !taxa_file) error "No input. Valid input: single taxon identifier or a .txt file with identifiers"
     if (taxon && taxa_file ) error "Only one input is required: a single taxon identifier or a .txt file with identifiers"
-    // lineages: .txt file containing the list of BUSCO (odb10) lineages, one lineage per line
+    // ${prefix}.txt contains the list of BUSCO (odb10) lineages, one lineage per line without empty lines
     """
     goat-cli taxon search \\
         $args \\
         $input > ${prefix}.tsv
 
-    cat ${prefix}.tsv | cut -f5 | sed '1d' > ${prefix}.txt
+    cat ${prefix}.tsv | cut -f5 | sed '1d' | grep . > ${prefix}.txt
     echo "bacteria_odb10" >> ${prefix}.txt
     echo "archaea_odb10" >> ${prefix}.txt
 
