@@ -1,5 +1,5 @@
 process GOAT_TAXONSEARCH {
-    tag "$meta.id"
+    tag "$busco_lineages"
     label 'process_low'
 
     conda (params.enable_conda ? "bioconda::goat=0.2.0" : null)
@@ -8,19 +8,19 @@ process GOAT_TAXONSEARCH {
         'quay.io/biocontainers/goat:0.2.0--h92d785c_0' }"
 
     input:
-    tuple val(meta), val(taxon), path(taxa_file)
+    tuple val(taxon), path(taxa_file)
 
     output:
-    tuple val(meta), path("*.tsv") , emit: taxonsearch
-    tuple val(meta), file("*.txt") , emit: busco_lineages
-    path "versions.yml"            , emit: versions
+    path "*.tsv" 	    , emit: taxonsearch
+    file "*.txt" 	    , emit: busco_lineages
+    path "versions.yml" , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: ''
     input = taxa_file ? "-f ${taxa_file}" : "-t ${taxon}"
     if (!taxon && !taxa_file) error "No input. Valid input: single taxon identifier or a .txt file with identifiers"
     if (taxon && taxa_file ) error "Only one input is required: a single taxon identifier or a .txt file with identifiers"
