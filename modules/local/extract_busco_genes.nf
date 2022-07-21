@@ -1,8 +1,8 @@
 process EXTRACT_BUSCO_GENES {
-    tag "$busco_table"
+    tag "$fasta"
 
     container "genomehubs/blobtoolkit-blobtools"
-    
+
     input:
     path busco_table
 
