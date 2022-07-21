@@ -1,10 +1,8 @@
 process EXTRACT_BUSCO_GENES {
     tag "$busco_table"
 
-    container "${ workflow.containerEngine == 'docker' ?
-        'genomehubs/blobtoolkit-blobtools' :
-        '' }"
-
+    container "genomehubs/blobtoolkit-blobtools"
+    
     input:
     path busco_table
 
