@@ -11,7 +11,7 @@ process EXTRACT_BUSCO_GENES {
     path "versions.yml"             , emit: versions
 
     script:
-    def tables = Channel.fromPath( ["$dir/**/run_archaea_odb10/full_table.tsv", "$dir/**/run_bacteria_odb10/full_table.tsv", "$dir/**/run_eukaryota_odb1/full_table.tsv"] )
+    def tables = Channel.fromPath( ["$dir/**/run_archaea_odb10/full_table.tsv", "$dir/**/run_bacteria_odb10/full_table.tsv", "$dir/**/run_eukaryota_odb10/full_table.tsv"] )
     def busco_tables = tables.toList()
     """
     btk pipeline extract-busco-genes \\
