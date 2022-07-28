@@ -11,16 +11,26 @@ workflow BUSCO_DIAMOND {
     take:
 
     // GOAT_TAXONSEARCH input
-    taxon // value: single binomial name or NCBI taxonomy ID or '' if taxa_file is provided
-    taxa_file // file containing a taxon ID per line or empty list if taxon is provided
+    // Value: single binomial name or NCBI taxonomy ID or '' if taxa_file is provided
+    taxon = ""
+    // File containing a taxon ID per line or empty list if taxon is provided
+    taxa_file = []
 
     // BUSCO input
-    genome_fasta //  path to genome fasta file (s)
+    //  Path to genome fasta file:
+    genome_fasta = []
+    // Path to busco lineages - downloads if not set
+    lineages_path = []
+    // BUSCO configuration file
+    busco_config = []
 
     // diamond_blastp input
-    diamond_db // path to diamond database
-    out_ext // module parameter
-    blast_columns // module parameter
+    // Directory containing the protein blast database:
+    diamonddb = []
+    // Specify the type of output file to be generated, `txt` corresponds to to BLAST tabular format:
+    outext = "txt"
+    // Space separated list of DIAMOND tabular BLAST output keywords:
+    blast_cols = "qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore"
 
     main:
 
@@ -38,10 +48,10 @@ workflow BUSCO_DIAMOND {
     // Run BUSCO search
     //
     BUSCO (
-    [ [ id:'blobtoolkit' ],  file(genome_fasta) ],
+    [ [ id:'blobtoolkit' ], genome_fasta ],
     GOAT_TAXONSEARCH.out.busco_lineages.readLines(), // readLines() transforms all lines to a list
-    [], // Download busco lineage
-    []  // No config file, in this case it might be required
+    lineages_path,
+    busco_config
     )
     ch_versions = ch_versions.mix(BUSCO.out.versions)
 
@@ -49,7 +59,7 @@ workflow BUSCO_DIAMOND {
     // Extract BUSCO genes
     //
     EXTRACT_BUSCO_GENES (
-     busco_table // should be copied from busco_dir output from BUSCO and transformed.
+     BUSCO.out.busco_dir
     )
     ch_versions = ch_versions.mix(EXTRACT_BUSCO_GENES.out.versions)
 
@@ -58,25 +68,16 @@ workflow BUSCO_DIAMOND {
     //
     DIAMOND_BLASTP (
     [ [ id:'blobtoolkit' ],  EXTRACT_BUSCO_GENES.out.fasta ],
-    diamond_db,
-    out_ext,
-    blast_columns
+    diamonddb,
+    outext,
+    blast_cols
     )
     ch_versions = ch_versions.mix(DIAMOND_BLASTP.out.versions)
 
     emit:
 
-    // check if there are no missing outputs
-    // or outputs that will be not used later
-
     // diamond_blastp outputs
-    blast    = DIAMOND_BLASTP.out.blast
-    xml      = DIAMOND_BLASTP.out.xml
     txt      = DIAMOND_BLASTP.out.txt
-    daa      = DIAMOND_BLASTP.out.daa
-    sam      = DIAMOND_BLASTP.out.sam
-    tsv      = DIAMOND_BLASTP.out.tsv
-    paf      = DIAMOND_BLASTP.out.paf
-
+    // tool versions
     versions = ch_versions
 }
