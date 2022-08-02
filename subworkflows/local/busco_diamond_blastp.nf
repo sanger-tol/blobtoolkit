@@ -10,25 +10,24 @@ include { DIAMOND_BLASTP      } from '../../modules/nf-core/modules/diamond/blas
 workflow BUSCO_DIAMOND {
     take:
     // GOAT_TAXONSEARCH input
-    // Value: single binomial name or NCBI taxonomy ID or '' if taxa_file is provided
+    /// Value: single binomial name or NCBI taxonomy ID or '' if taxa_file is provided
     taxon
-    // File containing a taxon ID per line or empty list if taxon is provided
+    /// File containing a taxon ID per line or empty list if taxon is provided
     taxa_file
     // BUSCO input
     //  Path to genome fasta file:
-    genome_fasta
-    // Path to busco lineages - downloads if not set
+    fasta
+    /// Path to busco lineages - downloads if not set
     lineages_path
-    // BUSCO configuration file
+    /// BUSCO configuration file
     busco_config
-
-    // diamond_blastp input
-    // Directory containing the protein blast database:
+    // DIAMOND_BLASTP input
+    /// Directory containing the protein blast database:
     diamonddb
-    // Specify the type of output file to be generated, `txt` corresponds to to BLAST tabular format:
+    /// Specify the type of output file to be generated, `txt` corresponds to to BLAST tabular format:
     outext
-    // Space separated list of DIAMOND tabular BLAST output keywords:
-    // "qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore"
+    /// Space separated list of DIAMOND tabular BLAST output keywords:
+    /// "qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore"
     blast_cols
 
     main:
@@ -47,7 +46,7 @@ workflow BUSCO_DIAMOND {
     // Run BUSCO search
     //
     BUSCO (
-    [ [ id:'blobtoolkit' ], genome_fasta ],
+    [ [ id:'blobtoolkit' ], fasta ],
     GOAT_TAXONSEARCH.out.busco_lineages.readLines(), // readLines() transforms all lines to a list
     lineages_path,
     busco_config
