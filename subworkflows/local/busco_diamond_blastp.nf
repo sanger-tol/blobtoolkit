@@ -9,28 +9,27 @@ include { DIAMOND_BLASTP      } from '../../modules/nf-core/modules/diamond/blas
 
 workflow BUSCO_DIAMOND {
     take:
-
     // GOAT_TAXONSEARCH input
     // Value: single binomial name or NCBI taxonomy ID or '' if taxa_file is provided
-    taxon = ""
+    taxon
     // File containing a taxon ID per line or empty list if taxon is provided
-    taxa_file = []
-
+    taxa_file
     // BUSCO input
     //  Path to genome fasta file:
-    genome_fasta = []
+    genome_fasta
     // Path to busco lineages - downloads if not set
-    lineages_path = []
+    lineages_path
     // BUSCO configuration file
-    busco_config = []
+    busco_config
 
     // diamond_blastp input
     // Directory containing the protein blast database:
-    diamonddb = []
+    diamonddb
     // Specify the type of output file to be generated, `txt` corresponds to to BLAST tabular format:
-    outext = "txt"
+    outext
     // Space separated list of DIAMOND tabular BLAST output keywords:
-    blast_cols = "qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore"
+    // "qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore"
+    blast_cols
 
     main:
 
