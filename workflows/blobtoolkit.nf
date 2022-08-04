@@ -74,6 +74,21 @@ workflow BLOBTOOLKIT {
     ch_versions = Channel.empty()
 
     //
+    // SUBWORKFLOW: Runs BUSCO and runs blastp on genes extracted from basal lineages
+    //
+    BUSCO_DIAMOND (
+        params.taxon,
+        params.taxon_file,
+        params.fasta,
+        params.lineages_path,
+        params.busco_config,
+        params.diamonddb,
+        params.outext,
+        params.blast_cols
+        )
+    ch_versions = ch_versions.mix(BUSCO_DIAMOND.out.versions)
+
+    //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
     INPUT_CHECK (
