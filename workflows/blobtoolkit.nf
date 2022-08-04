@@ -35,8 +35,8 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // MODULE: Loaded from modules/local/
 //
-include { GOAT_TAXONSEARCH    } from '../../modules/local/goat_taxon_search'
-include { EXTRACT_BUSCO_GENES } from '../../modules/local/extract_busco_genes'
+include { GOAT_TAXONSEARCH    } from '../modules/local/goat_taxon_search'
+include { EXTRACT_BUSCO_GENES } from '../modules/local/extract_busco_genes'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
