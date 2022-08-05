@@ -11,7 +11,18 @@ WorkflowBlobtoolkit.initialise(params, log)
 
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
+def checkPathParamList = [
+params.fasta,
+params.taxon,
+params.taxa_file,
+params.lineages_path,
+params.busco_config,
+params.diamonddb,
+params.outext,
+params.blast_cols,
+params.input,
+params.multiqc_config
+]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
