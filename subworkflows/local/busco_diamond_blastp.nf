@@ -33,6 +33,7 @@ workflow BUSCO_DIAMOND {
     main:
 
     ch_versions = Channel.empty()
+    name = fasta.simpleName()
 
     //
     // Fetch BUSCO lineages for taxon (or taxa)
@@ -46,7 +47,7 @@ workflow BUSCO_DIAMOND {
     // Run BUSCO search
     //
     BUSCO (
-    [ [ id:'blobtoolkit' ], fasta ],
+    [ [ id:name ], fasta ],
     GOAT_TAXONSEARCH.out.busco_lineages.readLines(), // readLines() transforms all lines to a list
     lineages_path,
     busco_config
@@ -68,7 +69,7 @@ workflow BUSCO_DIAMOND {
     // Runs diamond_blastp with the extracted busco genes
     //
     DIAMOND_BLASTP (
-    [ [ id:'blobtoolkit' ],  EXTRACT_BUSCO_GENES.out.fasta ],
+    [ [ id:name ],  EXTRACT_BUSCO_GENES.out.fasta ],
     diamonddb,
     outext,
     blast_cols
