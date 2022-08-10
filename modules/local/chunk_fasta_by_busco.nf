@@ -8,6 +8,8 @@ process CHUNK_FASTA_BUSCO {
     path busco_table
     val chunk
     val overlap
+    val max_chunks
+    val min_length
 
     output:
     path "output_chunks.fasta" , emit: chunks
