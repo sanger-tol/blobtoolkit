@@ -5,6 +5,7 @@ process CHUNK_FASTA_BUSCO {
 
     input:
     path raw_proteomes
+    val max_target_seqs
 
     output:
     path "reference_proteomes.out" , emit: proteomes
@@ -14,7 +15,7 @@ process CHUNK_FASTA_BUSCO {
     """
     btk pipeline unchunk-blast \\
         --in ${raw_proteomes} \\
-        --count "${params.max_target_seqs}" \\
+        --count $max_target_seqs \\
         --out reference_proteomes.out 2> unchunk_blastx.log
 
     cat <<-END_VERSIONS > versions.yml
