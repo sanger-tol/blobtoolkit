@@ -6,6 +6,8 @@ process CHUNK_FASTA_BUSCO {
     input:
     path fasta
     path busco_table
+    val chunk
+    val overlap
 
     output:
     path "output_chunks.fasta" , emit: chunks
@@ -15,11 +17,11 @@ process CHUNK_FASTA_BUSCO {
     """
     btk pipeline chunk-fasta \\
         --in ${fasta} \\
-        --chunk "${params.chunk}"\\
-        --overlap "${params.overlap}" \\
-        --max-chunks "${params.max_chunks}" \\
-        --min-length "${params.min_length}" \\
         --busco ${busco_table} \\
+        --chunk $chunk \\
+        --overlap $overlap \\
+        --max-chunks $max_chunks \\
+        --min-length $min_length \\
         --out output.chunks.fasta \\
         --bed None 2> chunk_fasta.log
 
