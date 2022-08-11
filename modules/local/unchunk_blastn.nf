@@ -1,4 +1,4 @@
-process UNCHUNK_BLASTX {
+process UNCHUNK_BLASTN {
     tag "$fasta"
 
     container "genomehubs/blobtoolkit-blobtools"
