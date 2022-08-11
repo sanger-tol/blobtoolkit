@@ -51,7 +51,7 @@
         fi
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        blobtoolkit: \$( echo "3.1.0" | sed 's/blobtoolkit //g')
+        blast: \$(blastn -version 2>&1 | sed 's/^.*blastn: //; s/ .*\$//')
     END_VERSIONS
     """
 }
