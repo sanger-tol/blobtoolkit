@@ -8,7 +8,7 @@ process UNCHUNK_BLASTN {
     val max_target_seqs
 
     output:
-    path "*.blastn"     , emit: proteomes
+    path "*.blastn"     , emit: blastn_out
     path "versions.yml" , emit: versions
 
     script:
