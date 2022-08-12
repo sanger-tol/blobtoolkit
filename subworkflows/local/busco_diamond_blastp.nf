@@ -9,14 +9,14 @@ include { DIAMOND_BLASTP      } from '../../modules/nf-core/modules/diamond/blas
 
 workflow BUSCO_DIAMOND {
     take:
+    //  Path to genome fasta file:
+    fasta
     // GOAT_TAXONSEARCH input
     /// Value: single binomial name or NCBI taxonomy ID or '' if taxa_file is provided
     taxon
     /// File containing a taxon ID per line or empty list if taxon is provided
     taxa_file
     // BUSCO input
-    //  Path to genome fasta file:
-    fasta
     /// Path to busco lineages - downloads if not set
     lineages_path
     /// BUSCO configuration file
