@@ -39,7 +39,8 @@ workflow BUSCO_DIAMOND {
     // Fetch BUSCO lineages for taxon (or taxa)
     //
     GOAT_TAXONSEARCH (
-        [ taxon, taxa_file ] // input: taxon, no taxa_file or no taxon, taxa_file
+        taxon,
+        taxa_file // input: taxon, no taxa_file or no taxon, taxa_file
     )
     ch_versions = ch_versions.mix(GOAT_TAXONSEARCH.out.versions.first())
 
