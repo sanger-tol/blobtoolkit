@@ -33,6 +33,8 @@ workflow BUSCO_DIAMOND {
     main:
 
     ch_versions = Channel.empty()
+
+    // this is the string used to name all intermediate and final output files
     name = fasta.simpleName()
 
     //
