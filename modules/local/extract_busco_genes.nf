@@ -4,17 +4,18 @@ process EXTRACT_BUSCO_GENES {
     container "genomehubs/blobtoolkit-blobtools"
 
     input:
+    val prefix
     val tables
 
     output:
-    path "output_busco_genes.fasta" , emit: fasta
-    path "versions.yml"             , emit: versions
+    path "*.output_busco_genes.fasta" , emit: fasta
+    path "versions.yml"               , emit: versions
 
     script:
     """
     btk pipeline extract-busco-genes \\
         --busco $tables \\
-        --out output_busco_genes.fasta 2> extract_busco_genes.log
+        --out ${prefix}_output_busco_genes.fasta 2> ${prefix}_extract_busco_genes.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

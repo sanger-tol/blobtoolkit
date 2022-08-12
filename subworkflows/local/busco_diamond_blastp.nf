@@ -63,6 +63,7 @@ workflow BUSCO_DIAMOND {
     tables = Channel.fromPath( ["$dir/**/run_archaea_odb10/full_table.tsv", "$dir/**/run_bacteria_odb10/full_table.tsv", "$dir/**/run_eukaryota_odb10/full_table.tsv"] )
     busco_tables = tables.toList()
     EXTRACT_BUSCO_GENES (
+     name,
      busco_tables
     )
     ch_versions = ch_versions.mix(EXTRACT_BUSCO_GENES.out.versions)
