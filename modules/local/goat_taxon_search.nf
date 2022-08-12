@@ -8,7 +8,8 @@ process GOAT_TAXONSEARCH {
         'quay.io/biocontainers/goat:0.2.0--h92d785c_0' }"
 
     input:
-    tuple val(taxon), path(taxa_file)
+    val taxon
+    path taxa_file
 
     output:
     path "*.tsv" 	    , emit: taxonsearch
