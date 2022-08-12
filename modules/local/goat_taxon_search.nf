@@ -8,6 +8,7 @@ process GOAT_TAXONSEARCH {
         'quay.io/biocontainers/goat:0.2.0--h92d785c_0' }"
 
     input:
+    val prefix
     val taxon
     path taxa_file
 
@@ -21,7 +22,6 @@ process GOAT_TAXONSEARCH {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: ''
     input = taxa_file ? "-f ${taxa_file}" : "-t ${taxon}"
     if (!taxon && !taxa_file) error "No input. Valid input: single taxon identifier or a .txt file with identifiers"
     if (taxon && taxa_file ) error "Only one input is required: a single taxon identifier or a .txt file with identifiers"

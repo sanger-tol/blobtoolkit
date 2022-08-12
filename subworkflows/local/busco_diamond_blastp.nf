@@ -39,6 +39,7 @@ workflow BUSCO_DIAMOND {
     // Fetch BUSCO lineages for taxon (or taxa)
     //
     GOAT_TAXONSEARCH (
+        name,
         taxon,
         taxa_file // input: taxon, no taxa_file or no taxon, taxa_file
     )
