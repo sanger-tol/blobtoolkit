@@ -88,9 +88,9 @@ workflow BLOBTOOLKIT {
     // SUBWORKFLOW: Runs BUSCO and runs blastp on genes extracted from basal lineages
     //
     BUSCO_DIAMOND (
+        params.fasta,
         params.taxon,
         params.taxon_file,
-        params.fasta,
         params.lineages_path,
         params.busco_config,
         params.diamonddb,
