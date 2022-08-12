@@ -94,7 +94,7 @@ workflow BLOBTOOLKIT {
     BUSCO_DIAMOND (
         params.fasta,
         params.taxon,
-        params.taxon_file,
+        params.taxa_file,
         params.lineages_path,
         params.busco_config,
         params.diamonddb,
