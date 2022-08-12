@@ -34,6 +34,5 @@ def create_fasta_channel(LinkedHashMap row) {
     else {
         fasta_meta = [ meta, [ file(row.fasta_file) ] ]
         }
-    }
     return fasta_meta
 }
