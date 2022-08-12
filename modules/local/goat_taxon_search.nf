@@ -1,5 +1,5 @@
 process GOAT_TAXONSEARCH {
-    tag "$busco_lineages"
+    tag "$prefix"
 
     conda (params.enable_conda ? "bioconda::goat=0.2.0" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
