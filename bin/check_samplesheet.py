@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # This script is based on the example at: https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
+# should check column with masked fasta files instead of cram files
 
 import os
 import sys
