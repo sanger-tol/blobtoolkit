@@ -11,8 +11,8 @@ process INPUT_TOL {
     val project
 
     output:
-    path "*.unmasked.fasta", emit: fasta
-    path "samplesheet.csv",  emit: csv
+    path "*.masked.fasta",  emit: fasta
+    path "samplesheet.csv", emit: csv
 
     when:
     task.ext.when == null || task.ext.when
