@@ -21,6 +21,7 @@ gca=$(echo $genome | cut -f14 -d'/' | sed 's/.fasta.gz//')
 
 analysis=$data/$taxon/$organism/analysis/$assembly
 
+# samplesheet should contain only genome fasta files in datatype, datafile should contain the paths to these files
 if compgen -G $analysis/read_mapping/*/${gca}.*cram > /dev/null
     then echo "sample,datatype,datafile" > samplesheet.csv
     crams=($(ls $analysis/read_mapping/*/${gca}.*cram))
@@ -31,6 +32,7 @@ if compgen -G $analysis/read_mapping/*/${gca}.*cram > /dev/null
     done
 else echo "No cram files."; exit 1; fi
 
+#  output should be masked fasta
 if compgen -G $analysis/assembly/indices/${gca}.unmasked.fasta > /dev/null
     then cp $analysis/assembly/indices/${gca}.unmasked.fasta ./
 else "Unmasked fasta does not exist."; exit 1; fi
