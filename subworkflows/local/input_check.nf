@@ -33,7 +33,7 @@ workflow INPUT_CHECK {
         tol         = 1
         // ch_versions = ch_versions.mix(INPUT_TOL.out.versions)
     }
-    
+
     SAMPLESHEET_CHECK ( samplesheet )
         .csv
         .splitCsv ( header:true, sep:',' )
@@ -42,8 +42,8 @@ workflow INPUT_CHECK {
     // ch_versions = ch_versions.mix(SAMPLESHEET_CHECK.out.versions)
 
     emit:
-    aln                                       // channel: [ val(meta), [ datafile ] ]
     genome                                    // channel: fasta
+    // aln                                       // channel: [ val(meta), [ datafile ] ]
     // versions = ch_versions                 // channel: [ versions.yml ]
 }
 
