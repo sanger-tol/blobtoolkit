@@ -35,7 +35,6 @@ else { exit 1, 'Input not specified. Please include either a samplesheet or Tree
 //
 include { INPUT_CHECK   }               from './subworkflows/local/input_check'
 include { SAMTOOLS_VIEW }               from './modules/local/samtools_view'
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,6 +45,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/
 //
 // MODULE: Installed directly from nf-core/modules
 //
+include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 
 
 /*
