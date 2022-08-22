@@ -1,16 +1,24 @@
 #!/bin/bash
 
-if [ $# -eq 0 ]; then echo -e "Please provide a ToL ID. \nUsage: ./automate_io <tol_id> <tol_project>. \n<tol_id> must match the expected genome. \n<tol_project> defaults to 'darwin'."; exit 1; fi
+PROJECT_BASEDIR=/lustre/scratch124/tol/projects
 
-id=$1
-project=$2
-data=/lustre/scratch124/tol/projects/$project/data
+if [ $# -ne 2 ]; then echo -e "Script to create a samplesheet for a species.\nUsage: $0 <tol_id> <tol_project>.\nVersion: 1.0"; exit 1; fi
+
+id="$1"
+project="$2"
+data="$PROJECT_BASEDIR/$project/data"
+
+if [[ ! -d "$data" ]]
+then
+    echo "Project "$project" cannot be found under $PROJECT_BASEDIR"
+    exit 1
+fi
 
 if compgen -G $data/*/*/assembly/release/${id}.[0-9]/insdc/GCA*fasta.gz > /dev/null
     then genome=$(ls $data/*/*/assembly/release/${id}.[0-9]/insdc/GCA*fasta.gz | tail -1)
 elif compgen -G $data/*/*/assembly/release/${id}.[0-9]_{p,m}aternal_haplotype/insdc/GCA*fasta.gz > /dev/null
     then genome=$(ls $data/*/*/assembly/release/${id}.[0-9]_*aternal_haplotype/insdc/GCA*fasta.gz | tail -1)
-else echo "Genome for $id not found"; exit 1; fi
+else echo "Genome for $id not found in $data"; exit 1; fi
 
 taxon=$(echo $genome | cut -f8 -d'/')
 organism=$(echo $genome | cut -f9 -d'/')
@@ -19,9 +27,9 @@ gca=$(echo $genome | cut -f14 -d'/' | sed 's/.fasta.gz//')
 
 analysis=$data/$taxon/$organism/analysis/$assembly
 
-if compgen -G $analysis/read_mapping/*/${gca}.*cram > /dev/null
+if compgen -G $analysis/read_mapping/hic*/${gca}.*cram > /dev/null
     then echo "sample,datatype,datafile" > samplesheet.csv
-    crams=($(ls $analysis/read_mapping/*/${gca}.*cram))
+    crams=($(ls $analysis/read_mapping/hic*/${gca}.*cram))
     for aln in ${crams[@]}
         do sample=$(basename $aln | awk -F. '{print $(NF-1)}')
         datatype=$(basename $aln | awk -F. '{print $(NF-2)}')
@@ -30,5 +38,5 @@ if compgen -G $analysis/read_mapping/*/${gca}.*cram > /dev/null
 else echo "No cram files."; exit 1; fi
 
 if compgen -G $analysis/assembly/indices/${gca}.masked.fasta > /dev/null
-    then cp $analysis/assembly/indices/${gca}.masked.fasta ./
-else "Masked fasta does not exist."; exit 1; fi
+    then ln -s $analysis/assembly/indices/${gca}.masked.fasta masked_genome.fasta
+else echo "Masked fasta does not exist."; exit 1; fi
