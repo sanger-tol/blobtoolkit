@@ -61,7 +61,7 @@ workflow BUSCO_DIAMOND {
     //
     // Extract BUSCO genes
     //
-    dir = BUSCO.out.busco_dir[1]
+    dir = BUSCO.out.busco_dir.map { fileid, path -> path }
     tables = Channel.fromPath( ["$dir/**/run_archaea_odb10/full_table.tsv", "$dir/**/run_bacteria_odb10/full_table.tsv", "$dir/**/run_eukaryota_odb10/full_table.tsv"] )
     busco_tables = tables.toList()
     EXTRACT_BUSCO_GENES (
