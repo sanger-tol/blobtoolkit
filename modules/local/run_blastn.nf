@@ -1,7 +1,10 @@
     process RUN_BLASTN {
     tag "$fasta"
 
-    container "quay.io/biocontainers/blast:2.12.0--pl5262h3289130_0"
+    conda (params.enable_conda ? 'bioconda::blast=2.12.0' : null)
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/blast:2.12.0--pl5262h3289130_0' :
+        'quay.io/biocontainers/blast:2.12.0--pl5262h3289130_0' }"
 
     input:
     path fasta
