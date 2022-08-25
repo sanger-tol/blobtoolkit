@@ -2,6 +2,7 @@
 // Runs blast/blastn
 //
 
+include { GET_NOHIT_LIST                         } from '../../modules/local/get_nohit_list'
 include { EXTRACT_NOHIT_FASTA                    } from '../../modules/local/extract_nohit_fasta'
 include { CHUNK_FASTA_BUSCO as CHUNK_NOHIT_FASTA } from '../../modules/local/chunk_fasta_by_busco'
 include { RUN_BLASTN                             } from '../../modules/local/run_blastn'
@@ -54,12 +55,19 @@ workflow BLASTN {
     //
     // Extract sequences with no blastx hits into a separate file
     //
-    EXTRACT_NOHIT_FASTA (
+
+    GET_NOHIT_LIST (
     fasta,
-    blastx_table,
+    blastx,
     blastx_evalue
     )
-    ch_versions = ch_versions.mix(EXTRACT_NOHIT_FASTA.out.versions.first())
+    ch_versions = ch_versions.mix(GET_NOHIT_LIST.out.versions)
+
+    EXTRACT_NOHIT_FASTA (
+    fasta,
+    GET_NOHIT_LIST.out.nohit_list
+    )
+    ch_versions = ch_versions.mix(EXTRACT_NOHIT_FASTA.out.versions)
 
     //
     // Chunk no-hit fasta file
