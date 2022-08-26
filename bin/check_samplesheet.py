@@ -15,7 +15,6 @@ def parse_args(args=None):
     parser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     parser.add_argument("FILE_IN", help="Input samplesheet file.")
     parser.add_argument("FILE_OUT", help="Output file.")
-    parser.add_argument('--version', action='version', version='%(prog)s 1.0')
     return parser.parse_args(args)
 
 
@@ -36,11 +35,13 @@ def print_error(error, context="Line", context_str=""):
 def check_samplesheet(file_in, file_out):
     """
     This function checks that the samplesheet follows the following structure:
+
     sample,datatype,datafile
     sample1,hic,/path/to/file1.cram
     sample1,illumina,/path/to/file2.cram
     sample1,pacbio,/path/to/file3.cram
     sample1,ont,/path/to/file4.cram
+
     For an example see:
     https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
     """
@@ -82,7 +83,7 @@ def check_samplesheet(file_in, file_out):
                 print_error("Sample entry has not been specified!", "Line", line)
 
             ##* Check datatype name entries
-            datatypes = ["hic"]
+            datatypes = ["hic", "pacbio", "illumina", "ont", "pacbio_clr"]
             if datatype:
                 if datatype not in datatypes:
                     print_error(
