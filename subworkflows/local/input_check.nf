@@ -31,20 +31,20 @@ workflow INPUT_CHECK {
         genome      = INPUT_TOL.out.fasta
         samplesheet = INPUT_TOL.out.csv
         tol         = 1
-        ch_versions = ch_versions.mix(INPUT_TOL.out.versions)
+        // ch_versions = ch_versions.mix(INPUT_TOL.out.versions)
     }
-
+    
     SAMPLESHEET_CHECK ( samplesheet )
         .csv
         .splitCsv ( header:true, sep:',' )
         .map { create_data_channels(it, tol) }
         .set { aln }
-        ch_versions = ch_versions.mix(SAMPLESHEET_CHECK.out.versions)
+    // ch_versions = ch_versions.mix(SAMPLESHEET_CHECK.out.versions)
 
     emit:
-    aln                     // channel: [ val(meta), [ datafile ] ]
-    genome                  // channel: fasta
-    versions = ch_versions  // channel: [ versions.yml ]
+    aln                                       // channel: [ val(meta), [ datafile ] ]
+    genome                                    // channel: fasta
+    // versions = ch_versions                 // channel: [ versions.yml ]
 }
 
 // Function to get list of [ meta, [ datafile ] ]
