@@ -14,11 +14,12 @@ process SAMPLESHEET_CHECK {
     path '*.csv'       , emit: csv
     path "versions.yml", emit: versions
 
-    script: // This script is bundled with the pipeline, in nf-core/genomenote/bin/
+    script: // This script is bundled with the pipeline, in nf-core/readmapping/bin/
     """
     check_samplesheet.py \\
         $samplesheet \\
         samplesheet.valid.csv
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         check_samplesheet.py: \$(check_samplesheet.py --version | cut -d' ' -f2)
