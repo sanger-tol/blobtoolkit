@@ -5,6 +5,7 @@
 */
 
 nextflow.enable.dsl = 2
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 
@@ -20,7 +21,6 @@ else { exit 1, 'Input not specified. Please include either a samplesheet or Tree
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     CONFIG FILES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 
@@ -45,7 +45,6 @@ include { SAMTOOLS_VIEW }               from '../modules/local/samtools_view'
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 
 
 /*
@@ -57,30 +56,17 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/
 
 workflow BLOBTOOLKIT {
 
-
-    ch_versions = Channel.empty()
-
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
     Channel.of(inputs).set{ch_input}
     INPUT_CHECK ( ch_input )
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     //
     // MODULE: Convert CRAM to BAM
     //
     ch_fasta = INPUT_CHECK.out.genome.collect()
     SAMTOOLS_VIEW ( INPUT_CHECK.out.aln, ch_fasta )
-    ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions)
-
-    //
-    // MODULE: Combine different versions.yml
-    //
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-    ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
-
 
 }
 
