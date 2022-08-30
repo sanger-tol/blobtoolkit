@@ -33,8 +33,8 @@ else { exit 1, 'Input not specified. Please include either a samplesheet or Tree
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK   }               from './subworkflows/local/input_check'
-include { SAMTOOLS_VIEW }               from './modules/local/samtools_view'
+include { INPUT_CHECK   }               from '../subworkflows/local/input_check'
+include { SAMTOOLS_VIEW }               from '../modules/local/samtools_view'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
