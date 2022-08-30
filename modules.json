@@ -8,6 +8,9 @@
             },
             "multiqc": {
                 "git_sha": "5138acca0985ca01c38a1c4fba917d83772b1106"
+            },
+            "samtools/view": {
+                "git_sha": "6b64f9cb6c3dd3577931cc3cd032d6fb730000ce"
             }
         }
     }
