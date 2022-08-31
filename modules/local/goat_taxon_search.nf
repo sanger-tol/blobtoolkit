@@ -29,7 +29,7 @@ process GOAT_TAXONSEARCH {
     """
     goat-cli taxon search \\
         $args \\
-        $input > ${prefix}.tsv
+        "$input" > ${prefix}.tsv
     cat ${prefix}.tsv | cut -f5 | sed '1d' | grep . > ${prefix}.txt
     echo "bacteria_odb10" >> ${prefix}.txt
     echo "archaea_odb10" >> ${prefix}.txt
