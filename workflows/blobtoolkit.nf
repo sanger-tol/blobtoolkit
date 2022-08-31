@@ -76,7 +76,7 @@ workflow BLOBTOOLKIT {
     // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
     //
     BUSCO_DIAMOND (
-    ch_fasta,
+    INPUT_CHECK.out.genome,
     ch_taxon,
     ch_taxa_file
     )
