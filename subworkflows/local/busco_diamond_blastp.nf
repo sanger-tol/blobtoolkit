@@ -1,6 +1,7 @@
-
+//
 //
 // Run BUSCO for a genome from GOAT and runs diamond_blastp
+//
 //
 
 include { GOAT_TAXONSEARCH    } from '../../modules/local/goat_taxon_search'
