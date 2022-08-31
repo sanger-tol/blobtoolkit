@@ -20,6 +20,9 @@ workflow BUSCO_DIAMOND {
 
     ch_versions = Channel.empty()
 
+    // this is the string used to name all intermediate and final output files
+    name = fasta.simpleName
+
     //
     // Fetch BUSCO lineages for taxon (or taxa)
     //
