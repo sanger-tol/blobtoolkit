@@ -57,6 +57,11 @@ include { COVERAGE_STATS  }         from '../subworkflows/local/coverage_stats'
 
 // general input and params:
 
+/// GOAT_TAXONSEARCH
+ch_taxon     = params.taxon
+ch_taxa_file = params.taxa_file ? file(params.taxa_file) : []
+
+
 workflow BLOBTOOLKIT {
 
     ch_versions = Channel.empty()
@@ -82,7 +87,15 @@ workflow BLOBTOOLKIT {
     ch_fasta = INPUT_CHECK.out.genome
     COVERAGE_STATS(ch_cram, ch_fasta)
     ch_versions = ch_versions.mix(COVERAGE_STATS.out.versions)
-    
+
+    //
+    // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
+    //
+    BUSCO_DIAMOND (
+    ch_fasta,
+    ch_taxon,
+    ch_taxa_file
+    )
 }
 
 /*
