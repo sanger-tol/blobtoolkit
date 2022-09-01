@@ -5,9 +5,8 @@
 //
 
 include { GOAT_TAXONSEARCH    } from '../../modules/local/goat_taxon_search'
-
+include { BUSCO               } from '../../modules/nf-core/modules/busco/main'
 //include { EXTRACT_BUSCO_GENES } from '../../modules/local/extract_busco_genes'
-//include { BUSCO               } from '../../modules/nf-core/modules/busco/main'
 //include { DIAMOND_BLASTP      } from '../../modules/nf-core/modules/diamond/blastp/main'
 
 workflow BUSCO_DIAMOND {
@@ -20,12 +19,6 @@ workflow BUSCO_DIAMOND {
     taxon
     /// File containing a taxon ID per line or empty list if taxon is provided
     taxa_file
-
-    // BUSCO input
-    /// Path to busco lineages - downloads if not set
-    //lineages_path
-    /// BUSCO configuration file
-    //busco_config
 
     // DIAMOND_BLASTP input
     /// Directory containing the protein blast database:
@@ -58,13 +51,13 @@ workflow BUSCO_DIAMOND {
     // Run BUSCO search
     //
 
-    //BUSCO (
-    //[ [ id:name ], fasta ],
-    //GOAT_TAXONSEARCH.out.busco_lineages.readLines(), // readLines() transforms all lines to a list
-    //lineages_path,
-    //busco_config
-    //)
-    //ch_versions = ch_versions.mix(BUSCO.out.versions)
+    BUSCO (
+    [ [ id:name ], fasta ],
+    GOAT_TAXONSEARCH.out.busco_lineages.readLines(), // readLines() transforms all lines to a list
+    [], // Download busco lineage
+    [] // No config
+    )
+    ch_versions = ch_versions.mix(BUSCO.out.versions)
 
     //
     // Extract BUSCO genes
