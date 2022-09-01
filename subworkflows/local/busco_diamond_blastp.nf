@@ -35,7 +35,9 @@ workflow BUSCO_DIAMOND {
 
     // this is the string used to name all intermediate and final output files
     name = fasta.map { f -> f.simpleName }
-    //meta_id = name.first().toString()
+
+    // creates meta from
+    fasta.flatten().map { file  -> [id: file.baseName.replaceFirst(/.unmasked/, "").replaceFirst(/.subset/, "")] }.set{meta}
 
     //
     // Fetch BUSCO lineages for taxon (or taxa)
@@ -55,7 +57,7 @@ workflow BUSCO_DIAMOND {
     lineages_list = GOAT_TAXONSEARCH.out.busco_lineages.map { f -> f.readLines() } // readLines() transforms all lines to a list
 
     BUSCO (
-    [ [ id:'test' ], fasta ],
+    [ meta, fasta ],
     lineages_list,
     [], // Download busco lineage
     [] // No config
