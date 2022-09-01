@@ -51,9 +51,11 @@ workflow BUSCO_DIAMOND {
     // Run BUSCO search
     //
 
+    lineages_list = GOAT_TAXONSEARCH.out.busco_lineages.map { f -> f.readLines() } // readLines() transforms all lines to a list
+
     BUSCO (
     [ [ id:name ], fasta ],
-    GOAT_TAXONSEARCH.out.busco_lineages.readLines(), // readLines() transforms all lines to a list
+    lineages_list,
     [], // Download busco lineage
     [] // No config
     )
