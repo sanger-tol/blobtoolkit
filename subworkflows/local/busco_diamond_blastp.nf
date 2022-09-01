@@ -35,7 +35,7 @@ workflow BUSCO_DIAMOND {
 
     // this is the string used to name all intermediate and final output files
     name = fasta.map { f -> f.simpleName }
-    meta_id = name.first()
+    meta_id = name.first().toString()
 
     //
     // Fetch BUSCO lineages for taxon (or taxa)
