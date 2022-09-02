@@ -23,8 +23,6 @@ workflow BUSCO_DIAMOND {
     // this is the string used to name all intermediate and final output files
     name = fasta.map { f -> f.simpleName }
 
-    // creates meta from fasta file (it does not work)
-    // fasta.flatten().map { file  -> [id: file.baseName.replaceFirst(/.unmasked/, "").replaceFirst(/.subset/, "")] }.set{meta}
 
     //
     // Fetch BUSCO lineages for taxon (or taxa)
