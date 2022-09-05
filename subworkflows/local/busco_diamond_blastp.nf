@@ -55,11 +55,10 @@ workflow BUSCO_DIAMOND {
     //
 
     lineages_list = GOAT_TAXONSEARCH.out.busco_lineages.map { f -> f.readLines() } // readLines() transforms all lines to a list
-    ch_lineages = Channel.of( lineages_list )
 
     BUSCO (
     fasta.map { fa -> [ [id: fa.baseName ], fa ] }, // Add meta data using the file's basename as id
-    ch_lineages,
+    lineages_list,
     [], // Download busco lineage
     [] // No config
     )
