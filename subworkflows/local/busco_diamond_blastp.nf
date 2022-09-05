@@ -37,12 +37,12 @@ workflow BUSCO_DIAMOND {
     // Run BUSCO search
     //
 
-    ch_busco_inputs = fasta.join(GOAT_TAXONSEARCH.out.busco_lineages.map { f -> f.readLines().join(',') }) // readLines() transforms all lines to a list
+    lineages_list = GOAT_TAXONSEARCH.out.busco_lineages.map { f -> f.readLines() } // readLines() transforms all lines to a list
 
     BUSCO (
-    ch_busco_inputs.map { it[0] },
-    ch_busco_inputs.map { it[1] },
-    params.busco_lineages_path,  // Please pass this option. We don't want to download the lineage data every time.
+    fasta.map { fa -> [ [id: fa.baseName ], fa ] }, // Add meta data using the file's basename as id
+    lineages_list,
+    [], // Download busco lineage
     [] // No config
     )
     ch_versions = ch_versions.mix(BUSCO.out.versions)
