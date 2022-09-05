@@ -4,6 +4,8 @@
 //
 //
 
+nextflow.enable.dsl = 2
+
 include { GOAT_TAXONSEARCH    } from '../../modules/local/goat_taxon_search'
 include { BUSCO               } from '../../modules/nf-core/modules/busco/main'
 //include { EXTRACT_BUSCO_GENES } from '../../modules/local/extract_busco_genes'
