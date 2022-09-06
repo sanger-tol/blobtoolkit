@@ -41,7 +41,7 @@ workflow BUSCO_DIAMOND {
 
     BUSCO (
     fasta.map { fa -> [ [id: fa.baseName ], fa ] }, // Add meta data using the file's basename as id
-    lineages_list.join(","),
+    lineages_list,
     [], // Download busco lineage
     [] // No config
     )
