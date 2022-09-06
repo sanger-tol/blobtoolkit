@@ -5,7 +5,6 @@
 */
 
 nextflow.enable.dsl = 2
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 
