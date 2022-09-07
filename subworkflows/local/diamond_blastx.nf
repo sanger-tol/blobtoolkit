@@ -44,6 +44,7 @@ workflow CHUNK_BLASTX {
     // Chunk input fasta file
     //
     CHUNK_FASTA_BUSCO (
+    name,
     fasta,
     busco_table
     )
