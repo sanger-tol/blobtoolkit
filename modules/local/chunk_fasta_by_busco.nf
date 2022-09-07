@@ -9,8 +9,8 @@ process CHUNK_FASTA_BUSCO {
     path busco_table
 
     output:
-    path "output_chunks.fasta" , emit: chunks
-    path "versions.yml"        , emit: versions
+    path "*.output_chunks.fasta" , emit: chunks
+    path "versions.yml"          , emit: versions
 
     script:
     def args = task.ext.args ?: ''
