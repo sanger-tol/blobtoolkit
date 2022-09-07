@@ -36,7 +36,9 @@ workflow CHUNK_BLASTX {
     main:
 
     ch_versions = Channel.empty()
-    name = fasta.simpleName()
+
+    // this is the string used to name all intermediate and final output files
+    name = fasta.map { f -> f.simpleName }
 
     //
     // Chunk input fasta file
