@@ -54,7 +54,7 @@ workflow CHUNK_BLASTX {
     // Runs diamond_blastx taking fasta chunks as input
     //
     DIAMOND_BLASTX (
-    [ [ id:name ], CHUNK_FASTA_BUSCO.out.chunks ],
+    CHUNK_FASTA_BUSCO.out.chunks.map { fa -> [ [id: fa.baseName ], fa ] }, // Add meta data using the file's basename as id,
     diamonddb_blastx,
     outext,
     blastx_cols
