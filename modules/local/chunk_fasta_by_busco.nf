@@ -6,24 +6,18 @@ process CHUNK_FASTA_BUSCO {
     input:
     path fasta
     path busco_table
-    val chunk
-    val overlap
-    val max_chunks
-    val min_length
 
     output:
     path "output_chunks.fasta" , emit: chunks
     path "versions.yml"        , emit: versions
 
     script:
+    def args = task.ext.args ?: ''
     """
     btk pipeline chunk-fasta \\
+        $args \\
         --in ${fasta} \\
         --busco ${busco_table} \\
-        --chunk $chunk \\
-        --overlap $overlap \\
-        --max-chunks $max_chunks \\
-        --min-length $min_length \\
         --out output.chunks.fasta \\
         --bed None 2> chunk_fasta.log
     cat <<-END_VERSIONS > versions.yml
