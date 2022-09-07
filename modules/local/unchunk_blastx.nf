@@ -4,6 +4,7 @@ process UNCHUNK_BLASTX {
     container "genomehubs/blobtoolkit-blobtools"
 
     input:
+    val prefix
     path raw_proteomes
 
     output:
@@ -16,7 +17,7 @@ process UNCHUNK_BLASTX {
     btk pipeline unchunk-blast \\
         $args \\
         --in ${raw_proteomes} \\
-        --out reference_proteomes.out 2> unchunk_blastx.log
+        --out ${prefix}.reference_proteomes.out 2> ${prefix}.unchunk_blastx.log
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit: \$( echo "3.1.0" | sed 's/blobtoolkit //g')
