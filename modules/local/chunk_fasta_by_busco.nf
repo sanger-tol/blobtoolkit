@@ -4,6 +4,7 @@ process CHUNK_FASTA_BUSCO {
     container "genomehubs/blobtoolkit-blobtools"
 
     input:
+    val  prefix
     path fasta
     path busco_table
 
@@ -18,7 +19,7 @@ process CHUNK_FASTA_BUSCO {
         $args \\
         --in ${fasta} \\
         --busco ${busco_table} \\
-        --out output.chunks.fasta \\
+        --out ${prefix}.chunks.fasta \\
         --bed None 2> chunk_fasta.log
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
