@@ -27,11 +27,6 @@ workflow CHUNK_BLASTX {
     /// "qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore"
     blastx_cols
 
-    // UNCHUNK_BLASTX input
-    //  File: Input file is the raw proteome (blast?) from DIAMOND_BLASTX
-    /// Value: max_target_seqs, same as in DIAMOND_BLASTX args
-    max_target_seqs
-
 
     main:
 
@@ -65,8 +60,7 @@ workflow CHUNK_BLASTX {
     // Unchunk_blastx results
     //
     UNCHUNK_BLASTX (
-    DIAMOND_BLASTX.out.blast,
-    max_target_seqs
+    DIAMOND_BLASTX.out.blast
     )
     ch_versions = ch_versions.mix(UNCHUNK_BLASTX.out.versions)
 
