@@ -16,15 +16,6 @@ workflow CHUNK_BLASTX {
     /// File: Table for the first BUSCO lineage, it is an output from busco_diamond_blastp
     busco_table
 
-    /// Value: minimum chunk size for splitting long sequences, default = 100000
-    blast_chunk
-    /// Value: overlap length for splitting long sequences, default = 0
-    blast_chunk_overlap
-    /// Value: minimum chunk size for splitting long sequences, default = 10
-    blast_max_chunks
-    /// Value: minimum chunk size for splitting long sequences, default = 1000
-    blast_min_length
-
     // DIAMOND_BLASTX
     //  File: Input fasta file is the output from CHUNK_FASTA_BUSCO
     //  args: evalue, max_target_seqs
@@ -52,11 +43,7 @@ workflow CHUNK_BLASTX {
     //
     CHUNK_FASTA_BUSCO (
     fasta,
-    busco_table,
-    blast_chunk,
-    blast_chunk_overlap,
-    blast_max_chunks,
-    blast_min_length
+    busco_table
     )
     ch_versions = ch_versions.mix(CHUNK_FASTA_BUSCO.out.versions.first())
 
