@@ -7,8 +7,8 @@ process UNCHUNK_BLASTX {
     tuple val(meta), path(raw_proteomes)
 
     output:
-    path "*.reference_proteomes.out" , emit: proteomes
-    path "versions.yml"              , emit: versions
+    tuple val(meta), path('*.reference_proteomes.out') , emit: proteomes
+    path "versions.yml"                                , emit: versions
 
     script:
     def args = task.ext.args ?: ''
