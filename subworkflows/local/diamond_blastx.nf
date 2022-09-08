@@ -21,15 +21,11 @@ workflow CHUNK_BLASTX {
 
     ch_versions = Channel.empty()
 
-    // this is the string used to name all intermediate and final output files
-    name = fasta.map { f -> f.simpleName }
-
     //
     // Chunk input fasta file
     //
     CHUNK_FASTA_BUSCO (
-    name,
-    fasta,
+    fasta.map { fa -> [ [id: fa.baseName ], fa ] },
     busco_table
     )
     ch_versions = ch_versions.mix(CHUNK_FASTA_BUSCO.out.versions.first())
