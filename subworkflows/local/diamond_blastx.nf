@@ -42,7 +42,6 @@ workflow CHUNK_BLASTX {
     // Unchunk_blastx results
     //
     UNCHUNK_BLASTX (
-    DIAMOND_BLASTX.out.blast.map { f -> f.baseName },
     DIAMOND_BLASTX.out.blast
     )
     ch_versions = ch_versions.mix(UNCHUNK_BLASTX.out.versions)
