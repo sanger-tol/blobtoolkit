@@ -57,13 +57,7 @@ include { BUSCO_DIAMOND   } from '../subworkflows/local/busco_diamond_blastp'
 
 // general input and params:
 
-// GOAT_TAXONSEARCH
-ch_taxon     = params.taxon
-ch_taxa_file = params.taxa_file ? file(params.taxa_file) : []
-// CHUNK_BLASTX
-ch_db       = Channel.fromPath(params.diamond_db)
-outext      = params.outext
-blastx_cols = params.blastx_cols
+ch_db  = Channel.fromPath(params.diamond_db)
 
 workflow BLOBTOOLKIT {
 
@@ -74,29 +68,12 @@ workflow BLOBTOOLKIT {
     INPUT_CHECK ( ch_input )
 
     //
-    // MODULE: Convert CRAM to BAM
-    //
-    ch_fasta = INPUT_CHECK.out.genome.collect()
-    SAMTOOLS_VIEW ( INPUT_CHECK.out.aln, ch_fasta )
-
-    //
-    // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
-    //
-    BUSCO_DIAMOND (
-    INPUT_CHECK.out.genome,
-    ch_taxon,
-    ch_taxa_file
-    )
-
-    //
     // SUBWORKFLOW:
     //
     CHUNK_BLASTX (
     INPUT_CHECK.out.genome,
     BUSCO_DIAMOND.out.busco_table, // should define an output channel in BUSCO_DIAMOND
-    ch_db,
-    outext,
-    blastx_cols
+    ch_db
     )
 
 }
