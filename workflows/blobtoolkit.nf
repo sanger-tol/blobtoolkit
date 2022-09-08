@@ -33,8 +33,8 @@ else { exit 1, 'Input not specified. Please include either a samplesheet or Tree
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK   }               from '../subworkflows/local/input_check'
-include { SAMTOOLS_VIEW }               from '../modules/local/samtools_view'
+include { INPUT_CHECK     } from '../subworkflows/local/input_check'
+include { BUSCO_DIAMOND   } from '../subworkflows/local/busco_diamond_blastp'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -54,6 +54,8 @@ include { SAMTOOLS_VIEW }               from '../modules/local/samtools_view'
 */
 
 
+// general input and params:
+
 workflow BLOBTOOLKIT {
 
     //
@@ -62,11 +64,13 @@ workflow BLOBTOOLKIT {
     Channel.of(inputs).set{ch_input}
     INPUT_CHECK ( ch_input )
 
+
     //
-    // MODULE: Convert CRAM to BAM
+    // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
     //
-    ch_fasta = INPUT_CHECK.out.genome.collect()
-    SAMTOOLS_VIEW ( INPUT_CHECK.out.aln, ch_fasta )
+    BUSCO_DIAMOND (
+    INPUT_CHECK.out.genome.map { fa -> [ [id: fa.baseName ], fa ] }
+    )
 
 }
 
