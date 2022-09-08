@@ -23,7 +23,7 @@ process CHUNK_FASTA_BUSCO {
         --bed None 2> ${prefix}.chunk_fasta.log
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        blobtoolkit: \$( echo "3.1.0" | sed 's/blobtoolkit //g')
+         blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
     END_VERSIONS
     """
 }

@@ -20,7 +20,7 @@ process UNCHUNK_BLASTX {
         --out ${prefix}.reference_proteomes.out 2> ${prefix}.unchunk_blastx.log
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        blobtoolkit: \$( echo "3.1.0" | sed 's/blobtoolkit //g')
+         blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
     END_VERSIONS
     """
 }
