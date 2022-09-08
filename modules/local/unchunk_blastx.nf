@@ -1,7 +1,7 @@
 process UNCHUNK_BLASTX {
     tag "$fasta"
 
-    container "genomehubs/blobtoolkit-blobtools"
+    container "genomehubs/blobtoolkit-blobtools:3.3.4"
 
     input:
     val prefix
