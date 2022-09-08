@@ -2,34 +2,24 @@
     "name": "nf-core/blobtoolkit",
     "homePage": "https://github.com/nf-core/blobtoolkit",
     "repos": {
-        "https://github.com/nf-core/modules.git": {
-            "modules": {
-                "nf-core": {
-                    "busco": {
-                        "branch": "master",
-                        "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
-                    },
-                    "diamond/blastp": {
-                        "branch": "master",
-                        "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
-                    },
-                    "goat/taxonsearch": {
-                        "branch": "master",
-                        "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
-                    },
-                    "custom/dumpsoftwareversions": {
-                        "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
-                    },
-                    "mosdepth": {
-                        "git_sha": "72a31b76eb1b58879e0d91fb1d992e0118693098"
-                    },
-                    "multiqc": {
-                        "git_sha": "5138acca0985ca01c38a1c4fba917d83772b1106"
-                    },
-                    "samtools/view": {
-                        "git_sha": "6b64f9cb6c3dd3577931cc3cd032d6fb730000ce"
-                    }
-                }
+        "nf-core/modules": {
+            "nf-core/custom/dumpsoftwareversions": {
+                "git_sha": "8022c68e7403eecbd8ba9c49496f69f8c49d50f0"
+            },
+            "busco": {
+                "git_sha": "89a84538bede7c6919f7c042fdb4c79e5e2d9d2a"
+            },
+            "nf-core/fastawindows": {
+                "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
+            },
+            "nf-core/gunzip": {
+                "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
+            },
+            "nf-core/mosdepth": {
+                "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
+            },
+            "nf-core/samtools/view": {
+                "git_sha": "202683bfc98ddecdd456ea73268e330bca2e5c5a"
             }
         }
     }

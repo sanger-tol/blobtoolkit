@@ -21,7 +21,6 @@ workflow BUSCO_DIAMOND {
 
     ch_versions = Channel.empty()
 
-
     //
     // Fetch BUSCO lineages for taxon (or taxa)
     //

@@ -71,6 +71,7 @@ workflow BLOBTOOLKIT {
     //
     Channel.of(inputs).set{ch_input}
     INPUT_CHECK ( ch_input )
+<<<<<<< HEAD
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
 
@@ -87,15 +88,6 @@ workflow BLOBTOOLKIT {
     ch_fasta = INPUT_CHECK.out.genome
     COVERAGE_STATS(ch_cram, ch_fasta)
     ch_versions = ch_versions.mix(COVERAGE_STATS.out.versions)
-
-    //
-    // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
-    //
-    BUSCO_DIAMOND (
-    ch_fasta,
-    ch_taxon,
-    ch_taxa_file
-    )
 }
 
 /*
