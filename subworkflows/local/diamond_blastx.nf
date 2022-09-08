@@ -34,7 +34,7 @@ workflow CHUNK_BLASTX {
     // Runs diamond_blastx taking fasta chunks as input
     //
     DIAMOND_BLASTX (
-    CHUNK_FASTA_BUSCO.out.chunks.map { fa -> [ [id: fa.baseName ], fa ] } // Add meta data using the file's basename as id,
+    CHUNK_FASTA_BUSCO.out.chunks
     )
     ch_versions = ch_versions.mix(DIAMOND_BLASTX.out.versions)
 
