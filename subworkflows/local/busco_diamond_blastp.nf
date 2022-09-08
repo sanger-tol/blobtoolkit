@@ -13,12 +13,15 @@ include { BUSCO               } from '../../modules/nf-core/modules/busco/main'
 
 workflow BUSCO_DIAMOND {
     take:
+
     //  Tuple [meta, fasta]:
     fasta
+
 
     main:
 
     ch_versions = Channel.empty()
+
 
     //
     // Fetch BUSCO lineages for taxon (or taxa)
