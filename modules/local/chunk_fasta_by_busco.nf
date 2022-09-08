@@ -1,11 +1,10 @@
 process CHUNK_FASTA_BUSCO {
-    tag "$fasta"
+    tag "$meta.id"
 
     container "genomehubs/blobtoolkit-blobtools:3.3.4"
 
     input:
-    val  prefix
-    path fasta
+    tuple val(meta), path(fasta)
     path busco_table
 
     output:
@@ -14,6 +13,7 @@ process CHUNK_FASTA_BUSCO {
 
     script:
     def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     btk pipeline chunk-fasta \\
         $args \\
