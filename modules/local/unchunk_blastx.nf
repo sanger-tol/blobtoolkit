@@ -1,11 +1,10 @@
 process UNCHUNK_BLASTX {
-    tag "$fasta"
+    tag "$meta.id"
 
     container "genomehubs/blobtoolkit-blobtools:3.3.4"
 
     input:
-    val prefix
-    path raw_proteomes
+    tuple val(meta), path(raw_proteomes)
 
     output:
     path "*.reference_proteomes.out" , emit: proteomes
@@ -13,6 +12,7 @@ process UNCHUNK_BLASTX {
 
     script:
     def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     btk pipeline unchunk-blast \\
         $args \\
