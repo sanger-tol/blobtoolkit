@@ -67,7 +67,7 @@ workflow CHUNK_BLASTX {
 
     emit:
 
-    //  UNCHUNK_BLASTX outputs?
+    //  UNCHUNK_BLASTX output
     reference_proteomes  = UNCHUNK_BLASTX.out.proteomes
     // tool versions
     versions = ch_versions
