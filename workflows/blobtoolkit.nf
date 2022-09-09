@@ -57,16 +57,14 @@ include { SAMTOOLS_VIEW }               from '../modules/local/samtools_view'
 workflow BLOBTOOLKIT {
 
     //
-    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
+    // SUBWORKFLOW: BLASTN
     //
-    Channel.of(inputs).set{ch_input}
-    INPUT_CHECK ( ch_input )
-
-    //
-    // MODULE: Convert CRAM to BAM
-    //
-    ch_fasta = INPUT_CHECK.out.genome.collect()
-    SAMTOOLS_VIEW ( INPUT_CHECK.out.aln, ch_fasta )
+    BLASTN (
+    INPUT_CHECK.out.genome.map { fa -> [ [id: fa.baseName ], fa ] },
+    CHUNK_BLASTX.out.proteomes,
+    BUSCO_DIAMOND.out.busco_table,
+    params.blastn_db
+    )
 
 }
 
