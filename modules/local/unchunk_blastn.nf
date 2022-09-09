@@ -15,7 +15,7 @@ process UNCHUNK_BLASTN {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     btk pipeline unchunk-blast \\
-        --count $max_target_seqs \\
+         $args \\
         --in ${raw_blastn} \\
         --out ${prefix}.blastn 2> ${prefix}.log
 
