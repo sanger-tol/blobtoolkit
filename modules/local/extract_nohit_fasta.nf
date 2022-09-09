@@ -7,7 +7,8 @@ process EXTRACT_NOHIT_FASTA {
         'quay.io/biocontainers/seqtk:1.3--h5bf99c6_3' }"
 
     input:
-    tuple val(meta), path(fasta), path(nohit_list)
+    tuple val(meta), path(fasta)
+    path(nohit_list)
 
     output:
     tuple val(meta), path('*.nohit.fasta') , emit: nohit_fasta
