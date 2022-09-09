@@ -15,38 +15,28 @@ process RUN_BLASTN {
     path "versions.yml"                   , emit: versions
 
     script:
-    def args = task.ext.args ?: ''
+    def args  = task.ext.args ?: ''
+    def args2 = task.ext.args2 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def log = "${prefix}.log"
     def output = "${prefix}.blastn.raw"
     """
     if [ -s ${fasta} ]; then \\
             blastn -task megablast \\
-                -outfmt "6 qseqid staxids bitscore std" \\
-                -max_target_seqs $max_target_seqs \\
-                -max_hsps 1 \\
-                -evalue $evalue \\
-                -query ${fasta} \\
-                -lcase_masking \\
-                -dust "20 64 1" \\
-                -negative_taxids \\
-                -db ${db} \\
+                $args \\
                 -num_threads $task.cpus \\
+                -query ${fasta} \\
+                -db ${db} \\
                 > $output 2> $log || \\
             sleep 30; \
             if [ -s $log ]; then \\
                 echo "Restarting blastn without taxid filter" >> $log; \\
                 > $output; \
                 blastn -task megablast \\
-                    -outfmt "6 qseqid staxids bitscore std" \\
-                    -max_target_seqs $max_target_seqs \\
-                    -max_hsps 1 \\
-                    -evalue $evalue \\
-                    -query ${fasta} \\
-                    -lcase_masking \\
-                    -dust "20 64 1" \\
-                    -db ${db} \\
+                    $args2 \\
                     -num_threads $task.cpus \\
+                    -query ${fasta} \\
+                    -db ${db} \\
                     > $output 2>> $log; \\
             fi \\
         else \\
