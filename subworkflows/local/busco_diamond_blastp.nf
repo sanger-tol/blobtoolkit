@@ -41,11 +41,13 @@ workflow BUSCO_DIAMOND {
     ch_lineages = GOAT_TAXONSEARCH.out.busco_lineages.flatMap { it[1].readLines().collect { line -> [it[0], line] } }
     // Cross-product of both channels, using meta as the key
     ch_busco_inputs = fasta.combine(ch_lineages, by: 0)
+    // Channel of busco ch_lineages
+    ch_lineages_path = Channel.fromPath(params.busco_lineages_path)
 
     BUSCO (
     ch_busco_inputs.map { [it[0], it[1]] },
     ch_busco_inputs.map { it[2] },
-    params.busco_lineages_path,  // Please pass this option. We don't want to download the lineage data every time.
+    ch_lineages_path,  // Please pass this option. We don't want to download the lineage data every time.
     [] // No config
     )
     ch_versions = ch_versions.mix(BUSCO.out.versions)
