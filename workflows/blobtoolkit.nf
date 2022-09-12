@@ -74,6 +74,59 @@ workflow BLOBTOOLKIT {
 <<<<<<< HEAD
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
+    //
+    // SUBWORKFLOW: Convert CRAM to BAM and calculate coverage
+    //
+<<<<<<< HEAD
+    ch_cram = INPUT_CHECK.out.aln.map{ it + [ [] ]}
+    ch_fasta = INPUT_CHECK.out.genome
+    COVERAGE_STATS(ch_cram, ch_fasta)
+    ch_versions = ch_versions.mix(COVERAGE_STATS.out.versions)
+    
+=======
+    ch_fasta = INPUT_CHECK.out.genome.collect()
+    SAMTOOLS_VIEW ( INPUT_CHECK.out.aln, ch_fasta )
+=======
+
+>>>>>>> restored busco_subworkflow branch
+
+    //
+    // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
+    //
+    BUSCO_DIAMOND (
+    INPUT_CHECK.out.genome.map { fa -> [ [id: fa.baseName ], fa ] }
+    )
+
+    // SUBWORKFLOW: Convert CRAM to BAM and calculate coverage
+    //
+    ch_cram = INPUT_CHECK.out.aln.map{ it + [ [] ]}
+    ch_fasta = INPUT_CHECK.out.genome
+    COVERAGE_STATS(ch_cram, ch_fasta)
+    ch_versions = ch_versions.mix(COVERAGE_STATS.out.versions)
+}
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    COMPLETION EMAIL AND SUMMARY
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+workflow.onComplete {
+    if (params.email || params.email_on_fail) {
+        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
+    }
+    NfcoreTemplate.summary(workflow, params, log)
+}
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    THE END
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+<<<<<<< HEAD
+    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+
 
     //
     // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
