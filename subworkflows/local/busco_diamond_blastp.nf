@@ -28,7 +28,7 @@ workflow BUSCO_DIAMOND {
     // Fetch BUSCO lineages for taxon (or taxa)
     //
     // Channel for taxon
-    ch_taxon = Channel.value(params.taxon)
+    ch_taxon = Channel.value("${params.taxon}")
     // Channel for taxa file
     ch_taxafile = file("${params.taxa_file}")
     GOAT_TAXONSEARCH (
