@@ -45,7 +45,7 @@ workflow BUSCO_DIAMOND {
     BUSCO (
     ch_busco_inputs.map { [it[0], it[1]] },
     ch_busco_inputs.map { it[2] },
-    ch_lineages_path,  // Please pass this option. We don't want to download the lineage data every time.
+    "${params.busco_lineages_path}",  // Please pass this option. We don't want to download the lineage data every time.
     [] // No config
     )
     ch_versions = ch_versions.mix(BUSCO.out.versions)
