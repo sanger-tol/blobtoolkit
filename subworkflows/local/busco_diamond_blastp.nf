@@ -42,7 +42,7 @@ workflow BUSCO_DIAMOND {
     // Cross-product of both channels, using meta as the key
     ch_busco_inputs = fasta.combine(ch_lineages, by: 0)
     // Channel of busco ch_lineages
-    ch_lineages_path = Channel.fromPath(params.busco_lineages_path)
+    ch_lineages_path = "${params.busco_lineages_path}" ? Channel.fromPath("${params.busco_lineages_path}") : []
 
     BUSCO (
     ch_busco_inputs.map { [it[0], it[1]] },
