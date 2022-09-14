@@ -17,7 +17,6 @@ workflow BUSCO_DIAMOND {
     //  Tuple [meta, fasta]:
     fasta
 
-
     main:
 
     ch_versions = Channel.empty()
@@ -26,9 +25,12 @@ workflow BUSCO_DIAMOND {
     //
     // Fetch BUSCO lineages for taxon (or taxa)
     //
-
+    // Channel for taxon
+    ch_taxon = Channel.value(params.taxon)
+    // Channel for taxa file
+    ch_taxafile = file("${params.taxa_file}")
     GOAT_TAXONSEARCH (
-    fasta.map { fa -> [fa[0], params.taxon, params.taxa_file ? file(params.taxa_file) : []] }
+    fasta.map { fa -> [fa[0], ch_taxon, "${params.taxa_file}" ? ch_taxafile : []] }
     )
     ch_versions = ch_versions.mix(GOAT_TAXONSEARCH.out.versions)
 
