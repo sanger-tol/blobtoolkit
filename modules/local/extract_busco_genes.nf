@@ -1,7 +1,7 @@
 process EXTRACT_BUSCO_GENES {
     tag "$meta.id"
 
-    container "genomehubs/blobtoolkit-blobtools"
+    container "genomehubs/blobtoolkit-blobtools:3.3.4"
 
     input:
     tuple val(meta), val(tables)
