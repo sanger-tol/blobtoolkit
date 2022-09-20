@@ -11,6 +11,7 @@ process EXTRACT_BUSCO_GENES {
     path "versions.yml"                          , emit: versions
 
     script:
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     btk pipeline extract-busco-genes \\
         --busco $tables \\
