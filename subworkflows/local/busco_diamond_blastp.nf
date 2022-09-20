@@ -55,9 +55,9 @@ workflow BUSCO_DIAMOND {
     dir = BUSCO.out.busco_dir.map { fileid, path -> path }
     tables = Channel.fromPath( ["$dir/**/run_archaea_odb10/full_table.tsv", "$dir/**/run_bacteria_odb10/full_table.tsv", "$dir/**/run_eukaryota_odb10/full_table.tsv"] )
     busco_tables = tables.toList()
+    input_extract_genes = fasta.map { fa -> [fa[0], busco_tables] }
     EXTRACT_BUSCO_GENES (
-     name,
-     busco_tables
+    input_extract_genes
     )
     ch_versions = ch_versions.mix(EXTRACT_BUSCO_GENES.out.versions)
 
