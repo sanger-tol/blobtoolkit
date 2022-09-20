@@ -20,7 +20,8 @@ process CHUNK_FASTA_BUSCO {
         --in ${fasta} \\
         --busco ${busco_table} \\
         --out ${prefix}.chunks.fasta \\
-        --bed None 2> ${prefix}.chunk_fasta.log
+        --bed None
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
          blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
