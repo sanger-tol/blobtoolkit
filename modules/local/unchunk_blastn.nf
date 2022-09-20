@@ -17,7 +17,7 @@ process UNCHUNK_BLASTN {
     btk pipeline unchunk-blast \\
          $args \\
         --in ${raw_blastn} \\
-        --out ${prefix}.blastn 2> ${prefix}.log
+        --out ${prefix}.blastn
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
