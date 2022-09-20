@@ -15,7 +15,7 @@ process EXTRACT_BUSCO_GENES {
     """
     btk pipeline extract-busco-genes \\
         --busco $tables \\
-        --out ${prefix}_busco_genes.fasta 2> ${prefix}_extract_busco_genes.log
+        --out ${prefix}_busco_genes.fasta
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit: \$( echo "3.1.0" | sed 's/blobtoolkit //g')
