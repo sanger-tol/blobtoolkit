@@ -18,7 +18,7 @@ process EXTRACT_BUSCO_GENES {
         --out ${prefix}_busco_genes.fasta
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        blobtoolkit: \$( echo "3.1.0" | sed 's/blobtoolkit //g')
+        blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
     END_VERSIONS
     """
 }
