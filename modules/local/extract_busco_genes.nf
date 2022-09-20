@@ -1,5 +1,5 @@
 process EXTRACT_BUSCO_GENES {
-    tag "$fasta"
+    tag "$meta.id"
 
     container "genomehubs/blobtoolkit-blobtools"
 
