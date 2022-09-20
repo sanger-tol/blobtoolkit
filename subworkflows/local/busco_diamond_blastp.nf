@@ -8,7 +8,7 @@ nextflow.enable.dsl = 2
 
 include { GOAT_TAXONSEARCH    } from '../../modules/local/goat_taxon_search'
 include { BUSCO               } from '../../modules/nf-core/modules/busco/main'
-//include { EXTRACT_BUSCO_GENES } from '../../modules/local/extract_busco_genes'
+include { EXTRACT_BUSCO_GENES } from '../../modules/local/extract_busco_genes'
 //include { DIAMOND_BLASTP      } from '../../modules/nf-core/modules/diamond/blastp/main'
 
 workflow BUSCO_DIAMOND {
@@ -56,14 +56,14 @@ workflow BUSCO_DIAMOND {
     // Extract BUSCO genes
     //
 
-    //dir = BUSCO.out.busco_dir.map { fileid, path -> path }
-    //tables = Channel.fromPath( ["$dir/**/run_archaea_odb10/full_table.tsv", "$dir/**/run_bacteria_odb10/full_table.tsv", "$dir/**/run_eukaryota_odb10/full_table.tsv"] )
-    //busco_tables = tables.toList()
-    //EXTRACT_BUSCO_GENES (
-     //name,
-     //busco_tables
-    //)
-    //ch_versions = ch_versions.mix(EXTRACT_BUSCO_GENES.out.versions)
+    dir = BUSCO.out.busco_dir.map { fileid, path -> path }
+    tables = Channel.fromPath( ["$dir/**/run_archaea_odb10/full_table.tsv", "$dir/**/run_bacteria_odb10/full_table.tsv", "$dir/**/run_eukaryota_odb10/full_table.tsv"] )
+    busco_tables = tables.toList()
+    EXTRACT_BUSCO_GENES (
+     name,
+     busco_tables
+    )
+    ch_versions = ch_versions.mix(EXTRACT_BUSCO_GENES.out.versions)
 
     //
     // Runs diamond_blastp with the extracted busco genes
