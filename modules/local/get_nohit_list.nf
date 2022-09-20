@@ -16,7 +16,6 @@ process GET_NOHIT_LIST {
     path "versions.yml" , emit: versions
 
     script:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     grep '>' ${fasta} | \\
