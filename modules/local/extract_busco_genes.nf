@@ -4,8 +4,7 @@ process EXTRACT_BUSCO_GENES {
     container "genomehubs/blobtoolkit-blobtools"
 
     input:
-    val prefix
-    val tables
+    tuple val(meta), val(tables)
 
     output:
     path "*.output_busco_genes.fasta" , emit: fasta
