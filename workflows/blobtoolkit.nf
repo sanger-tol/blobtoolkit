@@ -71,7 +71,7 @@ workflow BLOBTOOLKIT {
     // SUBWORKFLOW:
     //
     CHUNK_BLASTX (
-    INPUT_CHECK.out.genome,
+    INPUT_CHECK.out.genome.map { fa -> [ [id: fa.baseName ], fa ] },
     BUSCO_DIAMOND.out.busco_table, // should define an output channel in BUSCO_DIAMOND
     ch_db
     )
