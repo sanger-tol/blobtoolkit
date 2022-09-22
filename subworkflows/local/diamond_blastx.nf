@@ -28,7 +28,7 @@ workflow CHUNK_BLASTX {
     fasta,
     busco_table
     )
-    ch_versions = ch_versions.mix(CHUNK_FASTA_BUSCO.out.versions.first())
+    ch_versions = ch_versions.mix(CHUNK_FASTA_BUSCO.out.versions)
 
     //
     // Runs diamond_blastx taking fasta chunks as input
