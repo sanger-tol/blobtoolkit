@@ -25,7 +25,7 @@ workflow CHUNK_BLASTX {
     // Chunk input fasta file
     //
     CHUNK_FASTA_BUSCO (
-    fasta.map { fa -> [ [id: fa.baseName ], fa ] },
+    fasta,
     busco_table
     )
     ch_versions = ch_versions.mix(CHUNK_FASTA_BUSCO.out.versions.first())
