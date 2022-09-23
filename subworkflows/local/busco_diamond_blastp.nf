@@ -54,10 +54,15 @@ workflow BUSCO_DIAMOND {
     // Extract BUSCO genes
     //
 
-    // list of paths to busco results for each lineage
+    // list of paths to busco results for each lineage (tested)
     dir = BUSCO.out.busco_dir.map { fileid, path -> path }.collect()
-    tables = Channel.fromPath( ["$dir/**/run_archaea_odb10/full_table.tsv", "$dir/**/run_bacteria_odb10/full_table.tsv", "$dir/**/run_eukaryota_odb10/full_table.tsv"] )
+    // filter tables for archaea, bacteria and eukaryota (not tested)
+    dir_a = Channel.from( dir ).filter( ~/archaea_odb10/ )
+    dir_b = Channel.from( dir ).filter( ~/bacteria_odb10/ )
+    dir_e = Channel.from( dir ).filter( ~/eukaryota_odb10/ )
+    tables = Channel.fromPath( ["$dir_a/**/run_archaea_odb10/full_table.tsv", "$dir_b/**/run_bacteria_odb10/full_table.tsv", "$dir_e/**/run_eukaryota_odb10/full_table.tsv"] )
     busco_tables = tables.toList()
+    // add meta to input
     input_extract_genes = fasta.map { fa -> [fa[0], busco_tables] }
     EXTRACT_BUSCO_GENES (
     input_extract_genes
