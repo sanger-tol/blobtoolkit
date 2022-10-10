@@ -72,6 +72,12 @@ workflow BLOBTOOLKIT {
     INPUT_CHECK.out.genome.map { fa -> [ [id: fa.baseName ], fa ] }
     )
 
+    // SUBWORKFLOW: Convert CRAM to BAM and calculate coverage
+    //
+    ch_cram = INPUT_CHECK.out.aln.map{ it + [ [] ]}
+    ch_fasta = INPUT_CHECK.out.genome.collect()
+    COVERAGE_STATS(ch_cram, ch_fasta, [])
+    
 }
 
 /*
