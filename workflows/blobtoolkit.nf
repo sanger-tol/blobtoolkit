@@ -33,8 +33,9 @@ else { exit 1, 'Input not specified. Please include either a samplesheet or Tree
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK     } from '../subworkflows/local/input_check'
-include { BUSCO_DIAMOND   } from '../subworkflows/local/busco_diamond_blastp'
+include { INPUT_CHECK     }         from '../subworkflows/local/input_check'
+include { BUSCO_DIAMOND   }         from '../subworkflows/local/busco_diamond_blastp'
+include { COVERAGE_STATS  }         from '../subworkflows/local/coverage_stats'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
