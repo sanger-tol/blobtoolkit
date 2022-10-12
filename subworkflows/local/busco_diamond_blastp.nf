@@ -62,11 +62,15 @@ workflow BUSCO_DIAMOND {
     dir_b = dir.filter { "$it" =~ /bacteria_odb10/ }.collect()
     dir_e = dir.filter { "$it" =~ /eukaryota_odb10/ }.collect()
 
-    tables = Channel.fromPath( ["$dir_a/**/run_archaea_odb10/full_table.tsv", "$dir_b/**/run_bacteria_odb10/full_table.tsv", "$dir_e/**/run_eukaryota_odb10/full_table.tsv"] )
+    // combine all three paths into a single channel
+    dir_ab = dir_a.combine(dir_b, by:0)
+    dir_abe = dir_ab.combine(dir_e, by:0)
 
-    busco_tables = tables.toList()
+    // channel transformation to a list containing paths to full busco tables
+    busco_abe = dir_abe.map { id,a,b,e -> ["$a/**/run_archaea_odb10/full_table.tsv","$b/**/run_bacteria_odb10/full_table.tsv","$e/**/run_eukaryota_odb10/full_table.tsv"] }.collect()
+    busco_tables = Channel.fromPath( busco_abe )
 
-    // add meta to input
+    // add meta to input again
     input_extract_genes = fasta.map { fa -> [fa[0], busco_tables] }
 
     EXTRACT_BUSCO_GENES (
