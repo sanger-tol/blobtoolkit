@@ -56,11 +56,14 @@ include { COVERAGE_STATS }               from '../subworkflows/local/coverage_st
 
 workflow BLOBTOOLKIT {
 
+    ch_versions = Channel.empty()
+
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
     Channel.of(inputs).set{ch_input}
     INPUT_CHECK ( ch_input )
+    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     //
     // SUBWORKFLOW: Convert CRAM to BAM and calculate coverage
