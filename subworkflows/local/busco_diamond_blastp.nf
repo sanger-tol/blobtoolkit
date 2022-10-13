@@ -67,7 +67,7 @@ workflow BUSCO_DIAMOND {
     dir_abe = dir_ab.combine(dir_e, by:0)
 
     // channel transformation to a list containing paths to full busco tables
-    busco_abe = dir_abe.map { id,a,b,e -> ["$a/**/run_archaea_odb10/full_table.tsv","$b/**/run_bacteria_odb10/full_table.tsv","$e/**/run_eukaryota_odb10/full_table.tsv"] }.collect()
+    busco_abe = dir_abe.map { id,a,b,e -> "$a/**/run_archaea_odb10/full_table.tsv","$b/**/run_bacteria_odb10/full_table.tsv","$e/**/run_eukaryota_odb10/full_table.tsv" }.collect()
     busco_tables = Channel.fromPath( busco_abe )
 
     // add meta to input again
