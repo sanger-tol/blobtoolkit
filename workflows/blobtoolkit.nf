@@ -69,7 +69,7 @@ workflow BLOBTOOLKIT {
     // SUBWORKFLOW: Convert CRAM to BAM and calculate coverage
     //
     ch_cram = INPUT_CHECK.out.aln.map{ it + [ [] ]}
-    ch_fasta = INPUT_CHECK.out.genome.map{it -> it [1]}
+    ch_fasta = INPUT_CHECK.out.genome
     COVERAGE_STATS(ch_cram, ch_fasta)
     ch_versions = ch_versions.mix(COVERAGE_STATS.out.versions)
     
