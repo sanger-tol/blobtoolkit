@@ -58,11 +58,11 @@ workflow BUSCO_DIAMOND {
     dir = BUSCO.out.busco_dir
 
     // filter busco paths for archaea, bacteria and eukaryota
-    dir_a = dir.filter { "$it" =~ /archaea_odb10/ }.map{ "\"$it/**/run_archaea_odb10/full_table.tsv\"" }.collect()
-    dir_b = dir.filter { "$it" =~ /bacteria_odb10/ }.map{ "\"$it/**/run_bacteria_odb10/full_table.tsv\"" }.collect()
-    dir_e = dir.filter { "$it" =~ /eukaryota_odb10/ }.map{ "\"$it/**/run_eukaryota_odb10/full_table.tsv\"" }.collect()
+    dir_a = dir.filter { "$it" =~ /archaea_odb10/ }.map { id,a -> [id, "\"$a/**/run_archaea_odb10/full_table.tsv\""] }.collect()
+    dir_b = dir.filter { "$it" =~ /bacteria_odb10/ }.map { id,b -> [id, "\"$b/**/run_bacteria_odb10/full_table.tsv\""] }.collect()
+    dir_e = dir.filter { "$it" =~ /eukaryota_odb10/ }.map { id,e -> [id, "\"$e/**/run_eukaryota_odb10/full_table.tsv\""] }.collect()
 
-    // combine all three paths into a single channel
+    // combine all three channels into a single channel
     dir_ab = dir_a.combine(dir_b, by:0)
     dir_abe = dir_ab.combine(dir_e, by:0)
 
