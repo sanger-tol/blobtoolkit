@@ -4,7 +4,7 @@ process EXTRACT_BUSCO_GENES {
     container "genomehubs/blobtoolkit-blobtools:3.3.4"
 
     input:
-    tuple val(meta), val(tables)
+    tuple val(meta), path(arc), path(bac), path(euk)
 
     output:
     tuple val(meta), path('*.busco_genes.fasta') , emit: fasta
@@ -12,6 +12,7 @@ process EXTRACT_BUSCO_GENES {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def tables = ["\"$arc\"", "\"$bac\"", "\"$euk\""]
     """
     btk pipeline extract-busco-genes \\
         --busco $tables \\
