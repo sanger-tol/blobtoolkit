@@ -60,14 +60,14 @@ workflow BUSCO_DIAMOND {
     dir_b = dir.filter { "$it" =~ /bacteria_odb10/ }.map { id,b -> [id, "\"$b/**/run_bacteria_odb10/full_table.tsv\""] }.collect()
     dir_e = dir.filter { "$it" =~ /eukaryota_odb10/ }.map { id,e -> [id, "\"$e/**/run_eukaryota_odb10/full_table.tsv\""] }.collect()
 
-    // combine all three channels into a single channel
+    // combine all three channels into a single channel: tuple( meta, a, b, e )
     dir_ab = dir_a.combine(dir_b, by:0)
     dir_abe = dir_ab.combine(dir_e, by:0)
 
-    //EXTRACT_BUSCO_GENES (
-    //input_extract_genes
-    //)
-    //ch_versions = ch_versions.mix(EXTRACT_BUSCO_GENES.out.versions)
+    EXTRACT_BUSCO_GENES (
+    dir_abe
+    )
+    ch_versions = ch_versions.mix(EXTRACT_BUSCO_GENES.out.versions)
 
     //
     // Runs diamond_blastp with the extracted busco genes
