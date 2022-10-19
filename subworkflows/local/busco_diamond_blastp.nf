@@ -60,10 +60,10 @@ workflow BUSCO_DIAMOND {
     // gets file name which is a folder name in paths to busco full tables
     fasta_filename = fasta.map { meta,fa -> [meta, fa.name] }
 
-    // filter busco paths for archaea, bacteria and eukaryota
-    dir_a = dir.filter { "$it" =~ /archaea_odb10/ }.map { meta,a -> [meta, "\"$a/**/run_archaea_odb10/full_table.tsv\""] }.collect()
-    dir_b = dir.filter { "$it" =~ /bacteria_odb10/ }.map { meta,b -> [meta, "\"$b/**/run_bacteria_odb10/full_table.tsv\""] }.collect()
-    dir_e = dir.filter { "$it" =~ /eukaryota_odb10/ }.map { meta,e -> [meta, "\"$e/**/run_eukaryota_odb10/full_table.tsv\""] }.collect()
+    // filter paths to busco full tables for archaea, bacteria and eukaryota
+    dir_a = dir.filter { "$it" =~ /archaea_odb10/ }.map { meta,a -> [meta, "$a/**/run_archaea_odb10/full_table.tsv"] }.collect()
+    dir_b = dir.filter { "$it" =~ /bacteria_odb10/ }.map { meta,b -> [meta, "$b/**/run_bacteria_odb10/full_table.tsv"] }.collect()
+    dir_e = dir.filter { "$it" =~ /eukaryota_odb10/ }.map { meta,e -> [meta, "$e/**/run_eukaryota_odb10/full_table.tsv"] }.collect()
 
     // combine all three channels into a single channel: tuple( meta, a, b, e )
     dir_ab = dir_a.combine(dir_b, by:0)
