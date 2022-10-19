@@ -54,16 +54,16 @@ workflow BUSCO_DIAMOND {
     // Extract BUSCO genes
     //
 
-    // channel: emits paths to busco results for each lineage
-    dir = BUSCO.out.busco_dir
-
     // gets file name which is a folder name in paths to busco full tables
     fasta_filename = fasta.map { meta,fa -> [meta, fa.name] }
 
+    // channel: emits paths to busco results for each lineage
+    dir = BUSCO.out.busco_dir.combine(fasta_filename, by:0)
+
     // filter paths to busco full tables for archaea, bacteria and eukaryota
-    dir_a = dir.filter { "$it" =~ /archaea_odb10/ }.map { meta,a -> [meta, "$a/**/run_archaea_odb10/full_table.tsv"] }.collect()
-    dir_b = dir.filter { "$it" =~ /bacteria_odb10/ }.map { meta,b -> [meta, "$b/**/run_bacteria_odb10/full_table.tsv"] }.collect()
-    dir_e = dir.filter { "$it" =~ /eukaryota_odb10/ }.map { meta,e -> [meta, "$e/**/run_eukaryota_odb10/full_table.tsv"] }.collect()
+    dir_a = dir.filter { "$it" =~ /archaea_odb10/ }.map { meta,a,fname -> [meta, "$a/$fname/run_archaea_odb10/full_table.tsv"] }.collect()
+    dir_b = dir.filter { "$it" =~ /bacteria_odb10/ }.map { meta,b,fname -> [meta, "$b/$fname/run_bacteria_odb10/full_table.tsv"] }.collect()
+    dir_e = dir.filter { "$it" =~ /eukaryota_odb10/ }.map { meta,e,fname -> [meta, "$e/$fname/run_eukaryota_odb10/full_table.tsv"] }.collect()
 
     // combine all three channels into a single channel: tuple( meta, a, b, e )
     dir_ab = dir_a.combine(dir_b, by:0)
