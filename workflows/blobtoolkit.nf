@@ -33,8 +33,8 @@ else { exit 1, 'Input not specified. Please include either a samplesheet or Tree
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK   }               from '../subworkflows/local/input_check'
-include { SAMTOOLS_VIEW }               from '../modules/local/samtools_view'
+include { INPUT_CHECK    }               from '../subworkflows/local/input_check'
+include { COVERAGE_STATS }               from '../subworkflows/local/coverage_stats'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,18 +56,23 @@ include { SAMTOOLS_VIEW }               from '../modules/local/samtools_view'
 
 workflow BLOBTOOLKIT {
 
+    ch_versions = Channel.empty()
+
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
     Channel.of(inputs).set{ch_input}
     INPUT_CHECK ( ch_input )
+    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     //
-    // MODULE: Convert CRAM to BAM
+    // SUBWORKFLOW: Convert CRAM to BAM and calculate coverage
     //
-    ch_fasta = INPUT_CHECK.out.genome.collect()
-    SAMTOOLS_VIEW ( INPUT_CHECK.out.aln, ch_fasta )
-
+    ch_cram = INPUT_CHECK.out.aln.map{ it + [ [] ]}
+    ch_fasta = INPUT_CHECK.out.genome
+    COVERAGE_STATS(ch_cram, ch_fasta)
+    ch_versions = ch_versions.mix(COVERAGE_STATS.out.versions)
+    
 }
 
 /*
