@@ -7,7 +7,7 @@ process EXTRACT_BUSCO_GENES {
     tuple val(meta), path(arc), path(bac), path(euk)
 
     output:
-    tuple val(meta), path('*.busco_genes.fasta') , emit: fasta
+    tuple val(meta), path('*_busco_genes.fasta') , emit: fasta
     path "versions.yml"                          , emit: versions
 
     script:
