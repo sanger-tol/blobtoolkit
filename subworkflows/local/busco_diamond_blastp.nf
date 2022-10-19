@@ -58,7 +58,7 @@ workflow BUSCO_DIAMOND {
     dir = BUSCO.out.busco_dir
 
     // gets file name which is a folder name in paths to busco full tables
-    fasta_filename = fasta.map { fa -> [fa[0], fa[1].name] }
+    fasta_filename = fasta.map { meta,fa -> [meta, fa.name] }
 
     // filter busco paths for archaea, bacteria and eukaryota
     dir_a = dir.filter { "$it" =~ /archaea_odb10/ }.map { meta,a -> [meta, "\"$a/**/run_archaea_odb10/full_table.tsv\""] }.collect()
