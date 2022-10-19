@@ -16,15 +16,15 @@ process EXTRACT_BUSCO_GENES {
     def bact = "bac_full_table.tsv"
     def eukt = "euk_full_table.tsv"
     def tables = ["\"$arct\"", "\"$bact\"", "\"$eukt\""]
-    """   
+    """
     cp ${arc} $arct
     cp ${bac} $bact
     cp ${euk} $eukt
-    
+
     btk pipeline extract-busco-genes \\
         --busco $tables \\
         --out ${prefix}_busco_genes.fasta
-    
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
