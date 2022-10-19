@@ -47,7 +47,7 @@ workflow INPUT_CHECK {
         .splitCsv ( header:true, sep:',' )
         .map { create_data_channels(it, tol) }
         .set { aln }
-        ch_versions = ch_versions.mix(SAMPLESHEET_CHECK.out.versions)
+    ch_versions = ch_versions.mix(SAMPLESHEET_CHECK.out.versions)
 
     emit:
     aln                                       // channel: [ val(meta), [ datafile ] ]
