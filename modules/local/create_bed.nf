@@ -24,7 +24,8 @@ process CREATE_BED {
     cut -f 1,2,3 $fasta | sed '1d' >> ${prefix}.bed
 
     cat <<-END_VERSIONS > versions.yml
-        Test Daekfnekfnke a bleep bloop[]
+    "${task.process}":
+        create_bed 1.0
     END_VERSIONS
     """
 }
