@@ -66,9 +66,9 @@ workflow BUSCO_DIAMOND {
     dir_e = dir.filter { "$it" =~ /eukaryota_odb10/ }.map { meta,e,fname -> [meta, "$e/$fname/run_eukaryota_odb10/full_table.tsv"] }.collect()
 
     // create copies of full tables with a lineage identifier, avoids file name collision
-    dir_a = dir_a.map { meta,table -> [meta, table.copyTo("$table.parent/archaea_odb10_full_table.tsv")] }.collect()
-    dir_b = dir_b.map { meta,table -> [meta, table.copyTo("$table.parent/bacteria_odb10_full_table.tsv")] }.collect()
-    dir_e = dir_e.map { meta,table -> [meta, table.copyTo("$table.parent/eukaryota_odb10_full_table.tsv")] }.collect()
+    dir_a = dir_a.map { meta,table -> [meta,table,table.parent] }.map { meta,table,parent -> [meta, table.copyTo("$parent/archaea_odb10_full_table.tsv")] }.collect()
+    dir_b = dir_b.map { meta,table -> [meta,table,table.parent] }-map { meta,table,parent -> [meta, table.copyTo("$parent/bacteria_odb10_full_table.tsv")] }.collect()
+    dir_e = dir_e.map { meta,table -> [meta,table,table.parent] }-map { meta,table,parent -> [meta, table.copyTo("$parent/eukaryota_odb10_full_table.tsv")] }.collect()
 
     // combine all three channels into a single channel: tuple( meta, a, b, e )
     dir_ab = dir_a.combine(dir_b, by:0)
