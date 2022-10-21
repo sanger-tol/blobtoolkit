@@ -25,7 +25,7 @@ process CREATE_BED {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        create_bed 1.01
+        create_bed: 1.01
     END_VERSIONS
     """
 }
