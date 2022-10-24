@@ -67,8 +67,8 @@ workflow BUSCO_DIAMOND {
 
     // create copies of full tables with a lineage identifier, avoids file name collision
     dir_a = dir_a.map { meta,t -> [meta,t,t.parent] }.map { meta,t,p -> [meta,t.copyTo("$p/archaea_odb10_full_table.tsv")] }.collect()
-    dir_b = dir_b.map { meta,t -> [meta,t,t.parent] }-map { meta,t,p -> [meta,t.copyTo("$p/bacteria_odb10_full_table.tsv")] }.collect()
-    dir_e = dir_e.map { meta,t -> [meta,t,t.parent] }-map { meta,t,p -> [meta,t.copyTo("$p/eukaryota_odb10_full_table.tsv")] }.collect()
+    dir_b = dir_b.map { meta,t -> [meta,t,t.parent] }.map { meta,t,p -> [meta,t.copyTo("$p/bacteria_odb10_full_table.tsv")] }.collect()
+    dir_e = dir_e.map { meta,t -> [meta,t,t.parent] }.map { meta,t,p -> [meta,t.copyTo("$p/eukaryota_odb10_full_table.tsv")] }.collect()
 
     // combine all three channels into a single channel: tuple( meta, a, b, e )
     dir_ab = dir_a.combine(dir_b, by:0)
