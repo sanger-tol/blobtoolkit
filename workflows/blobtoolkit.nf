@@ -71,24 +71,7 @@ workflow BLOBTOOLKIT {
     //
     Channel.of(inputs).set{ch_input}
     INPUT_CHECK ( ch_input )
-<<<<<<< HEAD
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-
-    //
-    // SUBWORKFLOW: Convert CRAM to BAM and calculate coverage
-    //
-<<<<<<< HEAD
-    ch_cram = INPUT_CHECK.out.aln.map{ it + [ [] ]}
-    ch_fasta = INPUT_CHECK.out.genome
-    COVERAGE_STATS(ch_cram, ch_fasta)
-    ch_versions = ch_versions.mix(COVERAGE_STATS.out.versions)
-    
-=======
-    ch_fasta = INPUT_CHECK.out.genome.collect()
-    SAMTOOLS_VIEW ( INPUT_CHECK.out.aln, ch_fasta )
-=======
-
->>>>>>> restored busco_subworkflow branch
 
     //
     // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
