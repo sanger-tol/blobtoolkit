@@ -77,7 +77,7 @@ workflow BLOBTOOLKIT {
     // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
     //
     BUSCO_DIAMOND (
-    INPUT_CHECK.out.genome.map { fa -> [ [id: fa.baseName ], fa ] }
+    INPUT_CHECK.out.genome.view()
     )
 
     // SUBWORKFLOW: Convert CRAM to BAM and calculate coverage
