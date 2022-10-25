@@ -59,14 +59,14 @@ workflow BUSCO_DIAMOND {
     dir = BUSCO.out.busco_dir.combine(fasta_filename, by:0)
 
     // filter paths to busco full tables for archaea, bacteria and eukaryota
-    dir_a = dir.filter { "$it" =~ /archaea_odb10/ }.map { meta,a,fname -> [meta, "$a/$fname/run_archaea_odb10/full_table.tsv"] }.collect()
-    dir_b = dir.filter { "$it" =~ /bacteria_odb10/ }.map { meta,b,fname -> [meta, "$b/$fname/run_bacteria_odb10/full_table.tsv"] }.collect()
-    dir_e = dir.filter { "$it" =~ /eukaryota_odb10/ }.map { meta,e,fname -> [meta, "$e/$fname/run_eukaryota_odb10/full_table.tsv"] }.collect()
+    dir_a = dir.filter { "$it" =~ /archaea_odb10/ }.map { meta,a,f -> [meta, "$a/$f/run_archaea_odb10/full_table.tsv", "$a/$f/run_archaea_odb10/archaea_odb10_full_table.tsv"] }.collect()
+    dir_b = dir.filter { "$it" =~ /bacteria_odb10/ }.map { meta,b,f -> [meta, "$b/$f/run_bacteria_odb10/full_table.tsv", "$b/$f/run_bacteria_odb10/bacteria_odb10_full_table.tsv"] }.collect()
+    dir_e = dir.filter { "$it" =~ /eukaryota_odb10/ }.map { meta,e,f -> [meta, "$e/$f/run_eukaryota_odb10/full_table.tsv", "$e/$f/run_eukaryota_odb10/eukaryota_odb10_full_table.tsv"] }.collect()
 
     // create copies of full tables with a lineage identifier, avoids file name collision
-    dir_a = dir_a.map { meta,t -> [meta,t,t.parent] }.map { meta,t,p -> [meta,t.copyTo("$p/archaea_odb10_full_table.tsv")] }.collect()
-    dir_b = dir_b.map { meta,t -> [meta,t,t.parent] }.map { meta,t,p -> [meta,t.copyTo("$p/bacteria_odb10_full_table.tsv")] }.collect()
-    dir_e = dir_e.map { meta,t -> [meta,t,t.parent] }.map { meta,t,p -> [meta,t.copyTo("$p/eukaryota_odb10_full_table.tsv")] }.collect()
+    dir_a = dir_a.map { meta,t,u -> [meta,t.copyTo("$u")] }.collect()
+    dir_b = dir_b.map { meta,t,u -> [meta,t.copyTo("$u")] }.collect()
+    dir_e = dir_e.map { meta,t,u -> [meta,t.copyTo("$u")] }.collect()
 
     // combine all three channels into a single channel: tuple( meta, a, b, e )
     dir_ab = dir_a.combine(dir_b, by:0)
