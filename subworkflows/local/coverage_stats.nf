@@ -1,7 +1,7 @@
-include { MOSDEPTH      } from '../../modules/nf-core/modules/nf-core/mosdepth/main'
-include { SAMTOOLS_VIEW } from '../../modules/nf-core/modules/nf-core/samtools/view/main'
-include { FASTAWINDOWS  } from '../../modules/nf-core/modules/nf-core/fastawindows/main'
-include { CREATE_BED  } from '../../modules/local/create_bed'
+include { MOSDEPTH      } from '../../modules/nf-core/mosdepth/main'
+include { SAMTOOLS_VIEW } from '../../modules/nf-core/samtools/view/main'
+include { FASTAWINDOWS  } from '../../modules/nf-core/fastawindows/main'
+include { CREATE_BED    } from '../../modules/local/create_bed'
 
 workflow COVERAGE_STATS {
     take: 
