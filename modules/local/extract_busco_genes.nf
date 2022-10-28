@@ -12,10 +12,11 @@ process EXTRACT_BUSCO_GENES {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def tables = ["\"$arc\"", "\"$bac\"", "\"$euk\""]
     """
     btk pipeline extract-busco-genes \\
-        --busco $tables \\
+        --busco $arc \\
+        --busco $bac \\
+        --busco $euk \\
         --out ${prefix}_busco_genes.fasta
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
