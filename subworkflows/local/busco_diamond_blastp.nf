@@ -83,18 +83,22 @@ workflow BUSCO_DIAMOND {
     // Runs diamond_blastp with the extracted busco genes
     //
 
-    //DIAMOND_BLASTP (
-    //[ [ id:name ],  EXTRACT_BUSCO_GENES.out.fasta ],
-    //diamonddb,
-    //outext,
-    //blast_cols
-    //)
-    //ch_versions = ch_versions.mix(DIAMOND_BLASTP.out.versions)
+
+    // path to diamond db
+    blastp_db = Channel.fromPath(params.diamondblastp_db)
+
+    DIAMOND_BLASTP (
+    EXTRACT_BUSCO_GENES.out.fasta,
+    diamond_db,
+    "${params.blastp_outext}",
+    "${params.blastp_cols}"
+    )
+    ch_versions = ch_versions.mix(DIAMOND_BLASTP.out.versions)
 
     emit:
 
     // diamond_blastp outputs
-    //txt      = DIAMOND_BLASTP.out.txt
+    txt      = DIAMOND_BLASTP.out.txt
 
     // tool versions
     versions = ch_versions
