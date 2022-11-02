@@ -87,7 +87,7 @@ workflow BUSCO_DIAMOND {
 
     DIAMOND_BLASTP (
     EXTRACT_BUSCO_GENES.out.fasta,
-    diamond_db,
+    blastp_db,
     "${params.blastp_outext}",
     "${params.blastp_cols}"
     )
