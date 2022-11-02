@@ -6,7 +6,7 @@
 
 nextflow.enable.dsl = 2
 
-include { GOAT_TAXONSEARCH    } from '../../modules/nf-core/goat/taxonsearch/main'
+include { GOAT_TAXONSEARCH    } from '../../modules/local/goat_taxon_search'
 include { BUSCO               } from '../../modules/nf-core/busco/main'
 include { EXTRACT_BUSCO_GENES } from '../../modules/local/extract_busco_genes'
 include { DIAMOND_BLASTP      } from '../../modules/nf-core/diamond/blastp/main'
