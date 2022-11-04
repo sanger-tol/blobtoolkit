@@ -31,7 +31,7 @@ sample2, illumina, illumina.cram
 
 The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
 
-A final samplesheet file consisting may look something like the one below. 
+A final samplesheet file consisting may look something like the one below.
 
 ```console
 sample,datatype,datafile
@@ -40,11 +40,11 @@ sample2, illumina, illumina.cram
 sample3, ont, ont.cram
 ```
 
-| Column    | Description                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `datatype` | Type of sequencing data. Must be | `hic` |, |`illumina`|, |`pacbio`| or |`ont`|.                                                              |
-| `datafile` | Full path to data file.                                                             |
+| Column     | Description                                                                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- | --- | ---------- | --- | -------- | --- | ----- | --- |
+| `sample`   | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
+| `datatype` | Type of sequencing data. Must be                                                                                                                                                       | `hic` | ,   | `illumina` | ,   | `pacbio` | or  | `ont` | .   |
+| `datafile` | Full path to data file.                                                                                                                                                                |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
