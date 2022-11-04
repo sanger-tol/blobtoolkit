@@ -6,7 +6,7 @@
 
 include { INPUT_TOL         } from '../../modules/local/input_tol'
 include { SAMPLESHEET_CHECK } from '../../modules/local/samplesheet_check'
-include { GUNZIP            } from '../../modules/nf-core/modules/nf-core/gunzip/main'
+include { GUNZIP            } from '../../modules/nf-core/gunzip/main'
 
 workflow INPUT_CHECK {
     take:
