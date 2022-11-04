@@ -31,8 +31,19 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 <!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
 
-1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+Subworkflow: Input check
+   1. Creates Samplesheet if TolID and Project provided 
+   2. Uncompress Fasta file if required
+   3. Checks Samplesheet
+
+Subworkflow: Coverage Stats
+   1. Covert CRAM file to BAM ([`samools view`](https://www.htslib.org/doc/samtools-view.html))
+   2. Generate statistics of interest in windows from fasta file ([`fastawindows`](https://github.com/tolkit/fasta_windows))
+   3. Create BED file 
+   4. Calcuate Coverage ([`mosdepth`](https://github.com/brentp/mosdepth))
+
+<!--  1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
+2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))-->
 
 ## Quick Start
 
