@@ -37,8 +37,15 @@ workflow BUSCO_DIAMOND {
     // Run BUSCO search
     //
 
-    // Make a new channel in which each output file is replaced by its content, with meta propagated
-    ch_lineages = GOAT_TAXONSEARCH.out.busco_lineages.flatMap { it[1].readLines().collect { line -> [it[0], line] } }
+    // Make a new channel in which each output file is replaced by its lineages column, with meta propagated
+    ch_lineages_goat = GOAT_TAXONSEARCH.out.taxonsearch \
+        | map { meta, csv -> [ meta, csv.splitCsv(header:true, sep:'\t', strip:true) ] } \
+        | map { meta, row -> [ meta, row.odb10_lineage.findAll { it != '' } ] }
+    //  Channel containing BUSCO lineages for bacteria and archaea
+    ch_lineages_prok = fasta.map { fa -> [fa[0], ['bacteria_odb10','archaea_odb10']] }
+    // Lineages from GOAT+bacteria+archaea: [meta, list_of_lineages]
+    ch_lineages = ch_lineages_goat.combine( ch_lineages_prok, by:0 ) \
+        | map { id,goat,prok -> [id, goat.plus(prok)] }
     // Cross-product of both channels, using meta as the key
     ch_busco_inputs = fasta.combine(ch_lineages, by: 0)
 
