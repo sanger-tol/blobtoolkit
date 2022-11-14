@@ -43,9 +43,10 @@ workflow BUSCO_DIAMOND {
         | map { meta, row -> [ meta, row.odb10_lineage.findAll { it != '' } ] }
     //  Channel containing BUSCO lineages for bacteria and archaea
     ch_lineages_prok = fasta.map { fa -> [fa[0], ['bacteria_odb10','archaea_odb10']] }
-    // Lineages from GOAT+bacteria+archaea: [meta, list_of_lineages]
+    // Lineages from GOAT+bacteria+archaea: emits tuples with [meta, lineage]
     ch_lineages = ch_lineages_goat.combine( ch_lineages_prok, by:0 ) \
-        | map { id,goat,prok -> [id, goat.plus(prok)] }
+        | map { id,goat,prok -> [id, goat.plus(prok)] } \
+        | transpose()
     // Cross-product of both channels, using meta as the key
     ch_busco_inputs = fasta.combine(ch_lineages, by: 0)
 
