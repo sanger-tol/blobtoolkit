@@ -13,15 +13,13 @@ include { DIAMOND_BLASTP      } from '../../modules/nf-core/diamond/blastp/main'
 
 workflow BUSCO_DIAMOND {
     take:
+
     //  Tuple [meta, fasta]:
     fasta
 
     main:
 
     ch_versions = Channel.empty()
-
-    // this is the string used to name all intermediate and final output files
-    name = fasta.map { f -> f.simpleName }
 
 
     //
