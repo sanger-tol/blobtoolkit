@@ -72,14 +72,6 @@ workflow BLOBTOOLKIT {
     INPUT_CHECK.out.genome.map { fa -> [ [id: fa.baseName ], fa ] }
     )
 
-    //
-    // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
-    //
-    BUSCO_DIAMOND (
-    INPUT_CHECK.out.genome,
-    ch_taxon,
-    ch_taxa_file
-    )
 }
 
 /*
