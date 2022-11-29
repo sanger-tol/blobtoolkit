@@ -6,6 +6,7 @@
 
 include { INPUT_TOL         } from '../../modules/local/input_tol'
 include { SAMPLESHEET_CHECK } from '../../modules/local/samplesheet_check'
+include { GUNZIP            } from '../../modules/nf-core/modules/nf-core/gunzip/main'
 
 workflow INPUT_CHECK {
     take:
@@ -26,25 +27,32 @@ workflow INPUT_CHECK {
         genome      = ch_input.fasta
         samplesheet = ch_input.csv
         tol         = 0
+        // Uncompress genome fasta file if required
+        if (params.fasta.endsWith('.gz')) {
+            genome    = GUNZIP ( genome.map { file -> [ [ id: file.baseName.replaceFirst(/.fa.*/, "") ], file ] } ).gunzip
+            ch_versions = ch_versions.mix(GUNZIP.out.versions)
+        } else {
+            genome    = genome.map { file -> [ [ id: file.baseName ], file ] }
+        }
     } else if (params.input && params.project) {
         INPUT_TOL (ch_input.csv, ch_input.fasta)
         genome      = INPUT_TOL.out.fasta
         samplesheet = INPUT_TOL.out.csv
         tol         = 1
-        // ch_versions = ch_versions.mix(INPUT_TOL.out.versions)
+        ch_versions = ch_versions.mix(INPUT_TOL.out.versions)
     }
-    
+
     SAMPLESHEET_CHECK ( samplesheet )
         .csv
         .splitCsv ( header:true, sep:',' )
         .map { create_data_channels(it, tol) }
         .set { aln }
-    // ch_versions = ch_versions.mix(SAMPLESHEET_CHECK.out.versions)
+    ch_versions = ch_versions.mix(SAMPLESHEET_CHECK.out.versions)
 
     emit:
     aln                                       // channel: [ val(meta), [ datafile ] ]
-    genome                                    // channel: fasta
-    // versions = ch_versions                 // channel: [ versions.yml ]
+    genome                                    // channel: [ val(meta), fasta ]
+    versions = ch_versions                    // channel: [ versions.yml ]
 }
 
 // Function to get list of [ meta, [ datafile ] ]
