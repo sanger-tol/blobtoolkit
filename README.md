@@ -17,19 +17,15 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
-
-**nf-core/blobtoolkit** is a bioinformatics best-practice analysis pipeline for BlobToolKit Nextflow Pipeline..
+**nf-core/blobtoolkit** is a bioinformatics best-practice analysis pipeline written in Nextflow DSL2 for processing assembly, read and analysis files.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
 <!-- TODO nf-core: Add full-sized test dataset and amend the paragraph below if applicable -->
 
-On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/blobtoolkit/results).
+On release, tests run the pipeline on a dataset on the Wellcome Sanger Institute HPC farm with Sigularity containers. This ensures that the pipeline runs, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the test can be viewed on the [sanger-tol website](https://nf-co.re/blobtoolkit/results).
 
 ## Pipeline summary
-
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
 
 Subworkflow: Input check
 
@@ -44,8 +40,12 @@ Subworkflow: Coverage Stats
 3.  Create BED file
 4.  Calcuate Coverage ([`mosdepth`](https://github.com/brentp/mosdepth))
 
-<!--  1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))-->
+Subworkflow: Busco Diamond 
+
+1. Fetch BUSCO lineages for taxon ([`goat/taxonsearch`](https://github.com/genomehubs/goat-cli))
+2. Run BUSCO search ([`busco`](https://busco.ezlab.org/))
+3. Extract BUSCO genes 
+4. Run diamond_blastp with extracted busco genes ([`diamond/blastp`](https://github.com/bbuchfink/diamond))
 
 ## Quick Start
 
@@ -90,7 +90,7 @@ We thank the following people for their extensive assistance in the development 
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
-For further information or help, don't hesitate to get in touch on the [Slack `#blobtoolkit` channel](https://nfcore.slack.com/channels/blobtoolkit) (you can join with [this invite](https://nf-co.re/join/slack)).
+For further information or help, don't hesitate to get in touch on the [Slack `#pipelines` channel](https://sangertreeoflife.slack.com/archives/pipelines). Please [`create an issue`](https://github.com/sanger-tol/blobtoolkit/issues) on GitHub if you are not on the Sanger slack channel.
 
 ## Citations
 
