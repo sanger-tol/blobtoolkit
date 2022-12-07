@@ -40,11 +40,11 @@ Subworkflow: Coverage Stats
 3.  Create BED file
 4.  Calcuate Coverage ([`mosdepth`](https://github.com/brentp/mosdepth))
 
-Subworkflow: Busco Diamond 
+Subworkflow: Busco Diamond
 
 1. Fetch BUSCO lineages for taxon ([`goat/taxonsearch`](https://github.com/genomehubs/goat-cli))
 2. Run BUSCO search ([`busco`](https://busco.ezlab.org/))
-3. Extract BUSCO genes 
+3. Extract BUSCO genes
 4. Run diamond_blastp with extracted busco genes ([`diamond/blastp`](https://github.com/bbuchfink/diamond))
 
 ## Quick Start
