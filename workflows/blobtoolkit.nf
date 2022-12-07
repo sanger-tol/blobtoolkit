@@ -74,7 +74,7 @@ workflow BLOBTOOLKIT {
     BUSCO_DIAMOND (
     INPUT_CHECK.out.genome
     )
-
+    ch_versions = ch_versions.mix(BUSCO_DIAMOND.out.versions)
 }
 
 /*
