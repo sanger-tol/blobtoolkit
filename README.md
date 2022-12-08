@@ -23,7 +23,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 <!-- TODO nf-core: Add full-sized test dataset and amend the paragraph below if applicable -->
 
-On release, tests run the pipeline on a dataset on the Wellcome Sanger Institute HPC farm with Sigularity containers. This ensures that the pipeline runs, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the test can be viewed on the [sanger-tol website](https://nf-co.re/blobtoolkit/results).
+On release, tests run the pipeline on a dataset on the Wellcome Sanger Institute HPC farm with Sigularity containers. This ensures that the pipeline runs, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the test can be viewed on the [sanger-tol website](https://github.com/sanger-tol/blobtoolkit).
 
 ## Pipeline summary
 
@@ -76,7 +76,7 @@ Subworkflow: Busco Diamond
 
 ## Documentation
 
-The nf-core/blobtoolkit pipeline comes with documentation about the pipeline [usage](https://nf-co.re/blobtoolkit/usage), [parameters](https://nf-co.re/blobtoolkit/parameters) and [output](https://nf-co.re/blobtoolkit/output).
+The nf-core/blobtoolkit pipeline comes with documentation about the pipeline [usage](https://github.com/sanger-tol/blobtoolkit/blob/main/docs/usage.md), [parameters](https://github.com/sanger-tol/blobtoolkit/blob/main/docs/parameters.md) and [output](https://github.com/sanger-tol/blobtoolkit/blob/main/docs/output.md).
 
 ## Credits
 
