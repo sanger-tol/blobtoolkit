@@ -78,6 +78,18 @@ workflow BUSCO_DIAMOND {
     tbl_ab = tbl_a.combine(tbl_b, by:0)
     tbl_abe = tbl_ab.combine(tbl_e, by:0)
 
+    // filter paths to busco_sequences for archaea, bacteria and eukaryota
+    seq_a = dir.filter { "$it" =~ /archaea_odb10/ }.map { meta,a,f -> [meta, "$a/$f/run_archaea_odb10/busco_sequences", "$a/$f/run_archaea_odb10/archaea_odb10_busco_sequences"] }.collect()
+    seq_b = dir.filter { "$it" =~ /bacteria_odb10/ }.map { meta,b,f -> [meta, "$b/$f/run_bacteria_odb10/busco_sequences", "$b/$f/run_bacteria_odb10/bacteria_odb10_busco_sequences"] }.collect()
+    seq_e = dir.filter { "$it" =~ /eukaryota_odb10/ }.map { meta,e,f -> [meta, "$e/$f/run_eukaryota_odb10/busco_sequences", "$e/$f/run_eukaryota_odb10/eukaryota_odb10_busco_sequences"] }.collect()
+    // create copies of busco_sequences with a lineage identifier, avoids file name collision
+    seq_a = seq_a.map { meta,t,u -> [meta,file("$t").copyTo("$u")] }.collect()
+    seq_b = seq_b.map { meta,t,u -> [meta,file("$t").copyTo("$u")] }.collect()
+    seq_e = seq_e.map { meta,t,u -> [meta,file("$t").copyTo("$u")] }.collect()
+    // combine all three channels into a single channel: tuple( meta, a, b, e )
+    seq_ab = seq_a.combine(seq_b, by:0)
+    seq_abe = seq_ab.combine(seq_e, by:0)
+
     // module: extract busco genes
     EXTRACT_BUSCO_GENES (
     tbl_abe
