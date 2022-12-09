@@ -8,6 +8,7 @@ nextflow.enable.dsl = 2
 
 include { GOAT_TAXONSEARCH    } from '../../modules/nf-core/goat/taxonsearch/main'
 include { BUSCO               } from '../../modules/nf-core/busco/main'
+include { TAR                 } from '../../modules/local/tar'
 include { EXTRACT_BUSCO_GENES } from '../../modules/local/extract_busco_genes'
 include { DIAMOND_BLASTP      } from '../../modules/nf-core/diamond/blastp/main'
 
@@ -89,6 +90,12 @@ workflow BUSCO_DIAMOND {
     // combine all three channels into a single channel: tuple( meta, a, b, e )
     seq_ab = seq_a.combine(seq_b, by:0)
     seq_abe = seq_ab.combine(seq_e, by:0)
+
+    // module: creates input paths for EXTRACT_BUSCO_GENES
+    TAR (
+    tbl_abe,
+    seq_abe
+    )
 
     // module: extract busco genes
     EXTRACT_BUSCO_GENES (
