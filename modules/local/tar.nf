@@ -12,10 +12,8 @@ process TAR {
     tuple val(meta), path(seq_a), path(seq_b), path(seq_e)
 
     output:
-    tuple val(meta), path('archaea_odb10/*')   , emit: dir_a
-    tuple val(meta), path('bacteria_odb10/*')  , emit: dir_b
-    tuple val(meta), path('eukaryota_odb10/*') , emit: dir_e
-    path "versions.yml"                        , emit: versions
+    tuple val(meta), path('archaea_odb10/*'), path('bacteria_odb10/*'), path('eukaryota_odb10/*'), emit: dir_abe
+    path "versions.yml"                                                                          , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
