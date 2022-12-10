@@ -1,6 +1,9 @@
 process EXTRACT_BUSCO_GENES {
     tag "$meta.id"
 
+    if (params.enable_conda) {
+        exit 1, "Conda environments cannot be used when using the BlobToolKit. Please use docker or singularity containers."
+    }
     container "genomehubs/blobtoolkit-blobtools:3.4.2"
 
     input:
