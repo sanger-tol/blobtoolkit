@@ -99,7 +99,7 @@ workflow BUSCO_DIAMOND {
 
     // module: extract busco genes
     EXTRACT_BUSCO_GENES (
-    tbl_abe
+    TAR.out.dir_abe
     )
     ch_versions = ch_versions.mix(EXTRACT_BUSCO_GENES.out.versions)
 
