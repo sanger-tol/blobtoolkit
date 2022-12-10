@@ -18,9 +18,9 @@ process EXTRACT_BUSCO_GENES {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     btk pipeline extract-busco-genes \\
-        --busco $arc \\
-        --busco $bac \\
-        --busco $euk \\
+        --busco $arc/full_table.tsv.gz \\
+        --busco $bac/full_table.tsv.gz \\
+        --busco $euk/full_table.tsv.gz \\
         --out ${prefix}_busco_genes.fasta
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
