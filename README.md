@@ -1,7 +1,7 @@
-# ![nf-core/blobtoolkit](docs/images/nf-core-blobtoolkit_logo_light.png#gh-light-mode-only) ![nf-core/blobtoolkit](docs/images/nf-core-blobtoolkit_logo_dark.png#gh-dark-mode-only)
+# ![sanger-tol/blobtoolkit](docs/images/nf-core-blobtoolkit_logo_light.png#gh-light-mode-only) ![sanger-tol/blobtoolkit](docs/images/nf-core-blobtoolkit_logo_dark.png#gh-dark-mode-only)
 
-[![GitHub Actions CI Status](https://github.com/nf-core/blobtoolkit/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/blobtoolkit/actions?query=workflow%3A%22nf-core+CI%22)
-[![GitHub Actions Linting Status](https://github.com/nf-core/blobtoolkit/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/blobtoolkit/actions?query=workflow%3A%22nf-core+linting%22)
+[![GitHub Actions CI Status](https://github.com/sanger-tol/blobtoolkit/workflows/nf-core%20CI/badge.svg)](https://github.com/sanger-tol/blobtoolkit/actions?query=workflow%3A%22nf-core+CI%22)
+[![GitHub Actions Linting Status](https://github.com/sanger-tol/blobtoolkit/workflows/nf-core%20linting/badge.svg)](https://github.com/sanger-tol/blobtoolkit/actions?query=workflow%3A%22nf-core+linting%22)
 [![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?logo=Amazon%20AWS)](https://nf-co.re/blobtoolkit/results)
 [![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8)](https://doi.org/10.5281/zenodo.XXXXXXX)
 
@@ -9,7 +9,7 @@
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg)](https://sylabs.io/docs/)
-[![Launch on Nextflow Tower](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Nextflow%20Tower-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/nf-core/blobtoolkit)
+[![Launch on Nextflow Tower](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Nextflow%20Tower-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/sanger-tol/blobtoolkit)
 
 [![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23blobtoolkit-4A154B?logo=slack)](https://nfcore.slack.com/channels/blobtoolkit)
 [![Follow on Twitter](http://img.shields.io/badge/twitter-%40nf__core-1DA1F2?logo=twitter)](https://twitter.com/nf_core)
@@ -17,13 +17,13 @@
 
 ## Introduction
 
-**nf-core/blobtoolkit** is a bioinformatics best-practice analysis pipeline written in Nextflow DSL2 for processing assembly, read and analysis files.
+**sanger-tol/blobtoolkit** is a bioinformatics best-practice analysis pipeline written in Nextflow DSL2 for processing assembly, read and analysis files.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
 <!-- TODO nf-core: Add full-sized test dataset and amend the paragraph below if applicable -->
 
-On release, tests run the pipeline on a dataset on the Wellcome Sanger Institute HPC farm with Sigularity containers. This ensures that the pipeline runs, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the test can be viewed on the [sanger-tol website](https://github.com/sanger-tol/blobtoolkit).
+On release, tests run the pipeline on a dataset on the Wellcome Sanger Institute HPC farm with Sigularity containers. This ensures that the pipeline runs, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources.
 
 ## Pipeline summary
 
@@ -56,7 +56,7 @@ Subworkflow: Busco Diamond
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
    ```console
-   nextflow run nf-core/blobtoolkit -profile test,YOURPROFILE --outdir <OUTDIR>
+   nextflow run sanger-tol/blobtoolkit -profile test,YOURPROFILE --outdir <OUTDIR>
    ```
 
    Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
@@ -68,23 +68,24 @@ Subworkflow: Busco Diamond
 
 4. Start running your own analysis!
 
-   <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
-
    ```console
-   nextflow run nf-core/blobtoolkit --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+   nextflow run sanger-tol/blobtoolkit --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
    ```
 
 ## Documentation
 
-The nf-core/blobtoolkit pipeline comes with documentation about the pipeline [usage](https://github.com/sanger-tol/blobtoolkit/blob/main/docs/usage.md), [parameters](https://github.com/sanger-tol/blobtoolkit/blob/main/docs/parameters.md) and [output](https://github.com/sanger-tol/blobtoolkit/blob/main/docs/output.md).
+The sanger-tol/blobtoolkit pipeline comes with documentation about the pipeline [usage](https://github.com/sanger-tol/blobtoolkit/blob/main/docs/usage.md), [parameters](https://github.com/sanger-tol/blobtoolkit/blob/main/docs/parameters.md) and [output](https://github.com/sanger-tol/blobtoolkit/blob/main/docs/output.md).
 
 ## Credits
 
-nf-core/blobtoolkit was originally written by Alexander Ramos.
+sanger-tol/blobtoolkit was originally written by Alexander Ramos (with support from [GSoC](https://summerofcode.withgoogle.com)).
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
+   Zaynab Butt
+   Richard Challis for design/[original pipeline](https://github.com/blobtoolkit/pipeline) and Sujai Kumar for maintaining
+   Matthieu Muffato
+   Priyanka Surana
 
 ## Contributions and Support
 
@@ -95,7 +96,7 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 ## Citations
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use  nf-core/blobtoolkit for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
+<!-- If you use  sanger-tol/blobtoolkit for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
 
 <!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
 

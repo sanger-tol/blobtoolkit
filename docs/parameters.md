@@ -1,4 +1,4 @@
-# nf-core/blobtoolkit pipeline parameters
+# Parameters
 
 BlobToolKit Nextflow Pipeline.
 

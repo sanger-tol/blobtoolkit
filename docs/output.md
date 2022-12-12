@@ -1,4 +1,4 @@
-# nf-core/blobtoolkit: Output
+# Output
 
 ## Introduction
 
