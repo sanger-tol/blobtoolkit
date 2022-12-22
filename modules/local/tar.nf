@@ -31,9 +31,9 @@ process TAR {
     gzip --no-name --force $tbl_a; mv "$tbl_a".gz $parent_a/full_table.tsv.gz
     gzip --no-name --force $tbl_b; mv "$tbl_b".gz $parent_b/full_table.tsv.gz
     gzip --no-name --force $tbl_e; mv "$tbl_e".gz $parent_e/full_table.tsv.gz
-    tar -zcvf "$seq_a".tar.gz $seq_a; mv "$seq_a".tar.gz $parent_a/busco_sequences.tar.gz
-    tar -zcvf "$seq_b".tar.gz $seq_b; mv "$seq_b".tar.gz $parent_b/busco_sequences.tar.gz
-    tar -zcvf "$seq_e".tar.gz $seq_e; mv "$seq_e".tar.gz $parent_e/busco_sequences.tar.gz
+    tar czf "$seq_a".tar.gz $seq_a; mv "$seq_a".tar.gz $parent_a/busco_sequences.tar.gz
+    tar czf "$seq_b".tar.gz $seq_b; mv "$seq_b".tar.gz $parent_b/busco_sequences.tar.gz
+    tar czf "$seq_e".tar.gz $seq_e; mv "$seq_e".tar.gz $parent_e/busco_sequences.tar.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
