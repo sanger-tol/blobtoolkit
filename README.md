@@ -78,11 +78,10 @@ The sanger-tol/blobtoolkit pipeline comes with documentation about the pipeline 
 
 ## Credits
 
-sanger-tol/blobtoolkit was originally written by Alexander Ramos (with support from [GSoC](https://summerofcode.withgoogle.com)).
+sanger-tol/blobtoolkit was originally written by Alexander Ramos (with support from [GSoC](https://summerofcode.withgoogle.com)) and Zaynab Butt.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
-   Zaynab Butt
    Richard Challis for design/[original pipeline](https://github.com/blobtoolkit/pipeline) and Sujai Kumar for maintaining
    Matthieu Muffato
    Priyanka Surana
