@@ -76,6 +76,11 @@ workflow BLOBTOOLKIT {
     )
     ch_versions = ch_versions.mix(BUSCO_DIAMOND.out.versions)
 
+    //busco_ch = BUSCO_DIAMOND.out.summary
+    //busco_ch2 = BUSCO_DIAMOND.out.busco_dir
+    //busco_ch.view()     
+    //busco_ch2.view()        
+
     //
     // MODULE: Combine different versions.yml
     //

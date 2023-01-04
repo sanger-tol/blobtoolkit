@@ -11,6 +11,9 @@ include { BUSCO               } from '../../modules/nf-core/busco/main'
 include { TAR                 } from '../../modules/local/tar'
 include { EXTRACT_BUSCO_GENES } from '../../modules/local/extract_busco_genes'
 include { DIAMOND_BLASTP      } from '../../modules/nf-core/diamond/blastp/main'
+include { FASTAWINDOWS        } from '../../modules/nf-core/fastawindows/main'
+include { CREATE_BED          } from '../../modules/local/create_bed'
+include { COUNT_BUSCOGENES    } from '../../modules/local/count_buscogenes'
 
 workflow BUSCO_DIAMOND {
     take:
@@ -57,6 +60,54 @@ workflow BUSCO_DIAMOND {
     )
     ch_versions = ch_versions.mix(BUSCO.out.versions)
 
+    ch_tsv_path = GrabFiles(BUSCO.out.busco_dir).groupTuple(by: [0])
+    
+    // Generate BED File
+    FASTAWINDOWS(fasta)
+    ch_versions = ch_versions.mix(FASTAWINDOWS.out.versions)
+
+    CREATE_BED(FASTAWINDOWS.out.mononuc)
+    ch_versions = ch_versions.mix(CREATE_BED.out.versions)
+    
+    ch_bed = CREATE_BED.out.bed
+
+    COUNT_BUSCOGENES(ch_tsv_path, ch_bed)
+
+    
+    //channel.fromPath("${BUSCO.out.busco_dir}".map{it[1] + "/**/full_table.tsv"}).view()
+    
+    // /busco_output/**/full_table.tsv").collectFile($"it".name).view()
+    //try with {}
+    //try putting glob pattern in fromPath
+    //use collect with file path 
+    //paramsDir = BUSCO.out.busco_dir.map{it[1]}.view()
+
+    // /*/*/full_table.tsv
+    //ch_path = Channel.watchPath("${paramsDir}/*/*/*.tsv").view()
+
+    //    | map {meta, p -> [p + "/*/*"]} \
+        //| collectFile()
+        //| view()
+    //Channel.fromPath("$ch_tsv_path/full_table.tsv") \
+        //| collectFile {} \
+    //    | view 
+
+    //channel.fromPath("BUSCO.out.busco_dir").view() 
+    //dir = BUSCO.out.busco_dir.map{meta, p -> [p + "/*/*/full_table.tsv"]}.view()
+    //dir.combine(/*/*/*/full_table.tsv)
+    //.view()
+    //try removing tsv from param and add it to dirpath
+    //params.dir = BUSCO.out.busco_dir.map{meta, p -> [p + "/*/*"]}.view()
+    //dirpath = Channel.fromPath("${params.dir}/full_table.tsv").collectFile().view()
+    //dirpath = channel.fromPath("${params.dir}/full_table.tsv").collectFile().view()
+    //dirpath = channel.fromPath("BUSCO.out.busco_dir.map{meta, p -> [p + '/*/*/full_table.tsv']}.view()")
+    //dirpath.view()
+        //.collectFile
+    //dir.view("$it")
+
+    //channel.fromPath("$baseDir").view()
+
+    /* 
     //
     // Extract BUSCO genes
     //
@@ -119,11 +170,30 @@ workflow BUSCO_DIAMOND {
     )
     ch_versions = ch_versions.mix(DIAMOND_BLASTP.out.versions)
 
+    */
+
     emit:
 
     // diamond_blastp outputs
-    txt      = DIAMOND_BLASTP.out.txt
+    //txt      = DIAMOND_BLASTP.out.txt
+
+    // BUSCO outputs
+    summary = BUSCO.out.batch_summary
+    busco_dir = BUSCO.out.busco_dir
 
     // tool versions
     versions = ch_versions
+}
+
+process GrabFiles {
+    tag "${meta.id}"
+    executor 'local'
+
+    input:
+    tuple val(meta), path("in")
+
+    output:
+    tuple val(meta), path("in/**/full_table.tsv")
+
+    "true"
 }
