@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/blobtoolkit/master/nextflow_schema.json",
-    "title": "nf-core/blobtoolkit pipeline parameters",
+    "$id": "https://raw.githubusercontent.com/sanger-tol/blobtoolkit/master/nextflow_schema.json",
+    "title": "sanger-tol/blobtoolkit pipeline parameters",
     "description": "BlobToolKit Nextflow Pipeline.",
     "type": "object",
     "definitions": {

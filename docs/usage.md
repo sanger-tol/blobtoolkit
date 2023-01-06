@@ -14,9 +14,9 @@ The `sample` identifiers have to be the same when you have re-sequenced the same
 
 ```console
 sample,datatype,datafile
-sample1, hic, hic.cram
-sample2, illumina, illumina.cram
-sample2, illumina, illumina.cram
+sample1,hic,hic.cram
+sample2,illumina,illumina.cram
+sample2,illumina,illumina.cram
 ```
 
 ### Full samplesheet
@@ -27,9 +27,9 @@ A final samplesheet file may look something like the one below.
 
 ```console
 sample,datatype,datafile
-sample1, hic, hic.cram
-sample2, illumina, illumina.cram
-sample3, ont, ont.cram
+sample1,hic,hic.cram
+sample2,illumina,illumina.cram
+sample3,ont,ont.cram
 ```
 
 | Column     | Description                                                                                                                                                                                                                           |
