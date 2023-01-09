@@ -11,35 +11,23 @@ process COUNT_BUSCOGENES {
 
     input:
     tuple val(meta), path(tsv) //full table tsv files
-    tuple val(meta), path(bed) //modified fasta windows tsv file
+    tuple val(meta), path(bed) //modified fasta windows bed file
 
     output:
-    //tuple val(meta), path('*_busco_genes_count.tsv') , emit: tsv //output tsv
-    //path "versions.yml"                              , emit: versions
+    tuple val(meta), path('*_busco_genes_count.tsv') , emit: tsv //output tsv
+    path "versions.yml"                              , emit: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    """
-    true 
+    def busco_command = tsv.collect{"--in $it"}.join(' ')
 
     """
-   
-}
-
-/* 
-
-    cat ${tsv} | sed -n 1'p' | tr ',' '\n' | while read word; do
-    echo $word
-    done
-
-
-     btk pipeline count-busco-genes \\
-            --in ${tsv} \\
-            --mask ${bed}.bed \\
+    btk pipeline count-busco-genes \\
+            $busco_command \\
+            --mask ${bed} \\
             --out ${prefix}__busco_genes_count.tsv
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
     END_VERSIONS
-    
-*/
+    """
