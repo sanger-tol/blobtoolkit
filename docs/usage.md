@@ -32,11 +32,11 @@ sample2,illumina,illumina.cram
 sample3,ont,ont.cram
 ```
 
-| Column     | Description                                                                                                                                                                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`   | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (\_).                                                 |
-| `datatype` | Type of sequencing data. Must be one of `hic`, `illumina`, `pacbio`, or `ont`.                                                                                                                                                        |
-| `datafile` | Full path to read data file.                                                                                  |
+| Column     | Description                                                                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`   | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (\_). |
+| `datatype` | Type of sequencing data. Must be one of `hic`, `illumina`, `pacbio`, or `ont`.                                                                                                        |
+| `datafile` | Full path to read data file.                                                                                                                                                          |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
