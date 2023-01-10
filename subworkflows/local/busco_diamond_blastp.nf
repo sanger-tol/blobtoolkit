@@ -107,22 +107,31 @@ workflow BUSCO_DIAMOND {
     // Runs diamond_blastp with the extracted busco genes
     //
 
-
     // path to diamond db
     blastp_db = Channel.fromPath(params.diamondblastp_db)
-
-    DIAMOND_BLASTP (
-    EXTRACT_BUSCO_GENES.out.fasta,
-    blastp_db,
-    "${params.blastp_outext}",
-    "${params.blastp_cols}"
-    )
-    ch_versions = ch_versions.mix(DIAMOND_BLASTP.out.versions)
-
-    emit:
+    
+    // runs DIAMOND_BLASTP if fasta file from EXTRACT_BUSCO_GENE is not empty
+    
+    extracted_fasta = EXTRACT_BUSCO_GENES.out.fasta.map { meta,p -> file("$p") } 
+    
+    if ( extracted_fasta.isEmpty == false ) {
+        DIAMOND_BLASTP (
+        EXTRACT_BUSCO_GENES.out.fasta,
+        blastp_db,
+        "${params.blastp_outext}",
+        "${params.blastp_cols}"
+         )
+        diamond_output = DIAMOND_BLASTP.out.txt
+        ch_versions = ch_versions.mix(DIAMOND_BLASTP.out.versions)
+    }
+    else {
+        diamond_output = Channel.empty()
+    }
+   
+    emit: 
 
     // diamond_blastp outputs
-    txt      = DIAMOND_BLASTP.out.txt
+    txt = diamond_output
 
     // tool versions
     versions = ch_versions
