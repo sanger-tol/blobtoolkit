@@ -112,9 +112,9 @@ workflow BUSCO_DIAMOND {
     
     // runs DIAMOND_BLASTP if fasta file from EXTRACT_BUSCO_GENE is not empty
     
-    extracted_fasta = EXTRACT_BUSCO_GENES.out.fasta.map { meta,p -> file("$p") } 
+    empty_fasta = EXTRACT_BUSCO_GENES.out.fasta.map { meta,p -> file("$p").isEmpty() } 
     
-    if ( extracted_fasta.isEmpty == false ) {
+    if ( empty_fasta == false ) {
         DIAMOND_BLASTP (
         EXTRACT_BUSCO_GENES.out.fasta,
         blastp_db,
