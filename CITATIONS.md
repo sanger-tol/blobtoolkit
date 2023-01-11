@@ -13,9 +13,11 @@
 - [Gunzip](https://www.gnu.org/software/gzip/manual/gzip.html)
 
 - [Mosdepth](https://academic.oup.com/bioinformatics/article/34/5/867/4583630?guestAccessKey=35b55064-4566-4ab3-a769-32916fa1c6e6)
+
   > Brent S Pedersen, Aaron R Quinlan, Mosdepth: quick coverage calculation for genomes and exomes, Bioinformatics, Volume 34, Issue 5, 01 March 2018, Pages 867–868, https://doi.org/10.1093/bioinformatics/btx699
 
 - [Samtools](https://pubmed.ncbi.nlm.nih.gov/33590861/)
+
   > Danecek P, Bonfield JK, Liddle J, Marshall J, Ohan V, Pollard MO, Whitwham A, Keane T, McCarthy SA, Davies RM, Li H. Twelve years of SAMtools and BCFtools. Gigascience. 2021 Feb 16;10(2):giab008. doi: 10.1093/gigascience/giab008. PMID: 33590861; PMCID: PMC7931819.
 
 - [Fastawindows](https://github.com/tolkit/fasta_windows)
@@ -23,10 +25,11 @@
 - [Goat](https://github.com/genomehubs/goat-cli)
 
 - [Busco](https://academic.oup.com/mbe/article/38/10/4647/6329644)
-> Mosè Manni, Matthew R Berkeley, Mathieu Seppey, Felipe A Simão, Evgeny M Zdobnov, BUSCO Update: Novel and Streamlined Workflows along with Broader and Deeper Phylogenetic Coverage for Scoring of Eukaryotic, Prokaryotic, and Viral Genomes. Molecular Biology and Evolution, Volume 38, Issue 10, October 2021, Pages 4647–4654
+
+  > Mosè Manni, Matthew R Berkeley, Mathieu Seppey, Felipe A Simão, Evgeny M Zdobnov, BUSCO Update: Novel and Streamlined Workflows along with Broader and Deeper Phylogenetic Coverage for Scoring of Eukaryotic, Prokaryotic, and Viral Genomes. Molecular Biology and Evolution, Volume 38, Issue 10, October 2021, Pages 4647–4654
 
 - [Diamond](https://www.nature.com/articles/s41592-021-01101-x)
-> Buchfink B, Reuter K, Drost HG, "Sensitive protein alignments at tree-of-life scale using DIAMOND", Nature Methods 18, 366–368 (2021). doi:10.1038/s41592-021-01101-x
+  > Buchfink B, Reuter K, Drost HG, "Sensitive protein alignments at tree-of-life scale using DIAMOND", Nature Methods 18, 366–368 (2021). doi:10.1038/s41592-021-01101-x
 
 ## Software packaging/containerisation tools
 
