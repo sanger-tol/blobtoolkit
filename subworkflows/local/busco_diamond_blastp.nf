@@ -129,11 +129,10 @@ workflow BUSCO_DIAMOND {
     )
     ch_versions = ch_versions.mix(DIAMOND_BLASTP.out.versions)
    
-   
     emit: 
 
     // diamond_blastp output
-    blastp_txt = diamond_output
+    blastp_txt = DIAMOND_BLASTP.out.txt
 
     // tool versions
     versions = ch_versions
