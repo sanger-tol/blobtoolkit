@@ -42,7 +42,7 @@ workflow BUSCO_DIAMOND {
     // Make a new channel in which each output file is replaced by its lineages column, with meta propagated
     ch_lineages_goat = GOAT_TAXONSEARCH.out.taxonsearch \
         | map { meta, csv -> [ meta, csv.splitCsv(header:true, sep:'\t', strip:true) ] } \
-        | map { meta, row -> [ meta, row.odb10_lineage.findAll { it != '' } ] }
+        | map { meta, row -> [ meta, row.odb10_lineage.findAll { it != '' } ] }    
     //  Channel containing BUSCO lineages for bacteria and archaea
     ch_lineages_prok = fasta.map { fa -> [fa[0], ['bacteria_odb10','archaea_odb10']] }
     // Lineages from GOAT+bacteria+archaea: emits tuples with [meta, lineage]
@@ -53,15 +53,22 @@ workflow BUSCO_DIAMOND {
     ch_busco_inputs = fasta.combine(ch_lineages, by: 0)
 
     BUSCO (
-    ch_busco_inputs.map { [it[0], it[1]] },
+    ch_busco_inputs.map { [ it[0], it[1]] },
     ch_busco_inputs.map { it[2] },
     "${params.busco_lineages_path}",  // Please pass this option. We don't want to download the lineage data every time.
     [] // No config
     )
+
+    //look into adding busco_lineage path to meta - create new channel as alexandar uses busco
     ch_versions = ch_versions.mix(BUSCO.out.versions)
 
-    ch_tsv_path = GrabFiles(BUSCO.out.busco_dir).groupTuple(by: [0])
-    
+    ch_busco = BUSCO.out.busco_dir
+                | map { meta, dir ->
+                    lin = dir.name.tokenize("-")[1]
+                    [ meta, lin, dir ] }
+
+    ch_tsv_path = GrabFiles(ch_busco).groupTuple(by: [0]).view()
+        
     // Generate BED File
     FASTAWINDOWS(fasta)
     ch_versions = ch_versions.mix(FASTAWINDOWS.out.versions)
@@ -69,11 +76,10 @@ workflow BUSCO_DIAMOND {
     CREATE_BED(FASTAWINDOWS.out.mononuc)
     ch_versions = ch_versions.mix(CREATE_BED.out.versions)
     
-    ch_bed = CREATE_BED.out.bed
+    ch_bed = CREATE_BED.out.bed.view()
 
     COUNT_BUSCOGENES(ch_tsv_path, ch_bed)
 
-    
     //channel.fromPath("${BUSCO.out.busco_dir}".map{it[1] + "/**/full_table.tsv"}).view()
     
     // /busco_output/**/full_table.tsv").collectFile($"it".name).view()
@@ -187,13 +193,21 @@ workflow BUSCO_DIAMOND {
 
 process GrabFiles {
     tag "${meta.id}"
+    //tag "${meta.lineage}"
     executor 'local'
 
     input:
-    tuple val(meta), path("in")
+    tuple val(meta), val(lineage) ,path("in")
 
     output:
-    tuple val(meta), path("in/**/full_table.tsv")
+    tuple val(meta), path("in/**/${lineage}_full_table.tsv")
 
-    "true"
+    script:
+    //def org = "${meta.id}-${meta.lineage}-busco/${meta.id}.fasta/run_${meta.lineage}/full_table.tsv"
+    //def renamed = "${meta.id}-${meta.lineage}-busco/${meta.id}.fasta/run_${meta.lineage}/${meta.lineage}_full_table.tsv"
+    def org = "in/${meta.id}.fasta/run_${lineage}/full_table.tsv"
+    def renamed = "in/${meta.id}.fasta/run_${lineage}/${lineage}_full_table.tsv"
+    """
+    mv ${org} ${renamed}
+    """
 }

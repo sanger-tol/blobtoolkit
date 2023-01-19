@@ -31,3 +31,4 @@ process COUNT_BUSCOGENES {
         blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
     END_VERSIONS
     """
+}
