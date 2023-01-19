@@ -91,6 +91,13 @@ workflow BUSCO_DIAMOND {
     seq_ab = seq_a.combine(seq_b, by:0)
     seq_abe = seq_ab.combine(seq_e, by:0)
 
+    // full_table.tsv of the first lineage from GOAT_TAXONSEARCH 
+    // get the first lineage 
+    first_lineage = ch_lineages_goat.map { meta,l -> l[0] }
+    // get the path to the table and copy it with a new name 
+    first_table = dir.filter { "$it" =~ /$first_lineage/ }.map { meta,d,f -> [meta, "$d/$f/run_${first_lineage}/full_table.tsv", "$d/$f/run_${first_lineage}/${first_lineage}_full_table.tsv"] }.collect()
+    first_table = first_table.map { meta,t,u -> [meta,file("$t").copyTo("$u")] }.collect()
+
     // module: creates input paths for EXTRACT_BUSCO_GENES
     TAR (
     tbl_abe,
@@ -133,6 +140,9 @@ workflow BUSCO_DIAMOND {
 
     // diamond_blastp output
     blastp_txt = DIAMOND_BLASTP.out.txt
+
+    // busco output
+    first_table
 
     // tool versions
     versions = ch_versions
