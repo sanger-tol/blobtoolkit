@@ -93,10 +93,12 @@ workflow BUSCO_DIAMOND {
 
     // full_table.tsv of the first lineage from GOAT_TAXONSEARCH 
     // get the first lineage 
-    first_lineage = ch_lineages_goat.map { meta,l -> l[0] }
-    // get the path to the table and copy it with a new name 
-    first_table = dir.filter { "$it" =~ /$first_lineage/ }.map { meta,d,f -> [meta, "$d/$f/run_${first_lineage}/full_table.tsv", "$d/$f/run_${first_lineage}/${first_lineage}_full_table.tsv"] }.collect()
-    first_table = first_table.map { meta,t,u -> [meta,file("$t").copyTo("$u")] }.collect()
+    first_lineage = ch_lineages_goat.map { meta,l -> [meta, l[0]] }
+    // channel: [meta, busco_dir, fasta_filename, first_lineage]
+    first_dir = dir.combine(first_lineage, by:0)
+    // get the path to the table and copy it with a new name, channel: [meta, path_to_first_table]
+    first_table = first_dir.filter { meta,d,f,l -> "$d" =~ /$l/ }.map { meta,d,f,l -> [meta,"$d/$f/run_${l}/full_table.tsv","$d/$f/run_${l}/${l}_full_table.tsv"] }.collect()
+    first_table = first_table.map { meta,t,u -> [meta,file("$t").copyTo("$u")] }.collect() 
 
     // module: creates input paths for EXTRACT_BUSCO_GENES
     TAR (
