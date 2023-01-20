@@ -35,6 +35,7 @@ else { exit 1, 'Input not specified. Please include either a samplesheet or Tree
 //
 include { INPUT_CHECK    } from '../subworkflows/local/input_check'
 include { COVERAGE_STATS } from '../subworkflows/local/coverage_stats'
+include { BUSCO_DIAMOND  } from '../subworkflows/local/busco_diamond_blastp'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -73,6 +74,14 @@ workflow BLOBTOOLKIT {
     COVERAGE_STATS(ch_cram, ch_fasta)
     ch_versions = ch_versions.mix(COVERAGE_STATS.out.versions)
     
+    //
+    // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
+    //
+    BUSCO_DIAMOND (
+    ch_fasta
+    )
+    ch_versions = ch_versions.mix(BUSCO_DIAMOND.out.versions)
+
 }
 
 /*
