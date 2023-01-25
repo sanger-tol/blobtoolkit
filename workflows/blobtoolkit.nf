@@ -35,6 +35,10 @@ else { exit 1, 'Input not specified. Please include either a samplesheet or Tree
 //
 include { INPUT_CHECK    } from '../subworkflows/local/input_check'
 include { COVERAGE_STATS } from '../subworkflows/local/coverage_stats'
+include { BUSCO_DIAMOND  } from '../subworkflows/local/busco_diamond_blastp'
+include { FASTAWINDOWS   } from '../modules/nf-core/fastawindows/main'
+include { CREATE_BED     } from '../modules/local/create_bed'
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,12 +69,31 @@ workflow BLOBTOOLKIT {
     INPUT_CHECK ( ch_input )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
+    // Generate BED File
+    FASTAWINDOWS(INPUT_CHECK.out.genome)
+    ch_versions = ch_versions.mix(FASTAWINDOWS.out.versions)
+
+    CREATE_BED(FASTAWINDOWS.out.mononuc)
+    ch_versions = ch_versions.mix(CREATE_BED.out.versions)
+    
+    ch_bed = CREATE_BED.out.bed
+
+    //
+    // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
+    //
+    BUSCO_DIAMOND (
+    INPUT_CHECK.out.genome,
+    ch_bed
+    )
+    ch_versions = ch_versions.mix(BUSCO_DIAMOND.out.versions)
+
     //
     // SUBWORKFLOW: Convert CRAM to BAM and calculate coverage
     //
+    ch_tsv = BUSCO_DIAMOND.out.busco_gene_count
     ch_cram = INPUT_CHECK.out.aln.map{ it + [ [] ]}
     ch_fasta = INPUT_CHECK.out.genome
-    COVERAGE_STATS(ch_cram, ch_fasta)
+    COVERAGE_STATS(ch_cram, ch_fasta, ch_bed, ch_tsv)
     ch_versions = ch_versions.mix(COVERAGE_STATS.out.versions)
     
 }

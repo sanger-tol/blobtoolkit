@@ -1,12 +1,14 @@
 include { MOSDEPTH      } from '../../modules/nf-core/mosdepth/main'
 include { SAMTOOLS_VIEW } from '../../modules/nf-core/samtools/view/main'
-include { FASTAWINDOWS  } from '../../modules/nf-core/fastawindows/main'
-include { CREATE_BED    } from '../../modules/local/create_bed'
+include { COVERAGE_TSV  } from '../../modules/local/coverage_tsv'
+include { GUNZIP        } from '../../modules/nf-core/gunzip/main'
 
 workflow COVERAGE_STATS {
     take: 
     cram    // channel: [val(meta), path(cram), path(cai)]
-    fasta   // path/to/fasta
+    fasta   // channel: [val(meta), path(fasta)]
+    bed     // channel: [val(meta), path(bed)]
+    tsv     // channel: [val(meta), path(tsv)]
 
     main:
     ch_versions = Channel.empty()
@@ -16,21 +18,26 @@ workflow COVERAGE_STATS {
     ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions)
 
     // Generate BED File
-    FASTAWINDOWS(fasta)
-    ch_versions = ch_versions.mix(FASTAWINDOWS.out.versions)
+    //FASTAWINDOWS(fasta)
+    //ch_versions = ch_versions.mix(FASTAWINDOWS.out.versions)
 
-    CREATE_BED(FASTAWINDOWS.out.mononuc)
-    ch_versions = ch_versions.mix(CREATE_BED.out.versions)
+    //CREATE_BED(FASTAWINDOWS.out.mononuc)
+    //ch_versions = ch_versions.mix(CREATE_BED.out.versions)
     
-    ch_bed = CREATE_BED.out.bed
+    //ch_bed = CREATE_BED.out.bed
 
     // BAM Channel
     ch_csi = SAMTOOLS_VIEW.out.csi
     ch_bam = SAMTOOLS_VIEW.out.bam.join(ch_csi)
     
     // Calculate Coverage 
-    MOSDEPTH(ch_bam, ch_bed, fasta.map{it -> it[1]})
+    MOSDEPTH(ch_bam, bed.map{it -> it[1]}, fasta.map{it -> it[1]})
     ch_versions = ch_versions.mix(MOSDEPTH.out.versions)
+
+    ch_countbusco = tsv.view()
+    ch_mosdepth = GUNZIP(MOSDEPTH.out.regions_bed).gunzip.view()
+    COVERAGE_TSV(ch_mosdepth, ch_countbusco)
+    COVERAGE_TSV.out.cov_tsv.view()
 
     emit:
     global = MOSDEPTH.out.global_txt
