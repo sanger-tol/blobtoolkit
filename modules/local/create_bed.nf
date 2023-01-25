@@ -11,7 +11,7 @@ process CREATE_BED {
     tuple val(meta), path(tsv)      //path to tsv output from fasta windows
 
     output:
-    path '*.bed'       , emit: bed
+    tuple val(meta), path ('*.bed')       , emit: bed
     path "versions.yml", emit: versions
 
     when:
@@ -25,7 +25,7 @@ process CREATE_BED {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        create_bed: 1.01
+        create_bed: 1.02
     END_VERSIONS
     """
 }
