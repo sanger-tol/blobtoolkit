@@ -30,19 +30,21 @@ Subworkflow: Input check
 2.  Uncompress Fasta file if required
 3.  Checks Samplesheet
 
+Subworkflow: Busco Diamond
+
+1. Fetch BUSCO lineages for taxon ([`goat/taxonsearch`](https://github.com/genomehubs/goat-cli))
+2. Run BUSCO search ([`busco`](https://busco.ezlab.org/))
+3. Count BUSCO genes
+4. Extract BUSCO genes
+5. Run diamond_blastp with extracted busco genes ([`diamond/blastp`](https://github.com/bbuchfink/diamond))
+
 Subworkflow: Coverage Stats
 
 1.  Covert CRAM file to BAM ([`samools view`](https://www.htslib.org/doc/samtools-view.html))
 2.  Generate statistics of interest in windows from fasta file ([`fastawindows`](https://github.com/tolkit/fasta_windows))
 3.  Create BED file
 4.  Calcuate Coverage ([`mosdepth`](https://github.com/brentp/mosdepth))
-
-Subworkflow: Busco Diamond
-
-1. Fetch BUSCO lineages for taxon ([`goat/taxonsearch`](https://github.com/genomehubs/goat-cli))
-2. Run BUSCO search ([`busco`](https://busco.ezlab.org/))
-3. Extract BUSCO genes
-4. Run diamond_blastp with extracted busco genes ([`diamond/blastp`](https://github.com/bbuchfink/diamond))
+5.  Combine Coverage with output TSV from count_buscogenes
 
 ## Quick Start
 
