@@ -17,15 +17,6 @@ workflow COVERAGE_STATS {
     SAMTOOLS_VIEW(cram, fasta.map{it -> it[1]}, [])
     ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions)
 
-    // Generate BED File
-    //FASTAWINDOWS(fasta)
-    //ch_versions = ch_versions.mix(FASTAWINDOWS.out.versions)
-
-    //CREATE_BED(FASTAWINDOWS.out.mononuc)
-    //ch_versions = ch_versions.mix(CREATE_BED.out.versions)
-    
-    //ch_bed = CREATE_BED.out.bed
-
     // BAM Channel
     ch_csi = SAMTOOLS_VIEW.out.csi
     ch_bam = SAMTOOLS_VIEW.out.bam.join(ch_csi)
@@ -34,15 +25,16 @@ workflow COVERAGE_STATS {
     MOSDEPTH(ch_bam, bed.map{it -> it[1]}, fasta.map{it -> it[1]})
     ch_versions = ch_versions.mix(MOSDEPTH.out.versions)
 
-    ch_countbusco = tsv.view()
-    ch_mosdepth = GUNZIP(MOSDEPTH.out.regions_bed).gunzip.view()
-    COVERAGE_TSV(ch_mosdepth, ch_countbusco)
-    COVERAGE_TSV.out.cov_tsv.view()
+    // Combine Coverage with TSV from count_buscogenes
+    ch_mosdepth = GUNZIP(MOSDEPTH.out.regions_bed).gunzip
+    COVERAGE_TSV(ch_mosdepth, tsv)
+    ch_versions = ch_versions.mix(COVERAGE_TSV.out.versions)
 
     emit:
     global = MOSDEPTH.out.global_txt
     summary = MOSDEPTH.out.summary_txt
     bed = MOSDEPTH.out.per_base_bed
     base = MOSDEPTH.out.per_base_csi
+    coverage = COVERAGE_TSV.out.cov_tsv
     versions = ch_versions
 }

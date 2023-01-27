@@ -81,10 +81,7 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
     //
-    BUSCO_DIAMOND (
-    INPUT_CHECK.out.genome,
-    ch_bed
-    )
+    BUSCO_DIAMOND(INPUT_CHECK.out.genome, ch_bed)
     ch_versions = ch_versions.mix(BUSCO_DIAMOND.out.versions)
 
     //

@@ -16,21 +16,20 @@ include { CREATE_BED          } from '../../modules/local/create_bed'
 include { COUNT_BUSCOGENES    } from '../../modules/local/count_buscogenes'
 include { COVERAGE_STATS      } from '../../subworkflows/local/coverage_stats'
 
-
 workflow BUSCO_DIAMOND {
     take:
 
     //  Tuple [meta, fasta]:
     fasta
-    //Tuple [meta, bed]
+    //  Tuple [meta, bed]
     bed 
 
     main:
 
     ch_versions = Channel.empty()
 
-    listOfFiles = file('/lustre/scratch123/tol/teams/tolit/users/zb3/buscotables/*.tsv')
-
+    //BUSCO takes a long time to run so for testing copying files locally
+    //listOfFiles = file('/lustre/scratch123/tol/teams/tolit/users/zb3/buscotables/*.tsv')
 
     //
     // Fetch BUSCO lineages for taxon (or taxa)
@@ -57,11 +56,9 @@ workflow BUSCO_DIAMOND {
     // Cross-product of both channels, using meta as the key
     ch_busco_inputs = fasta.combine(ch_lineages, by: 0)
 
-    ch_tsv_path = Channel.of(listOfFiles).map{file -> [[id:"test"] , file]}
-    COUNT_BUSCOGENES(ch_tsv_path, bed)
+    //channel to test module without BUSCO
+    //ch_tsv_path = Channel.of(listOfFiles).map{file -> [[id:"test"] , file]}
 
-    //commented out as BUSCO takes a long time to run so for testing copying files locally
-    /*
     BUSCO (
     ch_busco_inputs.map { [it[0], it[1]] },
     ch_busco_inputs.map { it[2] },
@@ -81,20 +78,9 @@ workflow BUSCO_DIAMOND {
                     [ meta, lin, dir ] }
 
     ch_tsv_path = GrabFiles(ch_busco).groupTuple(by: [0])
-        
-    //Generate BED File
-    //FASTAWINDOWS(fasta)
-    //ch_versions = ch_versions.mix(FASTAWINDOWS.out.versions)
-
-    //CREATE_BED(FASTAWINDOWS.out.mononuc)
-    //ch_versions = ch_versions.mix(CREATE_BED.out.versions)
-    
-    //ch_bed = CREATE_BED.out.bed.view()
-
     COUNT_BUSCOGENES(ch_tsv_path, bed)
     ch_versions = ch_versions.mix(COUNT_BUSCOGENES.out.versions)
 
-    */
 
     //Not used for count_buscogenes
     /* 
