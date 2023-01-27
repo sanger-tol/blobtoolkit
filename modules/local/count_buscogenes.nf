@@ -20,7 +20,6 @@ process COUNT_BUSCOGENES {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     def busco_command = tsv.collect{"--in $it"}.join(' ')
-
     """
     btk pipeline count-busco-genes \\
             $busco_command \\

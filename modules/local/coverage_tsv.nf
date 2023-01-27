@@ -21,7 +21,6 @@ process COVERAGE_TSV {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-
     """
     sed -i 1i"Sequence  Start   End ${prefix}_cov" ${mosdepth}
     paste ${countbusogenes} ${mosdepth} > ${prefix}_coverage.tsv
