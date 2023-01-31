@@ -11,8 +11,6 @@ include { BUSCO               } from '../../modules/nf-core/busco/main'
 include { TAR                 } from '../../modules/local/tar'
 include { EXTRACT_BUSCO_GENES } from '../../modules/local/extract_busco_genes'
 include { DIAMOND_BLASTP      } from '../../modules/nf-core/diamond/blastp/main'
-include { FASTAWINDOWS        } from '../../modules/nf-core/fastawindows/main'
-include { CREATE_BED          } from '../../modules/local/create_bed'
 include { COUNT_BUSCOGENES    } from '../../modules/local/count_buscogenes'
 
 workflow BUSCO_DIAMOND {
@@ -20,6 +18,8 @@ workflow BUSCO_DIAMOND {
 
     //  Tuple [meta, fasta]:
     fasta
+    //  Tuple [meta, bed]
+    bed
 
     main:
 
@@ -58,62 +58,24 @@ workflow BUSCO_DIAMOND {
     "${params.busco_lineages_path}",  // Please pass this option. We don't want to download the lineage data every time.
     [] // No config
     )
-
-    //look into adding busco_lineage path to meta - create new channel as alexandar uses busco
     ch_versions = ch_versions.mix(BUSCO.out.versions)
+
+    //  
+    //  Count BUSCO genes
+    //
 
     ch_busco = BUSCO.out.busco_dir
                 | map { meta, dir ->
                     lin = dir.name.tokenize("-")[1]
                     [ meta, lin, dir ] }
 
-    ch_tsv_path = GrabFiles(ch_busco).groupTuple(by: [0]).view()
-        
-    // Generate BED File
-    FASTAWINDOWS(fasta)
-    ch_versions = ch_versions.mix(FASTAWINDOWS.out.versions)
+    ch_tsv_path = GrabFiles(ch_busco).groupTuple(by: [0])
 
-    CREATE_BED(FASTAWINDOWS.out.mononuc)
-    ch_versions = ch_versions.mix(CREATE_BED.out.versions)
-    
-    ch_bed = CREATE_BED.out.bed.view()
+    COUNT_BUSCOGENES(ch_tsv_path, bed)
+    ch_versions = ch_versions.mix(COUNT_BUSCOGENES.out.versions)
 
-    COUNT_BUSCOGENES(ch_tsv_path, ch_bed)
+    /*
 
-    //channel.fromPath("${BUSCO.out.busco_dir}".map{it[1] + "/**/full_table.tsv"}).view()
-    
-    // /busco_output/**/full_table.tsv").collectFile($"it".name).view()
-    //try with {}
-    //try putting glob pattern in fromPath
-    //use collect with file path 
-    //paramsDir = BUSCO.out.busco_dir.map{it[1]}.view()
-
-    // /*/*/full_table.tsv
-    //ch_path = Channel.watchPath("${paramsDir}/*/*/*.tsv").view()
-
-    //    | map {meta, p -> [p + "/*/*"]} \
-        //| collectFile()
-        //| view()
-    //Channel.fromPath("$ch_tsv_path/full_table.tsv") \
-        //| collectFile {} \
-    //    | view 
-
-    //channel.fromPath("BUSCO.out.busco_dir").view() 
-    //dir = BUSCO.out.busco_dir.map{meta, p -> [p + "/*/*/full_table.tsv"]}.view()
-    //dir.combine(/*/*/*/full_table.tsv)
-    //.view()
-    //try removing tsv from param and add it to dirpath
-    //params.dir = BUSCO.out.busco_dir.map{meta, p -> [p + "/*/*"]}.view()
-    //dirpath = Channel.fromPath("${params.dir}/full_table.tsv").collectFile().view()
-    //dirpath = channel.fromPath("${params.dir}/full_table.tsv").collectFile().view()
-    //dirpath = channel.fromPath("BUSCO.out.busco_dir.map{meta, p -> [p + '/*/*/full_table.tsv']}.view()")
-    //dirpath.view()
-        //.collectFile
-    //dir.view("$it")
-
-    //channel.fromPath("$baseDir").view()
-
-    /* 
     //
     // Extract BUSCO genes
     //
@@ -141,12 +103,21 @@ workflow BUSCO_DIAMOND {
     seq_b = dir.filter { "$it" =~ /bacteria_odb10/ }.map { meta,b,f -> [meta, "$b/$f/run_bacteria_odb10/busco_sequences", "$b/$f/run_bacteria_odb10/bacteria_odb10_busco_sequences"] }.collect()
     seq_e = dir.filter { "$it" =~ /eukaryota_odb10/ }.map { meta,e,f -> [meta, "$e/$f/run_eukaryota_odb10/busco_sequences", "$e/$f/run_eukaryota_odb10/eukaryota_odb10_busco_sequences"] }.collect()
     // create copies of busco_sequences with a lineage identifier, avoids file name collision
-    seq_a = seq_a.map { meta,t,u -> [meta,file("$t").copyTo("$u")] }.collect()
-    seq_b = seq_b.map { meta,t,u -> [meta,file("$t").copyTo("$u")] }.collect()
-    seq_e = seq_e.map { meta,t,u -> [meta,file("$t").copyTo("$u")] }.collect()
+    seq_a = seq_a.map { meta,t,u -> [meta,file("$t").copyTo("$u")] }.collect().view()
+    seq_b = seq_b.map { meta,t,u -> [meta,file("$t").copyTo("$u")] }.collect().view()
+    seq_e = seq_e.map { meta,t,u -> [meta,file("$t").copyTo("$u")] }.collect().view()
     // combine all three channels into a single channel: tuple( meta, a, b, e )
     seq_ab = seq_a.combine(seq_b, by:0)
     seq_abe = seq_ab.combine(seq_e, by:0)
+
+    // full_table.tsv of the first lineage from GOAT_TAXONSEARCH 
+    // get the first lineage 
+    first_lineage = ch_lineages_goat.map { meta,l -> [meta, l[0]] }
+    // channel: [meta, busco_dir, fasta_filename, first_lineage]
+    first_dir = dir.combine(first_lineage, by:0)
+    // get the path to the table and copy it with a new name, channel: [meta, path_to_first_table]
+    first_table = first_dir.filter { meta,d,f,l -> "$d" =~ /$l/ }.map { meta,d,f,l -> [meta,"$d/$f/run_${l}/full_table.tsv","$d/$f/run_${l}/${l}_full_table.tsv"] }.collect()
+    first_table = first_table.map { meta,t,u -> [meta,file("$t").copyTo("$u")] }.collect() 
 
     // module: creates input paths for EXTRACT_BUSCO_GENES
     TAR (
@@ -164,28 +135,42 @@ workflow BUSCO_DIAMOND {
     // Runs diamond_blastp with the extracted busco genes
     //
 
-
     // path to diamond db
     blastp_db = Channel.fromPath(params.diamondblastp_db)
-
+    
+    // runs DIAMOND_BLASTP if fasta file from EXTRACT_BUSCO_GENE is not empty
+    
+    empty_fasta = EXTRACT_BUSCO_GENES.out.fasta.map { meta,p -> file("$p").isEmpty() } 
+        
+    if ( empty_fasta == false ) {
+    dmd_input_ch = EXTRACT_BUSCO_GENES.out.fasta     
+    }
+    else {
+    dmd_input_ch = Channel.empty()
+    }
+   
     DIAMOND_BLASTP (
-    EXTRACT_BUSCO_GENES.out.fasta,
+    dmd_input_ch,
     blastp_db,
     "${params.blastp_outext}",
     "${params.blastp_cols}"
     )
     ch_versions = ch_versions.mix(DIAMOND_BLASTP.out.versions)
+   
+    emit: 
+
+    // diamond_blastp output
+    blastp_txt = DIAMOND_BLASTP.out.txt
+
+    // busco output
+    first_table
 
     */
 
     emit:
 
-    // diamond_blastp outputs
-    //txt      = DIAMOND_BLASTP.out.txt
-
-    // BUSCO outputs
-    summary = BUSCO.out.batch_summary
-    busco_dir = BUSCO.out.busco_dir
+    // count BUSCO genes output TSV
+    count_buscogenes = COUNT_BUSCOGENES.out.tsv
 
     // tool versions
     versions = ch_versions
