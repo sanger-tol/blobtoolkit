@@ -28,7 +28,7 @@ process COUNT_BUSCOGENES {
             --out ${prefix}__busco_genes_count.tsv
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
+        count_buscogenes: 1.00
     END_VERSIONS
     """
 }
