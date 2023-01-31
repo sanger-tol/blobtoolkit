@@ -35,6 +35,7 @@ else { exit 1, 'Input not specified. Please include either a samplesheet or Tree
 //
 include { INPUT_CHECK     } from '../subworkflows/local/input_check'
 include { BUSCO_DIAMOND   } from '../subworkflows/local/busco_diamond_blastp'
+include { COVERAGE_STATS  } from '../subworkflows/local/coverage_stats'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,19 +68,19 @@ workflow BLOBTOOLKIT {
     INPUT_CHECK ( ch_input )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
+    //
+    // SUBWORKFLOW: Convert CRAM to BAM and calculate coverage
+    //
+    ch_cram = INPUT_CHECK.out.aln.map{ it + [ [] ]}
+    ch_fasta = INPUT_CHECK.out.genome
+    COVERAGE_STATS(ch_cram, ch_fasta)
+    ch_versions = ch_versions.mix(COVERAGE_STATS.out.versions)
 
     //
     // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
     //
-    BUSCO_DIAMOND (
-    INPUT_CHECK.out.genome
-    )
+    BUSCO_DIAMOND(INPUT_CHECK.out.genome, COVERAGE_STATS.out.bed)
     ch_versions = ch_versions.mix(BUSCO_DIAMOND.out.versions)
-
-    //busco_ch = BUSCO_DIAMOND.out.summary
-    //busco_ch2 = BUSCO_DIAMOND.out.busco_dir
-    //busco_ch.view()     
-    //busco_ch2.view()        
 
     //
     // MODULE: Combine different versions.yml
