@@ -46,6 +46,7 @@ include { BUSCO_DIAMOND  } from '../subworkflows/local/busco_diamond_blastp'
 //
 // MODULE: Installed directly from nf-core/modules
 //
+include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
 
 /*
@@ -81,6 +82,13 @@ workflow BLOBTOOLKIT {
     ch_fasta
     )
     ch_versions = ch_versions.mix(BUSCO_DIAMOND.out.versions)
+
+    //
+    // MODULE: Combine different versions.yml
+    //
+    CUSTOM_DUMPSOFTWAREVERSIONS (
+    ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    )
 
 }
 
