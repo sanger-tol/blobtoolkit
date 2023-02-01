@@ -32,9 +32,9 @@ process TAR {
     gzip --no-name --force $tbl_a; mv "$tbl_a".gz $parent_a/full_table.tsv.gz
     gzip --no-name --force $tbl_b; mv "$tbl_b".gz $parent_b/full_table.tsv.gz
     gzip --no-name --force $tbl_e; mv "$tbl_e".gz $parent_e/full_table.tsv.gz
-    mv $seq_a $fname; tar czf "$fname".tar.gz $fname; mv "$fname".tar.gz $parent_a/"$fname".tar.gz; rm -rf $fname
-    mv $seq_b $fname; tar czf "$fname".tar.gz $fname; mv "$fname".tar.gz $parent_b/"$fname".tar.gz; rm -rf $fname
-    mv $seq_e $fname; tar czf "$fname".tar.gz $fname; mv "$fname".tar.gz $parent_e/"$fname".tar.gz; rm -rf $fname
+    cp -RL $seq_a $fname; tar czf "$fname".tar.gz $fname; cp -RL "$fname".tar.gz $parent_a/"$fname".tar.gz; rm -rf "$fname"*
+    cp -RL $seq_b $fname; tar czf "$fname".tar.gz $fname; cp -RL "$fname".tar.gz $parent_b/"$fname".tar.gz; rm -rf "$fname"*
+    cp -RL $seq_e $fname; tar czf "$fname".tar.gz $fname; cp -RL "$fname".tar.gz $parent_e/"$fname".tar.gz; rm -rf "$fname"*
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

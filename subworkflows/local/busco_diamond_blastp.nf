@@ -123,16 +123,16 @@ workflow BUSCO_DIAMOND {
     
     empty_fasta = EXTRACT_BUSCO_GENES.out.fasta.map { meta,p -> file("$p").isEmpty() } 
         
-    if ( empty_fasta == false ) {
-    dmd_input_ch = EXTRACT_BUSCO_GENES.out.fasta     
-    }
-    else {
+    if ( empty_fasta == 'true' ) {
     dmd_input_ch = Channel.empty()
     }
-   
+    else {
+    dmd_input_ch = EXTRACT_BUSCO_GENES.out.fasta.combine(blastp_db)
+    }
+
     DIAMOND_BLASTP (
-    dmd_input_ch,
-    blastp_db,
+    dmd_input_ch.map { [it[0], it[1]] },
+    dmd_input_ch.map { it[2] },
     "${params.blastp_outext}",
     "${params.blastp_cols}"
     )
