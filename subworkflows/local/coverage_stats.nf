@@ -29,13 +29,14 @@ workflow COVERAGE_STATS {
     ch_bam = SAMTOOLS_VIEW.out.bam.join(ch_csi)
     
     // Calculate Coverage 
-    MOSDEPTH(ch_bam, ch_bed, fasta.map{it -> it[1]})
+    MOSDEPTH(ch_bam, ch_bed.map{it -> it[1]}, fasta.map{it -> it[1]})
     ch_versions = ch_versions.mix(MOSDEPTH.out.versions)
 
     emit:
     global = MOSDEPTH.out.global_txt
     summary = MOSDEPTH.out.summary_txt
-    bed = MOSDEPTH.out.per_base_bed
-    base = MOSDEPTH.out.per_base_csi
+    base_bed = MOSDEPTH.out.per_base_bed
+    base_csi = MOSDEPTH.out.per_base_csi
+    bed = ch_bed
     versions = ch_versions
 }
