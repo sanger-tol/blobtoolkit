@@ -36,6 +36,7 @@ else { exit 1, 'Input not specified. Please include either a samplesheet or Tree
 include { INPUT_CHECK    } from '../subworkflows/local/input_check'
 include { COVERAGE_STATS } from '../subworkflows/local/coverage_stats'
 include { BUSCO_DIAMOND  } from '../subworkflows/local/busco_diamond_blastp'
+include { COLLATE_STATS  } from '../subworkflows/local/collate_stats'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -82,6 +83,12 @@ workflow BLOBTOOLKIT {
     ch_fasta
     )
     ch_versions = ch_versions.mix(BUSCO_DIAMOND.out.versions)
+
+    //
+    // SUBWORKFLOW: Count BUSCO genes   
+    //
+    COLLATE_STATS(BUSCO_DIAMOND.out.busco_dir, COVERAGE_STATS.out.bed.view())
+    ch_versions = ch_versions.mix(COLLATE_STATS.out.versions)
 
     //
     // MODULE: Combine different versions.yml
