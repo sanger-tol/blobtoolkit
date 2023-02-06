@@ -37,6 +37,7 @@ blobtoolkit
 - `*.per-base.bed.gz` and `*.per-base.bed.gz.csi` : BED file with per-base coverage and it's index file
 - `*.regions.bed.gz` and `*.regions.bed.gz.csi` : BED file with per-region coverage and it's index file
 - `*_busco_genes_count.tsv` : TSV file counting BUSCOs for different lineages across BED file
+- `*_coverage.tsv` : TSV file combining the BED file with per-region coverage from mosdepth and the busco_count_genes TSV file
 
 ### Blast Analysis Files
 

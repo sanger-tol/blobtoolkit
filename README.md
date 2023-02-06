@@ -47,6 +47,7 @@ Subworkflow: Busco Diamond
 Subworkflow: Collate Stats
 
 1. Count BUSCO genes
+2. Combine output of mosdepth and count_busco_genes
 
 ## Quick Start
 
