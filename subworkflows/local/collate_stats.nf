@@ -2,13 +2,13 @@ include { COUNT_BUSCO_GENES    } from '../../modules/local/count_busco_genes'
 
 workflow COLLATE_STATS {
     take: 
-    tsv    // channel: [val(meta), path(tsv)]
-    bed    // channel: [val(meta), path(bed)]
+    busco_dir       // channel: [val(meta), path(busco_dir)]
+    bed             // channel: [val(meta), path(bed)]
 
     main:
     ch_versions = Channel.empty()
 
-    ch_tsv_path = GrabBuscoFiles(tsv).groupTuple(by: [0])
+    ch_tsv_path = GrabBuscoFiles(busco_dir).groupTuple(by: [0])
 
     // Count Busco Genes
     COUNT_BUSCO_GENES(ch_tsv_path, bed)
