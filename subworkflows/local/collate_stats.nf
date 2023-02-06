@@ -8,7 +8,7 @@ workflow COLLATE_STATS {
     main:
     ch_versions = Channel.empty()
 
-    ch_tsv_path = GrabFiles(tsv).groupTuple(by: [0])
+    ch_tsv_path = GrabBuscoFiles(tsv).groupTuple(by: [0])
 
     // Count Busco Genes
     COUNT_BUSCO_GENES(ch_tsv_path, bed)
