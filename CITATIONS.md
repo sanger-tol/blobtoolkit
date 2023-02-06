@@ -29,7 +29,12 @@
   > Mosè Manni, Matthew R Berkeley, Mathieu Seppey, Felipe A Simão, Evgeny M Zdobnov, BUSCO Update: Novel and Streamlined Workflows along with Broader and Deeper Phylogenetic Coverage for Scoring of Eukaryotic, Prokaryotic, and Viral Genomes. Molecular Biology and Evolution, Volume 38, Issue 10, October 2021, Pages 4647–4654
 
 - [Diamond](https://www.nature.com/articles/s41592-021-01101-x)
+
   > Buchfink B, Reuter K, Drost HG, "Sensitive protein alignments at tree-of-life scale using DIAMOND", Nature Methods 18, 366–368 (2021). doi:10.1038/s41592-021-01101-x
+
+- [blobtoolkit](https://github.com/blobtoolkit/pipeline)
+
+  > Richard Challis, Edward Richards, Jeena Rajan, Guy Cochrane, Mark Blaxter, BlobToolKit – Interactive Quality Assessment of Genome Assemblies, G3 Genes|Genomes|Genetics, Volume 10, Issue 4, 1 April 2020, Pages 1361–1374, https://doi.org/10.1534/g3.119.400908
 
 ## Software packaging/containerisation tools
 
