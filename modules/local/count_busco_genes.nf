@@ -10,7 +10,7 @@ process COUNT_BUSCO_GENES {
     container "genomehubs/blobtoolkit-blobtools:3.4.2"
 
     input:
-    tuple val(meta), path(tsv, stageAs: 'dir??/*')  //full table tsv files
+    tuple val(meta), path(tsv, stageAs: 'dir??/*')  //full table tsv files from Busco
     tuple val(meta), path(bed)  //modified fasta windows bed file
 
     output:
