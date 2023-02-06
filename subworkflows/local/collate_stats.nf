@@ -19,7 +19,7 @@ workflow COLLATE_STATS {
     versions = ch_versions
 }
 
-process GrabFiles {
+process GrabBuscoFiles {
     tag "${meta.id}"
     executor 'local'
 
