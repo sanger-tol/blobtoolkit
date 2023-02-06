@@ -14,7 +14,7 @@ process COUNT_BUSCO_GENES {
     tuple val(meta), path(bed)  //modified fasta windows bed file
 
     output:
-    tuple val(meta), path('*_busco_genes_count.tsv') , emit: tsv //output tsv
+    tuple val(meta), path('*_busco_genes_count.tsv') , emit: tsv
     path "versions.yml"                              , emit: versions
 
     script:
