@@ -6,7 +6,7 @@ include { CREATE_BED    } from '../../modules/local/create_bed'
 workflow COVERAGE_STATS {
     take: 
     cram    // channel: [val(meta), path(cram), path(cai)]
-    fasta   // path/to/fasta
+    fasta   // channel: [val(meta), path(fasta)]
 
     main:
     ch_versions = Channel.empty()
