@@ -23,7 +23,7 @@ process COUNT_BUSCO_GENES {
 
     """
     btk pipeline count-busco-genes \\
-            $busco_command \\
+            $busco_inputs \\
             --mask ${bed} \\
             --out ${prefix}_busco_genes_count.tsv
     cat <<-END_VERSIONS > versions.yml
