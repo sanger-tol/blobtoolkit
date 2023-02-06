@@ -35,8 +35,8 @@ workflow COVERAGE_STATS {
     emit:
     global = MOSDEPTH.out.global_txt
     summary = MOSDEPTH.out.summary_txt
-    base_bed = MOSDEPTH.out.per_base_bed
-    base_csi = MOSDEPTH.out.per_base_csi
-    bed = ch_bed
+    regions_bed = MOSDEPTH.out.regions_bed
+    regions_csi = MOSDEPTH.out.regions_csi
+    fw_bed = ch_bed
     versions = ch_versions
 }

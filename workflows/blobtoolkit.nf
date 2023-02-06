@@ -87,7 +87,7 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Count BUSCO genes   
     //
-    COLLATE_STATS(BUSCO_DIAMOND.out.busco_dir, COVERAGE_STATS.out.bed.view())
+    COLLATE_STATS(BUSCO_DIAMOND.out.busco_dir, COVERAGE_STATS.out.fw_bed)
     ch_versions = ch_versions.mix(COLLATE_STATS.out.versions)
 
     //
