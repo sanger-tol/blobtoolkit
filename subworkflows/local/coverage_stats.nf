@@ -28,7 +28,7 @@ workflow COVERAGE_STATS {
     ch_csi = SAMTOOLS_VIEW.out.csi
     ch_bam = SAMTOOLS_VIEW.out.bam.join(ch_csi)
     
-    // Calculate Coverage 
+    // Calculate Coverage (need to remove `meta` from the `ch_bed` and `fasta` channels)
     MOSDEPTH(ch_bam, ch_bed.map{it -> it[1]}, fasta.map{it -> it[1]})
     ch_versions = ch_versions.mix(MOSDEPTH.out.versions)
 
