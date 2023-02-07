@@ -8,7 +8,10 @@ workflow COLLATE_STATS {
     main:
     ch_versions = Channel.empty()
 
-    ch_tsv_path = GrabBuscoFiles(busco_dir).groupTuple(by: [0])
+    // Extract Busco's full_table.tsv files from the directories
+    ch_tsv_path = busco_dir.map {
+        meta, busco_dir -> [meta, file("${busco_dir}/**/full_table.tsv")[0]]
+    }.groupTuple(by: [0])
 
     // Count Busco Genes
     COUNT_BUSCO_GENES(ch_tsv_path, bed)
@@ -17,17 +20,4 @@ workflow COLLATE_STATS {
     emit:
     count_genes = COUNT_BUSCO_GENES.out.tsv
     versions = ch_versions
-}
-
-process GrabBuscoFiles {
-    tag "${meta.id}"
-    executor 'local'
-
-    input:
-    tuple val(meta), path("in")
-
-    output:
-    tuple val(meta), path("in/**/full_table.tsv")
-
-    "true"
 }
