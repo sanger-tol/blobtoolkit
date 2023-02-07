@@ -18,14 +18,13 @@ process CREATE_BED {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    cut -f 1,2,3 $tsv | sed '1d' $args > ${prefix}.bed
+    cut -f 1,2,3 $tsv | sed '1d' > ${prefix}.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        create_bed: 1.02
+        create_bed: 1.03
     END_VERSIONS
     """
 }
