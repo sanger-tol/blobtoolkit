@@ -1,4 +1,4 @@
-// Based on the EXTRACT_BUSCO_GENES module 
+// Based on the EXTRACT_BUSCO_GENES module
 
 process COUNT_BUSCO_GENES {
     tag "$meta.id"
