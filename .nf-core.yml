@@ -15,3 +15,5 @@ lint:
   nextflow_config:
     - manifest.name
     - manifest.homePage
+  multiqc_config:
+    - report_comment
