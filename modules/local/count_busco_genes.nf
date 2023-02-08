@@ -17,6 +17,9 @@ process COUNT_BUSCO_GENES {
     tuple val(meta), path('*_busco_genes_count.tsv') , emit: tsv
     path "versions.yml"                              , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     def busco_inputs = tsv.collect{"--in $it"}.join(' ')

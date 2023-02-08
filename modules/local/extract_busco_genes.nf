@@ -14,6 +14,9 @@ process EXTRACT_BUSCO_GENES {
     tuple val(meta), path('*_busco_genes.fasta') , emit: fasta
     path "versions.yml"                          , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
