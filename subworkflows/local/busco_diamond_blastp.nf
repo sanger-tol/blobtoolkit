@@ -146,6 +146,9 @@ workflow BUSCO_DIAMOND {
     // busco output
     first_table
 
+    //busco directories 
+    busco_dir = BUSCO.out.busco_dir
+
     // tool versions
     versions = ch_versions
 }

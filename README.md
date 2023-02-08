@@ -44,6 +44,10 @@ Subworkflow: Busco Diamond
 3. Extract BUSCO genes
 4. Run diamond_blastp with extracted busco genes ([`diamond/blastp`](https://github.com/bbuchfink/diamond))
 
+Subworkflow: Collate Stats
+
+1. Count BUSCO genes
+
 ## Quick Start
 
 1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=21.10.3`)
