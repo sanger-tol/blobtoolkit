@@ -30,6 +30,7 @@ blobtoolkit
   ├── mMelMel1_T1.regions.bed.gz
   ├── mMelMel1_T1.regions.bed.gz.csi
   ├── GCA_922984935.2.subset_busco_genes_count.tsv
+  ├── GCA_922984935.2.subset_coverage.tsv
 ```
 
 - `*.mosdepth.global.dist.txt` and `*.mosdepth.region.dist.txt` : Text files with global and region cumulative coverage distribution respectively
