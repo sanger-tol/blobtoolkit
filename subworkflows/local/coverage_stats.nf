@@ -12,7 +12,13 @@ workflow COVERAGE_STATS {
     ch_versions = Channel.empty()
 
     // Convert from CRAM to BAM
-    SAMTOOLS_VIEW(cram, fasta.map{it -> it[1]}, [])
+    // Channel: [meta, cram, cai, meta2, fasta]
+    input_sam = cram.combine(fasta)
+    SAMTOOLS_VIEW( 
+        input_sam.map { [it[0], it[1], it[2]] },
+        input_sam.map{ it[4] },
+        []
+    )
     ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions)
 
     // Generate BED File
@@ -29,7 +35,15 @@ workflow COVERAGE_STATS {
     ch_bam = SAMTOOLS_VIEW.out.bam.join(ch_csi)
     
     // Calculate Coverage (need to remove `meta` from the `ch_bed` and `fasta` channels)
-    MOSDEPTH(ch_bam, ch_bed.map{it -> it[1]}, fasta.map{it -> it[1]})
+    // Channel: [meta, bam, csi, meta2, bed, meta3, fasta]
+    bam_bed = ch_bam.combine(ch_bed)
+    input_depth = bam_bed.combine(fasta)
+
+    MOSDEPTH(
+        input_depth.map{ [it[0], it[1], it[2]] },
+        input_depth.map{ it[4] },
+        input_depth.map{ it[6] }
+    )
     ch_versions = ch_versions.mix(MOSDEPTH.out.versions)
 
     emit:
