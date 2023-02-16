@@ -2,7 +2,7 @@ process GOAT_TAXONSEARCH {
     tag "$meta.id"
     label 'process_single'
 
-    conda "bioconda::goat=0.2.0"
+    conda (params.enable_conda ? "bioconda::goat=0.2.0" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/goat:0.2.0--h92d785c_0':
         'quay.io/biocontainers/goat:0.2.0--h92d785c_0' }"
