@@ -30,6 +30,7 @@ blobtoolkit
   ├── mMelMel1_T1.regions.bed.gz
   ├── mMelMel1_T1.regions.bed.gz.csi
   ├── GCA_922984935.2.subset_busco_genes_count.tsv
+  ├── GCA_922984935.2.subset_coverage.tsv
 ```
 
 - `*.mosdepth.global.dist.txt` and `*.mosdepth.region.dist.txt` : Text files with global and region cumulative coverage distribution respectively
@@ -37,6 +38,7 @@ blobtoolkit
 - `*.per-base.bed.gz` and `*.per-base.bed.gz.csi` : BED file with per-base coverage and it's index file
 - `*.regions.bed.gz` and `*.regions.bed.gz.csi` : BED file with per-region coverage and it's index file
 - `*_busco_genes_count.tsv` : TSV file counting BUSCOs for different lineages across BED file
+- `*_coverage.tsv` : TSV file combining the BED file with per-region coverage from mosdepth and the busco_count_genes TSV file
 
 ### Blast Analysis Files
 
