@@ -37,6 +37,7 @@ include { INPUT_CHECK    } from '../subworkflows/local/input_check'
 include { COVERAGE_STATS } from '../subworkflows/local/coverage_stats'
 include { BUSCO_DIAMOND  } from '../subworkflows/local/busco_diamond_blastp'
 include { COLLATE_STATS  } from '../subworkflows/local/collate_stats'
+include { BLOBTOOLS      } from '../subworkflows/local/blobtools'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -89,6 +90,14 @@ workflow BLOBTOOLKIT {
     //
     COLLATE_STATS(BUSCO_DIAMOND.out.busco_dir, COVERAGE_STATS.out.fw_bed, COVERAGE_STATS.out.regions_bed)
     ch_versions = ch_versions.mix(COLLATE_STATS.out.versions)
+
+    //
+    // SUBWORKFLOW: BLOBTOOLS
+    //
+    BLOBTOOLS(
+    ch_fasta
+    )
+    ch_versions = ch_versions.mix(BLOBTOOLS.out.versions)
 
     //
     // MODULE: Combine different versions.yml
