@@ -23,7 +23,7 @@ process GENERATE_CONFIG {
     blobtoolkit-pipeline generate-config ${prefix}
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        blobtoolkit-pipeline: \$( --version | cut -d' ' -f2 | sed 's/v//')
+        blobtoolkit-pipeline: \$(blobtoolkit-pipeline --version | cut -d' ' -f2 | sed 's/v//')
     END_VERSIONS
     """
 }
