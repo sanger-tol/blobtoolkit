@@ -11,8 +11,8 @@ process GENERATE_CONFIG {
     val meta
 
     output:
-    tuple val(meta), path("${prefix}/*.yaml") , emit: yaml
-    path "versions.yml"                       , emit: versions
+    tuple val(meta), path("${meta.id}/*.yaml") , emit: yaml
+    path "versions.yml"                        , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
