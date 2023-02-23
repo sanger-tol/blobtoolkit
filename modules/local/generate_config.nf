@@ -8,7 +8,7 @@ process GENERATE_CONFIG {
     container 'genomehubs/blobtoolkit:4.0.7'
 
     input:
-    val meta
+    tuple val(meta), path(fasta)
 
     output:
     tuple val(meta), path("${meta.id}/*.yaml") , emit: yaml

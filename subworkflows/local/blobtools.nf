@@ -22,11 +22,11 @@ workflow BLOBTOOLS {
     // Generate config file
     //
     GENERATE_CONFIG (
-    fasta.map { it[0] }
+    fasta
     )
     ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions)  
 
-    emit: 
+    emit:
 
     // YAML config file
     config = GENERATE_CONFIG.out.yaml
