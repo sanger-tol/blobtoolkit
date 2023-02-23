@@ -49,6 +49,12 @@ Subworkflow: Collate Stats
 1. Count BUSCO genes
 2. Combine output of mosdepth and count_busco_genes
 
+Subworkflow: Blobtools
+
+1. Generate config file from GCA accession code.
+2. Imports analysis results into a BlobDir dataset.
+
+
 ## Quick Start
 
 1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=21.10.3`)
