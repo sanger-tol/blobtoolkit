@@ -5,7 +5,7 @@ process GET_WINDOW_STATS {
     if (params.enable_conda) {
         exit 1, "Conda environments cannot be used when using the GET_WINDOW_STATS module. Please use docker or singularity containers."
     }
-    container "genomehubs/blobtoolkit-blobtools:3.3.4"
+    container "genomehubs/blobtoolkit-blobtools:3.5.4"
 
     input:
     tuple val(meta), path(tsv)  
