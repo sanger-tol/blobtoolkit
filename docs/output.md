@@ -31,6 +31,10 @@ blobtoolkit
   ├── mMelMel1_T1.regions.bed.gz.csi
   ├── GCA_922984935.2.subset_busco_genes_count.tsv
   ├── GCA_922984935.2.subset_coverage.tsv
+  |── GCA_922984935.2.subset_window_stats.0.1.tsv
+  |── GCA_922984935.2.subset_window_stats.0.01.tsv
+  |── GCA_922984935.2.subset_window_stats.100000.tsv
+  |── GCA_922984935.2.subset_window_stats.1000000.tsv
 ```
 
 - `*.mosdepth.global.dist.txt` and `*.mosdepth.region.dist.txt` : Text files with global and region cumulative coverage distribution respectively
@@ -39,6 +43,10 @@ blobtoolkit
 - `*.regions.bed.gz` and `*.regions.bed.gz.csi` : BED file with per-region coverage and it's index file
 - `*_busco_genes_count.tsv` : TSV file counting BUSCOs for different lineages across BED file
 - `*_coverage.tsv` : TSV file combining the BED file with per-region coverage from mosdepth and the busco_count_genes TSV file
+- `*_window_stats.0.1.tsv` : Aggregate 1kb windows into a window of 10% of the contig length
+- `*_window_stats.0.01.tsv` : Aggregate 1kb windows into a window of 1% of the contig length
+- `*_window_stats.100000.tsv` : Aggregate 1kb windows into 100kb windows
+- `*_window_stats.1000000.tsv` : Aggregate 1kb windows into 1Mb windows
 
 ### Blast Analysis Files
 

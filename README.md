@@ -48,6 +48,7 @@ Subworkflow: Collate Stats
 
 1. Count BUSCO genes
 2. Combine output of mosdepth and count_busco_genes
+3. Aggregate 1kb values into windows of fixed proportion (10%, 1% of contig length) and fixed length (100kb, 1Mb)
 
 ## Quick Start
 
