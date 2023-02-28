@@ -8,7 +8,7 @@ process GET_WINDOW_STATS {
     container "genomehubs/blobtoolkit-blobtools:3.5.4"
 
     input:
-    tuple val(meta), path(tsv)  
+    tuple val(meta), path(tsv)
 
     output:
     tuple val(meta), path('*_window_stats*.tsv') , emit: tsv

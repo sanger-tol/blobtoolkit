@@ -22,7 +22,7 @@ process COVERAGE_TSV {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    cut -f 4 ${mosdepth} > temp1 
+    cut -f 4 ${mosdepth} > temp1
     sed -i 1i"${prefix}_cov" temp1
     paste ${countbusogenes} temp1 > ${prefix}_coverage.tsv
     
