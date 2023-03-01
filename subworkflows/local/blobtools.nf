@@ -19,17 +19,26 @@ workflow BLOBTOOLS {
     ch_versions = Channel.empty()
 
     //
-    // Generate config file
+    // Generate or read config file: a YAML file or a GCA accesion should be provided
     //
-    GENERATE_CONFIG (
-    fasta
-    )
-    ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions)  
-
+    if ( params.accesion && !params.yaml){
+      GENERATE_CONFIG (
+      params.accession
+      )
+      ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions)
+      config_file = GENERATE_CONFIG.out.yaml
+    }
+    if ( params.yaml && !params.accesion){
+      config_file = Channel.fromPath(params.yaml)
+    }
+    if ( !params.accesion && !params.yaml){
+      exit 1, 'Input not specified. Please include either a YAML file for draft genome or GCA accesion for published genome'
+    }
+   
     emit:
 
     // YAML config file
-    config = GENERATE_CONFIG.out.yaml
+    config_file
     
     // tool versions
     versions = ch_versions
