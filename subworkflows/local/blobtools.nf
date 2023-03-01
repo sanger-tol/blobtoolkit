@@ -23,7 +23,7 @@ workflow BLOBTOOLS {
     //
     if ( params.accesion && !params.yaml){
       GENERATE_CONFIG (
-      params.accession
+      fasta.map { fa -> [fa[0], "${params.accesion}"] }
       )
       ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions)
       config_file = GENERATE_CONFIG.out.yaml

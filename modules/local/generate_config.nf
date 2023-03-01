@@ -8,11 +8,11 @@ process GENERATE_CONFIG {
     container 'genomehubs/blobtoolkit:4.0.7'
 
     input:
-    tuple val(meta), path(fasta)
+    tuple val(meta), val(GCA)
 
     output:
-    tuple val(meta), path("${meta.id}/*.yaml") , emit: yaml
-    path "versions.yml"                        , emit: versions
+    tuple val(meta), path("${GCA}/*.yaml") , emit: yaml
+    path "versions.yml"                    , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -20,7 +20,7 @@ process GENERATE_CONFIG {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    blobtoolkit-pipeline generate-config ${prefix}
+    blobtoolkit-pipeline generate-config ${GCA}
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit-pipeline: \$(blobtoolkit-pipeline --version | cut -d' ' -f2 | sed 's/v//')
