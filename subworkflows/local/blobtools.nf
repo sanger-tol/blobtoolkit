@@ -31,7 +31,7 @@ workflow BLOBTOOLS {
     if ( params.yaml && !params.accesion){
       config_file = Channel.fromPath(params.yaml)
     }
-    if ( !params.accesion && !params.yaml){
+    if ( (!params.accesion && !params.yaml) || (params.accesion && params.yaml) ){
       exit 1, 'Input not specified. Please include either a YAML file for draft genome or GCA accesion for published genome'
     }
    
