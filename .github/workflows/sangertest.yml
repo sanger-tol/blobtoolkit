@@ -8,6 +8,17 @@ jobs:
     name: Run LSF tests
     runs-on: ubuntu-latest
     steps:
+  
+      - name: Sets env vars for pull_request
+        run: |
+          echo "REVISION=${{ github.sha }}" >> $GITHUB_ENV
+        if: github.event_name == 'pull_request'
+ 
+      - name: Sets env vars for workflow_dispatch
+        run: |
+          echo "REVISION=${{ github.sha }}" >> $GITHUB_ENV
+        if: github.event_name == 'workflow_dispatch'
+
       - name: Launch workflow via tower
         uses: nf-core/tower-action@v2
         with:
