@@ -1,6 +1,7 @@
 include { COUNT_BUSCO_GENES    } from '../../modules/local/count_busco_genes'
 include { GUNZIP               } from '../../modules/nf-core/gunzip/main'
 include { COVERAGE_TSV         } from '../../modules/local/coverage_tsv'
+include { GET_WINDOW_STATS     } from '../../modules/local/get_window_stats'
 
 
 workflow COLLATE_STATS {
@@ -24,6 +25,9 @@ workflow COLLATE_STATS {
     // Combine output TSV from mosdepth and count_busco_genes
     COVERAGE_TSV(GUNZIP(regions_bed).gunzip, COUNT_BUSCO_GENES.out.tsv)
     ch_versions = ch_versions.mix(COVERAGE_TSV.out.versions)
+
+    GET_WINDOW_STATS(COVERAGE_TSV.out.cov_tsv)
+    ch_versions = ch_versions.mix(GET_WINDOW_STATS.out.versions)
 
     emit:
     count_genes = COUNT_BUSCO_GENES.out.tsv
