@@ -1,5 +1,6 @@
 repository_type: pipeline
 lint:
+  actions_ci: False
   files_unchanged:
     - LICENSE
     - .github/CONTRIBUTING.md
@@ -17,3 +18,4 @@ lint:
     - manifest.homePage
   multiqc_config:
     - report_comment
+    
