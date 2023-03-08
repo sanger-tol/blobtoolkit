@@ -17,7 +17,9 @@ Learn more about contributing: [CONTRIBUTING.md](https://github.com/nf-core/blob
 - [ ] If you've fixed a bug or added code that should be tested, add tests!
 - [ ] If you've added a new tool - have you followed the pipeline conventions in the [contribution docs](https://github.com/nf-core/blobtoolkit/tree/master/.github/CONTRIBUTING.md)- [ ] If necessary, also make a PR on the nf-core/blobtoolkit _branch_ on the [nf-core/test-datasets](https://github.com/nf-core/test-datasets) repository.
 - [ ] Make sure your code lints (`nf-core lint`).
-- [ ] Ensure the test suite passes (`nextflow run . -profile test,docker --outdir <OUTDIR>`).
+- [ ] Ensure the unit test suite passes (`nextflow run . -profile test,singularity,sanger --outdir <OUTDIR>`) locally.
+- [ ] Ensure the full test suite passes (`nextflow run . -profile test_full,singularity,sanger --outdir <OUTDIR>`) locally.
+- [ ] Ensure that the CI tests pass by checking the nextflow tower link at the bottom of the CI tests and check the output on farm5 (the CI test only tells you if the job was successfully submitted to nextflow tower).
 - [ ] Usage Documentation in `docs/usage.md` is updated.
 - [ ] Output Documentation in `docs/output.md` is updated.
 - [ ] `CHANGELOG.md` is updated.
