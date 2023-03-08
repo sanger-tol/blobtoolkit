@@ -18,4 +18,3 @@ lint:
     - manifest.homePage
   multiqc_config:
     - report_comment
-    
