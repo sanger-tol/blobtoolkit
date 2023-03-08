@@ -13,6 +13,89 @@ Define where the pipeline should find input data and save output data.
 | `email`         | Email address for completion summary. <details><summary>Help</summary><small>Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.</small></details>                                                                                                                                                | `string` |         |          |        |
 | `multiqc_title` | MultiQC report title. Printed as page header, used for filename if not otherwise specified.                                                                                                                                                                                                                                                                                                                                                                                                                | `string` |         |          |        |
 
+
+Additionaly a path to a YAML file or an accesion code (usually a GCA or draft identifier) should be provided through `params.yaml` or `params.accesion` (only one of them should be specified). Here is an example of how a YAML file should look like, all information can be obtained from [NCBI, species: Meles meles](https://www.ncbi.nlm.nih.gov/data-hub/taxonomy/9662/) : 
+
+```
+assembly:
+  accession: GCA_922984935.2
+  level: chromosome
+  prefix: CAKLPM02
+  scaffold-count: 538
+  span: 2738694574
+reads:
+  ERR6688595:
+    platform: ILLUMINA
+    prefix: ERR6688595
+  ERR6688596:
+    platform: ILLUMINA
+    prefix: ERR6688596
+  ERR6688597:
+    platform: ILLUMINA
+    prefix: ERR6688597
+  ERR6688598:
+    platform: ILLUMINA
+    prefix: ERR6688598
+  ERR6688601:
+    platform: ILLUMINA
+    prefix: ERR6688601
+  ERR6688602:
+    platform: ILLUMINA
+    prefix: ERR6688602
+  ERR6688603:
+    platform: ILLUMINA
+    prefix: ERR6688603
+  ERR6688604:
+    platform: ILLUMINA
+    prefix: ERR6688604
+  ERR6808015:
+    platform: PACBIO_SMRT
+    prefix: ERR6808015
+  ERR6939249:
+    platform: PACBIO_SMRT
+    prefix: ERR6939249
+  ERR6939248:
+    platform: PACBIO_SMRT
+    prefix: ERR6939248
+  ERR6939250:
+    platform: PACBIO_SMRT
+    prefix: ERR6939250
+  ERR6808016:
+    platform: PACBIO_SMRT
+    prefix: ERR6808016
+revision: 1
+settings:
+  software_versions:
+    blastn: 2.12.0+
+    blobtools: 4.0.7
+    busco: 5.3.2
+    diamond: 2.0.15
+    minimap2: 2.24-r1122
+    mosdepth: 0.3.3
+    python: 3.9.13
+    samtools: 1.15.1
+    seqtk: 1.3-r106
+    snakemake: 7.19.1
+  stats_windows:
+    - 0.1
+    - 0.01
+    - 100000
+    - 1000000
+taxon:
+  class: Mammalia
+  family: Mustelidae
+  genus: Meles
+  kingdom: Metazoa
+  name: Meles meles
+  order: Carnivora
+  phylum: Chordata
+  superkingdom: Eukaryota
+  taxid: '9662'
+```
+
+
+
+
 ## Reference genome options
 
 Reference genome related files and options required for the workflow.
