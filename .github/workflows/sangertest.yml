@@ -31,4 +31,4 @@ jobs:
             {
               "outdir": "${{ secrets.TOWER_WORKDIR_PARENT }}/results/${{ github.repository }}/results-${{ env.REVISION }}",
             }
-          profiles: test,sanger,singularity
+          profiles: test,sanger,singularity,cleanup
