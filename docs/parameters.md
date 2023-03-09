@@ -22,64 +22,23 @@ assembly:
   prefix: CAKLPM02
   scaffold-count: 538
   span: 2738694574
-reads:
-  ERR6688595:
-    platform: ILLUMINA
-    prefix: ERR6688595
-  ERR6688596:
-    platform: ILLUMINA
-    prefix: ERR6688596
-  ERR6688597:
-    platform: ILLUMINA
-    prefix: ERR6688597
-  ERR6688598:
-    platform: ILLUMINA
-    prefix: ERR6688598
-  ERR6688601:
-    platform: ILLUMINA
-    prefix: ERR6688601
-  ERR6688602:
-    platform: ILLUMINA
-    prefix: ERR6688602
-  ERR6688603:
-    platform: ILLUMINA
-    prefix: ERR6688603
-  ERR6688604:
-    platform: ILLUMINA
-    prefix: ERR6688604
-  ERR6808015:
-    platform: PACBIO_SMRT
-    prefix: ERR6808015
-  ERR6939249:
-    platform: PACBIO_SMRT
-    prefix: ERR6939249
-  ERR6939248:
-    platform: PACBIO_SMRT
-    prefix: ERR6939248
-  ERR6939250:
-    platform: PACBIO_SMRT
-    prefix: ERR6939250
-  ERR6808016:
-    platform: PACBIO_SMRT
-    prefix: ERR6808016
 revision: 1
-settings:
-  software_versions:
-    blastn: 2.12.0+
-    blobtools: 4.0.7
-    busco: 5.3.2
-    diamond: 2.0.15
-    minimap2: 2.24-r1122
-    mosdepth: 0.3.3
-    python: 3.9.13
-    samtools: 1.15.1
-    seqtk: 1.3-r106
-    snakemake: 7.19.1
-  stats_windows:
-    - 0.1
-    - 0.01
-    - 100000
-    - 1000000
+similarity:
+  diamond_blastp:
+    evalue: 1.0e-10
+    import_evalue: 1.0e-25
+    import_max_target_seqs: 100000
+    max_target_seqs: 10
+    path: /blobtoolkit/databases/uniprot_2021_06
+    taxrule: blastp=buscogenes
+    name: reference_proteomes
+  diamond_blastx:
+    evalue: 1.0e-10
+    import_evalue: 1.0e-25
+    max_target_seqs: 10
+    name: reference_proteomes
+    path: /blobtoolkit/databases/uniprot_2021_06
+    taxrule: buscogenes
 taxon:
   class: Mammalia
   family: Mustelidae
@@ -90,6 +49,7 @@ taxon:
   phylum: Chordata
   superkingdom: Eukaryota
   taxid: '9662'
+version: 2
 ```
 
 ## Reference genome options
