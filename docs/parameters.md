@@ -23,6 +23,23 @@ assembly:
   scaffold-count: 538
   span: 2738694574
 revision: 1
+settings:
+  software_versions:
+    blastn: 2.12.0+
+    blobtools: 4.0.7
+    busco: 5.3.2
+    diamond: 2.0.15
+    minimap2: 2.24-r1122
+    mosdepth: 0.3.3
+    python: 3.9.13
+    samtools: 1.15.1
+    seqtk: 1.3-r106
+    snakemake: 7.19.1
+  stats_windows:
+    - 0.1
+    - 0.01
+    - 100000
+    - 1000000
 similarity:
   diamond_blastp:
     evalue: 1.0e-10
