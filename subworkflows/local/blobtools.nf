@@ -6,7 +6,8 @@
 
 nextflow.enable.dsl = 2
 
-include { GENERATE_CONFIG } from '../../modules/local/generate_config'
+include { GENERATE_CONFIG         } from '../../modules/local/generate_config'
+include { ADD_SUMMARY_TO_METADATA } from '../../modules/local/add_summary_to_metadata'
 
 workflow BLOBTOOLS {
     take:
@@ -34,11 +35,18 @@ workflow BLOBTOOLS {
     if ( (!params.accesion && !params.yaml) || (params.accesion && params.yaml) ){
       exit 1, 'Input not specified. Please include either a YAML file for draft genome or GCA accesion for published genome'
     }
+
+    //
+    // Add summary to metadata
+    //
+    ADD_SUMMARY_TO_METADATA (
+      config_file
+    )
    
     emit:
 
     // YAML config file
-    config_file
+    config_yaml = ADD_SUMMARY_TO_METADATA.out.yaml
     
     // tool versions
     versions = ch_versions
