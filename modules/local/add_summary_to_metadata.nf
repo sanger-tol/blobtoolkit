@@ -21,8 +21,9 @@ process ADD_SUMMARY_TO_METADATA {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     btk pipeline add-summary-to-metadata \\
-      --config ${yaml} \\
-      --out ${prefix}.config.yaml
+        --config ${yaml} \\
+        --out ${prefix}.config.yaml
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit-pipeline: \$(blobtoolkit-pipeline --version | cut -d' ' -f2 | sed 's/v//')
