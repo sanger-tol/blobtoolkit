@@ -8,7 +8,7 @@ process ADD_SUMMARY_TO_METADATA {
     container 'genomehubs/blobtoolkit:4.0.7'
 
     input:
-    tuple val(meta), val(yaml)
+    tuple val(meta), path(yaml)
 
     output:
     tuple val(meta), path('*.config.yaml*') , emit: yaml
