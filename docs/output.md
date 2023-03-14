@@ -14,6 +14,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 - [Coverage Analysis Files](#Coverage Analysis Files) - Output files from Mosdepth and Count_Busco_Genes
 - [Blast Analysis Files](#Blast Analysis Files) - Output files from Diamond_BlastP
+- [Blobtools Files](#Blobtools Files) - Output files from blobtools subworkflow
 - [Pipeline Information](#Pipeline info) - Report metrics generated during the workflow execution
 
 ### Coverage Analysis Files
@@ -52,6 +53,15 @@ blobtoolkit
 
 - `Blast Analysis Files/`
   - `*.txt`: Text File containing hits in tabular BLAST format.
+
+### Blobtools Files
+
+Output config file from blobltools subworkflow is exported to the `blobltoolkit/ACCESSION` folder:
+
+```
+GCA_922984935.2
+└── config.yaml
+```
 
 ### Pipeline information
 

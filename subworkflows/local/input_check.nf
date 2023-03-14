@@ -32,7 +32,7 @@ workflow INPUT_CHECK {
             genome    = GUNZIP ( genome.map { file -> [ [ id: file.baseName.replaceFirst(/.fa.*/, "") ], file ] } ).gunzip
             ch_versions = ch_versions.mix(GUNZIP.out.versions)
         } else {
-            genome    = genome.map { file -> [ [ id: file.baseName ], file ] }
+            genome = genome.map { file -> [ [ id: file.baseName ], file ] }
         }
     } else if (params.input && params.project) {
         INPUT_TOL (ch_input.csv, ch_input.fasta)

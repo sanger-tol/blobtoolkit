@@ -13,6 +13,64 @@ Define where the pipeline should find input data and save output data.
 | `email`         | Email address for completion summary. <details><summary>Help</summary><small>Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.</small></details>                                                                                                                                                | `string` |         |          |        |
 | `multiqc_title` | MultiQC report title. Printed as page header, used for filename if not otherwise specified.                                                                                                                                                                                                                                                                                                                                                                                                                | `string` |         |          |        |
 
+Additionaly a path to a YAML file or an accesion code (usually a GCA or draft identifier) should be provided through `params.yaml` or `params.accession` (only one of them should be specified). Here is an example of how a YAML file should look like, all information can be obtained from [NCBI: Browse taxonomy](https://www.ncbi.nlm.nih.gov/data-hub/taxonomy/9662/) :
+
+```
+assembly:
+  accession: GCA_922984935.2
+  level: chromosome
+  prefix: CAKLPM02
+  scaffold-count: 538
+  span: 2738694574
+revision: 1
+settings:
+  software_versions:
+    blastn: 2.12.0+
+    blobtools: 4.0.7
+    busco: 5.3.2
+    diamond: 2.0.15
+    minimap2: 2.24-r1122
+    mosdepth: 0.3.3
+    python: 3.9.13
+    samtools: 1.15.1
+    seqtk: 1.3-r106
+    snakemake: 7.19.1
+  stats_windows:
+    - 0.1
+    - 0.01
+    - 100000
+    - 1000000
+similarity:
+  diamond_blastp:
+    evalue: 1.0e-10
+    import_evalue: 1.0e-25
+    import_max_target_seqs: 100000
+    max_target_seqs: 10
+    path: /blobtoolkit/databases/uniprot_2021_06
+    taxrule: blastp=buscogenes
+    name: reference_proteomes
+  diamond_blastx:
+    evalue: 1.0e-10
+    import_evalue: 1.0e-25
+    max_target_seqs: 10
+    name: reference_proteomes
+    path: /blobtoolkit/databases/uniprot_2021_06
+    taxrule: buscogenes
+taxon:
+  class: Mammalia
+  family: Mustelidae
+  genus: Meles
+  kingdom: Metazoa
+  name: Meles meles
+  order: Carnivora
+  phylum: Chordata
+  superkingdom: Eukaryota
+  taxid: '9662'
+version: 2
+```
+
+Parameters in stats_windows, diamond_blastp, and diamond_blastx are ignored and are kept in this YAML file only to allow compatibility with the blobltools subworkflow in the previous [blobtoolkit-pipeline](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/blobtoolkit-pipeline/src) implementation. If you need to specify new values for these parameters, before running the pipeline, you can simply edit the `conf/modules.config` file.
+
 ## Reference genome options
 
 Reference genome related files and options required for the workflow.
