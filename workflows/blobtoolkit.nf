@@ -38,6 +38,7 @@ include { COVERAGE_STATS } from '../subworkflows/local/coverage_stats'
 include { BUSCO_DIAMOND  } from '../subworkflows/local/busco_diamond_blastp'
 include { COLLATE_STATS  } from '../subworkflows/local/collate_stats'
 include { BLOBTOOLS      } from '../subworkflows/local/blobtools'
+include { VIEW           } from '../subworkflows/local/view'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,6 +99,14 @@ workflow BLOBTOOLKIT {
     ch_fasta
     )
     ch_versions = ch_versions.mix(BLOBTOOLS.out.versions)
+
+    //
+    // SUBWORKFLOW: VIEW
+    //
+    VIEW (
+      fasta.map { fa -> [fa[0], "${params.blobdir}"] }
+    )
+    ch_versions = ch_versions.mix(VIEW.out.versions)
 
     //
     // MODULE: Combine different versions.yml
