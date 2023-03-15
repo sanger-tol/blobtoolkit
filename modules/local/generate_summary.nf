@@ -12,7 +12,7 @@ process GENERATE_SUMMARY {
     tuple val(meta), path(png)
 
     output:
-    tuple val(meta), path("${blobdir}/summary.json") , emit: json
+    tuple val(meta), path("${blobdir}/summary.json.gz") , emit: json
     path "versions.yml"                              , emit: versions
 
     when:
@@ -21,7 +21,7 @@ process GENERATE_SUMMARY {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     def args = task.ext.args ?: ''
-    def output = "${blobdir}/summary.json"
+    def output = "${blobdir}/summary.json.gz"
     """
     blobtools filter \\
         --summary $output ${blobdir} \\
