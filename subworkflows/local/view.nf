@@ -25,6 +25,7 @@ workflow VIEW {
     GENERATE_IMAGES (
       blobdir
     )
+    ch_versions = ch_versions.mix(GENERATE_IMAGES.out.versions)
     
     //
     // Generate summary
@@ -35,7 +36,8 @@ workflow VIEW {
       summary_input.map { [it[0],it[1]] },
       summary_input.map { [it[0],it[2]] }
     )
-    
+    ch_versions = ch_versions.mix(GENERATE_SUMMARY.out.versions)
+
     emit:
 
     // png file
