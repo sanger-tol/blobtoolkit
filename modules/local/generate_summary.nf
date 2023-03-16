@@ -9,7 +9,6 @@ process GENERATE_SUMMARY {
 
     input:
     tuple val(meta), path(blobdir)
-    tuple val(meta), path(png)
 
     output:
     tuple val(meta), path("summary.json.gz") , emit: json
