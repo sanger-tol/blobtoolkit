@@ -21,9 +21,8 @@ process GENERATE_IMAGES {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def args = task.ext.args ?: ''
     """
-    cov=`find -L ./ -name "*_cov.json"`
     btk pipeline generate-static-images \\
-        --blobdir ${blobdir} \$cov \\
+        --blobdir ${blobdir} \\
         $args
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
