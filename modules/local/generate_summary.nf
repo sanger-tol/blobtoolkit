@@ -12,7 +12,7 @@ process GENERATE_SUMMARY {
     tuple val(meta), path(png)
 
     output:
-    tuple val(meta), path("${blobdir}/summary.json.gz") , emit: json
+    tuple val(meta), path("summary.json.gz") , emit: json
     path "versions.yml"                              , emit: versions
 
     when:
