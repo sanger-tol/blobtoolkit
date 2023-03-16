@@ -11,7 +11,7 @@ process GENERATE_IMAGES {
     tuple val(meta), path(blobdir)
 
     output:
-    tuple val(meta), path("${blobdir}/cumulative.png") , emit: png
+    tuple val(meta), path('cumulative.png') , emit: png
     path "versions.yml"                                , emit: versions
 
     when:
