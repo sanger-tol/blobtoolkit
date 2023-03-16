@@ -31,10 +31,8 @@ workflow VIEW {
     // Generate summary
     //
     // channel: [meta, blobdir, png]
-    summary_input = blobdir.combine(GENERATE_IMAGES.out.png, by:0)
     GENERATE_SUMMARY (
-      summary_input.map { [it[0],it[1]] },
-      summary_input.map { [it[0],it[2]] }
+      blobdir
     )
     ch_versions = ch_versions.mix(GENERATE_SUMMARY.out.versions)
 
