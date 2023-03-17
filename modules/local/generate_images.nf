@@ -11,8 +11,8 @@ process GENERATE_IMAGES {
     tuple val(meta), path(blobdir)
 
     output:
-    tuple val(meta), path('cumulative.png') , emit: png
-    path "versions.yml"                     , emit: versions
+    tuple val(meta), path('*.png') , emit: png
+    path "versions.yml"            , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
