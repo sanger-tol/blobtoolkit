@@ -12,7 +12,7 @@ process GENERATE_SUMMARY {
 
     output:
     tuple val(meta), path('*.json.gz') , emit: json
-    path "versions.yml"                      , emit: versions
+    path "versions.yml"                , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
