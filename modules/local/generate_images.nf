@@ -28,6 +28,7 @@ process GENERATE_IMAGES {
     blobtools view --view blob --param plotShape=kite --param largeFonts=true --format png --out ${blobdir} "${blobdir}" $args
     blobtools view --view cumulative --param largeFonts=true --format png --out ${blobdir} "${blobdir}" $args
     blobtools view --view snail --param largeFonts=true --format png --out ${blobdir} "${blobdir}" $args
+    mv ${blobdir}/*.png ./
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit-pipeline: \$(blobtoolkit-pipeline --version | cut -d' ' -f2 | sed 's/v//')
@@ -38,6 +39,7 @@ process GENERATE_IMAGES {
     """
     blobtools view --view cumulative --param largeFonts=true --format png --out ${blobdir} "${blobdir}" $args
     blobtools view --view snail --param largeFonts=true --format png --out ${blobdir} "${blobdir}" $args
+    mv ${blobdir}/*.png ./
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit-pipeline: \$(blobtoolkit-pipeline --version | cut -d' ' -f2 | sed 's/v//')
