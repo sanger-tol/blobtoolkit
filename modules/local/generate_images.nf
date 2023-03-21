@@ -23,7 +23,7 @@ process GENERATE_IMAGES {
     if( params.use_cov ) {
     """
     blobtools view --view blob --param plotShape=circle --param largeFonts=true --format png --out ${blobdir} "${blobdir}" $args
-    blobtools view --view blob --param plotShape=hex --param largeFonts=true --format png --out ${blobdir} "${blobdir}" $args 
+    blobtools view --view blob --param plotShape=hex --param largeFonts=true --format png --out ${blobdir} "${blobdir}" $args
     blobtools view --view blob --param plotShape=square --param largeFonts=true --format png --out ${blobdir} "${blobdir}" $args
     blobtools view --view blob --param plotShape=kite --param largeFonts=true --format png --out ${blobdir} "${blobdir}" $args
     blobtools view --view cumulative --param largeFonts=true --format png --out ${blobdir} "${blobdir}" $args
