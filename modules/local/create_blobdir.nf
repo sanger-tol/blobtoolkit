@@ -10,18 +10,18 @@ process CREATE_BLOBDIR {
     input:
     tuple val(meta), path(window, stageAs: 'dir/*')
     tuple val(meta), path(busco)
-    tuple val(meta), path(blastp)  
-    path(taxdump)    
+    tuple val(meta), path(blastp)
+    path(taxdump)
     tuple val(meta), path(yaml)
     val(GCA)
 
     output:
-    tuple val(meta), path('**/*meta.json') , emit: json
-    tuple val(meta), path('**/*identifiers.json') , emit: identifiers
+    tuple val(meta), path('**/*meta.json')              , emit: json
+    tuple val(meta), path('**/*identifiers.json')       , emit: identifiers
     tuple val(meta), path('**/*buscogenes_phylum.json') , emit: buscogenes_phylum
-    tuple val(meta), path('**/*cov.json') , emit: coverage
-    tuple val(meta), path('**/*busco.json') , emit: busco
-    path "versions.yml"                          , emit: versions
+    tuple val(meta), path('**/*cov.json')               , emit: coverage
+    tuple val(meta), path('**/*busco.json')             , emit: busco
+    path "versions.yml"                                 , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
