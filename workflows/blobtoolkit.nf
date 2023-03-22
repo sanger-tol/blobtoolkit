@@ -91,11 +91,17 @@ workflow BLOBTOOLKIT {
     COLLATE_STATS(BUSCO_DIAMOND.out.busco_dir, COVERAGE_STATS.out.fw_bed, COVERAGE_STATS.out.regions_bed)
     ch_versions = ch_versions.mix(COLLATE_STATS.out.versions)
 
+    
     //
     // SUBWORKFLOW: BLOBTOOLS
     //
     BLOBTOOLS(
-    ch_fasta
+    ch_fasta,
+    COLLATE_STATS.out.window_tsv,
+    BUSCO_DIAMOND.out.first_table,
+    BUSCO_DIAMOND.out.blastp_txt,
+    "${params.ncbi_taxdump}",
+    INPUT_CHECK.out.genome.map{ it[1].baseName }
     )
     ch_versions = ch_versions.mix(BLOBTOOLS.out.versions)
 

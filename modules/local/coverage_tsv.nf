@@ -24,7 +24,6 @@ process COVERAGE_TSV {
     """
     cut -f 4 $mosdepth | sed -e 1i"${prefix}_cov" > mosdepth.tsv
     paste ${countbusogenes} mosdepth.tsv > ${prefix}_coverage.tsv
-
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         coverage_tsv : 1.10
