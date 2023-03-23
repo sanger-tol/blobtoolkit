@@ -2,8 +2,8 @@
 
 # Argument1:  BlobDir directory 
 # Argument2:  ID to name output files (ToLID or GCA accession)
-# Argument3:  args = other parameters required to run the module
-# Argument4:  coverage data available (string: "TRUE" or "FALSE")
+# Argument3:  coverage data available (string: "TRUE" or "FALSE")
+# Argument4:  args = other parameters required to run the module
 
 BLOBDIR=$1
 ID=$2
