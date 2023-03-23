@@ -22,7 +22,7 @@ process GENERATE_IMAGES {
     def args = task.ext.args ?: ''
     if( params.use_cov ) {
     """
-    view.sh ${blobdir} "${blobdir}" "TRUE" $args
+    view.sh ${blobdir} "${blobdir}" "TRUE" "$args"
     
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -32,7 +32,7 @@ process GENERATE_IMAGES {
     }
     else {
     """
-    view.sh ${blobdir} "${blobdir}" "FALSE" $args
+    view.sh ${blobdir} "${blobdir}" "FALSE" "$args"
    
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
