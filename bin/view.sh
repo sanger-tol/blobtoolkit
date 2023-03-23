@@ -19,13 +19,11 @@ if [[ "$COV" == "TRUE" ]]; then
     blobtools view --view cumulative --param largeFonts=true --format png --out $BLOBDIR "$ID" $ARGS
     blobtools view --view snail --param largeFonts=true --format png --out $BLOBDIR "$ID" $ARGS
     mv $BLOBDIR/*.png ./
-else
-  if [[ "$COV" == "FALSE" ]]; then
+elif [[ "$COV" == "FALSE" ]]; then
     blobtools view --view cumulative --param largeFonts=true --format png --out $BLOBDIR "$ID" $ARGS
     blobtools view --view snail --param largeFonts=true --format png --out $BLOBDIR "$ID" $ARGS
     mv $BLOBDIR/*.png ./
-  fi
-else 
+else
     echo "ERROR: $COV is not a valid value, please use TRUE or FALSE"
     exit 1
 fi
