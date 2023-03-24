@@ -25,6 +25,7 @@ process GET_WINDOW_STATS {
             --in ${tsv} \\
             $args \\
             --out ${prefix}_window_stats.tsv
+            
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')

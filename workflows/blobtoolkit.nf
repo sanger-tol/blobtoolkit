@@ -100,7 +100,6 @@ workflow BLOBTOOLKIT {
     COLLATE_STATS.out.window_tsv,
     BUSCO_DIAMOND.out.first_table,
     BUSCO_DIAMOND.out.blastp_txt,
-    "${params.ncbi_taxdump}",
     INPUT_CHECK.out.genome.map{ it[1].baseName }
     )
     ch_versions = ch_versions.mix(BLOBTOOLS.out.versions)

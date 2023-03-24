@@ -11,9 +11,9 @@ process CREATE_BLOBDIR {
     tuple val(meta), path(window, stageAs: 'dir/*')
     tuple val(meta), path(busco)
     tuple val(meta), path(blastp)
-    path(taxdump)
     tuple val(meta), path(yaml)
-    val(GCA)
+    path(taxdump)
+    val(genome_accession)
 
     output:
     tuple val(meta), path('**/*meta.json')              , emit: json
@@ -37,8 +37,10 @@ process CREATE_BLOBDIR {
         --taxrule buscogenes \\
         --busco ${busco} \\
         --hits ${blastp} \\
+        --threads 4 \\
         $args \\
-        ${GCA}
+        ${genome_accession}
+        
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')

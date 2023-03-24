@@ -12,8 +12,8 @@ process COVERAGE_TSV {
     tuple val(meta), path(countbusogenes)   //taking output of count_buscogenes
 
     output:
-    tuple val(meta), path ('*_coverage.tsv')       , emit: cov_tsv
-    path "versions.yml", emit: versions
+    tuple val(meta), path ('*_coverage.tsv') , emit: cov_tsv
+    path "versions.yml"                      , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -24,6 +24,7 @@ process COVERAGE_TSV {
     """
     cut -f 4 $mosdepth | sed -e 1i"${prefix}_cov" > mosdepth.tsv
     paste ${countbusogenes} mosdepth.tsv > ${prefix}_coverage.tsv
+    
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         coverage_tsv : 1.10

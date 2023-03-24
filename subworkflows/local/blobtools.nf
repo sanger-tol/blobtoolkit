@@ -13,13 +13,11 @@ include { CREATE_BLOBDIR          } from '../../modules/local/create_blobdir'
 workflow BLOBTOOLS {
     take:
 
-    //  Tuple [meta, fasta]:
-    fasta
-    windowstats_tsv
-    busco_table
-    blastp
-    ncbi_taxdump
-    blobdir_name
+    fasta               //  Tuple [meta, path/to/fasta]
+    windowstats_tsv     //  Tuple [meta, tuple[ path/to/window_stats.0.01, path/to/window_stats.01, path/to/window_stats.100000, path/to/window_stats.1000000 ]]
+    busco_table         //  Tuple [meta, path/to/busco_first_table]
+    blastp              //  Tuple [meta, path/to/blastp]
+    blobdir_name        //  Val(genome_meta)
 
     main:
 
@@ -49,16 +47,10 @@ workflow BLOBTOOLS {
       config_file
     )
 
-    //windowstats_tsv.view()
-    //window_dir = GetDirectory(windowstats_tsv)
-    //window_dir.view()
-
-    //tsv = TextToTsv.(blastp)
-
     //  
     // Create Blobdir data structure
     //
-    CREATE_BLOBDIR (windowstats_tsv, busco_table, blastp, ncbi_taxdump, ADD_SUMMARY_TO_METADATA.out.yaml, blobdir_name)
+    CREATE_BLOBDIR (windowstats_tsv, busco_table, blastp, ADD_SUMMARY_TO_METADATA.out.yaml, "${params.ncbi_taxdump}", blobdir_name)
    
     emit:
 
