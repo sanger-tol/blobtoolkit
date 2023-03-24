@@ -12,10 +12,10 @@ The directories comply with Tree of Life's canonical directory structure.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
-- [Coverage Analysis Files](#Coverage Analysis Files) - Output files from Mosdepth and Count_Busco_Genes
-- [Blast Analysis Files](#Blast Analysis Files) - Output files from Diamond_BlastP
-- [Blobtools Files](#Blobtools Files) - Output files from blobtools subworkflow
-- [Pipeline Information](#Pipeline info) - Report metrics generated during the workflow execution
+- [Coverage Analysis Files](#Coverage-Analysis-Files) - Output files from Mosdepth and Count_Busco_Genes
+- [Blast Analysis Files](#Blast-Analysis-Files) - Output files from Diamond_BlastP
+- [Blobtools Files](#Blobtools-Files) - Output files from blobtools subworkflow
+- [Pipeline Information](#Pipeline-info) - Report metrics generated during the workflow execution
 
 ### Coverage Analysis Files
 
@@ -61,6 +61,17 @@ Output config file from blobltools subworkflow is exported to the `blobltoolkit/
 ```
 GCA_922984935.2
 └── config.yaml
+```
+
+Output blobdir files are exported to `blobdir/meta` folder (where meta is either the accession or ToLID):
+
+```
+GCA_922984935.2
+  ├── buscogenes_phylum.json
+  ├── carnivora_odb10_busco.json
+  ├── GCA_922984935.2.subset_cov.json
+  ├── identifiers.json
+  ├── meta.json
 ```
 
 ### Pipeline information
