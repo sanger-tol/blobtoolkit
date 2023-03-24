@@ -21,7 +21,7 @@ process GENERATE_CONFIG {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     blobtoolkit-pipeline generate-config ${GCA}
-    
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit-pipeline: \$(blobtoolkit-pipeline --version | cut -d' ' -f2 | sed 's/v//')

@@ -40,7 +40,7 @@ process CREATE_BLOBDIR {
         --threads 4 \\
         $args \\
         ${genome_accession}
-        
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')

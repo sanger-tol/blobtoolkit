@@ -25,7 +25,7 @@ process EXTRACT_BUSCO_GENES {
         --busco $bac/full_table.tsv.gz \\
         --busco $euk/full_table.tsv.gz \\
         --out ${prefix}_busco_genes.fasta
-        
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
