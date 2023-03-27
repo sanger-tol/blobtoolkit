@@ -12,10 +12,10 @@ The directories comply with Tree of Life's canonical directory structure.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
-- [Coverage Analysis Files](#Coverage-Analysis-Files) - Output files from Mosdepth and Count_Busco_Genes
-- [Blast Analysis Files](#Blast-Analysis-Files) - Output files from Diamond_BlastP
-- [Blobtools Files](#Blobtools-Files) - Output files from blobtools subworkflow
-- [Pipeline Information](#Pipeline-info) - Report metrics generated during the workflow execution
+- [Coverage Analysis Files](#coverage-analysis-files) - Output files from Mosdepth and Count_Busco_Genes
+- [Blast Analysis Files](#blast-analysis-files) - Output files from Diamond_BlastP
+- [Blobtools Files](#blobtools-Files) - Output files from blobtools subworkflow
+- [Pipeline Information](#pipeline-information) - Report metrics generated during the workflow execution
 
 ### Coverage Analysis Files
 
