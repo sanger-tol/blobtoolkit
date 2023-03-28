@@ -22,7 +22,7 @@ process GENERATE_IMAGES {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def args = task.ext.args ?: ''
     """
-    blobtools view \\ 
+    blobtools view \\
         $plot \\
         --out . "${blobdir}" \\
         $args
