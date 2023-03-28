@@ -9,7 +9,8 @@ process GENERATE_IMAGES {
 
     input:
     tuple val(meta), path(blobdir)
-
+    val plot
+    
     output:
     tuple val(meta), path('*.png') , emit: png
     path "versions.yml"            , emit: versions
@@ -20,24 +21,15 @@ process GENERATE_IMAGES {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     def args = task.ext.args ?: ''
-    if( params.use_cov ) {
     """
-    view.sh ${blobdir} "${blobdir}" "TRUE" "$args"
+    blobtools view \\ 
+        $plot \\
+        --out . "${blobdir}" \\
+        $args
     
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit-pipeline: \$(blobtoolkit-pipeline --version | cut -d' ' -f2 | sed 's/v//')
     END_VERSIONS
-    """
-    }
-    else {
-    """
-    view.sh ${blobdir} "${blobdir}" "FALSE" "$args"
-   
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        blobtoolkit-pipeline: \$(blobtoolkit-pipeline --version | cut -d' ' -f2 | sed 's/v//')
-    END_VERSIONS
-    """
-    }
+    """ 
 }
