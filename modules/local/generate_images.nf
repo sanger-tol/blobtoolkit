@@ -9,7 +9,7 @@ process GENERATE_IMAGES {
 
     input:
     tuple val(meta), path(blobdir)
-    val plot
+    each plot
     
     output:
     tuple val(meta), path('*.png') , emit: png
