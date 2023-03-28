@@ -18,12 +18,26 @@ workflow VIEW {
     main:
 
     ch_versions = Channel.empty()
-
+    
     //
     // Generate static plot (png format)
     //
+    
+    // channel to select plots
+    plots = [
+      "--view blob --param plotShape=circle",
+      "--view blob --param plotShape=hex",
+      "--view blob --param plotShape=square",
+      "--view blob --param plotShape=kite",
+      "--view cumulative",
+      "--view snail"
+    ]    
+    
+    plots_ch = Channel.fromList( plots )
+    
     GENERATE_IMAGES (
-      blobdir
+      blobdir,
+      plots
     )
     ch_versions = ch_versions.mix(GENERATE_IMAGES.out.versions)
     
