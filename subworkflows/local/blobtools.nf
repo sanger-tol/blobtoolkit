@@ -18,6 +18,7 @@ workflow BLOBTOOLS {
     busco_table         //  Tuple [meta, path/to/busco_first_table]
     blastp              //  Tuple [meta, path/to/blastp]
     blobdir_name        //  Val(genome_meta)
+    ncbi_taxdump        //  Path(ncbi_taxdump)
 
     main:
 
@@ -46,18 +47,22 @@ workflow BLOBTOOLS {
     ADD_SUMMARY_TO_METADATA (
       config_file
     )
+   ch_versions = ch_versions.mix(ADD_SUMMARY_TO_METADATA.out.versions)
 
     //  
     // Create Blobdir data structure
     //
-    CREATE_BLOBDIR (windowstats_tsv, busco_table, blastp, ADD_SUMMARY_TO_METADATA.out.yaml, "${params.ncbi_taxdump}", blobdir_name)
-   
+    CREATE_BLOBDIR (windowstats_tsv, busco_table, blastp, ADD_SUMMARY_TO_METADATA.out.yaml, ncbi_taxdump, blobdir_name)
+    ch_versions = ch_versions.mix(CREATE_BLOBDIR.out.versions)
+
     emit:
 
     // YAML config file
     config_yaml = ADD_SUMMARY_TO_METADATA.out.yaml
-    json = CREATE_BLOBDIR.out.json
-    
+
+    // Blobdir directory
+    blobdir = CREATE_BLOBDIR.out.blobdir
+
     // tool versions
     versions = ch_versions
 }

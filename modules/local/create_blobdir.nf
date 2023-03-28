@@ -16,12 +16,7 @@ process CREATE_BLOBDIR {
     val(genome_accession)
 
     output:
-    tuple val(meta), path('**/*meta.json')              , emit: json
-    tuple val(meta), path('**/*identifiers.json')       , emit: identifiers
-    tuple val(meta), path('**/*buscogenes_phylum.json') , emit: buscogenes_phylum
-    tuple val(meta), path('**/*cov.json')               , emit: coverage
-    tuple val(meta), path('**/*busco.json')             , emit: busco
-    tuple val(meta), path('**/*.json')                  , emit: blobdir
+    tuple val(meta), path("${genome_accession}")        , emit: blobdir
     path "versions.yml"                                 , emit: versions
 
     when:
