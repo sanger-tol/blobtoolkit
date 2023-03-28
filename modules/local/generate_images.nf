@@ -12,8 +12,8 @@ process GENERATE_IMAGES {
     each plot
 
     output:
-    tuple val(meta), path('**/*.png') , emit: png
-    path "versions.yml"               , emit: versions
+    tuple val(meta), path('*.png') , emit: png
+    path "versions.yml"            , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
