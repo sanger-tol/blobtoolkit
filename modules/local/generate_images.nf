@@ -10,7 +10,7 @@ process GENERATE_IMAGES {
     input:
     tuple val(meta), path(blobdir)
     each plot
-    
+
     output:
     tuple val(meta), path('**/*.png') , emit: png
     path "versions.yml"               , emit: versions
@@ -26,10 +26,10 @@ process GENERATE_IMAGES {
         $plot \\
         --out . "${blobdir}" \\
         $args
-    
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit-pipeline: \$(blobtoolkit-pipeline --version | cut -d' ' -f2 | sed 's/v//')
     END_VERSIONS
-    """ 
+    """
 }
