@@ -8,7 +8,7 @@ process CREATE_BLOBDIR {
     container "genomehubs/blobtoolkit-blobtools:3.3.4"
 
     input:
-    tuple val(meta), path(window, stageAs: 'dir/*')
+    tuple val(meta), path(window, stageAs: 'windowstats/*')
     tuple val(meta), path(busco)
     tuple val(meta), path(blastp)
     tuple val(meta), path(yaml)
@@ -21,6 +21,7 @@ process CREATE_BLOBDIR {
     tuple val(meta), path('**/*buscogenes_phylum.json') , emit: buscogenes_phylum
     tuple val(meta), path('**/*cov.json')               , emit: coverage
     tuple val(meta), path('**/*busco.json')             , emit: busco
+    tuple val(meta), path('**/*.json')                  , emit: blobdir
     path "versions.yml"                                 , emit: versions
 
     when:
@@ -31,13 +32,13 @@ process CREATE_BLOBDIR {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     blobtools replace \\
-        --bedtsvdir dir \\
+        --bedtsvdir windowstats \\
         --meta ${yaml} \\
         --taxdump ${taxdump} \\
         --taxrule buscogenes \\
         --busco ${busco} \\
         --hits ${blastp} \\
-        --threads 4 \\
+        --threads ${task.cpus} \\
         $args \\
         ${genome_accession}
 
