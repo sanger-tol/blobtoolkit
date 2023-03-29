@@ -62,6 +62,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 workflow BLOBTOOLKIT {
 
     ch_versions = Channel.empty()
+    ch_ncbi_taxdump = Channel.fromPath(params.ncbi_taxdump)
 
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
@@ -96,7 +97,12 @@ workflow BLOBTOOLKIT {
     // SUBWORKFLOW: BLOBTOOLS
     //
     BLOBTOOLS(
-    ch_fasta
+    ch_fasta,
+    COLLATE_STATS.out.window_tsv,
+    BUSCO_DIAMOND.out.first_table,
+    BUSCO_DIAMOND.out.blastp_txt,
+    INPUT_CHECK.out.genome.map{ meta, fasta -> fasta.baseName },
+    ch_ncbi_taxdump
     )
     ch_versions = ch_versions.mix(BLOBTOOLS.out.versions)
 
