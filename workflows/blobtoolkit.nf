@@ -109,11 +109,8 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: VIEW
     //
-    fasta_ch = ch_fasta.map { fa -> [fa[0], "${params.blobdir}"] }
-    view_ch = fasta_ch.combine(COLLATE_STATS.out.complete)
     VIEW (
-    view_ch.map { [it[0],it[1]] },
-    view_ch.map { it[2] }
+    BLOBTOOLS.out.blobdir
     )
     ch_versions = ch_versions.mix(VIEW.out.versions)
 

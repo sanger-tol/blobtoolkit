@@ -15,9 +15,6 @@ workflow VIEW {
     //  Tuple [meta, blobdir]:
     blobdir
 
-    // val (= true, to iniate the subworkflow)
-    complete
-
     main:
 
     ch_versions = Channel.empty()
@@ -26,7 +23,7 @@ workflow VIEW {
     // Generate static plot (png format)
     //
     
-    // channel to select plots
+    // list to select plots
     plots = [
       "--view blob --param plotShape=circle",
       "--view blob --param plotShape=hex",
@@ -34,8 +31,7 @@ workflow VIEW {
       "--view blob --param plotShape=kite",
       "--view cumulative",
       "--view snail"
-    ]    
-    
+    ]
     
     GENERATE_IMAGES (
       blobdir,
