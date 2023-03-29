@@ -15,7 +15,8 @@ Learn more about contributing: [CONTRIBUTING.md](https://github.com/nf-core/blob
 
 - [ ] This comment contains a description of changes (with reason).
 - [ ] If you've fixed a bug or added code that should be tested, add tests!
-- [ ] If you've added a new tool - have you followed the pipeline conventions in the [contribution docs](https://github.com/nf-core/blobtoolkit/tree/master/.github/CONTRIBUTING.md)- [ ] If necessary, also make a PR on the nf-core/blobtoolkit _branch_ on the [nf-core/test-datasets](https://github.com/nf-core/test-datasets) repository.
+- [ ] If you've added a new tool - have you followed the pipeline conventions in the [contribution docs](https://github.com/nf-core/blobtoolkit/tree/master/.github/CONTRIBUTING.md)
+- [ ] If necessary, also make a PR on the nf-core/blobtoolkit _branch_ on the [nf-core/test-datasets](https://github.com/nf-core/test-datasets) repository.
 - [ ] Make sure your code lints (`nf-core lint`).
 - [ ] Ensure the unit test suite passes (`nextflow run . -profile test,singularity,sanger --outdir <OUTDIR>`) locally.
 - [ ] Ensure the full test suite passes (`nextflow run . -profile test_full,singularity,sanger --outdir <OUTDIR>`) locally.
