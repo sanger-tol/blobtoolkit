@@ -12,8 +12,8 @@ process COVERAGE_TSV {
     tuple val(meta), path(countbusogenes)   //taking output of count_buscogenes
 
     output:
-    tuple val(meta), path ('*_coverage.tsv')       , emit: cov_tsv
-    path "versions.yml", emit: versions
+    tuple val(meta), path ('*_coverage.tsv') , emit: cov_tsv
+    path "versions.yml"                      , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
