@@ -33,4 +33,5 @@ workflow COLLATE_STATS {
     count_genes = COUNT_BUSCO_GENES.out.tsv
     cov_tsv = COVERAGE_TSV.out.cov_tsv
     versions = ch_versions
+    complete = GET_WINDOW_STATS.out.complete
 }

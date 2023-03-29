@@ -13,6 +13,7 @@ process GET_WINDOW_STATS {
     output:
     tuple val(meta), path('*_window_stats*.tsv') , emit: tsv
     path "versions.yml"                          , emit: versions
+    val true                                     , emit: complete
 
     when:
     task.ext.when == null || task.ext.when

@@ -15,6 +15,9 @@ workflow VIEW {
     //  Tuple [meta, blobdir]:
     blobdir
 
+    // val (= true, to iniate the subworkflow)
+    complete
+
     main:
 
     ch_versions = Channel.empty()
@@ -33,7 +36,6 @@ workflow VIEW {
       "--view snail"
     ]    
     
-    plots_ch = Channel.fromList( plots )
     
     GENERATE_IMAGES (
       blobdir,
