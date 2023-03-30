@@ -5,7 +5,7 @@ process GENERATE_IMAGES {
     if (params.enable_conda) {
         exit 1, "Conda environments cannot be used when using the GENERATE_IMAGES module. Please use docker or singularity containers."
     }
-    container 'genomehubs/blobtoolkit:4.0.7'
+    container 'genomehubs/blobtoolkit:4.1.2'
 
     input:
     tuple val(meta), path(blobdir)
