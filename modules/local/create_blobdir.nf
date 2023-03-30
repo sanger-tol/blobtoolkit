@@ -5,7 +5,7 @@ process CREATE_BLOBDIR {
     if (params.enable_conda) {
         exit 1, "Conda environments cannot be used when using the CREATE_BLOBDIR module. Please use docker or singularity containers."
     }
-    container "genomehubs/blobtoolkit-blobtools:3.3.4"
+    container 'genomehubs/blobtoolkit:4.0.7'
 
     input:
     tuple val(meta), path(window, stageAs: 'windowstats/*')
