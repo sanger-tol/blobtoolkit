@@ -29,7 +29,7 @@ workflow INPUT_CHECK {
         tol         = 0
         // Uncompress genome fasta file if required
         if (params.fasta.endsWith('.gz')) {
-            genome    = GUNZIP ( genome.map { file -> [ [ id: file.baseName.replaceFirst(/.fa.*/, "") ], file ] } ).gunzip
+            genome      = GUNZIP ( genome.map { file -> [ [ id: file.baseName.replaceFirst(/.fa.*/, "").replaceFirst(/\.\p{Alpha}+$/, "").replaceAll(/\./, "_") ], file ] } ).gunzip
             ch_versions = ch_versions.mix(GUNZIP.out.versions)
         } else {
             genome = genome.map { file -> [ [ id: file.baseName ], file ] }

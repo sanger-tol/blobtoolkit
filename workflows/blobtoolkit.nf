@@ -101,7 +101,7 @@ workflow BLOBTOOLKIT {
     COLLATE_STATS.out.window_tsv,
     BUSCO_DIAMOND.out.first_table,
     BUSCO_DIAMOND.out.blastp_txt,
-    INPUT_CHECK.out.genome.map{ meta, fasta -> fasta.baseName },
+    INPUT_CHECK.out.genome.map{ meta, fasta -> fasta.baseName.replaceFirst(/\.\p{Alpha}+$/, "").replaceAll(/\./, "_") },
     ch_ncbi_taxdump
     )
     ch_versions = ch_versions.mix(BLOBTOOLS.out.versions)
