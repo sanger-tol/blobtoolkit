@@ -1,10 +1,11 @@
 Design decisions about the pipeline are indexed and recorded as individual files in this directory.
 
-To add a new decision, please create a pull request that adds a new markdown file named `XX-short-summary.md` to this directory. When replacing a previous decision, change the status of the latter to "Superseded". The new file should have the following structure:
+To add a new decision, please create a pull request that adds a new markdown file named `XX-short-summary.md` to this directory. When replacing a previous decision, change the status of the latter to "Superseded" and add this to the title of the file `superseded-XX-short-summary.md`. The new file should have the following structure:
 
 ## Title – Decision Statement
 
 ## Status – Either Proposed, Rejected, Current, Deprecated or Superseded
+If this issue has been superseded, please add a line saying 'Superseded by <link-to-new-record>'.
 
 ## Context
 
