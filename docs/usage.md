@@ -207,7 +207,7 @@ taxon:
 version: 2
 ```
 
-Parameters in stats_windows, diamond_blastp, and diamond_blastx are ignored and are kept in this YAML file only to allow compatibility with the blobltools subworkflow in the previous [blobtoolkit-pipeline](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/blobtoolkit-pipeline/src) implementation. If you need to specify new values for these parameters, before running the pipeline, you can simply edit the `conf/modules.config` file.
+Parameters in `stats_windows`, `diamond_blastp`, and `diamond_blastx` are ignored and are kept in this YAML file only to allow compatibility with the `blobltools` subworkflow in the previous [blobtoolkit pipeline](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/blobtoolkit-pipeline/src) implementation. If you need to specify new values for these parameters, before running the pipeline, you can edit the `conf/modules.config` file.
 
 ## Running the pipeline
 
