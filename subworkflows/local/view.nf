@@ -35,7 +35,7 @@ workflow VIEW {
     
     GENERATE_IMAGES (
       blobdir,
-      plots
+      ["--view cumulative"]
     )
     ch_versions = ch_versions.mix(GENERATE_IMAGES.out.versions)
     
