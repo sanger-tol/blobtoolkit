@@ -5,6 +5,7 @@ To add a new decision, please create a pull request that adds a new markdown fil
 ## Title – Decision Statement
 
 ## Status – Either Proposed, Rejected, Current, Deprecated or Superseded
+
 If this issue has been superseded, please add a line saying 'Superseded by <link-to-new-record>'.
 
 ## Context
