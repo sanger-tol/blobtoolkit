@@ -41,7 +41,7 @@ workflow COVERAGE_STATS {
 
     MOSDEPTH(
         input_depth.map{ [it[0], it[1], it[2], it[4]] },
-        input_depth.map{ it[6] }
+        input_depth.map{ [it[5], it[6]] }
     )
     ch_versions = ch_versions.mix(MOSDEPTH.out.versions)
 
