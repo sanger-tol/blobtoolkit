@@ -82,7 +82,7 @@ Subworkflow: Blobtools
 
 ## Documentation
 
-The sanger-tol/blobtoolkit pipeline comes with documentation about the pipeline [usage](https://github.com/sanger-tol/blobtoolkit/blob/main/docs/usage.md), [parameters](https://github.com/sanger-tol/blobtoolkit/blob/main/docs/parameters.md) and [output](https://github.com/sanger-tol/blobtoolkit/blob/main/docs/output.md).
+The sanger-tol/blobtoolkit pipeline comes with documentation about the pipeline [usage](https://github.com/sanger-tol/blobtoolkit/blob/main/docs/usage.md) and [output](https://github.com/sanger-tol/blobtoolkit/blob/main/docs/output.md).
 
 ## Credits
 
