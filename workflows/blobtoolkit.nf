@@ -4,18 +4,15 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-nextflow.enable.dsl = 2
-
 def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 
-// Validate input parameters
-WorkflowBlobtoolkit.initialise(params, log)
-
+// Check input path parameters to see if they exist
+def checkPathParamList = [ params.input, params.fasta ]
+for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
-if (params.input && params.fasta) { inputs = [ file(params.input, checkIfExists: true), file(params.fasta) ] }
-else if (params.input && params.project) { inputs = [ params.input, params.project ] }
-else { exit 1, 'Input not specified. Please include either a samplesheet or Tree of Life organism and project IDs' }
+if (params.input) { ch_input = Channel.fromPath(params.input) } else { exit 1, 'Input samplesheet not specified!' }
+if (params.fasta) { ch_fasta = Channel.fromPath(params.fasta) } else { exit 1, 'Genome fasta file not specified!' }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,8 +63,7 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
-    Channel.of(inputs).set{ch_input}
-    INPUT_CHECK ( ch_input )
+    INPUT_CHECK ( ch_input, ch_fasta )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     //
