@@ -13,7 +13,7 @@ The directories comply with Tree of Life's canonical directory structure.
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
 - [Coverage Analysis Files](#coverage-analysis-files) - Output files from Mosdepth and Count_Busco_Genes
-- [Blast Analysis Files](#blast-analysis-files) - Output files from Diamond_BlastP
+- [BUSCO and diamond_blastp Analysis Files](#blast-analysis-files) - Output files from Diamond_BlastP
 - [Blobtools Files](#blobtools-Files) - Output files from blobtools subworkflow
 - [Pipeline Information](#pipeline-information) - Report metrics generated during the workflow execution
 
@@ -49,10 +49,60 @@ blobtoolkit
 - `*_window_stats.100000.tsv` : Aggregate 1kb windows into 100kb windows
 - `*_window_stats.1000000.tsv` : Aggregate 1kb windows into 1Mb windows
 
-### Blast Analysis Files
+### BUSCO and diamond_blastp Analysis Files
 
-- `Blast Analysis Files/`
-  - `*.txt`: Text File containing hits in tabular BLAST format.
+- `blobtoolkit/busco_diamond/`
+
+```text
+├── GCA_922984935_2-archaea_odb10-busco
+├── GCA_922984935_2-archaea_odb10-busco.batch_summary.txt
+├── GCA_922984935_2-bacteria_odb10-busco
+├── GCA_922984935_2-bacteria_odb10-busco.batch_summary.txt
+├── GCA_922984935_2_busco_genes.fasta
+├── GCA_922984935_2-carnivora_odb10-busco
+├── GCA_922984935_2-carnivora_odb10-busco.batch_summary.txt
+├── GCA_922984935_2-eukaryota_odb10-busco
+├── GCA_922984935_2-eukaryota_odb10-busco.batch_summary.txt
+├── GCA_922984935_2-eutheria_odb10-busco
+├── GCA_922984935_2-eutheria_odb10-busco.batch_summary.txt
+├── GCA_922984935_2-laurasiatheria_odb10-busco
+├── GCA_922984935_2-laurasiatheria_odb10-busco.batch_summary.txt
+├── GCA_922984935_2-mammalia_odb10-busco
+├── GCA_922984935_2-mammalia_odb10-busco.batch_summary.txt
+├── GCA_922984935_2-metazoa_odb10-busco
+├── GCA_922984935_2-metazoa_odb10-busco.batch_summary.txt
+├── GCA_922984935_2-tetrapoda_odb10-busco
+├── GCA_922984935_2-tetrapoda_odb10-busco.batch_summary.txt
+├── GCA_922984935_2.tsv
+├── GCA_922984935_2.txt
+├── GCA_922984935_2-vertebrata_odb10-busco
+├── GCA_922984935_2-vertebrata_odb10-busco.batch_summary.txt
+├── short_summary.specific.archaea_odb10.GCA_922984935.2.subset.fasta.json
+├── short_summary.specific.archaea_odb10.GCA_922984935.2.subset.fasta.txt
+├── short_summary.specific.bacteria_odb10.GCA_922984935.2.subset.fasta.json
+├── short_summary.specific.bacteria_odb10.GCA_922984935.2.subset.fasta.txt
+├── short_summary.specific.carnivora_odb10.GCA_922984935.2.subset.fasta.json
+├── short_summary.specific.carnivora_odb10.GCA_922984935.2.subset.fasta.txt
+├── short_summary.specific.eukaryota_odb10.GCA_922984935.2.subset.fasta.json
+├── short_summary.specific.eukaryota_odb10.GCA_922984935.2.subset.fasta.txt
+├── short_summary.specific.eutheria_odb10.GCA_922984935.2.subset.fasta.json
+├── short_summary.specific.eutheria_odb10.GCA_922984935.2.subset.fasta.txt
+├── short_summary.specific.laurasiatheria_odb10.GCA_922984935.2.subset.fasta.json
+├── short_summary.specific.laurasiatheria_odb10.GCA_922984935.2.subset.fasta.txt
+├── short_summary.specific.mammalia_odb10.GCA_922984935.2.subset.fasta.json
+├── short_summary.specific.mammalia_odb10.GCA_922984935.2.subset.fasta.txt
+├── short_summary.specific.metazoa_odb10.GCA_922984935.2.subset.fasta.json
+├── short_summary.specific.metazoa_odb10.GCA_922984935.2.subset.fasta.txt
+├── short_summary.specific.tetrapoda_odb10.GCA_922984935.2.subset.fasta.json
+├── short_summary.specific.tetrapoda_odb10.GCA_922984935.2.subset.fasta.txt
+├── short_summary.specific.vertebrata_odb10.GCA_922984935.2.subset.fasta.json
+└── short_summary.specific.vertebrata_odb10.GCA_922984935.2.subset.fasta.txt
+```
+
+- `GCA_922984935_2.txt`: Text file containing hits in tabular BLAST format.
+- `GCA_922984935_2.tsv`: Tab-delimited file containing GOAT taxon search results.
+- `*_odb10*`: BUSCO results for each lineage in GOAT taxon search results.
+
 
 ### Blobtools Files
 
