@@ -54,6 +54,7 @@ blobtoolkit
 - `blobtoolkit/busco_diamond/`
 
 ```text
+busco_diamond/
 ├── GCA_922984935_2-archaea_odb10-busco
 ├── GCA_922984935_2-archaea_odb10-busco.batch_summary.txt
 ├── GCA_922984935_2-bacteria_odb10-busco
@@ -102,7 +103,6 @@ blobtoolkit
 - `GCA_922984935_2.txt`: Text file containing hits in tabular BLAST format.
 - `GCA_922984935_2.tsv`: Tab-delimited file containing GOAT taxon search results.
 - `*_odb10*`: BUSCO results for each lineage in GOAT taxon search results.
-
 
 ### Blobtools Files
 
