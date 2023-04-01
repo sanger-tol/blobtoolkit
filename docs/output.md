@@ -116,12 +116,94 @@ GCA_922984935.2
 Output blobdir files are exported to `blobdir/meta` folder (where meta is either the accession or ToLID):
 
 ```
-GCA_922984935.2
-  ├── buscogenes_phylum.json
-  ├── carnivora_odb10_busco.json
-  ├── GCA_922984935.2.subset_cov.json
-  ├── identifiers.json
-  ├── meta.json
+GCA_922984935_2/
+├── archaea_odb10_count.json
+├── archaea_odb10_count_windows_1000000.json
+├── archaea_odb10_count_windows_100000.json
+├── bacteria_odb10_count.json
+├── bacteria_odb10_count_windows_1000000.json
+├── bacteria_odb10_count_windows_100000.json
+├── buscogenes_class_cindex.json
+├── buscogenes_class.json
+├── buscogenes_class_positions.json
+├── buscogenes_class_score.json
+├── buscogenes_class_windows.json
+├── buscogenes_family_cindex.json
+├── buscogenes_family.json
+├── buscogenes_family_positions.json
+├── buscogenes_family_score.json
+├── buscogenes_family_windows.json
+├── buscogenes_genus_cindex.json
+├── buscogenes_genus.json
+├── buscogenes_genus_positions.json
+├── buscogenes_genus_score.json
+├── buscogenes_genus_windows.json
+├── buscogenes_kingdom_cindex.json
+├── buscogenes_kingdom.json
+├── buscogenes_kingdom_positions.json
+├── buscogenes_kingdom_score.json
+├── buscogenes_kingdom_windows.json
+├── buscogenes_order_cindex.json
+├── buscogenes_order.json
+├── buscogenes_order_positions.json
+├── buscogenes_order_score.json
+├── buscogenes_order_windows.json
+├── buscogenes_phylum_cindex.json
+├── buscogenes_phylum.json
+├── buscogenes_phylum_positions.json
+├── buscogenes_phylum_score.json
+├── buscogenes_phylum_windows.json
+├── buscogenes_positions.json
+├── buscogenes_species_cindex.json
+├── buscogenes_species.json
+├── buscogenes_species_positions.json
+├── buscogenes_species_score.json
+├── buscogenes_species_windows.json
+├── buscogenes_superkingdom_cindex.json
+├── buscogenes_superkingdom.json
+├── buscogenes_superkingdom_positions.json
+├── buscogenes_superkingdom_score.json
+├── buscogenes_superkingdom_windows.json
+├── carnivora_odb10_busco.json
+├── carnivora_odb10_count.json
+├── carnivora_odb10_count_windows_1000000.json
+├── carnivora_odb10_count_windows_100000.json
+├── eukaryota_odb10_count.json
+├── eukaryota_odb10_count_windows_1000000.json
+├── eukaryota_odb10_count_windows_100000.json
+├── eutheria_odb10_count.json
+├── eutheria_odb10_count_windows_1000000.json
+├── eutheria_odb10_count_windows_100000.json
+├── GCA_922984935_2_cov.json
+├── GCA_922984935_2_cov_stats.json
+├── GCA_922984935_2_cov_windows_1000000.json
+├── GCA_922984935_2_cov_windows_100000.json
+├── identifiers.json
+├── laurasiatheria_odb10_count.json
+├── laurasiatheria_odb10_count_windows_1000000.json
+├── laurasiatheria_odb10_count_windows_100000.json
+├── length.json
+├── length_windows_1000000.json
+├── length_windows_100000.json
+├── mammalia_odb10_count.json
+├── mammalia_odb10_count_windows_1000000.json
+├── mammalia_odb10_count_windows_100000.json
+├── meta.json
+├── metazoa_odb10_count.json
+├── metazoa_odb10_count_windows_1000000.json
+├── metazoa_odb10_count_windows_100000.json
+├── position.json
+├── position_windows_1000000.json
+├── position_windows_100000.json
+├── proportion.json
+├── proportion_windows_1000000.json
+├── proportion_windows_100000.json
+├── tetrapoda_odb10_count.json
+├── tetrapoda_odb10_count_windows_1000000.json
+├── tetrapoda_odb10_count_windows_100000.json
+├── vertebrata_odb10_count.json
+├── vertebrata_odb10_count_windows_1000000.json
+└── vertebrata_odb10_count_windows_100000.json
 ```
 
 ### Pipeline information
