@@ -19,8 +19,6 @@ workflow BLOBTOOLS {
     blastp              //  Tuple [meta, path/to/blastp]
     blobdir_name        //  Val(genome_meta)
     ncbi_taxdump        //  Path(ncbi_taxdump)
-    accession           //  Val(accession)
-    yaml                //  Val(yaml)
 
     main:
 
@@ -29,17 +27,17 @@ workflow BLOBTOOLS {
     //
     // Generate or read config file: a YAML file or a GCA accession should be provided
     //
-    if ( accession && !yaml){
+    if ( params.accession && !params.yaml){
       GENERATE_CONFIG (
-      fasta.map { fa -> [fa[0], accession] }
+      fasta.map { fa -> [fa[0], "${params.accession}"] }
       )
       ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions)
       config_file = GENERATE_CONFIG.out.yaml
     }
-    if ( yaml && !accession){
-      config_file = fasta.map { fa -> [fa[0], yaml] }
+    if ( params.yaml && !params.accession){
+      config_file = fasta.map { fa -> [fa[0], "${params.yaml}"] }
     }
-    if ( (!accession && !yaml) || (accession && yaml) ){
+    if ( (!params.accession && !params.yaml) || (params.accession && params.yaml) ){
       exit 1, 'Input not specified. Please include either a YAML file for draft genome or GCA accession for published genome'
     }
 

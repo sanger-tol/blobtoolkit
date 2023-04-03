@@ -19,8 +19,6 @@ workflow BUSCO_DIAMOND {
     fasta
     // path(blastp_db)
     blastp_db
-    // path(busco_lineages)
-    busco_lineages
     // val(blastp_outext)
     blastp_outext
     // val(blastp_cols)
@@ -58,9 +56,9 @@ workflow BUSCO_DIAMOND {
     ch_busco_inputs = fasta.combine(ch_lineages, by: 0)
 
     BUSCO (
-    ch_busco_inputs.map { [it[0], it[1]] },
-    ch_busco_inputs.map { it[2] },
-    busco_lineages,  // Please pass this option. We don't want to download the lineage data every time.
+    ch_busco_inputs.map { meta, fasta, lineages -> [ meta, fasta ] },
+    ch_busco_inputs.map { meta, fasta, lineages -> lineages },
+    "${params.busco_lineages_path}",  // Please pass this option. We don't want to download the lineage data every time.
     [] // No config
     )
     ch_versions = ch_versions.mix(BUSCO.out.versions)
@@ -136,8 +134,8 @@ workflow BUSCO_DIAMOND {
     }
 
     DIAMOND_BLASTP (
-    dmd_input_ch.map { [it[0], it[1]] },
-    dmd_input_ch.map { it[2] },
+    dmd_input_ch.map { meta, fasta, blastp -> [ meta, fasta ] },
+    dmd_input_ch.map { meta, fasta, blastp -> blastp },
     blastp_outext,
     blastp_cols
     )

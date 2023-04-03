@@ -15,8 +15,8 @@ workflow COVERAGE_STATS {
     // Channel: [meta, cram, cai, meta2, fasta]
     input_sam = cram.combine(fasta)
     SAMTOOLS_VIEW( 
-        input_sam.map { [it[0], it[1], it[2]] },
-        input_sam.map{ it[4] },
+        input_sam.map{ meta, cram, cai, meta2, fasta -> [ meta, cram, cai ] },
+        input_sam.map{ meta, cram, cai, meta2, fasta -> fasta },
         []
     )
     ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions)
@@ -38,10 +38,9 @@ workflow COVERAGE_STATS {
     // Channel: [meta, bam, csi, meta2, bed, meta3, fasta]
     bam_bed = ch_bam.combine(ch_bed)
     input_depth = bam_bed.combine(fasta)
-
     MOSDEPTH(
-        input_depth.map{ [it[0], it[1], it[2], it[4]] },
-        input_depth.map{ [it[5], it[6]] }
+        input_depth.map{ meta, bam, csi, meta2, bed, meta3, fasta -> [ meta, bam, csi, bed ] },
+        input_depth.map{ meta, bam, csi, meta2, bed, meta3, fasta -> [ meta3, fasta ] }
     )
     ch_versions = ch_versions.mix(MOSDEPTH.out.versions)
 

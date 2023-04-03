@@ -60,11 +60,8 @@ workflow BLOBTOOLKIT {
     ch_versions = Channel.empty()
     ch_ncbi_taxdump = Channel.fromPath(params.ncbi_taxdump)
     blastp_db = Channel.fromPath(params.diamondblastp_db)
-    busco_lineages = Channel.fromPath(params.busco_lineages_path)
-    blastp_outext = Channel.from(params.blastp_outext)
-    blastp_cols = Channel.from(params.blastp_cols)
-    accession = Channel.from(params.accession)
-    yaml = Channel.from(params.yaml)
+    blastp_outext = Channel.of(params.blastp_outext)
+    blastp_cols = Channel.of(params.blastp_cols)
 
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
@@ -86,7 +83,6 @@ workflow BLOBTOOLKIT {
     BUSCO_DIAMOND (
     ch_fasta,
     blastp_db,
-    busco_lineages,
     blastp_outext,
     blastp_cols
     )
@@ -107,9 +103,7 @@ workflow BLOBTOOLKIT {
     BUSCO_DIAMOND.out.first_table,
     BUSCO_DIAMOND.out.blastp_txt,
     INPUT_CHECK.out.genome.map{ meta, fasta -> fasta.baseName },
-    ch_ncbi_taxdump,
-    accession,
-    yaml
+    ch_ncbi_taxdump
     )
     ch_versions = ch_versions.mix(BLOBTOOLS.out.versions)
 
