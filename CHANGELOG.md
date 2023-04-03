@@ -19,8 +19,8 @@ This release marks the point where the pipeline was moved from Snakemake at [blo
 |               |               |
 |               |               |
 
-> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information 
-is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information
+> is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
 ### Software dependencies
 
@@ -28,13 +28,13 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 ntirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been liste
 d below for reference.
 
-| Dependency  | Old version     | New version     |
-| ----------- | --------------- | --------------- |
-|   |  |  |
-|   |  |  |
-|   |  |  |
-|   |  |  |
-|   |  |  |
+| Dependency | Old version | New version |
+| ---------- | ----------- | ----------- |
+|            |             |             |
+|            |             |             |
+|            |             |             |
+|            |             |             |
+|            |             |             |
 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is
- present. </br> **NB:** Dependency has been **removed** if version information isn't present.
+> present. </br> **NB:** Dependency has been **removed** if version information isn't present.
