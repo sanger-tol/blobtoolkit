@@ -2,9 +2,6 @@ process ADD_SUMMARY_TO_METADATA {
     tag "$meta.id"
     label 'process_single'
 
-    if (params.enable_conda) {
-        exit 1, "Conda environments cannot be used when using the ADD_SUMMARY_TO_METADATA module. Please use docker or singularity containers."
-    }
     container 'genomehubs/blobtoolkit:4.0.7'
 
     input:
