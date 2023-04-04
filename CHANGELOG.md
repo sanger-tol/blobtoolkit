@@ -15,9 +15,10 @@ This release marks the point where the pipeline was moved from Snakemake at [blo
 
 | Old parameter | New parameter |
 | ------------- | ------------- |
-|               |               |
-|               |               |
-|               |               |
+|create_blobdir (blobtools replace): --evalue 1.0e-25 --hit-count 10 |  --evalue 1.0e-25 --hit-count 10 |
+| diamond_blastp: --evalue 1.0e-25  --max-target-seqs 10 --max-hsps 1 | --evalue 1.0e-25  --max-target-seqs 10 --max-hsps 1 |
+| diamond_blastx: --evalue 1.0e-25  --max-target-seqs 10              |               |
+| stats_windows: --window 0.1 --window 0.01 --window 100000 --window 1000000  |--window 0.1 --window 0.01 --window 100000 --window 1000000|
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information
 > is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
