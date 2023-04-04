@@ -30,11 +30,19 @@ d below for reference.
 
 | Dependency | Old version | New version |
 | ---------- | ----------- | ----------- |
-|            |             |             |
-|            |             |             |
-|            |             |             |
-|            |             |             |
-|            |             |             |
+|blastn      | 2.12.0+     |             |
+|blobtools   | 4.0.7       |4.1.2        |
+|busco       | 5.3.2       |5.4.3        |
+|diamond     | 2.0.15      |2.0.15       |
+|fasta_windows |           | 0.2.4       |
+|goat-cli    | 0.2.0       |0.2.0        |
+|gunzip      |             |1.10         |
+|minimap2    | 2.24-r1122  |             |
+|mosdepth    | 0.3.3       |0.3.3        |
+|multiqc     |             |1.13         |
+|python      | 3.9.13      |3.9.13       |
+|samtools    | 1.15.1      |1.15.1       |
+|seqtk       | 1.3-r106    |             |
 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is
 > present. </br> **NB:** Dependency has been **removed** if version information isn't present.
