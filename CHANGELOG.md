@@ -9,16 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial release of sanger-tol/blobtoolkit :tada:
 
++ Required input: (1) Tree of Life organism ID (ToLID, --input) or (2) FASTA genome file (--fasta) and `samplesheet.csv` (--input) containing paths to aligned reads in CRAM format, see description of *Full samplesheet* in `docs/usage.md`.
++ Lineages to run BUSCO are obtained using [goat_taxonsearch module](https://nf-co.re/modules/goat_taxonsearch) instead of reading them from `config.yaml` file (--taxon: NCBI taxonomy ID or species binomial name).
++ Versions of tools are collected using [custom_dumpsoftwareversions module](https://nf-co.re/modules/custom_dumpsoftwareversions) instead of reading them from `config.yaml` file.
++ The pipeline requires aligned reads, `minimap2` is no longer included.
++ A GCA accession ID or YAML file is required to collect metadata (--accession or --yaml).
++ [fastawindows module](https://nf-co.re/modules/fastawindows) computes statistics across windows over the genome FASTA file.
++ Parameters for [diamond_blastp module](https://nf-co.re/modules/diamond_blastp) should be specified in `nextflow.config` file (). 
+
 This release marks the point where the pipeline was moved from Snakemake at [blobtoolkit/blobtoolkit](https://github.com/blobtoolkit/blobtoolkit) over to Nextflow DSL2 at [sanger-tol/blobtoolkit](https://github.com/sanger-tol/blobtoolkit).
 
 ### Parameters
 
 | Old parameter | New parameter |
 | ------------- | ------------- |
-|create_blobdir (blobtools replace): --evalue 1.0e-25 --hit-count 10 |  --evalue 1.0e-25 --hit-count 10 |
-| diamond_blastp: --evalue 1.0e-25  --max-target-seqs 10 --max-hsps 1 | --evalue 1.0e-25  --max-target-seqs 10 --max-hsps 1 |
-| diamond_blastx: --evalue 1.0e-25  --max-target-seqs 10              |               |
-| stats_windows: --window 0.1 --window 0.01 --window 100000 --window 1000000  |--window 0.1 --window 0.01 --window 100000 --window 1000000|
+|               | --accession   |
+|               | --blastp_outext |
+|               | --blastp_cols   |
+|               | --fasta       |
+|               | --input       |
+|               | --taxon       |
+|               | --yaml        |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information
 > is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
