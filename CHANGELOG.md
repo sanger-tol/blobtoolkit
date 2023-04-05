@@ -55,6 +55,7 @@ d below for reference.
 |python      | 3.9.13      |3.9.13       |
 |samtools    | 1.15.1      |1.15.1       |
 |seqtk       | 1.3-r106    |             |
+|windowmasker (blast*) | 2.12.0   |             |
 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is
 > present. </br> **NB:** Dependency has been **removed** if version information isn't present.
