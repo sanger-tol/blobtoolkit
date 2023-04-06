@@ -13,11 +13,11 @@ Initial release of sanger-tol/blobtoolkit :tada:
 - Lineages to run BUSCO are obtained using [goat_taxonsearch module](https://nf-co.re/modules/goat_taxonsearch) instead of reading them from `config.yaml` file (--taxon: NCBI taxonomy ID or species binomial name).
 - Versions of tools are collected using [custom_dumpsoftwareversions module](https://nf-co.re/modules/custom_dumpsoftwareversions) instead of reading them from `config.yaml` file.
 - The pipeline requires aligned reads, `minimap2` is no longer included.
-- A GCA accession ID or YAML file is required to collect metadata (--accession or --yaml).
+- A GCA accession ID or YAML file is required (--accession or --yaml) to allow compatibility with `blobtoolkit` scripts. These are used to either generate or read a `config.yaml` file but do not pass parameters to the pipeline. Also software versions in this file do not reflect the actual versions used in the pipeline. 
 - [fastawindows module](https://nf-co.re/modules/fastawindows) computes statistics across windows over the genome FASTA file.
 - Parameters for [diamond_blastp module](https://nf-co.re/modules/diamond_blastp) should be specified in `nextflow.config` file.
 
-This release marks the point where the pipeline was moved from Snakemake at [blobtoolkit/blobtoolkit](https://github.com/blobtoolkit/blobtoolkit) over to Nextflow DSL2 at [sanger-tol/blobtoolkit](https://github.com/sanger-tol/blobtoolkit).
+This release marks the point where the pipeline was moved from Snakemake at [blobtoolkit/blobtoolkit](https://github.com/blobtoolkit/blobtoolkit) over to Nextflow DSL2 at [sanger-tol/blobtoolkit](https://github.com/sanger-tol/blobtoolkit). There are two subworkflows in the Snakemake version that are still being implemented in Nextflow: `diamond_blastx` and `blastn`.
 
 ### Parameters
 
@@ -55,5 +55,5 @@ d below for reference. Only `Docker` or `Singularity` containers are supported, 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is
 > present. </br> **NB:** Dependency has been **removed** if version information isn't present.
 
-- blastn sub-workflow will be implemented in the next release.
+- blastn sub-workflow will be included in the next release.
 - blast\* version that runs windowmasker is specified, windowmasker is no longer used in this version.
