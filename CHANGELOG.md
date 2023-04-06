@@ -56,4 +56,4 @@ d below for reference.
 > present. </br> **NB:** Dependency has been **removed** if version information isn't present.
 
 + blastn sub-workflow will be implemented in the next release.
-+ blast* version that runs windowmasker is specified. 
++ blast* version that runs windowmasker is specified, windowmasker is no longer used in this version.
