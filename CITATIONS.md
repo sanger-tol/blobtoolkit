@@ -36,6 +36,10 @@
 
   > Richard Challis, Edward Richards, Jeena Rajan, Guy Cochrane, Mark Blaxter, BlobToolKit – Interactive Quality Assessment of Genome Assemblies, G3 Genes|Genomes|Genetics, Volume 10, Issue 4, 1 April 2020, Pages 1361–1374, https://doi.org/10.1534/g3.119.400908
 
+- [MultiQC](https://github.com/ewels/MultiQC)
+
+  >  MultiQC: Summarize analysis results for multiple tools and samples in a single report. Philip Ewels, Måns Magnusson, Sverker Lundin and Max Käller. Bioinformatics (2016). doi: 10.1093/bioinformatics/btw354. PMID: 27312411. 
+
 ## Software packaging/containerisation tools
 
 - [Anaconda](https://anaconda.com)
@@ -52,7 +56,7 @@
 
 - [Docker](https://dl.acm.org/doi/10.5555/2600239.2600241)
   
-  > Dirk Merkel. 2014. Docker: lightweight Linux containers for consistent development and deployment. Linux J. 2014, 239, Article 2 (March 2014).
+  > Dirk Merkel. 2014. Docker: lightweight Linux containers for consistent development and deployment. Linux J. 2014, 239, Article 2 (March 2014). doi: 10.5555/2600239.2600241
 
 - [Singularity](https://pubmed.ncbi.nlm.nih.gov/28494014/)
   > Kurtzer GM, Sochat V, Bauer MW. Singularity: Scientific containers for mobility of compute. PLoS One. 2017 May 11;12(5):e0177459. doi: 10.1371/journal.pone.0177459. eCollection 2017. PubMed PMID: 28494014; PubMed Central PMCID: PMC5426675.
