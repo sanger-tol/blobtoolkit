@@ -38,7 +38,7 @@ This release marks the point where the pipeline was moved from Snakemake at [blo
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is e
 ntirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been liste
-d below for reference.
+d below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
 
 | Dependency | Old version | New version |
 | ---------- | ----------- | ----------- |
