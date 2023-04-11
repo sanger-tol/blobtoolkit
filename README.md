@@ -24,6 +24,8 @@ On release, tests run the pipeline on a dataset on the Wellcome Sanger Institute
 
 ## Pipeline summary
 
+# ![sanger-tol/blobtoolkit](docs/images/sanger-tol-blobtoolkit_workflow.png)
+
 Subworkflow: Input check
 
 1.  Creates Samplesheet if TolID and Project provided
