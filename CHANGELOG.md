@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Initial release of sanger-tol/blobtoolkit :tada:
 
 - Required input: (1) Tree of Life organism ID (ToLID, --input) or (2) FASTA genome file (--fasta) and `samplesheet.csv` (--input) containing paths to aligned reads in CRAM format, see description of _Full samplesheet_ in `docs/usage.md`.
-- Lineages to run BUSCO are obtained using the [Genomes on a Tree (GoaT) API](https://goat.genomehubs.org/api) from the `--taxon` parameter (NCBI taxonomy ID or species binomial name) instead of reading them from `config.yaml` file.
+- Lineages to run BUSCO are obtained using the [Genomes on a Tree (GoaT) API](https://goat.genomehubs.org/api) from the `--taxon` parameter (NCBI taxonomy ID or species binomial name) or a list of taxa in a `--taxa_file`, instead of reading them from `config.yaml` file.
 - Versions of tools are collected into `TBC/versions.yml` instead of `<blob_dir>/config.yaml` file, using the [custom_dumpsoftwareversions nf-core module](https://nf-co.re/modules/custom_dumpsoftwareversions). Software versions in `<blob_dir>/config.yaml` do *not* reflect the actual versions used in the pipeline.
 - The pipeline requires aligned reads, `minimap2` is no longer included.
 - A GCA accession ID or YAML file is required (--accession or --yaml) to allow compatibility with `blobtoolkit` scripts. These are used to either generate or read a `config.yaml` file but do not pass parameters to the pipeline. Also software versions in this file do not reflect the actual versions used in the pipeline. 
