@@ -17,6 +17,7 @@ Initial release of sanger-tol/blobtoolkit :tada:
 - [fastawindows module](https://nf-co.re/modules/fastawindows) computes statistics across windows over the genome FASTA file.
 - Parameters for [diamond_blastp module](https://nf-co.re/modules/diamond_blastp) should be specified in `nextflow.config` file.
 - Blastn sub-workflow will be included in the next release.
+- The input genome should be soft-masked. An option to perform soft-masking will be included along with the blastn subworkflow.
 
 This release marks the point where the pipeline was moved from Snakemake at [blobtoolkit/blobtoolkit](https://github.com/blobtoolkit/blobtoolkit) over to Nextflow DSL2 at [sanger-tol/blobtoolkit](https://github.com/sanger-tol/blobtoolkit). There are two subworkflows in the Snakemake version that are still being implemented in Nextflow: `diamond_blastx` and `blastn`.
 
@@ -56,4 +57,4 @@ d below for reference. Only `Docker` or `Singularity` containers are supported, 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is
 > present. </br> **NB:** Dependency has been **removed** if version information isn't present.
 
-- blast\* version that runs windowmasker is specified, windowmasker is no longer used in this version.
+- blast\* version that runs windowmasker is specified, windowmasker is not used in this version.
