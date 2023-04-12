@@ -14,7 +14,7 @@ Initial release of sanger-tol/blobtoolkit :tada:
 - Versions of tools are collected into `TBC/versions.yml` instead of `<blob_dir>/config.yaml` file, using the [custom_dumpsoftwareversions nf-core module](https://nf-co.re/modules/custom_dumpsoftwareversions). Software versions in `<blob_dir>/config.yaml` do *not* reflect the actual versions used in the pipeline.
 - The pipeline requires aligned reads, `minimap2` is no longer included.
 - A GCA accession ID or YAML file is required (--accession or --yaml) to allow compatibility with `blobtoolkit` scripts. These are used to either generate or read a `config.yaml` file but do not pass parameters to the pipeline. Also software versions in this file do not reflect the actual versions used in the pipeline. 
-- [fastawindows module](https://nf-co.re/modules/fastawindows) computes statistics across windows over the genome FASTA file.
+- [fastawindows](https://github.com/tolkit/fasta_windows) module computes statistics across windows over the genome FASTA file.
 - Parameters for [diamond_blastp module](https://nf-co.re/modules/diamond_blastp) should be specified in `nextflow.config` file.
 - Blastn sub-workflow will be included in the next release.
 - The input genome should be soft-masked. An option to perform soft-masking will be included along with the blastn subworkflow.
