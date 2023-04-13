@@ -9,11 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial release of sanger-tol/blobtoolkit :tada:
 
-- Required input: (1) Tree of Life organism ID (ToLID, --input) or (2) FASTA genome file (--fasta) and `samplesheet.csv` (--input) containing paths to aligned reads in CRAM format, see description of _Full samplesheet_ in `docs/usage.md`.
+- Required input: (1) Tree of Life organism ID (ToLID, --input), (2) FASTA genome file (--fasta) and `samplesheet.csv` (--input) containing paths to aligned reads in CRAM format, see description of _Full samplesheet_ in `docs/usage.md`, and (3) A GCA accession ID or YAML file (--accession or --yaml) to allow compatibility with `blobtoolkit` scripts. These are used to either generate or read a `config.yaml` file but do not pass parameters to the pipeline. Also software versions in this file do not reflect the actual versions used in the pipeline.
 - Lineages to run BUSCO are obtained using the [Genomes on a Tree (GoaT) API](https://goat.genomehubs.org/api) from the `--taxon` parameter (NCBI taxonomy ID or species binomial name) or a list of taxa in a `--taxa_file`, instead of reading them from `config.yaml` file.
 - Versions of tools are collected into `TBC/versions.yml` instead of `<blob_dir>/config.yaml` file, using the [custom_dumpsoftwareversions nf-core module](https://nf-co.re/modules/custom_dumpsoftwareversions). Software versions in `<blob_dir>/config.yaml` do *not* reflect the actual versions used in the pipeline.
 - The pipeline requires aligned reads, `minimap2` is no longer included.
-- A GCA accession ID or YAML file is required (--accession or --yaml) to allow compatibility with `blobtoolkit` scripts. These are used to either generate or read a `config.yaml` file but do not pass parameters to the pipeline. Also software versions in this file do not reflect the actual versions used in the pipeline. 
 - [fastawindows](https://github.com/tolkit/fasta_windows) module computes statistics across windows over the genome FASTA file.
 - Parameters for [diamond_blastp module](https://nf-co.re/modules/diamond_blastp) should be specified in `nextflow.config` file.
 - Blastn sub-workflow will be included in the next release.
