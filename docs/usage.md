@@ -210,7 +210,7 @@ version: 2
 However there are important differences on how parameters are specified in the previous Snakemake version and how they are specified in Nextflow. Parameters in `stats_windows`, `diamond_blastp`, `diamond_blastx`, and `taxon` are ignored and are kept in this YAML file only to allow compatibility with the `blobltools` subworkflow in the previous [blobtoolkit pipeline](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/blobtoolkit-pipeline/src) implementation. If you need to modify any parameter for a specific tool in the pipeline or a path to a database in Nextflow: 
 
 - Tool parameters are specified on the  the `conf/modules.config` file.
-- Paths to databases can be specified as parameters when running the pipeline or can be included in `nextflow.config` file, for instance: `--busco_lineages_path /path-to/busco/v5/` should be included to specify a different path to BUSCO database. List of parameters to specify database paths: (1) `--busco_lineages_path`, (2) `-- diamondblastp_db`, (3) `--ncbi_taxdump`.
+- Paths to databases can be specified as parameters when running the pipeline or can be included in `nextflow.config` file, for instance: `--busco_lineages_path /path-to/busco/v5/` can be used when running the pipeline or specified in `nextflow.config` file as `busco_lineages_path = '/path-to/busco/v5/'` . List of parameters to specify database paths: (1) `--busco_lineages_path`, (2) `--diamondblastp_db`, (3) `--ncbi_taxdump`.
 
 ## Running the pipeline
 
@@ -226,7 +226,7 @@ nextflow run sanger-tol/blobtoolkit \
 -profile singularity
 ```
 
-This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles.
+This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles. If no file is specified, an accession (`--accession`) should be specified instead. Also the paths to databases will be searched in `nexflow.config` file, if they are not found there they should be specified using: `--busco_lineages_path`, `--diamondblastp_db`, and `--ncbi_taxdump`.
 
 Note that the pipeline will create the following files in your working directory:
 
