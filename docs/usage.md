@@ -217,7 +217,13 @@ However there are important differences on how parameters are specified in the p
 The typical command for running the pipeline is as follows:
 
 ```console
-nextflow run sanger-tol/blobtoolkit --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fa.gz -profile singularity
+nextflow run sanger-tol/blobtoolkit \
+--input samplesheet.csv \
+--outdir <OUTDIR> \
+--fasta genome.fa.gz \
+--yaml config.yaml \
+--taxon 'Homo sapiens' \
+-profile singularity
 ```
 
 This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles.
