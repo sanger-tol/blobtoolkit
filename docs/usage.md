@@ -149,9 +149,9 @@ If you have [GNU parallel](https://www.gnu.org/software/parallel/) installed, yo
 find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
 ```
 
-## YAML File
+## YAML File and Nextflow configuration 
 
-Additionaly a path to a YAML file or an accesion code (usually a GCA or draft identifier) should be provided through `params.yaml` or `params.accession` (only one of them should be specified). Here is an example of how a YAML file should look like, all information can be obtained from [NCBI: Browse taxonomy](https://www.ncbi.nlm.nih.gov/data-hub/taxonomy/9662/) :
+As in the Snakemake version [a YAML configuration file](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/blobtoolkit-pipeline/src#configuration)   or an accesion code (usually a GCA or draft identifier to generate this YAML file) should be provided through `--yaml` or `--accession` (only one of them should be specified). Here is an example of how a YAML file should look like, all taxonomic information can be obtained from [NCBI: Browse taxonomy](https://www.ncbi.nlm.nih.gov/data-hub/taxonomy/9662/) :
 
 ```
 assembly:
@@ -207,7 +207,10 @@ taxon:
 version: 2
 ```
 
-Parameters in `stats_windows`, `diamond_blastp`, and `diamond_blastx` are ignored and are kept in this YAML file only to allow compatibility with the `blobltools` subworkflow in the previous [blobtoolkit pipeline](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/blobtoolkit-pipeline/src) implementation. If you need to specify new values for these parameters, before running the pipeline, you can edit the `conf/modules.config` file.
+However there are important differences on how parameters are specified in the previous Snakemake version and how they are specified in Nextflow. Parameters in `stats_windows`, `diamond_blastp`, `diamond_blastx`, and `taxon` are ignored and are kept in this YAML file only to allow compatibility with the `blobltools` subworkflow in the previous [blobtoolkit pipeline](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/blobtoolkit-pipeline/src) implementation. If you need to modify any parameter for a specific tool in the pipeline or a path to a database in Nextflow: 
+
+- Tool parameters are specified on the  the `conf/modules.config` file.
+- Paths to databases should be specified as parameters when running the pipeline, for instance: `--busco_lineages_path /path-to/busco/v5/` should be included to specify a different path to BUSCO database. List of parameters to specify database paths: (1) `--busco_lineages_path`, (2) `-- diamondblastp_db`, (3) `--ncbi_taxdump`.
 
 ## Running the pipeline
 
