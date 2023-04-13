@@ -209,8 +209,8 @@ version: 2
 
 However there are important differences on how parameters are specified in the previous Snakemake version and how they are specified in Nextflow. Parameters in `stats_windows`, `diamond_blastp`, `diamond_blastx`, and `taxon` are ignored and are kept in this YAML file only to allow compatibility with the `blobltools` subworkflow in the previous [blobtoolkit pipeline](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/blobtoolkit-pipeline/src) implementation. If you need to modify any parameter for a specific tool in the pipeline or a path to a database in Nextflow: 
 
-- Tool parameters are specified on the  the `conf/modules.config` file.
-- Paths to databases can be specified as parameters when running the pipeline or can be included in `nextflow.config` file, for instance: `--busco_lineages_path /path-to/busco/v5/` can be used when running the pipeline or specified in `nextflow.config` file as `busco_lineages_path = '/path-to/busco/v5/'` . List of parameters to specify database paths: (1) `--busco_lineages_path`, (2) `--diamondblastp_db`, (3) `--ncbi_taxdump`.
+- Tool parameters are specified on the  the `conf/modules.config` file. There is one exception for this: `blastp_outext` and `blastp_cols`, they are `diamond_blastp` parameters and are specified in `nextflow.config` because of the way the [module](https://github.com/nf-core/modules/blob/master/modules/nf-core/diamond/blastp/main.nf) works. 
+- Paths to databases can be specified as parameters when running the pipeline or can be included in `nextflow.config` file, for instance: `--busco_lineages_path /path-to/busco/v5/` can be used when running the pipeline or specified in `nextflow.config` file as `busco_lineages_path = '/path-to/busco/v5/'`. List of parameters to specify database paths: (1) `--busco_lineages_path`, (2) `--diamondblastp_db`, (3) `--ncbi_taxdump`.
 
 ## Running the pipeline
 
