@@ -17,6 +17,12 @@ workflow BUSCO_DIAMOND {
 
     //  Tuple [meta, fasta]:
     fasta
+    // path(blastp_db)
+    blastp_db
+    // val(blastp_outext)
+    blastp_outext
+    // val(blastp_cols)
+    blastp_cols
 
     main:
 
@@ -50,8 +56,8 @@ workflow BUSCO_DIAMOND {
     ch_busco_inputs = fasta.combine(ch_lineages, by: 0)
 
     BUSCO (
-    ch_busco_inputs.map { [it[0], it[1]] },
-    ch_busco_inputs.map { it[2] },
+    ch_busco_inputs.map { meta, fasta, lineages -> [ meta, fasta ] },
+    ch_busco_inputs.map { meta, fasta, lineages -> lineages },
     "${params.busco_lineages_path}",  // Please pass this option. We don't want to download the lineage data every time.
     [] // No config
     )
@@ -115,9 +121,6 @@ workflow BUSCO_DIAMOND {
     //
     // Runs diamond_blastp with the extracted busco genes
     //
-
-    // path to diamond db
-    blastp_db = Channel.fromPath(params.diamondblastp_db)
     
     // runs DIAMOND_BLASTP if fasta file from EXTRACT_BUSCO_GENE is not empty
     
@@ -131,10 +134,10 @@ workflow BUSCO_DIAMOND {
     }
 
     DIAMOND_BLASTP (
-    dmd_input_ch.map { [it[0], it[1]] },
-    dmd_input_ch.map { it[2] },
-    "${params.blastp_outext}",
-    "${params.blastp_cols}"
+    dmd_input_ch.map { meta, fasta, blastp -> [ meta, fasta ] },
+    dmd_input_ch.map { meta, fasta, blastp -> blastp },
+    blastp_outext,
+    blastp_cols
     )
     ch_versions = ch_versions.mix(DIAMOND_BLASTP.out.versions)
    

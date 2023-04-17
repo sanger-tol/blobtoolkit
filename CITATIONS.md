@@ -10,19 +10,9 @@
 
 ## Pipeline tools
 
-- [Gunzip](https://www.gnu.org/software/gzip/manual/gzip.html)
+- [blobtoolkit](https://github.com/blobtoolkit/pipeline)
 
-- [Mosdepth](https://academic.oup.com/bioinformatics/article/34/5/867/4583630?guestAccessKey=35b55064-4566-4ab3-a769-32916fa1c6e6)
-
-  > Brent S Pedersen, Aaron R Quinlan, Mosdepth: quick coverage calculation for genomes and exomes, Bioinformatics, Volume 34, Issue 5, 01 March 2018, Pages 867–868, https://doi.org/10.1093/bioinformatics/btx699
-
-- [Samtools](https://pubmed.ncbi.nlm.nih.gov/33590861/)
-
-  > Danecek P, Bonfield JK, Liddle J, Marshall J, Ohan V, Pollard MO, Whitwham A, Keane T, McCarthy SA, Davies RM, Li H. Twelve years of SAMtools and BCFtools. Gigascience. 2021 Feb 16;10(2):giab008. doi: 10.1093/gigascience/giab008. PMID: 33590861; PMCID: PMC7931819.
-
-- [Fastawindows](https://github.com/tolkit/fasta_windows)
-
-- [Goat](https://github.com/genomehubs/goat-cli)
+  > Richard Challis, Edward Richards, Jeena Rajan, Guy Cochrane, Mark Blaxter, BlobToolKit – Interactive Quality Assessment of Genome Assemblies, G3 Genes|Genomes|Genetics, Volume 10, Issue 4, 1 April 2020, Pages 1361–1374, https://doi.org/10.1534/g3.119.400908
 
 - [Busco](https://academic.oup.com/mbe/article/38/10/4647/6329644)
 
@@ -32,9 +22,25 @@
 
   > Buchfink B, Reuter K, Drost HG, "Sensitive protein alignments at tree-of-life scale using DIAMOND", Nature Methods 18, 366–368 (2021). doi:10.1038/s41592-021-01101-x
 
-- [blobtoolkit](https://github.com/blobtoolkit/pipeline)
+- [Fastawindows](https://github.com/tolkit/fasta_windows)
 
-  > Richard Challis, Edward Richards, Jeena Rajan, Guy Cochrane, Mark Blaxter, BlobToolKit – Interactive Quality Assessment of Genome Assemblies, G3 Genes|Genomes|Genetics, Volume 10, Issue 4, 1 April 2020, Pages 1361–1374, https://doi.org/10.1534/g3.119.400908
+- [Goat](https://wellcomeopenresearch.org/articles/8-24)
+
+  > Challis R, Kumar S, Sotero-Caio C et al. Genomes on a Tree (GoaT): A versatile, scalable search engine for genomic and sequencing project metadata across the eukaryotic tree of life [version 1; peer review: 2 approved]. Wellcome Open Res 2023, 8:24 (https://doi.org/10.12688/wellcomeopenres.18658.1)
+
+- [Gunzip](https://www.gnu.org/software/gzip/manual/gzip.html)
+
+- [Mosdepth](https://academic.oup.com/bioinformatics/article/34/5/867/4583630?guestAccessKey=35b55064-4566-4ab3-a769-32916fa1c6e6)
+
+  > Brent S Pedersen, Aaron R Quinlan, Mosdepth: quick coverage calculation for genomes and exomes, Bioinformatics, Volume 34, Issue 5, 01 March 2018, Pages 867–868, https://doi.org/10.1093/bioinformatics/btx699
+
+- [MultiQC](https://github.com/ewels/MultiQC)
+
+  > MultiQC: Summarize analysis results for multiple tools and samples in a single report. Philip Ewels, Måns Magnusson, Sverker Lundin and Max Käller. Bioinformatics (2016). doi: 10.1093/bioinformatics/btw354. PMID: 27312411.
+
+- [Samtools](https://pubmed.ncbi.nlm.nih.gov/33590861/)
+
+  > Danecek P, Bonfield JK, Liddle J, Marshall J, Ohan V, Pollard MO, Whitwham A, Keane T, McCarthy SA, Davies RM, Li H. Twelve years of SAMtools and BCFtools. Gigascience. 2021 Feb 16;10(2):giab008. doi: 10.1093/gigascience/giab008. PMID: 33590861; PMCID: PMC7931819.
 
 ## Software packaging/containerisation tools
 
@@ -51,6 +57,8 @@
   > da Veiga Leprevost F, Grüning B, Aflitos SA, Röst HL, Uszkoreit J, Barsnes H, Vaudel M, Moreno P, Gatto L, Weber J, Bai M, Jimenez RC, Sachsenberg T, Pfeuffer J, Alvarez RV, Griss J, Nesvizhskii AI, Perez-Riverol Y. BioContainers: an open-source and community-driven framework for software standardization. Bioinformatics. 2017 Aug 15;33(16):2580-2582. doi: 10.1093/bioinformatics/btx192. PubMed PMID: 28379341; PubMed Central PMCID: PMC5870671.
 
 - [Docker](https://dl.acm.org/doi/10.5555/2600239.2600241)
+
+  > Dirk Merkel. 2014. Docker: lightweight Linux containers for consistent development and deployment. Linux J. 2014, 239, Article 2 (March 2014). doi: 10.5555/2600239.2600241
 
 - [Singularity](https://pubmed.ncbi.nlm.nih.gov/28494014/)
   > Kurtzer GM, Sochat V, Bauer MW. Singularity: Scientific containers for mobility of compute. PLoS One. 2017 May 11;12(5):e0177459. doi: 10.1371/journal.pone.0177459. eCollection 2017. PubMed PMID: 28494014; PubMed Central PMCID: PMC5426675.

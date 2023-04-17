@@ -4,9 +4,6 @@ process COUNT_BUSCO_GENES {
     tag "$meta.id"
     label 'process_single'
 
-    if (params.enable_conda) {
-        exit 1, "Conda environments cannot be used when using the COUNT_BUSCO_GENES module. Please use docker or singularity containers."
-    }
     container "genomehubs/blobtoolkit-blobtools:3.4.2"
 
     input:

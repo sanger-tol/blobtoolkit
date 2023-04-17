@@ -149,9 +149,9 @@ If you have [GNU parallel](https://www.gnu.org/software/parallel/) installed, yo
 find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
 ```
 
-## YAML File
+## YAML File and Nextflow configuration
 
-Additionaly a path to a YAML file or an accesion code (usually a GCA or draft identifier) should be provided through `params.yaml` or `params.accession` (only one of them should be specified). Here is an example of how a YAML file should look like, all information can be obtained from [NCBI: Browse taxonomy](https://www.ncbi.nlm.nih.gov/data-hub/taxonomy/9662/) :
+As in the Snakemake version [a YAML configuration file](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/blobtoolkit-pipeline/src#configuration) or an accession code (usually a GCA or draft identifier to generate this YAML file) should be provided through `--yaml` or `--accession` (only one of them should be specified). Here is an example of how a YAML file should look like, all taxonomic information can be obtained from [NCBI: Browse taxonomy](https://www.ncbi.nlm.nih.gov/data-hub/taxonomy/9662/) :
 
 ```
 assembly:
@@ -207,17 +207,107 @@ taxon:
 version: 2
 ```
 
-Parameters in `stats_windows`, `diamond_blastp`, and `diamond_blastx` are ignored and are kept in this YAML file only to allow compatibility with the `blobltools` subworkflow in the previous [blobtoolkit pipeline](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/blobtoolkit-pipeline/src) implementation. If you need to specify new values for these parameters, before running the pipeline, you can edit the `conf/modules.config` file.
+However there are important differences on how parameters are specified in the previous Snakemake version and how they are specified in Nextflow. Parameters in `stats_windows`, `diamond_blastp`, `diamond_blastx`, and `taxon` are ignored and are kept in this YAML file only to allow compatibility with the `blobltools` subworkflow in the previous [blobtoolkit pipeline](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/blobtoolkit-pipeline/src) implementation. If you need to modify any parameter for a specific tool in the pipeline or a path to a database in Nextflow:
+
+- Tool parameters are specified on the the `conf/modules.config` file. There is one exception for this: `blastp_outext` and `blastp_cols`, they are `diamond_blastp` parameters and are specified in `nextflow.config` because of the way the [module](https://github.com/nf-core/modules/blob/master/modules/nf-core/diamond/blastp/main.nf) works.
+- Paths to databases can be specified as parameters when running the pipeline or can be included in `nextflow.config` file, for instance: `--busco_lineages_path /path-to/busco/v5/` can be used when running the pipeline or specified in `nextflow.config` file as `busco_lineages_path = '/path-to/busco/v5/'`. List of parameters to specify database paths: (1) `--busco_lineages_path`, (2) `--diamondblastp_db`, (3) `--ncbi_taxdump`.
+
+## Changes from Snakemake to Nextflow
+
+### Commands
+
+Snakemake
+
+```
+# Public Assemblies
+run_btk_pipeline.sh GCA_ACCESSION
+
+# Draft Assemblies
+blobtoolkit-pipeline run --config YAML --threads INT --workdir DIR
+```
+
+Nextflow
+
+```
+# Public Assemblies
+nextflow run sanger-tol/blobtoolkit --input SAMPLESHEET --fasta GENOME –-accession GCA_ACCESSION --taxon TAXON_ID
+
+# Draft Assemblies
+nextflow run sanger-tol/blobtoolkit --input SAMPLESHEET --fasta GENOME –-accession TAG --taxon TAXON_ID --yaml CONFIG
+```
+
+### Subworkflows
+
+Here is a full list of snakemake subworkflows and their Nextflow couterparts:
+
+- **`minimap.smk`**
+  - Not implemented yet.
+  - Alignment is done using the [sanger-tol/readmapping](https://github.com/sanger-tol/readmapping) pipeline.
+- **`windowmasker.smk`**
+  - Not implemented yet.
+  - Genomes downloaded by [sanger-tol/insdcdownload](https://github.com/sanger-tol/insdcdownload) is masked.
+- **`chunk_stats.smk`**
+  - Subworkflow has been modified.
+  - BED file and additional statistics calculated using [`fasta_windows`](https://github.com/tolkit/fasta_windows).
+- **`busco.smk`**
+  - Implemented as [`busco_diamond_blastp.nf`](https://github.com/sanger-tol/blobtoolkit/blob/dev/subworkflows/local/busco_diamond_blastp.nf).
+- **`cov_stats.smk`**
+  - The coverage calculation are done using [`mosdepth`]() in subworkflow [`coverage_stats.nf`](https://github.com/sanger-tol/blobtoolkit/blob/dev/subworkflows/local/coverage_stats.nf).
+  - Combining the various tsv files in done in subworkflow [`collate_stats.nf`](https://github.com/sanger-tol/blobtoolkit/blob/dev/subworkflows/local/collate_stats.nf).
+- **`window_stats.smk`**
+  - The [`window_stats`]() process in implemented in subworkflow [`collate_stats.nf`](https://github.com/sanger-tol/blobtoolkit/blob/dev/subworkflows/local/collate_stats.nf).
+- **`diamond_blastp.smk`**
+  - Implemented within [`busco_diamond_blastp.nf`](https://github.com/sanger-tol/blobtoolkit/blob/dev/subworkflows/local/busco_diamond_blastp.nf).
+- **`diamond.smk`**
+  - Will be implemented as `diamond_blastx.nf`.
+- **`blastn.smk`**
+  - Will be implemented as `blastn.nf`.
+- **`blobtools.smk`**
+  - Implemented as [`blobtools.nf`](https://github.com/sanger-tol/blobtoolkit/blob/dev/subworkflows/local/blobtools.nf).
+- **`view.smk`**
+  - Implemented as [`view.nf`](https://github.com/sanger-tol/blobtoolkit/blob/dev/subworkflows/local/view.nf).
+
+### Software dependencies
+
+List of tools for any given dataset can be fetched from the API, for example https://blobtoolkit.genomehubs.org/api/v1/dataset/id/CAJEUD01.1/settings/software_versions.
+
+| Dependency        | Snakemake | Nextflow |
+| ----------------- | --------- | -------- |
+| blobtoolkit       | 4.1.4     | 4.1.4    |
+| blast             | 2.12.0    |          |
+| blobtk            | 0.2.4     |          |
+| busco             | 5.3.2     | 5.4.3    |
+| diamond           | 2.0.15    |          |
+| fasta_windows     |           | 0.2.4    |
+| goat              |           | 0.2.0    |
+| minimap2          | 2.24      |          |
+| mosdepth          |           | 0.3.3    |
+| ncbi-datasets-cli | 14.1.0    |          |
+| nextflow          |           | 22.10.6  |
+| python            | 3.9.13    | 3.10.6   |
+| samtools          | 1.15.1    | 1.15.1   |
+| seqtk             | 1.3       |          |
+| snakemake         | 7.19.1    |          |
+| windowmasker      | 2.12.0    |          |
+
+> **NB:** Dependency has been **added** if only the Nextflow version information is present.
+> **NB:** Dependency has been **removed** if only the Snakemake version information is present.
 
 ## Running the pipeline
 
 The typical command for running the pipeline is as follows:
 
 ```console
-nextflow run sanger-tol/blobtoolkit --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fa.gz -profile singularity
+nextflow run sanger-tol/blobtoolkit \
+--input samplesheet.csv \
+--outdir <OUTDIR> \
+--fasta genome.fa.gz \
+--yaml config.yaml \
+--taxon 'Homo sapiens' \
+-profile singularity
 ```
 
-This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles.
+This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles. If no file is specified, an accession (`--accession`) should be specified instead. Also the paths to databases will be searched in `nexflow.config` file, if they are not found there they should be specified using: `--busco_lineages_path`, `--diamondblastp_db`, and `--ncbi_taxdump`.
 
 Note that the pipeline will create the following files in your working directory:
 
