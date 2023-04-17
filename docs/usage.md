@@ -151,7 +151,7 @@ find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
 
 ## YAML File and Nextflow configuration
 
-As in the Snakemake version [a YAML configuration file](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/blobtoolkit-pipeline/src#configuration) or an accesion code (usually a GCA or draft identifier to generate this YAML file) should be provided through `--yaml` or `--accession` (only one of them should be specified). Here is an example of how a YAML file should look like, all taxonomic information can be obtained from [NCBI: Browse taxonomy](https://www.ncbi.nlm.nih.gov/data-hub/taxonomy/9662/) :
+As in the Snakemake version [a YAML configuration file](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/blobtoolkit-pipeline/src#configuration) or an accession code (usually a GCA or draft identifier to generate this YAML file) should be provided through `--yaml` or `--accession` (only one of them should be specified). Here is an example of how a YAML file should look like, all taxonomic information can be obtained from [NCBI: Browse taxonomy](https://www.ncbi.nlm.nih.gov/data-hub/taxonomy/9662/) :
 
 ```
 assembly:
