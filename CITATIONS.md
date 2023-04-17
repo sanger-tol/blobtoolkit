@@ -25,8 +25,8 @@
 - [Fastawindows](https://github.com/tolkit/fasta_windows)
 
 - [Goat](https://wellcomeopenresearch.org/articles/8-24)
-  
-  > Challis R, Kumar S, Sotero-Caio C et al. Genomes on a Tree (GoaT): A versatile, scalable search engine for genomic and sequencing project metadata across the eukaryotic tree of life [version 1; peer review: 2 approved]. Wellcome Open Res 2023, 8:24 (https://doi.org/10.12688/wellcomeopenres.18658.1) 
+
+  > Challis R, Kumar S, Sotero-Caio C et al. Genomes on a Tree (GoaT): A versatile, scalable search engine for genomic and sequencing project metadata across the eukaryotic tree of life [version 1; peer review: 2 approved]. Wellcome Open Res 2023, 8:24 (https://doi.org/10.12688/wellcomeopenres.18658.1)
 
 - [Gunzip](https://www.gnu.org/software/gzip/manual/gzip.html)
 

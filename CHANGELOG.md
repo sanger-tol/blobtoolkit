@@ -33,18 +33,18 @@ This release marks the point where the pipeline was moved from Snakemake at [blo
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
 
-| Dependency             | Old version | New version |
-| ---------------------- | ----------- | ----------- |
-| blobtoolkit            |             | 4.1.4       |
-| busco                  |             | 5.4.3       |
-| fasta_windows          |             | 0.2.4       |
-| goat                   |             | 0.2.0       |
-| gunzip                 |             | 1.10        |
-| mosdepth               |             | 0.3.3       |
-| nextflow               |             | 22.10.6     |
-| python                 |             | 3.10.6      |
-| samtools               |             | 1.15.1      |
-| tar                    |             | 1.30        |
-| yaml                   |             | 6.0         |
+| Dependency    | Old version | New version |
+| ------------- | ----------- | ----------- |
+| blobtoolkit   |             | 4.1.4       |
+| busco         |             | 5.4.3       |
+| fasta_windows |             | 0.2.4       |
+| goat          |             | 0.2.0       |
+| gunzip        |             | 1.10        |
+| mosdepth      |             | 0.3.3       |
+| nextflow      |             | 22.10.6     |
+| python        |             | 3.10.6      |
+| samtools      |             | 1.15.1      |
+| tar           |             | 1.30        |
+| yaml          |             | 6.0         |
 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
