@@ -1,20 +1,22 @@
-process CREATE_BLOBDIR {
+process BLOBTOOLKIT_BLOBDIR {
     tag "$meta.id"
-    label 'process_single'
+    label 'process_medium'
 
-    container "genomehubs/blobtoolkit-blobtools:3.3.4"
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        exit 1, "BLOBTOOLKIT_BLOBDIR module does not support Conda. Please use Docker / Singularity / Podman instead."
+    }
+    container "genomehubs/blobtoolkit:4.1.2"
 
     input:
     tuple val(meta), path(window, stageAs: 'windowstats/*')
-    tuple val(meta), path(busco)
-    tuple val(meta), path(blastp)
-    tuple val(meta), path(yaml)
+    tuple val(meta1), path(busco)
+    tuple val(meta2), path(blastp)
+    tuple val(meta3), path(yaml)
     path(taxdump)
-    val(genome_accession)
 
     output:
-    tuple val(meta), path("${genome_accession}")        , emit: blobdir
-    path "versions.yml"                                 , emit: versions
+    tuple val(meta), path(prefix), emit: blobdir
+    path "versions.yml"          , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -22,17 +24,18 @@ process CREATE_BLOBDIR {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def hits = blastp ? "--hits ${blastp}" : ""
     """
-    blobtools replace \\
+    blobtools add \\
         --bedtsvdir windowstats \\
         --meta ${yaml} \\
         --taxdump ${taxdump} \\
         --taxrule buscogenes \\
         --busco ${busco} \\
-        --hits ${blastp} \\
+        ${hits} \\
         --threads ${task.cpus} \\
         $args \\
-        ${genome_accession}
+        ${prefix}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -1,18 +1,18 @@
-process GET_WINDOW_STATS {
+process BLOBTOOLKIT_METADATA {
     tag "$meta.id"
     label 'process_single'
 
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        exit 1, "GET_WINDOW_STATS module does not support Conda. Please use Docker / Singularity / Podman instead."
+        exit 1, "BLOBTOOLKIT_METADATA module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
     container "genomehubs/blobtoolkit:4.1.2"
 
     input:
-    tuple val(meta), path(tsv)
+    tuple val(meta), path(yaml)
 
     output:
-    tuple val(meta), path('*_window_stats*.tsv') , emit: tsv
-    path "versions.yml"                          , emit: versions
+    tuple val(meta), path("*.metadata.yaml"), emit: yaml
+    path "versions.yml"                     , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -21,10 +21,9 @@ process GET_WINDOW_STATS {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    btk pipeline window-stats \\
-            --in ${tsv} \\
-            $args \\
-            --out ${prefix}_window_stats.tsv
+    btk pipeline add-summary-to-metadata \\
+        --config ${yaml} \\
+        --out ${prefix}.metadata.yaml
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
