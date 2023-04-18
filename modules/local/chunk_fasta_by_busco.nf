@@ -10,6 +10,7 @@ process CHUNK_FASTA_BY_BUSCO {
     input:
     tuple val(meta), path(fasta)
     path busco_table
+    path bed
 
     output:
     tuple val(meta), path('*.output_chunks.fasta') , emit: chunks
@@ -24,7 +25,7 @@ process CHUNK_FASTA_BY_BUSCO {
         --in ${fasta} \\
         --busco ${busco_table} \\
         --out ${prefix}.chunks.fasta \\
-        --bed None
+        --bed ${bed}
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
          blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
