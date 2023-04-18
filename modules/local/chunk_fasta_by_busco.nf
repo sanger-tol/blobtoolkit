@@ -1,9 +1,9 @@
-process ADD_SUMMARY_TO_METADATA {
+process CHUNK_FASTA_BY_BUSCO {
     tag "$meta.id"
     label 'process_single'
 
     if (params.enable_conda) {
-        exit 1, "Conda environments cannot be used when using the ADD_SUMMARY_TO_METADATA module. Please use docker or singularity containers."
+        exit 1, "Conda environments cannot be used when using the CHUNK_FASTA_BY_BUSCO module. Please use docker or singularity containers."
     }
     container 'genomehubs/blobtoolkit:4.1.2'
 
