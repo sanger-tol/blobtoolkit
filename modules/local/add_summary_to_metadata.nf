@@ -5,7 +5,7 @@ process ADD_SUMMARY_TO_METADATA {
     if (params.enable_conda) {
         exit 1, "Conda environments cannot be used when using the ADD_SUMMARY_TO_METADATA module. Please use docker or singularity containers."
     }
-    container 'genomehubs/blobtoolkit:4.0.7'
+    container 'genomehubs/blobtoolkit:4.1.2'
 
     input:
     tuple val(meta), path(yaml)
