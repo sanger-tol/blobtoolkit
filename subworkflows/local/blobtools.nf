@@ -3,7 +3,7 @@
 //
 
 include { BLOBTOOLKIT_METADATA } from '../../modules/local/blobtoolkit/metadata'
-include { CREATE_BLOBDIR       } from '../../modules/local/create_blobdir'
+include { BLOBTOOLKIT_BLOBDIR  } from '../../modules/local/blobtoolkit/blobdir'
 
 workflow BLOBTOOLS {
     take:
@@ -28,12 +28,12 @@ workflow BLOBTOOLS {
     //  
     // Create Blobtools dataset files
     //
-    CREATE_BLOBDIR ( windowstats, busco, blastp, BLOBTOOLKIT_METADATA.out.yaml, taxdump )
-    ch_versions = ch_versions.mix ( CREATE_BLOBDIR.out.versions.first() )
+    BLOBTOOLKIT_BLOBDIR ( windowstats, busco, blastp, BLOBTOOLKIT_METADATA.out.yaml, taxdump )
+    ch_versions = ch_versions.mix ( BLOBTOOLKIT_BLOBDIR.out.versions.first() )
 
 
     emit:
-    metadata = BLOBTOOLKIT_METADATA.out.yaml // channel: [ val(meta), path(yaml) ]
-    blobdir  = CREATE_BLOBDIR.out.blobdir       // channel: [ val(meta), path(dir) ]
+    metadata = BLOBTOOLKIT_METADATA.out.yaml    // channel: [ val(meta), path(yaml) ]
+    blobdir  = BLOBTOOLKIT_BLOBDIR.out.blobdir  // channel: [ val(meta), path(dir) ]
     versions = ch_versions                      // channel: [ versions.yml ]
 }
