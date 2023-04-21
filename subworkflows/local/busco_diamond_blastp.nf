@@ -2,11 +2,11 @@
 // Run BUSCO for a genome from GOAT and runs diamond_blastp
 //
 
-include { GOAT_TAXONSEARCH    } from '../../modules/nf-core/goat/taxonsearch/main'
-include { BUSCO               } from '../../modules/nf-core/busco/main'
-include { TARGZ               } from '../../modules/local/targz'
-include { EXTRACT_BUSCO_GENES } from '../../modules/local/extract_busco_genes'
-include { DIAMOND_BLASTP      } from '../../modules/nf-core/diamond/blastp/main'
+include { GOAT_TAXONSEARCH          } from '../../modules/nf-core/goat/taxonsearch/main'
+include { BUSCO                     } from '../../modules/nf-core/busco/main'
+include { TARGZ                     } from '../../modules/local/targz'
+include { BLOBTOOLKIT_EXTRACTBUSCOS } from '../../modules/local/blobtoolkit/extractbuscos'
+include { DIAMOND_BLASTP            } from '../../modules/nf-core/diamond/blastp/main'
 
 
 workflow BUSCO_DIAMOND {
@@ -45,7 +45,7 @@ workflow BUSCO_DIAMOND {
 
 
     //
-    // Create input for EXTRACT_BUSCO_GENES
+    // Create input for BLOBTOOLKIT_EXTRACTBUSCOS
     //
     TARGZ ( BUSCO.out.seq_dir )
     ch_versions = ch_versions.mix ( TARGZ.out.versions.first() )
@@ -63,14 +63,14 @@ workflow BUSCO_DIAMOND {
 
 
     // Extract BUSCO genes from the 3 kingdoms
-    EXTRACT_BUSCO_GENES ( fasta, ch_busco.archaea, ch_busco.bacteria, ch_busco.eukaryota  )
-    ch_versions = ch_versions.mix ( EXTRACT_BUSCO_GENES.out.versions.first() )
+    BLOBTOOLKIT_EXTRACTBUSCOS ( fasta, ch_busco.archaea, ch_busco.bacteria, ch_busco.eukaryota  )
+    ch_versions = ch_versions.mix ( BLOBTOOLKIT_EXTRACTBUSCOS.out.versions.first() )
 
 
     //
     // Align BUSCO genes against the BLASTp database
     //    
-    EXTRACT_BUSCO_GENES.out.genes
+    BLOBTOOLKIT_EXTRACTBUSCOS.out.genes
     | filter { it[1].size() > 140 }
     | set { ch_busco_genes }
 
