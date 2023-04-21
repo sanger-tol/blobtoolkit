@@ -1,8 +1,11 @@
-process GET_WINDOW_STATS {
+process BLOBTOOLKIT_WINDOWSTATS {
     tag "$meta.id"
     label 'process_single'
 
-    container "genomehubs/blobtoolkit-blobtools:3.5.4"
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        exit 1, "GET_WINDOW_STATS module does not support Conda. Please use Docker / Singularity / Podman instead."
+    }
+    container "genomehubs/blobtoolkit:4.1.2"
 
     input:
     tuple val(meta), path(tsv)
