@@ -1,54 +1,69 @@
-include { MOSDEPTH      } from '../../modules/nf-core/mosdepth/main'
+//
+// Calculate genome coverage and statistics
+//
+
 include { SAMTOOLS_VIEW } from '../../modules/nf-core/samtools/view/main'
+include { MOSDEPTH      } from '../../modules/nf-core/mosdepth/main'
 include { FASTAWINDOWS  } from '../../modules/nf-core/fastawindows/main'
 include { CREATE_BED    } from '../../modules/local/create_bed'
 
+
 workflow COVERAGE_STATS {
     take: 
-    cram    // channel: [val(meta), path(cram), path(cai)]
-    fasta   // channel: [val(meta), path(fasta)]
+    cram    // channel: [ val(meta), path(cram) ] 
+    fasta   // channel: [ val(meta), path(fasta) ]
+
 
     main:
     ch_versions = Channel.empty()
 
+
     // Convert from CRAM to BAM
-    // Channel: [meta, cram, cai, meta2, fasta]
-    input_sam = cram.combine(fasta)
-    SAMTOOLS_VIEW( 
-        input_sam.map{ meta, cram, cai, meta2, fasta -> [ meta, cram, cai ] },
-        input_sam.map{ meta, cram, cai, meta2, fasta -> fasta },
-        []
-    )
-    ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions)
+    cram
+    | map { meta, cram -> [ meta, cram, [] ] }
+    | set { ch_cram_crai}
 
-    // Generate BED File
-    FASTAWINDOWS(fasta)
-    ch_versions = ch_versions.mix(FASTAWINDOWS.out.versions)
+    fasta
+    | map { meta, fasta -> fasta }
+    | set { ch_fasta }
 
-    CREATE_BED(FASTAWINDOWS.out.mononuc)
-    ch_versions = ch_versions.mix(CREATE_BED.out.versions)
+    SAMTOOLS_VIEW ( ch_cram_crai, ch_fasta, [] )
+    ch_versions = ch_versions.mix ( SAMTOOLS_VIEW.out.versions.first() ) 
+
+
+    // Calculate genome statistics
+    FASTAWINDOWS ( fasta )
+    ch_versions = ch_versions.mix ( FASTAWINDOWS.out.versions.first() )
+
+
+    // Create genome windows file in BED format
+    CREATE_BED ( FASTAWINDOWS.out.mononuc )
+    ch_versions = ch_versions.mix ( CREATE_BED.out.versions.first() )
+
     
-    ch_bed = CREATE_BED.out.bed
-
-    // BAM Channel
-    ch_csi = SAMTOOLS_VIEW.out.csi
-    ch_bam = SAMTOOLS_VIEW.out.bam.join(ch_csi)
+    // Calculate coverage
+    SAMTOOLS_VIEW.out.bam
+    | join ( SAMTOOLS_VIEW.out.csi )
+    | combine ( CREATE_BED.out.bed )
+    | map { meta, bam, csi, meta2, bed -> [ meta, bam, csi, bed ] }
+    | set { ch_bam_csi_bed }
     
-    // Calculate Coverage (need to remove `meta` from the `ch_bed` and `fasta` channels)
-    // Channel: [meta, bam, csi, meta2, bed, meta3, fasta]
-    bam_bed = ch_bam.combine(ch_bed)
-    input_depth = bam_bed.combine(fasta)
-    MOSDEPTH(
-        input_depth.map{ meta, bam, csi, meta2, bed, meta3, fasta -> [ meta, bam, csi, bed ] },
-        input_depth.map{ meta, bam, csi, meta2, bed, meta3, fasta -> [ meta3, fasta ] }
-    )
-    ch_versions = ch_versions.mix(MOSDEPTH.out.versions)
+    MOSDEPTH ( ch_bam_csi_bed, fasta )
+    ch_versions = ch_versions.mix ( MOSDEPTH.out.versions.first() )
+
+
+    // Combining mosdepth regions_bed in single channel
+    MOSDEPTH.out.regions_bed
+    | combine ( fasta )
+    | map { meta, bed, meta2, fasta -> [ meta2, bed ] }
+    | groupTuple ()
+    | set { ch_coverage }
+
 
     emit:
-    global = MOSDEPTH.out.global_txt
-    summary = MOSDEPTH.out.summary_txt
-    regions_bed = MOSDEPTH.out.regions_bed
-    regions_csi = MOSDEPTH.out.regions_csi
-    fw_bed = ch_bed
-    versions = ch_versions
+    freq     = FASTAWINDOWS.out.freq       // channel: [ val(meta), path(freq) ]
+    mononuc  = FASTAWINDOWS.out.mononuc    // channel: [ val(meta), path(mononuc) ]
+    bed      = CREATE_BED.out.bed          // channel: [ val(meta), path(bed) ]
+    cov      = ch_coverage                 // channel: [ val(meta), path(regions.bed.gz) ]
+    versions = ch_versions                 // channel: [ versions.yml ]
 }
