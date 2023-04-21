@@ -2,8 +2,8 @@
 // Create BlobTools dataset
 //
 
-include { ADD_SUMMARY_TO_METADATA } from '../../modules/local/add_summary_to_metadata'
-include { CREATE_BLOBDIR          } from '../../modules/local/create_blobdir'
+include { BLOBTOOLKIT_METADATA } from '../../modules/local/blobtoolkit/metadata'
+include { CREATE_BLOBDIR       } from '../../modules/local/create_blobdir'
 
 workflow BLOBTOOLS {
     take:
@@ -21,19 +21,19 @@ workflow BLOBTOOLS {
     //
     // Create metadata summary file
     //
-    ADD_SUMMARY_TO_METADATA ( config )
-    ch_versions = ch_versions.mix ( ADD_SUMMARY_TO_METADATA.out.versions.first() )
+    BLOBTOOLKIT_METADATA ( config )
+    ch_versions = ch_versions.mix ( BLOBTOOLKIT_METADATA.out.versions.first() )
 
 
     //  
     // Create Blobtools dataset files
     //
-    CREATE_BLOBDIR ( windowstats, busco, blastp, ADD_SUMMARY_TO_METADATA.out.yaml, taxdump )
+    CREATE_BLOBDIR ( windowstats, busco, blastp, BLOBTOOLKIT_METADATA.out.yaml, taxdump )
     ch_versions = ch_versions.mix ( CREATE_BLOBDIR.out.versions.first() )
 
 
     emit:
-    metadata = ADD_SUMMARY_TO_METADATA.out.yaml // channel: [ val(meta), path(yaml) ]
+    metadata = BLOBTOOLKIT_METADATA.out.yaml // channel: [ val(meta), path(yaml) ]
     blobdir  = CREATE_BLOBDIR.out.blobdir       // channel: [ val(meta), path(dir) ]
     versions = ch_versions                      // channel: [ versions.yml ]
 }
