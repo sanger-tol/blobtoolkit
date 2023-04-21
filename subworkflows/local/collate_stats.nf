@@ -2,9 +2,9 @@
 // Collate genome statistics by various window sizes
 //
 
-include { COUNT_BUSCO_GENES } from '../../modules/local/count_busco_genes'
-include { WINDOWSTATS_INPUT } from '../../modules/local/windowstats_input'
-include { GET_WINDOW_STATS  } from '../../modules/local/get_window_stats'
+include { BLOBTOOLKIT_COUNTBUSCOS } from '../../modules/local/blobtoolkit/countbuscos'
+include { WINDOWSTATS_INPUT       } from '../../modules/local/windowstats_input'
+include { GET_WINDOW_STATS        } from '../../modules/local/get_window_stats'
 
 
 workflow COLLATE_STATS {
@@ -24,12 +24,12 @@ workflow COLLATE_STATS {
     | groupTuple()
     | set { ch_busco }
 
-    COUNT_BUSCO_GENES ( ch_busco, bed )
-    ch_versions = ch_versions.mix ( COUNT_BUSCO_GENES.out.versions.first() )
+    BLOBTOOLKIT_COUNTBUSCOS ( ch_busco, bed )
+    ch_versions = ch_versions.mix ( BLOBTOOLKIT_COUNTBUSCOS.out.versions.first() )
 
 
     // Combine outputs from Fasta windows, mosdepth, and count BUSCO genes
-    WINDOWSTATS_INPUT ( freq, mononuc, cov, COUNT_BUSCO_GENES.out.tsv )
+    WINDOWSTATS_INPUT ( freq, mononuc, cov, BLOBTOOLKIT_COUNTBUSCOS.out.tsv )
     ch_versions = ch_versions.mix ( WINDOWSTATS_INPUT.out.versions.first() )
 
 
