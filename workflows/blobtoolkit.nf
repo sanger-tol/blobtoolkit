@@ -39,6 +39,7 @@ include { COVERAGE_STATS } from '../subworkflows/local/coverage_stats'
 include { BUSCO_DIAMOND  } from '../subworkflows/local/busco_diamond_blastp'
 include { COLLATE_STATS  } from '../subworkflows/local/collate_stats'
 include { BLOBTOOLS      } from '../subworkflows/local/blobtools'
+include { VIEW           } from '../subworkflows/local/view'
 
 
 /*
@@ -131,7 +132,14 @@ workflow BLOBTOOLKIT {
 
     BLOBTOOLS ( ch_config, COLLATE_STATS.out.window_tsv, BUSCO_DIAMOND.out.first_table, BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]), ch_taxdump )
     ch_versions = ch_versions.mix ( BLOBTOOLS.out.versions )
+    
 
+    //
+    // SUBWORKFLOW: Generate static images and summary
+    //
+    VIEW ( BLOBTOOLS.out.blobdir )
+    ch_versions = ch_versions.mix(VIEW.out.versions)
+    
 
     //
     // MODULE: Combine different versions.yml
