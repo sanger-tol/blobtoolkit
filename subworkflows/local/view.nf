@@ -25,19 +25,19 @@ workflow VIEW {
     "--view snail"
     ]
     
-    GENERATE_IMAGES ( blobdir, plots )
-    ch_versions = ch_versions.mix( GENERATE_IMAGES.out.versions )
+    BLOBTOOLKIT_IMAGES ( blobdir, plots )
+    ch_versions = ch_versions.mix( BLOBTOOLKIT_IMAGES.out.versions )
     
 
     //  
     // Generate summary
     //
-    GENERATE_SUMMARY ( blobdir )
-    ch_versions = ch_versions.mix( GENERATE_SUMMARY.out.versions )
+    BLOBTOOLKIT_SUMMARY ( blobdir )
+    ch_versions = ch_versions.mix( BLOBTOOLKIT_SUMMARY.out.versions )
 
 
     emit:
-    images   = GENERATE_IMAGES.out.png    // channel: [ val(meta), path(png)  ]
-    summary  = GENERATE_SUMMARY.out.json  // channel: [ val(meta), path(json) ]
-    versions = ch_versions                // channel: [ versions.yml ]
+    images   = BLOBTOOLKIT_IMAGES.out.png    // channel: [ val(meta), path(png)  ]
+    summary  = BLOBTOOLKIT_SUMMARY.out.json  // channel: [ val(meta), path(json) ]
+    versions = ch_versions                   // channel: [ versions.yml ]
 }
