@@ -21,7 +21,7 @@ process TARGZ {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${input}"
     """
-    tar -czvf ${prefix}.tar.gz $input
+    tar -czvhf ${prefix}.tar.gz ${input}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
