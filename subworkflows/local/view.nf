@@ -3,7 +3,6 @@
 //
 
 include { BLOBTOOLKIT_IMAGES  } from '../../modules/local/blobtoolkit/images'
-include { BLOBTOOLKIT_SUMMARY } from '../../modules/local/blobtoolkit/summary'
 
 workflow VIEW {
     take:
@@ -29,15 +28,7 @@ workflow VIEW {
     ch_versions = ch_versions.mix( BLOBTOOLKIT_IMAGES.out.versions )
     
 
-    //  
-    // Generate summary
-    //
-    BLOBTOOLKIT_SUMMARY ( blobdir )
-    ch_versions = ch_versions.mix( BLOBTOOLKIT_SUMMARY.out.versions )
-
-
     emit:
     images   = BLOBTOOLKIT_IMAGES.out.png    // channel: [ val(meta), path(png)  ]
-    summary  = BLOBTOOLKIT_SUMMARY.out.json  // channel: [ val(meta), path(json) ]
     versions = ch_versions                   // channel: [ versions.yml ]
 }
