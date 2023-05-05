@@ -1,20 +1,23 @@
 repository_type: pipeline
 lint:
-  actions_ci: False
+  files_exist:
+    - assets/nf-core-blobtoolkit_logo_light.png
+    - docs/images/nf-core-blobtoolkit_logo_light.png
+    - docs/images/nf-core-blobtoolkit_logo_dark.png
   files_unchanged:
     - LICENSE
     - .github/CONTRIBUTING.md
     - .github/ISSUE_TEMPLATE/bug_report.yml
     - .github/ISSUE_TEMPLATE/feature_request.yml
     - .github/PULL_REQUEST_TEMPLATE.md
-    - .github/workflows/linting.yml
     - .github/workflows/branch.yml
+    - .github/workflows/linting_comment.yml
+    - .github/workflows/linting.yml
     - assets/email_template.txt
     - assets/sendmail_template.txt
-    - docs/README.md
+    - lib/NfcoreSchema.groovy
     - lib/NfcoreTemplate.groovy
   nextflow_config:
     - manifest.name
     - manifest.homePage
-  multiqc_config:
-    - report_comment
+  actions_ci: false 
