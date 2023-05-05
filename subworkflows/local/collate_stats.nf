@@ -1,37 +1,44 @@
-include { COUNT_BUSCO_GENES    } from '../../modules/local/count_busco_genes'
-include { GUNZIP               } from '../../modules/nf-core/gunzip/main'
-include { COVERAGE_TSV         } from '../../modules/local/coverage_tsv'
-include { GET_WINDOW_STATS     } from '../../modules/local/get_window_stats'
+//
+// Collate genome statistics by various window sizes
+//
+
+include { BLOBTOOLKIT_COUNTBUSCOS } from '../../modules/local/blobtoolkit/countbuscos'
+include { WINDOWSTATS_INPUT       } from '../../modules/local/windowstats_input'
+include { BLOBTOOLKIT_WINDOWSTATS } from '../../modules/local/blobtoolkit/windowstats'
 
 
 workflow COLLATE_STATS {
     take: 
-    busco_dir       // channel: [val(meta), path(busco_dir)]
-    bed             // channel: [val(meta), path(bed)]
-    regions_bed     // channel: [val(meta), path(regions_bed)]
+    busco_table // channel: [ val(meta), path(full_table) ]
+    bed         // channel: [ val(meta), path(bed) ]
+    freq        // channel: [ val(meta), path(freq) ]
+    mononuc     // channel: [ val(meta), path(mononuc) ]
+    cov         // channel: [ val(meta), path(regions.bed.gz) ]
 
     main:
     ch_versions = Channel.empty()
 
-    // Extract Busco's full_table.tsv files from the directories
-    ch_tsv_path = busco_dir.map {
-        meta, busco_dir -> [meta, file("${busco_dir}/**/full_table.tsv")[0]]
-    }.groupTuple(by: [0])
 
-    // Count Busco Genes
-    COUNT_BUSCO_GENES(ch_tsv_path, bed)
-    ch_versions = ch_versions.mix(COUNT_BUSCO_GENES.out.versions)
+    // Count BUSCO genes in a region
+    busco_table
+    | groupTuple()
+    | set { ch_busco }
 
-    // Combine output TSV from mosdepth and count_busco_genes
-    COVERAGE_TSV(GUNZIP(regions_bed).gunzip, COUNT_BUSCO_GENES.out.tsv)
-    ch_versions = ch_versions.mix(COVERAGE_TSV.out.versions)
+    BLOBTOOLKIT_COUNTBUSCOS ( ch_busco, bed )
+    ch_versions = ch_versions.mix ( BLOBTOOLKIT_COUNTBUSCOS.out.versions.first() )
 
-    GET_WINDOW_STATS(COVERAGE_TSV.out.cov_tsv)
-    ch_versions = ch_versions.mix(GET_WINDOW_STATS.out.versions)
+
+    // Combine outputs from Fasta windows, mosdepth, and count BUSCO genes
+    WINDOWSTATS_INPUT ( freq, mononuc, cov, BLOBTOOLKIT_COUNTBUSCOS.out.tsv )
+    ch_versions = ch_versions.mix ( WINDOWSTATS_INPUT.out.versions.first() )
+
+
+    // Genome statistics by different window sizes
+    BLOBTOOLKIT_WINDOWSTATS ( WINDOWSTATS_INPUT.out.tsv )
+    ch_versions = ch_versions.mix ( BLOBTOOLKIT_WINDOWSTATS.out.versions.first() )
+
 
     emit:
-    count_genes = COUNT_BUSCO_GENES.out.tsv
-    cov_tsv = COVERAGE_TSV.out.cov_tsv
-    window_tsv = GET_WINDOW_STATS.out.tsv
-    versions = ch_versions
+    window_tsv = BLOBTOOLKIT_WINDOWSTATS.out.tsv // channel: [ val(meta), path(window_stats_tsvs) ]
+    versions   = ch_versions                     // channel: [ versions.yml ]
 }
