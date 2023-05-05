@@ -132,8 +132,15 @@ workflow BLOBTOOLKIT {
 
     BLOBTOOLS ( ch_config, COLLATE_STATS.out.window_tsv, BUSCO_DIAMOND.out.first_table, BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]), ch_taxdump )
     ch_versions = ch_versions.mix ( BLOBTOOLS.out.versions )
+    
 
-
+    //
+    // SUBWORKFLOW: Generate static images and summary
+    //
+    VIEW ( BLOBTOOLS.out.blobdir )
+    ch_versions = ch_versions.mix(VIEW.out.versions)
+    
+    
     //
     // SUBWORKFLOW: Create summary and plots from blobdir
     //

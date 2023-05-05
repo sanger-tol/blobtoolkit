@@ -1,12 +1,14 @@
 //
-// Create summary and plots from blobdir
+// Generate summary and static plots from blobdir
 //
 
 include { BLOBTOOLKIT_SUMMARY } from '../../modules/local/blobtoolkit/summary'
+include { BLOBTOOLKIT_IMAGES  } from '../../modules/local/blobtoolkit/images'
 
 workflow VIEW {
     take:
     blobdir     // channel: [ val(meta), path(blobdir) ]
+
 
     main:
     ch_versions = Channel.empty()
@@ -19,7 +21,24 @@ workflow VIEW {
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_SUMMARY.out.versions.first() )
 
 
+    //
+    // Generate static plots in png format
+    //
+    plots = [
+    "--view blob --param plotShape=circle",
+    "--view blob --param plotShape=hex",
+    "--view blob --param plotShape=square",
+    "--view blob --param plotShape=kite",
+    "--view cumulative",
+    "--view snail"
+    ]
+
+    BLOBTOOLKIT_IMAGES ( blobdir, plots )
+    ch_versions = ch_versions.mix( BLOBTOOLKIT_IMAGES.out.versions )
+
+
     emit:
-    summary = BLOBTOOLKIT_SUMMARY.out.json   // channel: [ val(meta), path(json) ]
+    summary  = BLOBTOOLKIT_SUMMARY.out.json  // channel: [ val(meta), path(json) ]
+    images   = BLOBTOOLKIT_IMAGES.out.png    // channel: [ val(meta), path(png) ]
     versions = ch_versions                   // channel: [ versions.yml ]
 }
