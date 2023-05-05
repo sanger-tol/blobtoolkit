@@ -113,7 +113,7 @@ class NfcoreTemplate {
         }
 
         // Write summary e-mail HTML to a file
-        def output_d = new File("${params.outdir}/pipeline_info/")
+        def output_d = new File("${params.outdir}/blobtoolkit_info/")
         if (!output_d.exists()) {
             output_d.mkdirs()
         }

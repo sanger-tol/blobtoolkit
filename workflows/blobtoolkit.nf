@@ -142,6 +142,13 @@ workflow BLOBTOOLKIT {
     
     
     //
+    // SUBWORKFLOW: Create summary and plots from blobdir
+    //
+    VIEW ( BLOBTOOLS.out.blobdir )
+    ch_versions = ch_versions.mix ( VIEW.out.versions )
+
+
+    //
     // MODULE: Combine different versions.yml
     //
     CUSTOM_DUMPSOFTWAREVERSIONS (

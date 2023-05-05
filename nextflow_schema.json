@@ -22,11 +22,18 @@
                     "pattern": "^\\S+\\.csv$",
                     "schema": "assets/schema_input.json"
                 },
+                "yaml": {
+                    "type": "string",
+                    "description": "Custom config file for draft assembly",
+                    "format": "file-path",
+                    "fa_icon": "fas fa-file-alt"
+                },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
-                    "fa_icon": "fas fa-folder-open"
+                    "fa_icon": "fas fa-folder-open",
+                    "default": "results"
                 },
                 "email": {
                     "type": "string",
@@ -34,16 +41,6 @@
                     "fa_icon": "fas fa-envelope",
                     "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
-                },
-                "blastp_outext": {
-                    "type": "string",
-                    "description": "Extension (file format) of the output file from Diamond Blast.",
-                    "fa_icon": "fas fa-file-circle-question"
-                },
-                "blastp_cols": {
-                    "type": "string",
-                    "description": "When blastp_outext is 'txt', this is the list of columns that Diamond Blast should print.",
-                    "fa_icon": "fas fa-columns-3"
                 }
             }
         },
@@ -53,6 +50,14 @@
             "fa_icon": "fas fa-dna",
             "description": "Reference genome related files and options required for the workflow.",
             "properties": {
+                "taxon": {
+                    "type": "string",
+                    "description": "NCBI taxonomy ID for the genome species"
+                },
+                "accession": {
+                    "type": "string",
+                    "description": "Genome accession where available or an identifier for draft assemblies"
+                },
                 "fasta": {
                     "type": "string",
                     "format": "file-path",
@@ -62,7 +67,56 @@
                     "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
                     "fa_icon": "far fa-file-code"
                 }
-            }
+            },
+            "required": ["taxon", "accession", "fasta"]
+        },
+        "databases": {
+            "title": "Databases",
+            "type": "object",
+            "description": "Define the location and parameters to work with databases.",
+            "default": "",
+            "properties": {
+                "blastp_cols": {
+                    "type": "string",
+                    "description": "When blastp_outext is 'txt', this is the list of columns that Diamond Blast should print.",
+                    "default": "qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore"
+                },
+                "blastp_outext": {
+                    "type": "string",
+                    "description": "Extension (file format) of the output file from Diamond Blast.",
+                    "fa_icon": "fas fa-file-circle-question",
+                    "default": "txt",
+                    "enum": ["blast", "xml", "txt", "daa", "sam", "tsv", "paf"]
+                },
+                "taxa_file": {
+                    "type": "string",
+                    "description": "Path to file containing the BUSCO lineages for the genome species",
+                    "help_text": "If this file is not included, the relevant BUSCO lineages are automatically calculated using the taxon parameter.",
+                    "format": "file-path",
+                    "fa_icon": "fas fa-file-alt"
+                },
+                "busco_lineages_path": {
+                    "type": "string",
+                    "description": "Local directory where clade-specific BUSCO lineage datasets are stored",
+                    "format": "directory-path",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "diamondblastp_db": {
+                    "type": "string",
+                    "description": "Path to the Diamond species-specific buscogenes database",
+                    "pattern": "^\\S+\\.dmnd$",
+                    "format": "file-path",
+                    "fa_icon": "fas fa-file-archive"
+                },
+                "ncbi_taxdump": {
+                    "type": "string",
+                    "description": "Path to the new NCBI tax dump database",
+                    "format": "directory-path",
+                    "fa_icon": "fas fa-folder-open"
+                }
+            },
+            "fa_icon": "fas fa-database",
+            "required": ["diamondblastp_db", "ncbi_taxdump"]
         },
         "institutional_config_options": {
             "title": "Institutional config options",
@@ -199,7 +253,7 @@
                 "tracedir": {
                     "type": "string",
                     "description": "Directory to keep pipeline Nextflow logs and reports.",
-                    "default": "${params.outdir}/pipeline_info",
+                    "default": "${params.outdir}/blobtoolkit_info",
                     "fa_icon": "fas fa-cogs",
                     "hidden": true
                 },
@@ -226,6 +280,9 @@
         },
         {
             "$ref": "#/definitions/reference_genome_options"
+        },
+        {
+            "$ref": "#/definitions/databases"
         },
         {
             "$ref": "#/definitions/institutional_config_options"

@@ -5,7 +5,7 @@ process BLOBTOOLKIT_CONFIG {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         exit 1, "GENERATE_CONFIG module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
-    container "genomehubs/blobtoolkit:4.1.2"
+    container "genomehubs/blobtoolkit:4.1.5"
 
     input:
     tuple val(meta), path(fasta)
