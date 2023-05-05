@@ -20,4 +20,4 @@ lint:
   nextflow_config:
     - manifest.name
     - manifest.homePage
-  actions_ci: false 
+  actions_ci: false
