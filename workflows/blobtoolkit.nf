@@ -135,19 +135,12 @@ workflow BLOBTOOLKIT {
     
 
     //
-    // SUBWORKFLOW: Generate static images and summary
+    // SUBWORKFLOW: Generate summary and static images
     //
     VIEW ( BLOBTOOLS.out.blobdir )
     ch_versions = ch_versions.mix(VIEW.out.versions)
     
     
-    //
-    // SUBWORKFLOW: Create summary and plots from blobdir
-    //
-    VIEW ( BLOBTOOLS.out.blobdir )
-    ch_versions = ch_versions.mix ( VIEW.out.versions )
-
-
     //
     // MODULE: Combine different versions.yml
     //
