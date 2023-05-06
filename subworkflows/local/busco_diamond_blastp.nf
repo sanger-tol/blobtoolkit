@@ -44,11 +44,10 @@ workflow BUSCO_DIAMOND {
     ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
 
 
-    BUSCO.out.full_table
-    | join ( BUSCO.out.seq_dir )
-    | map { meta, table, seq -> [ [ "id": table.parent.baseName ], table, seq ] }
+    BUSCO.out.seq_dir
+    | map { meta, seq -> [ [ "id": seq.parent.baseName ], seq ] }
     | branch {
-        meta, table, seq ->
+        meta, seq ->
             archaea   : meta.id == "run_archaea_odb10"
             bacteria  : meta.id == "run_bacteria_odb10"
             eukaryota : meta.id == "run_eukaryota_odb10"
