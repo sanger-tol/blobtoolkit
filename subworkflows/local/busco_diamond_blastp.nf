@@ -44,14 +44,8 @@ workflow BUSCO_DIAMOND {
     ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
 
 
-    //
-    // Create input for BLOBTOOLKIT_EXTRACTBUSCOS
-    //
-    TARGZ ( BUSCO.out.seq_dir )
-    ch_versions = ch_versions.mix ( TARGZ.out.versions.first() )
-    
     BUSCO.out.full_table
-    | join ( TARGZ.out.archive )
+    | join ( BUSCO.out.seq_dir )
     | map { meta, table, seq -> [ [ "id": table.parent.baseName ], table, seq ] }
     | branch {
         meta, table, seq ->
