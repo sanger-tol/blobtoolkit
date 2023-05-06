@@ -4,7 +4,6 @@
 
 include { GOAT_TAXONSEARCH          } from '../../modules/nf-core/goat/taxonsearch/main'
 include { BUSCO                     } from '../../modules/nf-core/busco/main'
-include { TARGZ                     } from '../../modules/local/targz'
 include { BLOBTOOLKIT_EXTRACTBUSCOS } from '../../modules/local/blobtoolkit/extractbuscos'
 include { DIAMOND_BLASTP            } from '../../modules/nf-core/diamond/blastp/main'
 
