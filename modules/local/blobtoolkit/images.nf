@@ -9,7 +9,6 @@ process BLOBTOOLKIT_IMAGES {
 
     input:
     tuple val(meta), path(blobdir)
-    each plot
 
     output:
     tuple val(meta), path('*.png') , emit: png
@@ -22,11 +21,12 @@ process BLOBTOOLKIT_IMAGES {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    blobtools view \\
-        $plot \\
-        --out . "${blobdir}" \\
+    blobtk plot \\
+        -v snail \\
+        -o ${prefix}.snail.png \\
+        -d ${blobdir} \\
         $args
-
+    
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')

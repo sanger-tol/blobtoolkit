@@ -24,16 +24,8 @@ workflow VIEW {
     //
     // Generate static plots in png format
     //
-    plots = [
-    "--view blob --param plotShape=circle",
-    "--view blob --param plotShape=hex",
-    "--view blob --param plotShape=square",
-    "--view blob --param plotShape=kite",
-    "--view cumulative",
-    "--view snail"
-    ]
 
-    BLOBTOOLKIT_IMAGES ( blobdir, plots )
+    BLOBTOOLKIT_IMAGES ( blobdir )
     ch_versions = ch_versions.mix( BLOBTOOLKIT_IMAGES.out.versions )
 
 
