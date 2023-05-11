@@ -26,7 +26,6 @@ process BLOBTOOLKIT_IMAGES {
         -o ${prefix}.snail.png \\
         -d ${blobdir} \\
         $args
-    
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
