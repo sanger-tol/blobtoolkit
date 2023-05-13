@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/sanger-tol/blobtoolkit/master/nextflow_schema.json",
     "title": "sanger-tol/blobtoolkit pipeline parameters",
-    "description": "quality assessment of genome assemblies",
+    "description": "Quality assessment of genome assemblies",
     "type": "object",
     "definitions": {
         "input_output_options": {
