@@ -1,10 +1,18 @@
-# Usage
+# sanger-tol/blobtoolkit: Usage
+
+## :warning: Please read this documentation on the nf-core website: [https://pipelines.tol.sanger.ac.uk/blobtoolkit/usage](https://pipelines.tol.sanger.ac.uk/blobtoolkit/usage)
+
+> _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
+
+## Introduction
+
+<!-- Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
 
 ## Samplesheet input
 
 You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
 
-```console
+```bash
 --input '[path to samplesheet file]'
 ```
 
@@ -38,41 +46,41 @@ sample3,ont,ont.cram
 | `datatype` | Type of sequencing data. Must be one of `hic`, `illumina`, `pacbio`, or `ont`.                                                                                                        |
 | `datafile` | Full path to read data file.                                                                                                                                                          |
 
-An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
+An [example samplesheet](https://raw.githubusercontent.com/sanger-tol/blobtoolkit/main/assets/test/samplesheet.csv) has been provided with the pipeline.
 
 ## Getting databases ready for the pipeline
 
 The BlobToolKit pipeline can be run in many different ways. The default way requires access to several databases:
 
-1. NCBI taxdump
-2. NCBI NT blast database
-3. UniProt reference proteomes Diamond blastdb
-4. BUSCO databases
+1. [NCBI taxdump database](https://www.ncbi.nlm.nih.gov/taxonomy)
+2. [NCBI nucleotide BLAST database](https://blast.ncbi.nlm.nih.gov/doc/blast-help/downloadblastdata.html#databases)
+3. [UniProt reference proteomes database](https://www.uniprot.org)
+4. [BUSCO database](https://busco.ezlab.org)
 
-It is a good idea to put a date suffix for each database location so you know at a glance whether you're using the latest version. We're using the YYYY_MM format as we don't expect the databases to be updated more frequently than once a month. But feel free to use `DATE=YYYY_MM_DD` or a different format if you prefer.
+It is a good idea to put a date suffix for each database location so you know at a glance whether you are using the latest version. We are using the `YYYY_MM` format as we do not expect the databases to be updated more frequently than once a month. However, feel free to use `DATE=YYYY_MM_DD` or a different format if you prefer.
 
-### 1. NCBI taxdump
+### 1. NCBI taxdump database
 
-Create the database directory and cd to it:
+Create the database directory and move into the directory:
 
-```
+```bash
 DATE=2023_03
 TAXDUMP=/path/to/databases/taxdump_${DATE}
 mkdir -p $TAXDUMP
 cd $TAXDUMP
 ```
 
-Retrieve and tar gunzip the NCBI taxdump:
+Retrieve and decompress the NCBI taxdump:
 
-```
+```bash
 curl -L ftp://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz | tar xzf -
 ```
 
-### 2. NCBI NT blast database
+### 2. NCBI nucleotide BLAST database
 
-Create the database directory and cd to it:
+Create the database directory and move into the directory:
 
-```
+```bash
 DATE=2023_03
 NT=/path/to/databases/nt_${DATE}
 mkdir -p $NT
@@ -81,29 +89,29 @@ cd $NT
 
 Retrieve the NCBI blast nt database (version 5) files and tar gunzip them. We are using the `&&` syntax to ensure that each command completes without error before the next one is run:
 
-```
+```bash
 wget "ftp://ftp.ncbi.nlm.nih.gov/blast/db/v5/nt.??.tar.gz" -P $NT/ &&
 for file in $NT/*.tar.gz; do
     tar xf $file -C $NT && rm $file;
 done
 ```
 
-### 3. UniProt reference proteomes Diamond blast db
+### 3. UniProt reference proteomes database
 
-You need [diamond blast](https://github.com/bbuchfink/diamond) installed for this step. The easiest way is probably using [conda](https://anaconda.org/bioconda/diamond). Make sure you have the latest version of diamond (>2.x.x) otherwise the `--taxonnames` argument may not work.
+You need [diamond blast](https://github.com/bbuchfink/diamond) installed for this step. The easiest way is probably using [conda](https://anaconda.org/bioconda/diamond). Make sure you have the latest version of Diamond (>2.x.x) otherwise the `--taxonnames` argument may not work.
 
-Create the database directory and cd to it:
+Create the database directory and move into the directory:
 
-```
+```bash
 DATE=2023_03
 UNIPROT=/path/to/databases/uniprot_${DATE}
 mkdir -p $UNIPROT
 cd $UNIPROT
 ```
 
-The UniProt Refseq_Proteomes_YYYY_MM.tar.gz file is very large (>160 GB) and will take a long time to download. The command below looks complex because it needs to get around the problem of using wildcards with wget and curl.
+The UniProt `Refseq_Proteomes_YYYY_MM.tar.gz` file is very large (>160 GB) and will take a long time to download. The command below looks complex because it needs to get around the problem of using wildcards with wget and curl.
 
-```
+```bash
 wget -q -O $UNIPROT/reference_proteomes.tar.gz \
   ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/$(curl \
     -vs ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/ 2>&1 | \
@@ -124,9 +132,9 @@ diamond makedb -p 16 --in reference_proteomes.fasta.gz --taxonmap reference_prot
 
 ### 4. BUSCO databases
 
-Create the database directory and cd to it:
+Create the database directory and move into the directory:
 
-```
+```bash
 DATE=2023_03
 BUSCO=/path/to/databases/busco_${DATE}
 mkdir -p $BUSCO
@@ -135,7 +143,7 @@ cd $BUSCO
 
 Download BUSCO data and lineages to allow BUSCO to run in offline mode:
 
-```
+```bash
 wget -r -nH https://busco-data.ezlab.org/v5/data/
 # the trailing slash after data is important. Otherwise wget doesn't get the subdirectories
 
@@ -143,74 +151,17 @@ wget -r -nH https://busco-data.ezlab.org/v5/data/
 find v5/data -name "*.tar.gz" | while read -r TAR; do tar -C `dirname $TAR` -xzf $TAR; done
 ```
 
-If you have [GNU parallel](https://www.gnu.org/software/parallel/) installed, you can also use the command below which will run faster as it will do the tar gunzip commands in parallel:
+If you have [GNU parallel](https://www.gnu.org/software/parallel/) installed, you can also use the command below which will run faster as it will run the decompression commands in parallel:
 
-```
+```bash
 find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
 ```
 
 ## YAML File and Nextflow configuration
 
-As in the Snakemake version [a YAML configuration file](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/blobtoolkit-pipeline/src#configuration) or an accession code (usually a GCA or draft identifier to generate this YAML file) should be provided through `--yaml` or `--accession` (only one of them should be specified). Here is an example of how a YAML file should look like, all taxonomic information can be obtained from [NCBI: Browse taxonomy](https://www.ncbi.nlm.nih.gov/data-hub/taxonomy/9662/) :
+As in the Snakemake version [a YAML configuration file](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/blobtoolkit-pipeline/src#configuration) is needed to generate metadata summary. This YAML config file can be generated with a genome accession value for released assemblies (for example, GCA_XXXXXXXXX.X) or can be passed for draft assemblies (for example, [GCA_922984935.2.yaml](https://raw.githubusercontent.com/sanger-tol/blobtoolkit/main/assets/test/GCA_922984935.2.yaml) using the `--yaml` parameter. Even for draft assemblies, a placeholder value should be passed with the `--accession` parameter.
 
-```
-assembly:
-  accession: GCA_922984935.2
-  level: chromosome
-  prefix: CAKLPM02
-  scaffold-count: 538
-  span: 2738694574
-revision: 1
-settings:
-  software_versions:
-    blastn: 2.12.0+
-    blobtools: 4.0.7
-    busco: 5.3.2
-    diamond: 2.0.15
-    minimap2: 2.24-r1122
-    mosdepth: 0.3.3
-    python: 3.9.13
-    samtools: 1.15.1
-    seqtk: 1.3-r106
-    snakemake: 7.19.1
-  stats_windows:
-    - 0.1
-    - 0.01
-    - 100000
-    - 1000000
-similarity:
-  diamond_blastp:
-    evalue: 1.0e-10
-    import_evalue: 1.0e-25
-    import_max_target_seqs: 100000
-    max_target_seqs: 10
-    path: /blobtoolkit/databases/uniprot_2021_06
-    taxrule: blastp=buscogenes
-    name: reference_proteomes
-  diamond_blastx:
-    evalue: 1.0e-10
-    import_evalue: 1.0e-25
-    max_target_seqs: 10
-    name: reference_proteomes
-    path: /blobtoolkit/databases/uniprot_2021_06
-    taxrule: buscogenes
-taxon:
-  class: Mammalia
-  family: Mustelidae
-  genus: Meles
-  kingdom: Metazoa
-  name: Meles meles
-  order: Carnivora
-  phylum: Chordata
-  superkingdom: Eukaryota
-  taxid: '9662'
-version: 2
-```
-
-However there are important differences on how parameters are specified in the previous Snakemake version and how they are specified in Nextflow. Parameters in `stats_windows`, `diamond_blastp`, `diamond_blastx`, and `taxon` are ignored and are kept in this YAML file only to allow compatibility with the `blobltools` subworkflow in the previous [blobtoolkit pipeline](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/blobtoolkit-pipeline/src) implementation. If you need to modify any parameter for a specific tool in the pipeline or a path to a database in Nextflow:
-
-- Tool parameters are specified on the the `conf/modules.config` file. There is one exception for this: `blastp_outext` and `blastp_cols`, they are `diamond_blastp` parameters and are specified in `nextflow.config` because of the way the [module](https://github.com/nf-core/modules/blob/master/modules/nf-core/diamond/blastp/main.nf) works.
-- Paths to databases can be specified as parameters when running the pipeline or can be included in `nextflow.config` file, for instance: `--busco_lineages_path /path-to/busco/v5/` can be used when running the pipeline or specified in `nextflow.config` file as `busco_lineages_path = '/path-to/busco/v5/'`. List of parameters to specify database paths: (1) `--busco_lineages_path`, (2) `--diamondblastp_db`, (3) `--ncbi_taxdump`.
+The data in the YAML is currently ignored in the Nextflow pipeline version. The YAML file is retained only to allow compatibility with the BlobDir dataset generated by the [Snakemake version](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/blobtoolkit-pipeline/src). The taxonomic information in the YAML file can be obtained from [NCBI Taxonomy](https://www.ncbi.nlm.nih.gov/data-hub/taxonomy/).
 
 ## Changes from Snakemake to Nextflow
 
@@ -218,7 +169,7 @@ However there are important differences on how parameters are specified in the p
 
 Snakemake
 
-```
+```bash
 # Public Assemblies
 run_btk_pipeline.sh GCA_ACCESSION
 
@@ -228,12 +179,12 @@ blobtoolkit-pipeline run --config YAML --threads INT --workdir DIR
 
 Nextflow
 
-```
+```bash
 # Public Assemblies
-nextflow run sanger-tol/blobtoolkit --input SAMPLESHEET --fasta GENOME –-accession GCA_ACCESSION --taxon TAXON_ID
+nextflow run sanger-tol/blobtoolkit --input SAMPLESHEET --fasta GENOME –-accession GCA_ACCESSION --taxon TAXON_ID --ncbi_taxdump TAXDUMP_DB --diamondblastp_db DMND_db
 
 # Draft Assemblies
-nextflow run sanger-tol/blobtoolkit --input SAMPLESHEET --fasta GENOME –-accession TAG --taxon TAXON_ID --yaml CONFIG
+nextflow run sanger-tol/blobtoolkit --input SAMPLESHEET --fasta GENOME –-accession TAG --taxon TAXON_ID --yaml CONFIG --ncbi_taxdump TAXDUMP_DB --diamondblastp_db DMND_db
 ```
 
 ### Subworkflows
@@ -250,22 +201,22 @@ Here is a full list of snakemake subworkflows and their Nextflow couterparts:
   - Subworkflow has been modified.
   - BED file and additional statistics calculated using [`fasta_windows`](https://github.com/tolkit/fasta_windows).
 - **`busco.smk`**
-  - Implemented as [`busco_diamond_blastp.nf`](https://github.com/sanger-tol/blobtoolkit/blob/dev/subworkflows/local/busco_diamond_blastp.nf).
+  - Implemented as [`busco_diamond_blastp.nf`](https://github.com/sanger-tol/blobtoolkit/blob/main/subworkflows/local/busco_diamond_blastp.nf).
 - **`cov_stats.smk`**
-  - The coverage calculation are done using [`mosdepth`]() in subworkflow [`coverage_stats.nf`](https://github.com/sanger-tol/blobtoolkit/blob/dev/subworkflows/local/coverage_stats.nf).
-  - Combining the various tsv files in done in subworkflow [`collate_stats.nf`](https://github.com/sanger-tol/blobtoolkit/blob/dev/subworkflows/local/collate_stats.nf).
+  - The coverage calculation are done using [`mosdepth`]() in subworkflow [`coverage_stats.nf`](https://github.com/sanger-tol/blobtoolkit/blob/main/subworkflows/local/coverage_stats.nf).
+  - Combining the various tsv files in done in subworkflow [`collate_stats.nf`](https://github.com/sanger-tol/blobtoolkit/blob/main/subworkflows/local/collate_stats.nf).
 - **`window_stats.smk`**
-  - The [`window_stats`]() process in implemented in subworkflow [`collate_stats.nf`](https://github.com/sanger-tol/blobtoolkit/blob/dev/subworkflows/local/collate_stats.nf).
+  - The [`window_stats`]() process in implemented in subworkflow [`collate_stats.nf`](https://github.com/sanger-tol/blobtoolkit/blob/main/subworkflows/local/collate_stats.nf).
 - **`diamond_blastp.smk`**
-  - Implemented within [`busco_diamond_blastp.nf`](https://github.com/sanger-tol/blobtoolkit/blob/dev/subworkflows/local/busco_diamond_blastp.nf).
+  - Implemented within [`busco_diamond_blastp.nf`](https://github.com/sanger-tol/blobtoolkit/blob/main/subworkflows/local/busco_diamond_blastp.nf).
 - **`diamond.smk`**
   - Will be implemented as `diamond_blastx.nf`.
 - **`blastn.smk`**
   - Will be implemented as `blastn.nf`.
 - **`blobtools.smk`**
-  - Implemented as [`blobtools.nf`](https://github.com/sanger-tol/blobtoolkit/blob/dev/subworkflows/local/blobtools.nf).
+  - Implemented as [`blobtools.nf`](https://github.com/sanger-tol/blobtoolkit/blob/main/subworkflows/local/blobtools.nf).
 - **`view.smk`**
-  - Implemented as [`view.nf`](https://github.com/sanger-tol/blobtoolkit/blob/dev/subworkflows/local/view.nf).
+  - Implemented as [`view.nf`](https://github.com/sanger-tol/blobtoolkit/blob/main/subworkflows/local/view.nf).
 
 ### Software dependencies
 
@@ -273,7 +224,7 @@ List of tools for any given dataset can be fetched from the API, for example htt
 
 | Dependency        | Snakemake | Nextflow |
 | ----------------- | --------- | -------- |
-| blobtoolkit       | 4.1.4     | 4.1.4    |
+| blobtoolkit       | 4.1.5     | 4.1.5    |
 | blast             | 2.12.0    |          |
 | blobtk            | 0.2.4     |          |
 | busco             | 5.3.2     | 5.4.3    |
@@ -292,37 +243,55 @@ List of tools for any given dataset can be fetched from the API, for example htt
 
 > **NB:** Dependency has been **added** if only the Nextflow version information is present.
 > **NB:** Dependency has been **removed** if only the Snakemake version information is present.
+> **NB:** Dependency has been **updated** if bothe the Snakemake and Nextflow version information is present.
 
 ## Running the pipeline
 
 The typical command for running the pipeline is as follows:
 
-```console
-nextflow run sanger-tol/blobtoolkit \
---input samplesheet.csv \
---outdir <OUTDIR> \
---fasta genome.fa.gz \
---yaml config.yaml \
---taxon 'Homo sapiens' \
--profile singularity
+```bash
+nextflow run sanger-tol/blobtoolkit --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta -profile docker –-accession GCA_922984935.2 --taxon "Meles meles" --ncbi_taxdump /path/to/taxdump --diamondblastp_db /path/to/buscogenes.dmnd
 ```
 
-This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles. If no file is specified, an accession (`--accession`) should be specified instead. Also the paths to databases will be searched in `nexflow.config` file, if they are not found there they should be specified using: `--busco_lineages_path`, `--diamondblastp_db`, and `--ncbi_taxdump`.
+This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
 
 Note that the pipeline will create the following files in your working directory:
 
-```console
+```bash
 work                # Directory containing the nextflow working files
-<OUTIDR>            # Finished results in specified location (defined with --outdir)
+<OUTDIR>            # Finished results in specified location (defined with --outdir)
 .nextflow_log       # Log file from Nextflow
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
+
+If you wish to repeatedly use the same parameters for multiple runs, rather than specifying each flag in the command, you can specify these in a params file.
+
+Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
+
+> ⚠️ Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
+> The above pipeline run specified with a params file in yaml format:
+
+```bash
+nextflow run sanger-tol/blobtoolkit -profile docker -params-file params.yaml
+```
+
+with `params.yaml` containing:
+
+```yaml
+input: './samplesheet.csv'
+outdir: './results/'
+genome: 'GRCh37'
+input: 'data'
+<...>
+```
+
+You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
 
 ### Updating the pipeline
 
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
-```console
+```bash
 nextflow pull sanger-tol/blobtoolkit
 ```
 
@@ -330,9 +299,13 @@ nextflow pull sanger-tol/blobtoolkit
 
 It is a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [sanger-tol/blobtoolkit releases page](https://github.com/sanger-tol/blobtoolkit/releases) and find the latest version number - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`.
+First, go to the [sanger-tol/blobtoolkit releases page](https://github.com/sanger-tol/blobtoolkit/releases) and find the latest pipeline version - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`. Of course, you can switch to another version by changing the number after the `-r` flag.
 
-This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
+This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future. For example, at the bottom of the MultiQC reports.
+
+To further assist in reproducbility, you can use share and re-use [parameter files](#running-the-pipeline) to repeat pipeline runs with the same settings without having to write out a command with every single parameter.
+
+> 💡 If you wish to share such profile (such as upload as supplementary material for academic publications), make sure to NOT include cluster specific paths to files, nor institutional specific profiles.
 
 ## Core Nextflow arguments
 
@@ -342,7 +315,7 @@ This version number will be logged in reports when you run the pipeline, so that
 
 Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments.
 
-Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Podman, Shifter, Charliecloud, Conda) - see below. When using Biocontainers, most of these software packaging methods pull Docker containers from quay.io e.g [FastQC](https://quay.io/repository/biocontainers/fastqc) except for Singularity which directly downloads Singularity images via https hosted by the [Galaxy project](https://depot.galaxyproject.org/singularity/) and Conda which downloads and installs software locally from [Bioconda](https://bioconda.github.io/).
+Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Podman, Shifter, Charliecloud, Apptainer, Conda) - see below.
 
 > We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
 
@@ -351,8 +324,11 @@ The pipeline also dynamically loads configurations from [https://github.com/nf-c
 Note that multiple profiles can be loaded, for example: `-profile test,docker` - the order of arguments is important!
 They are loaded in sequence, so later profiles can overwrite earlier profiles.
 
-If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended.
+If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended, since it can lead to different results on different machines dependent on the computer enviroment.
 
+- `test`
+  - A profile with a complete configuration for automated testing
+  - Includes links to test data so needs no other parameters
 - `docker`
   - A generic configuration profile to be used with [Docker](https://docker.com/)
 - `singularity`
@@ -363,11 +339,10 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
   - A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
 - `charliecloud`
   - A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
+- `apptainer`
+  - A generic configuration profile to be used with [Apptainer](https://apptainer.org/)
 - `conda`
-  - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
-- `test`
-  - A profile with a complete configuration for automated testing
-  - Includes links to test data so needs no other parameters
+  - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter, Charliecloud, or Apptainer.
 
 ### `-resume`
 
@@ -383,98 +358,21 @@ Specify the path to a specific config file (this is a core Nextflow command). Se
 
 ### Resource requests
 
-Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the steps in the pipeline, if the job exits with any of the error codes specified [here](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L18) it will automatically be resubmitted with higher requests (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.
+Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the steps in the pipeline, if the job exits with any of the error codes specified [here](https://github.com/sanger-tol/blobtoolkit/blob/56906ffb5737e4b985797bb5fb4b9c94cfe69600/conf/base.config#L18) it will automatically be resubmitted with higher requests (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.
 
-For example, if the nf-core/rnaseq pipeline is failing after multiple re-submissions of the `STAR_ALIGN` process due to an exit code of `137` this would indicate that there is an out of memory issue:
+To change the resource requests, please see the [max resources](https://nf-co.re/docs/usage/configuration#max-resources) and [tuning workflow resources](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources) section of the nf-core website.
 
-```console
-[62/149eb0] NOTE: Process `NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)` terminated with an error exit status (137) -- Execution is retried (1)
-Error executing process > 'NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)'
+### Custom Containers
 
-Caused by:
-    Process `NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)` terminated with an error exit status (137)
+In some cases you may wish to change which container or conda environment a step of the pipeline uses for a particular tool. By default nf-core pipelines use containers and software from the [biocontainers](https://biocontainers.pro/) or [bioconda](https://bioconda.github.io/) projects. However in some cases the pipeline specified version maybe out of date.
 
-Command executed:
-    STAR \
-        --genomeDir star \
-        --readFilesIn WT_REP1_trimmed.fq.gz  \
-        --runThreadN 2 \
-        --outFileNamePrefix WT_REP1. \
-        <TRUNCATED>
+To use a different container from the default container or conda environment specified in a pipeline, please see the [updating tool versions](https://nf-co.re/docs/usage/configuration#updating-tool-versions) section of the nf-core website.
 
-Command exit status:
-    137
+### Custom Tool Arguments
 
-Command output:
-    (empty)
+A pipeline might not always support every possible argument or option of a particular tool used in pipeline. Fortunately, nf-core pipelines provide some freedom to users to insert additional parameters that the pipeline does not include by default.
 
-Command error:
-    .command.sh: line 9:  30 Killed    STAR --genomeDir star --readFilesIn WT_REP1_trimmed.fq.gz --runThreadN 2 --outFileNamePrefix WT_REP1. <TRUNCATED>
-Work dir:
-    /home/pipelinetest/work/9d/172ca5881234073e8d76f2a19c88fb
-
-Tip: you can replicate the issue by changing to the process work dir and entering the command `bash .command.run`
-```
-
-To bypass this error you would need to find exactly which resources are set by the `STAR_ALIGN` process. The quickest way is to search for `process STAR_ALIGN` in the [nf-core/rnaseq Github repo](https://github.com/nf-core/rnaseq/search?q=process+STAR_ALIGN).
-We have standardised the structure of Nextflow DSL2 pipelines such that all module files will be present in the `modules/` directory and so, based on the search results, the file we want is `modules/nf-core/software/star/align/main.nf`.
-If you click on the link to that file you will notice that there is a `label` directive at the top of the module that is set to [`label process_high`](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/modules/nf-core/software/star/align/main.nf#L9).
-The [Nextflow `label`](https://www.nextflow.io/docs/latest/process.html#label) directive allows us to organise workflow processes in separate groups which can be referenced in a configuration file to select and configure subset of processes having similar computing requirements.
-The default values for the `process_high` label are set in the pipeline's [`base.config`](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L33-L37) which in this case is defined as 72GB.
-Providing you haven't set any other standard nf-core parameters to **cap** the [maximum resources](https://nf-co.re/usage/configuration#max-resources) used by the pipeline then we can try and bypass the `STAR_ALIGN` process failure by creating a custom config file that sets at least 72GB of memory, in this case increased to 100GB.
-The custom config below can then be provided to the pipeline via the [`-c`](#-c) parameter as highlighted in previous sections.
-
-```nextflow
-process {
-    withName: 'NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN' {
-        memory = 100.GB
-    }
-}
-```
-
-> **NB:** We specify the full process name i.e. `NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN` in the config file because this takes priority over the short name (`STAR_ALIGN`) and allows existing configuration using the full process name to be correctly overridden.
->
-> If you get a warning suggesting that the process selector isn't recognised check that the process name has been specified correctly.
-
-### Updating containers
-
-The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. If for some reason you need to use a different version of a particular tool with the pipeline then you just need to identify the `process` name and override the Nextflow `container` definition for that process using the `withName` declaration. For example, in the [nf-core/viralrecon](https://nf-co.re/viralrecon) pipeline a tool called [Pangolin](https://github.com/cov-lineages/pangolin) has been used during the COVID-19 pandemic to assign lineages to SARS-CoV-2 genome sequenced samples. Given that the lineage assignments change quite frequently it doesn't make sense to re-release the nf-core/viralrecon everytime a new version of Pangolin has been released. However, you can override the default container used by the pipeline by creating a custom config file and passing it as a command-line argument via `-c custom.config`.
-
-1. Check the default version used by the pipeline in the module file for [Pangolin](https://github.com/nf-core/viralrecon/blob/a85d5969f9025409e3618d6c280ef15ce417df65/modules/nf-core/software/pangolin/main.nf#L14-L19)
-2. Find the latest version of the Biocontainer available on [Quay.io](https://quay.io/repository/biocontainers/pangolin?tag=latest&tab=tags)
-3. Create the custom config accordingly:
-
-   - For Docker:
-
-     ```nextflow
-     process {
-         withName: PANGOLIN {
-             container = 'quay.io/biocontainers/pangolin:3.0.5--pyhdfd78af_0'
-         }
-     }
-     ```
-
-   - For Singularity:
-
-     ```nextflow
-     process {
-         withName: PANGOLIN {
-             container = 'https://depot.galaxyproject.org/singularity/pangolin:3.0.5--pyhdfd78af_0'
-         }
-     }
-     ```
-
-   - For Conda:
-
-     ```nextflow
-     process {
-         withName: PANGOLIN {
-             conda = 'bioconda::pangolin=3.0.5'
-         }
-     }
-     ```
-
-> **NB:** If you wish to periodically update individual tool-specific results (e.g. Pangolin) generated by the pipeline then you must ensure to keep the `work/` directory otherwise the `-resume` ability of the pipeline will be compromised and it will restart from scratch.
+To learn how to provide additional arguments to a particular tool of the pipeline, please see the [customising tool arguments](https://nf-co.re/docs/usage/configuration#customising-tool-arguments) section of the nf-core website.
 
 ### nf-core/configs
 
@@ -483,6 +381,14 @@ In most cases, you will only need to create a custom config as a one-off but if 
 See the main [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html) for more information about creating your own configuration files.
 
 If you have any questions or issues please send us a message on [Slack](https://nf-co.re/join/slack) on the [`#configs` channel](https://nfcore.slack.com/channels/configs).
+
+## Azure Resource Requests
+
+To be used with the `azurebatch` profile by specifying the `-profile azurebatch`.
+We recommend providing a compute `params.vm_type` of `Standard_D16_v3` VMs by default but these options can be changed if required.
+
+Note that the choice of VM size depends on your quota and the overall workload during the analysis.
+For a thorough list, please refer the [Azure Sizes for virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes).
 
 ## Running in the background
 
@@ -498,6 +404,6 @@ Some HPC setups also allow you to run nextflow within a cluster job submitted yo
 In some cases, the Nextflow Java virtual machines can start to request a large amount of memory.
 We recommend adding the following line to your environment to limit this (typically in `~/.bashrc` or `~./bash_profile`):
 
-```console
+```bash
 NXF_OPTS='-Xms1g -Xmx4g'
 ```

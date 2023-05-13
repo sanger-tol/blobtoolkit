@@ -33,9 +33,28 @@ class NfcoreTemplate {
     }
 
     //
+    // Generate version string
+    //
+    public static String version(workflow) {
+        String version_string = ""
+
+        if (workflow.manifest.version) {
+            def prefix_v = workflow.manifest.version[0] != 'v' ? 'v' : ''
+            version_string += "${prefix_v}${workflow.manifest.version}"
+        }
+
+        if (workflow.commitId) {
+            def git_shortsha = workflow.commitId.substring(0, 7)
+            version_string += "-g${git_shortsha}"
+        }
+
+        return version_string
+    }
+
+    //
     // Construct and send completion email
     //
-    public static void email(workflow, params, summary_params, projectDir, log) {
+    public static void email(workflow, params, summary_params, projectDir, log, multiqc_report=[]) {
 
         // Set up the e-mail variables
         def subject = "[$workflow.manifest.name] Successful: $workflow.runName"
@@ -61,7 +80,7 @@ class NfcoreTemplate {
         misc_fields['Nextflow Compile Timestamp'] = workflow.nextflow.timestamp
 
         def email_fields = [:]
-        email_fields['version']      = workflow.manifest.version
+        email_fields['version']      = NfcoreTemplate.version(workflow)
         email_fields['runName']      = workflow.runName
         email_fields['success']      = workflow.success
         email_fields['dateComplete'] = workflow.complete
@@ -72,6 +91,24 @@ class NfcoreTemplate {
         email_fields['commandLine']  = workflow.commandLine
         email_fields['projectDir']   = workflow.projectDir
         email_fields['summary']      = summary << misc_fields
+
+        // On success try attach the multiqc report
+        def mqc_report = null
+        try {
+            if (workflow.success) {
+                mqc_report = multiqc_report.getVal()
+                if (mqc_report.getClass() == ArrayList && mqc_report.size() >= 1) {
+                    if (mqc_report.size() > 1) {
+                        log.warn "[$workflow.manifest.name] Found multiple reports from process 'MULTIQC', will use only one"
+                    }
+                    mqc_report = mqc_report[0]
+                }
+            }
+        } catch (all) {
+            if (multiqc_report) {
+                log.warn "[$workflow.manifest.name] Could not attach MultiQC report to summary email"
+            }
+        }
 
         // Check if we are only sending emails on failure
         def email_address = params.email
@@ -91,7 +128,8 @@ class NfcoreTemplate {
         def email_html    = html_template.toString()
 
         // Render the sendmail template
-        def smail_fields           = [ email: email_address, subject: subject, email_txt: email_txt, email_html: email_html, projectDir: "$projectDir" ]
+        def max_multiqc_email_size = params.max_multiqc_email_size as nextflow.util.MemoryUnit
+        def smail_fields           = [ email: email_address, subject: subject, email_txt: email_txt, email_html: email_html, projectDir: "$projectDir", mqcFile: mqc_report, mqcMaxSize: max_multiqc_email_size.toBytes() ]
         def sf                     = new File("$projectDir/assets/sendmail_template.txt")
         def sendmail_template      = engine.createTemplate(sf).make(smail_fields)
         def sendmail_html          = sendmail_template.toString()
@@ -107,6 +145,9 @@ class NfcoreTemplate {
             } catch (all) {
                 // Catch failures and try with plaintext
                 def mail_cmd = [ 'mail', '-s', subject, '--content-type=text/html', email_address ]
+                if ( mqc_report.size() <= max_multiqc_email_size.toBytes() ) {
+                    mail_cmd += [ '-A', mqc_report ]
+                }
                 mail_cmd.execute() << email_html
                 log.info "-${colors.purple}[$workflow.manifest.name]${colors.green} Sent summary e-mail to $email_address (mail)-"
             }
@@ -124,10 +165,10 @@ class NfcoreTemplate {
     }
 
     //
-    // Construct and send adaptive card
-    // https://adaptivecards.io
+    // Construct and send a notification to a web server as JSON
+    // e.g. Microsoft Teams and Slack
     //
-    public static void adaptivecard(workflow, params, summary_params, projectDir, log) {
+    public static void IM_notification(workflow, params, summary_params, projectDir, log) {
         def hook_url = params.hook_url
 
         def summary = [:]
@@ -148,7 +189,7 @@ class NfcoreTemplate {
         misc_fields['nxf_timestamp']                        = workflow.nextflow.timestamp
 
         def msg_fields = [:]
-        msg_fields['version']      = workflow.manifest.version
+        msg_fields['version']      = NfcoreTemplate.version(workflow)
         msg_fields['runName']      = workflow.runName
         msg_fields['success']      = workflow.success
         msg_fields['dateComplete'] = workflow.complete
@@ -156,13 +197,16 @@ class NfcoreTemplate {
         msg_fields['exitStatus']   = workflow.exitStatus
         msg_fields['errorMessage'] = (workflow.errorMessage ?: 'None')
         msg_fields['errorReport']  = (workflow.errorReport ?: 'None')
-        msg_fields['commandLine']  = workflow.commandLine
+        msg_fields['commandLine']  = workflow.commandLine.replaceFirst(/ +--hook_url +[^ ]+/, "")
         msg_fields['projectDir']   = workflow.projectDir
         msg_fields['summary']      = summary << misc_fields
 
         // Render the JSON template
         def engine       = new groovy.text.GStringTemplateEngine()
-        def hf = new File("$projectDir/assets/adaptivecard.json")
+        // Different JSON depending on the service provider
+        // Defaults to "Adaptive Cards" (https://adaptivecards.io), except Slack which has its own format
+        def json_path     = hook_url.contains("hooks.slack.com") ? "slackreport.json" : "adaptivecard.json"
+        def hf            = new File("$projectDir/assets/${json_path}")
         def json_template = engine.createTemplate(hf).make(msg_fields)
         def json_message  = json_template.toString()
 
@@ -187,7 +231,7 @@ class NfcoreTemplate {
             if (workflow.stats.ignoredCount == 0) {
                 log.info "-${colors.purple}[$workflow.manifest.name]${colors.green} Pipeline completed successfully${colors.reset}-"
             } else {
-                log.info "-${colors.purple}[$workflow.manifest.name]${colors.red} Pipeline completed successfully, but with errored process(es) ${colors.reset}-"
+                log.info "-${colors.purple}[$workflow.manifest.name]${colors.yellow} Pipeline completed successfully, but with errored process(es) ${colors.reset}-"
             }
         } else {
             log.info "-${colors.purple}[$workflow.manifest.name]${colors.red} Pipeline completed with errors${colors.reset}-"
@@ -275,6 +319,7 @@ class NfcoreTemplate {
     //
     public static String logo(workflow, monochrome_logs) {
         Map colors = logColours(monochrome_logs)
+        String workflow_version = NfcoreTemplate.version(workflow)
         String.format(
             """\n
             ${dashedLine(monochrome_logs)}
@@ -286,7 +331,7 @@ class NfcoreTemplate {
             ${colors.blue} |_____/ \\__,_|_| |_|\\__, |\\___|_|        ${colors.green}|_|${colors.yellow}\\___/${colors.red}|______|${colors.reset}
             ${colors.blue}                      __/ |${colors.reset}
             ${colors.blue}                     |___/${colors.reset}
-            ${colors.purple}  ${workflow.manifest.name} v${workflow.manifest.version}${colors.reset}
+            ${colors.purple}  ${workflow.manifest.name} ${workflow_version}${colors.reset}
             ${dashedLine(monochrome_logs)}
             """.stripIndent()
         )

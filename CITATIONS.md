@@ -32,6 +32,10 @@
 
   > Pedersen, Brent S., and Aaron R. Quinlan. “Mosdepth: Quick Coverage Calculation for Genomes and Exomes.” Bioinformatics, edited by John Hancock, vol. 34, no. 5, Oct. 2017, pp. 867–68, https://doi.org/10.1093/bioinformatics/btx699.
 
+- [MultiQC](https://multiqc.info)
+
+  > Ewels, Philip, et al. “MultiQC: Summarize Analysis Results for Multiple Tools and Samples in a Single Report.” Bioinformatics, vol. 32, no. 19, 2016, pp. 3047–3048., https://doi.org/10.1093/bioinformatics/btw354.
+
 - [Samtools](https://www.htslib.org)
 
   > Danecek, Petr, et al. “Twelve Years of SAMtools and BCFtools.” GigaScience, vol. 10, no. 2, Jan. 2021, https://doi.org/10.1093/gigascience/giab008.

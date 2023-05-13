@@ -1,22 +1,20 @@
-# nf-core/blobtoolkit: Contributing Guidelines
+# sanger-tol/blobtoolkit: Contributing Guidelines
 
 Hi there!
-Many thanks for taking an interest in improving nf-core/blobtoolkit.
+Many thanks for taking an interest in improving sanger-tol/blobtoolkit.
 
-We try to manage the required tasks for nf-core/blobtoolkit using GitHub issues, you probably came to this page when creating one.
+We try to manage the required tasks for sanger-tol/blobtoolkit using GitHub issues, you probably came to this page when creating one.
 Please use the pre-filled template to save time.
 
 However, don't be put off by this template - other more general issues and suggestions are welcome!
 Contributions to the code are even more welcome ;)
 
-> If you need help using or modifying nf-core/blobtoolkit then the best place to ask is on the nf-core Slack [#blobtoolkit](https://nfcore.slack.com/channels/blobtoolkit) channel ([join our Slack here](https://nf-co.re/join/slack)).
-
 ## Contribution workflow
 
-If you'd like to write some code for nf-core/blobtoolkit, the standard workflow is as follows:
+If you'd like to write some code for sanger-tol/blobtoolkit, the standard workflow is as follows:
 
-1. Check that there isn't already an issue about your idea in the [nf-core/blobtoolkit issues](https://github.com/nf-core/blobtoolkit/issues) to avoid duplicating work. If there isn't one already, please create one so that others know you're working on this
-2. [Fork](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) the [nf-core/blobtoolkit repository](https://github.com/nf-core/blobtoolkit) to your GitHub account
+1. Check that there isn't already an issue about your idea in the [sanger-tol/blobtoolkit issues](https://github.com/sanger-tol/blobtoolkit/issues) to avoid duplicating work. If there isn't one already, please create one so that others know you're working on this
+2. [Fork](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) the [sanger-tol/blobtoolkit repository](https://github.com/sanger-tol/blobtoolkit) to your GitHub account
 3. Make the necessary changes / additions within your forked repository following [Pipeline conventions](#pipeline-contribution-conventions)
 4. Use `nf-core schema build` and add any new parameters to the pipeline JSON schema (requires [nf-core tools](https://github.com/nf-core/tools) >= 1.10).
 5. Submit a Pull Request against the `dev` branch and wait for the code to be reviewed and merged
@@ -54,11 +52,11 @@ These tests are run both with the latest available version of `Nextflow` and als
 
 ## Getting help
 
-For further information/help, please consult the [nf-core/blobtoolkit documentation](https://nf-co.re/blobtoolkit/usage) and don't hesitate to get in touch on the nf-core Slack [#blobtoolkit](https://nfcore.slack.com/channels/blobtoolkit) channel ([join our Slack here](https://nf-co.re/join/slack)).
+For further information/help, please consult the [sanger-tol/blobtoolkit documentation](https://pipelines.tol.sanger.ac.uk/blobtoolkit/usage) and don't hesitate to get in touch.
 
 ## Pipeline contribution conventions
 
-To make the nf-core/blobtoolkit code and processing logic more understandable for new contributors and to ensure quality, we semi-standardise the way the code and other contributions are written.
+To make the sanger-tol/blobtoolkit code and processing logic more understandable for new contributors and to ensure quality, we semi-standardise the way the code and other contributions are written.
 
 ### Adding a new step
 
@@ -72,7 +70,8 @@ If you wish to contribute a new step, please use the following coding standards:
 6. Add sanity checks and validation for all relevant parameters.
 7. Perform local tests to validate that the new code works as expected.
 8. If applicable, add a new test command in `.github/workflow/ci.yml`.
-9. Add a description of the output files and if relevant any appropriate images to `docs/output.md`.
+9. Update MultiQC config `assets/multiqc_config.yml` so relevant suffixes, file name clean up and module plots are in the appropriate order. If applicable, add a [MultiQC](https://https://multiqc.info/) module.
+10. Add a description of the output files and if relevant any appropriate images from the MultiQC report to `docs/output.md`.
 
 ### Default values
 
@@ -100,3 +99,19 @@ If you are using a new feature from core Nextflow, you may bump the minimum requ
 ### Images and figures
 
 For overview images and other documents we follow the nf-core [style guidelines and examples](https://nf-co.re/developers/design_guidelines).
+
+## GitHub Codespaces
+
+This repo includes a devcontainer configuration which will create a GitHub Codespaces for Nextflow development! This is an online developer environment that runs in your browser, complete with VSCode and a terminal.
+
+To get started:
+
+- Open the repo in [Codespaces](https://github.com/sanger-tol/blobtoolkit/codespaces)
+- Tools installed
+  - nf-core
+  - Nextflow
+
+Devcontainer specs:
+
+- [DevContainer config](.devcontainer/devcontainer.json)
+- [Dockerfile](.devcontainer/Dockerfile)

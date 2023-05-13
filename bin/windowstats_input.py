@@ -10,18 +10,10 @@ def parse_args(args=None):
     Description = "Combine BED files to create window stats input file."
 
     parser = argparse.ArgumentParser(description=Description)
-    parser.add_argument(
-        "--freq", help="Frequence fasta windows input file", required=True
-    )
-    parser.add_argument(
-        "--mononuc", help="Mononucleotide fasta windows input file", required=True
-    )
-    parser.add_argument(
-        "--mosdepth", help="Mosdepth coverage input file", nargs="+", required=True
-    )
-    parser.add_argument(
-        "--countbusco", help="BUSCO gene counts by region", required=True
-    )
+    parser.add_argument("--freq", help="Frequence fasta windows input file", required=True)
+    parser.add_argument("--mononuc", help="Mononucleotide fasta windows input file", required=True)
+    parser.add_argument("--mosdepth", help="Mosdepth coverage input file", nargs="+", required=True)
+    parser.add_argument("--countbusco", help="BUSCO gene counts by region", required=True)
     parser.add_argument("--output", help="Output TSV file.", required=True)
     parser.add_argument("--version", action="version", version="%(prog)s 1.0.0")
     return parser.parse_args(args)
@@ -60,9 +52,7 @@ def main(args=None):
     out_dir = os.path.dirname(args.output)
     make_dir(out_dir)
 
-    merge_all(args.freq, args.mononuc, args.mosdepth, args.countbusco).to_csv(
-        args.output, sep="\t", index=False
-    )
+    merge_all(args.freq, args.mononuc, args.mosdepth, args.countbusco).to_csv(args.output, sep="\t", index=False)
 
 
 if __name__ == "__main__":

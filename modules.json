@@ -1,6 +1,6 @@
 {
-    "name": "nf-core/blobtoolkit",
-    "homePage": "https://github.com/nf-core/blobtoolkit",
+    "name": "sanger-tol/blobtoolkit",
+    "homePage": "https://github.com/sanger-tol/blobtoolkit",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {
@@ -41,12 +41,20 @@
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
                         "installed_by": ["modules"]
                     },
+                    "multiqc": {
+                        "branch": "master",
+                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "installed_by": ["modules"]
+                    },
                     "samtools/view": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
                         "installed_by": ["modules"]
                     }
                 }
+            },
+            "subworkflows": {
+                "nf-core": {}
             }
         }
     }

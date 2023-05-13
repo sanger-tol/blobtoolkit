@@ -1,14 +1,12 @@
 //
-// Check samplesheet and create channels for downstream analysis
+// Check input samplesheet and get aligned read channels
 //
 
 include { SAMPLESHEET_CHECK } from '../../modules/local/samplesheet_check'
 
-
 workflow INPUT_CHECK {
     take:
-    samplesheet    // channel: path(samplesheet.csv)
-
+    samplesheet // file: /path/to/samplesheet.csv
 
     main:
     SAMPLESHEET_CHECK ( samplesheet )
@@ -25,6 +23,7 @@ workflow INPUT_CHECK {
 
 // Function to get list of [ meta, datafile ]
 def create_data_channels(LinkedHashMap row) {
+    // create meta map
     def meta = [:]
     meta.id         = row.sample
     meta.datatype   = row.datatype

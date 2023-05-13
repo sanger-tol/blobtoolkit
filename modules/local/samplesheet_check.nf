@@ -17,7 +17,7 @@ process SAMPLESHEET_CHECK {
     when:
     task.ext.when == null || task.ext.when
 
-    script: // This script is bundled with the pipeline, in nf-core/readmapping/bin/
+    script: // This script is bundled with the pipeline, in sanger-tol/blobtoolkit/bin/
     """
     check_samplesheet.py \\
         $samplesheet \\
@@ -26,6 +26,7 @@ process SAMPLESHEET_CHECK {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         check_samplesheet.py: \$(check_samplesheet.py --version | cut -d' ' -f2)
+        python: \$(python --version | sed 's/Python //g')
     END_VERSIONS
     """
 }

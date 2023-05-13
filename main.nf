@@ -1,23 +1,14 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    nf-core/blobtoolkit
+    sanger-tol/blobtoolkit
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/nf-core/blobtoolkit
-    Website: https://nf-co.re/blobtoolkit
-    Slack  : https://nfcore.slack.com/channels/blobtoolkit
+    Github : https://github.com/sanger-tol/blobtoolkit
+    Website: https://pipelines.tol.sanger.ac.uk/blobtoolkit
 ----------------------------------------------------------------------------------------
 */
 
 nextflow.enable.dsl = 2
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    GENOME PARAMETER VALUES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-params.fasta = WorkflowMain.getGenomeAttribute(params, 'fasta')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,9 +27,9 @@ WorkflowMain.initialise(workflow, params, log)
 include { BLOBTOOLKIT } from './workflows/blobtoolkit'
 
 //
-// WORKFLOW: Run main nf-core/blobtoolkit analysis pipeline
+// WORKFLOW: Run main sanger-tol/blobtoolkit analysis pipeline
 //
-workflow NFCORE_BLOBTOOLKIT {
+workflow SANGERTOL_BLOBTOOLKIT {
     BLOBTOOLKIT ()
 }
 
@@ -53,7 +44,7 @@ workflow NFCORE_BLOBTOOLKIT {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-    NFCORE_BLOBTOOLKIT ()
+    SANGERTOL_BLOBTOOLKIT ()
 }
 
 /*
