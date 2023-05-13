@@ -4,7 +4,6 @@
 
 include { GOAT_TAXONSEARCH          } from '../../modules/nf-core/goat/taxonsearch/main'
 include { BUSCO                     } from '../../modules/nf-core/busco/main'
-include { TARGZ                     } from '../../modules/local/targz'
 include { BLOBTOOLKIT_EXTRACTBUSCOS } from '../../modules/local/blobtoolkit/extractbuscos'
 include { DIAMOND_BLASTP            } from '../../modules/nf-core/diamond/blastp/main'
 
@@ -44,17 +43,10 @@ workflow BUSCO_DIAMOND {
     ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
 
 
-    //
-    // Create input for BLOBTOOLKIT_EXTRACTBUSCOS
-    //
-    TARGZ ( BUSCO.out.seq_dir )
-    ch_versions = ch_versions.mix ( TARGZ.out.versions.first() )
-    
-    BUSCO.out.full_table
-    | join ( TARGZ.out.archive )
-    | map { meta, table, seq -> [ [ "id": table.parent.baseName ], table, seq ] }
+    BUSCO.out.seq_dir
+    | map { meta, seq -> [ [ "id": seq.parent.baseName ], seq ] }
     | branch {
-        meta, table, seq ->
+        meta, seq ->
             archaea   : meta.id == "run_archaea_odb10"
             bacteria  : meta.id == "run_bacteria_odb10"
             eukaryota : meta.id == "run_eukaryota_odb10"
