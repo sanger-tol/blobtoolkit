@@ -73,8 +73,8 @@ nextflow run sanger-tol/blobtoolkit \
    --fasta genome.fasta \
    --accession GCA_XXXXXXXXX.X \
    --taxon XXXX \
-   --ncbi_taxdump /path/to/taxdump/database \
-   --diamondblastp_db /path/to/diamond/database
+   --taxdump /path/to/taxdump/database \
+   --uniprot /path/to/diamond/database
 ```
 
 > **Warning:**

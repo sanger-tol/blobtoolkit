@@ -13,19 +13,19 @@ This release marks the point where the pipeline was moved from Snakemake at [blo
 
 ### Parameters
 
-| Old parameter | New parameter         |
-| ------------- | --------------------- |
-|               | --input               |
-|               | --fasta               |
-|               | --accession           |
-|               | --taxon               |
-|               | --taxa_file           |
-|               | --yaml                |
-|               | --blastp_outext       |
-|               | --blastp_cols         |
-|               | --ncbi_taxdump        |
-|               | --busco_lineages_path |
-|               | --diamondblastp_db    |
+| Old parameter | New parameter   |
+| ------------- | --------------- |
+|               | --input         |
+|               | --fasta         |
+|               | --accession     |
+|               | --taxon         |
+|               | --taxa_file     |
+|               | --yaml          |
+|               | --blastp_outext |
+|               | --blastp_cols   |
+|               | --taxdump       |
+|               | --busco         |
+|               | --uniprot       |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 

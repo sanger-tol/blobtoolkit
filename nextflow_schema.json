@@ -79,7 +79,7 @@
             "type": "object",
             "fa_icon": "fas fa-database",
             "description": "Define the location and parameters to work with databases.",
-            "required": ["diamondblastp_db", "ncbi_taxdump"],
+            "required": ["uniprot", "taxdump"],
             "properties": {
                 "taxa_file": {
                     "type": "string",
@@ -88,7 +88,7 @@
                     "help_text": "If this file is not included, the relevant BUSCO lineages are automatically calculated using the taxon parameter.",
                     "fa_icon": "fas fa-file-alt"
                 },
-                "busco_lineages_path": {
+                "busco": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "Local directory where clade-specific BUSCO lineage datasets are stored",
@@ -106,14 +106,14 @@
                     "fa_icon": "fas fa-file-circle-question",
                     "default": "txt"
                 },
-                "diamondblastp_db": {
+                "uniprot": {
                     "type": "string",
                     "format": "file-path",
                     "pattern": "^\\S+\\.dmnd$",
                     "description": "Path to the Diamond species-specific buscogenes database",
                     "fa_icon": "fas fa-file-archive"
                 },
-                "ncbi_taxdump": {
+                "taxdump": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "Path to the new NCBI tax dump database",

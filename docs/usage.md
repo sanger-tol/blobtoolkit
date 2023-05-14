@@ -181,10 +181,10 @@ Nextflow
 
 ```bash
 # Public Assemblies
-nextflow run sanger-tol/blobtoolkit --input SAMPLESHEET --fasta GENOME –-accession GCA_ACCESSION --taxon TAXON_ID --ncbi_taxdump TAXDUMP_DB --diamondblastp_db DMND_db
+nextflow run sanger-tol/blobtoolkit --input SAMPLESHEET --fasta GENOME –-accession GCA_ACCESSION --taxon TAXON_ID --taxdump TAXDUMP_DB --uniprot DMND_db
 
 # Draft Assemblies
-nextflow run sanger-tol/blobtoolkit --input SAMPLESHEET --fasta GENOME –-accession TAG --taxon TAXON_ID --yaml CONFIG --ncbi_taxdump TAXDUMP_DB --diamondblastp_db DMND_db
+nextflow run sanger-tol/blobtoolkit --input SAMPLESHEET --fasta GENOME –-accession TAG --taxon TAXON_ID --yaml CONFIG --taxdump TAXDUMP_DB --uniprot DMND_db
 ```
 
 ### Subworkflows
@@ -250,7 +250,7 @@ List of tools for any given dataset can be fetched from the API, for example htt
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run sanger-tol/blobtoolkit --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta -profile docker –-accession GCA_922984935.2 --taxon "Meles meles" --ncbi_taxdump /path/to/taxdump --diamondblastp_db /path/to/buscogenes.dmnd
+nextflow run sanger-tol/blobtoolkit --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta -profile docker –-accession GCA_922984935.2 --taxon "Meles meles" --taxdump /path/to/taxdump --uniprot /path/to/buscogenes.dmnd
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.

@@ -11,17 +11,17 @@ WorkflowBlobtoolkit.initialise(params, log)
 
 // Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxa_file, params.ncbi_taxdump, params.busco_lineages_path, params.diamondblastp_db ]
+def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxa_file, params.taxdump, params.busco, params.uniprot ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.fasta && params.accession) { ch_fasta = Channel.of([ [ 'id': params.accession ], params.fasta ]).collect() } else { exit 1, 'Genome fasta file and accession must be specified!' }
-if (params.diamondblastp_db) { ch_blastp = file(params.diamondblastp_db) } else { exit 1, 'Diamond BLASTp database not specified!' }
-if (params.ncbi_taxdump) { ch_taxdump = file(params.ncbi_taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
+if (params.uniprot) { ch_uniprot = file(params.uniprot) } else { exit 1, 'Diamond BLASTp database not specified!' }
+if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
 
 // Create channel for optional parameters
-if (params.busco_lineages_path) { ch_busco_db = Channel.fromPath(params.busco_lineages_path) } else { ch_busco_db = Channel.empty() }
+if (params.busco) { ch_busco_db = Channel.fromPath(params.busco) } else { ch_busco_db = Channel.empty() }
 if (params.yaml && params.accession) { ch_yaml = Channel.of([ [ 'id': params.accession ], params.yaml ]) } else { ch_yaml = Channel.empty() }
 
 /*
@@ -113,7 +113,7 @@ workflow BLOBTOOLKIT {
         ch_taxon_taxa = ch_fasta.combine(ch_taxon).map { meta, fasta, taxon -> [ meta, taxon, [] ] }
     }
 
-    BUSCO_DIAMOND ( ch_genome, ch_taxon_taxa, ch_busco_db, ch_blastp, params.blastp_outext, params.blastp_cols )
+    BUSCO_DIAMOND ( ch_genome, ch_taxon_taxa, ch_busco_db, ch_uniprot, params.blastp_outext, params.blastp_cols )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
 
     //
