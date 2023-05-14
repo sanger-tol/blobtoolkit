@@ -1,5 +1,5 @@
 process BLOBTOOLKIT_IMAGES {
-    tag "$meta.id"
+    tag "${meta.id}_${plot}"
     label 'process_single'
 
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
@@ -9,6 +9,7 @@ process BLOBTOOLKIT_IMAGES {
 
     input:
     tuple val(meta), path(blobdir)
+    each plot
 
     output:
     tuple val(meta), path('*.png') , emit: png
@@ -22,10 +23,11 @@ process BLOBTOOLKIT_IMAGES {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     blobtk plot \\
-        -v snail \\
-        -o ${prefix}.snail.png \\
+        -v ${plot} \\
+        -o ${prefix}.${plot}.png \\
         -d ${blobdir} \\
         $args
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
