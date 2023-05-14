@@ -43,6 +43,9 @@ workflow BUSCO_DIAMOND {
     ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
 
 
+    //
+    // Select input for BLOBTOOLKIT_EXTRACTBUSCOS
+    //
     BUSCO.out.seq_dir
     | map { meta, seq -> [ [ "id": seq.parent.baseName ], seq ] }
     | branch {
@@ -55,7 +58,7 @@ workflow BUSCO_DIAMOND {
 
 
     // Extract BUSCO genes from the 3 kingdoms
-    BLOBTOOLKIT_EXTRACTBUSCOS ( fasta, ch_busco.archaea, ch_busco.bacteria, ch_busco.eukaryota  )
+    BLOBTOOLKIT_EXTRACTBUSCOS ( fasta, ch_busco.archaea, ch_busco.bacteria, ch_busco.eukaryota )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_EXTRACTBUSCOS.out.versions.first() )
 
 
