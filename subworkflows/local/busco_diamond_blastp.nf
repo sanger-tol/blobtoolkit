@@ -78,9 +78,16 @@ workflow BUSCO_DIAMOND {
     | set { ch_first_table }
 
 
+    // BUSCO results for MULTIQC
+    BUSCO.out.short_summaries_txt
+    | ifEmpty ( [ [], [] ] )
+    | set { multiqc }
+
+
     emit:
     first_table = ch_first_table          // channel: [ val(meta), path(full_table) ] 
     full_table  = BUSCO.out.full_table    // channel: [ val(meta), path(full_tables) ]
     blastp_txt  = DIAMOND_BLASTP.out.txt  // channel: [ val(meta), path(txt) ]
+    multiqc                               // channel: [ meta, summary ]
     versions    = ch_versions             // channel: [ versions.yml ]
 }
