@@ -28,7 +28,7 @@
 <!-- Fill in short bullet-pointed list of the default steps in the pipeline -->
 
 1. Calculate genome statistics in windows ([`fastawindows`](https://github.com/tolkit/fasta_windows))
-2. Calcuate Coverage ([`mosdepth`](https://github.com/brentp/mosdepth))
+2. Calculate Coverage ([`mosdepth`](https://github.com/brentp/mosdepth))
 3. Fetch associated BUSCO lineages ([`goat/taxonsearch`](https://github.com/genomehubs/goat-cli))
 4. Run BUSCO ([`busco`](https://busco.ezlab.org/))
 5. Extract BUSCO genes (blobtoolkit/extractbuscos)
