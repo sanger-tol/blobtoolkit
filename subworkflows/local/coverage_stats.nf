@@ -60,10 +60,17 @@ workflow COVERAGE_STATS {
     | set { ch_coverage }
 
 
+    // Mosdepth results for MULTIQC
+    MOSDEPTH.out.regions_txt
+    | ifEmpty ( MOSDEPTH.out.global_txt )
+    | set { multiqc }
+
+
     emit:
     freq     = FASTAWINDOWS.out.freq       // channel: [ val(meta), path(freq) ]
     mononuc  = FASTAWINDOWS.out.mononuc    // channel: [ val(meta), path(mononuc) ]
     bed      = CREATE_BED.out.bed          // channel: [ val(meta), path(bed) ]
     cov      = ch_coverage                 // channel: [ val(meta), path(regions.bed.gz) ]
+    multiqc                                // channel: [ val(meta), path(dist.txt) ]
     versions = ch_versions                 // channel: [ versions.yml ]
 }

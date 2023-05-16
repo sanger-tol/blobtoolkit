@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/sanger-tol/blobtoolkit/master/nextflow_schema.json",
     "title": "sanger-tol/blobtoolkit pipeline parameters",
-    "description": "BlobToolKit Nextflow Pipeline.",
+    "description": "Quality assessment of genome assemblies",
     "type": "object",
     "definitions": {
         "input_output_options": {
@@ -14,18 +14,18 @@
             "properties": {
                 "input": {
                     "type": "string",
-                    "description": "Path to comma-separated file containing information about the samples in the experiment.",
                     "format": "file-path",
-                    "help_text": "Provide a Tree of Life organism ID. Otherwise, you will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/variantcalling/usage#samplesheet-input).",
-                    "fa_icon": "fas fa-file-csv",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
-                    "schema": "assets/schema_input.json"
+                    "schema": "assets/schema_input.json",
+                    "description": "Path to comma-separated file containing information about the samples in the experiment.",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
+                    "fa_icon": "fas fa-file-csv"
                 },
                 "yaml": {
                     "type": "string",
-                    "description": "Custom config file for draft assembly",
                     "format": "file-path",
+                    "description": "Custom config file for draft assembly",
                     "fa_icon": "fas fa-file-alt"
                 },
                 "outdir": {
@@ -37,10 +37,15 @@
                 },
                 "email": {
                     "type": "string",
+                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
                     "description": "Email address for completion summary.",
-                    "fa_icon": "fas fa-envelope",
                     "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
-                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+                    "fa_icon": "fas fa-envelope"
+                },
+                "multiqc_title": {
+                    "type": "string",
+                    "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
+                    "fa_icon": "fas fa-file-signature"
                 }
             }
         },
@@ -49,6 +54,7 @@
             "type": "object",
             "fa_icon": "fas fa-dna",
             "description": "Reference genome related files and options required for the workflow.",
+            "required": ["taxon", "accession", "fasta"],
             "properties": {
                 "taxon": {
                     "type": "string",
@@ -64,59 +70,56 @@
                     "mimetype": "text/plain",
                     "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
                     "description": "Path to FASTA genome file.",
-                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
                     "fa_icon": "far fa-file-code"
                 }
-            },
-            "required": ["taxon", "accession", "fasta"]
+            }
         },
         "databases": {
             "title": "Databases",
             "type": "object",
+            "fa_icon": "fas fa-database",
             "description": "Define the location and parameters to work with databases.",
-            "default": "",
+            "required": ["uniprot", "taxdump"],
             "properties": {
+                "taxa_file": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to file containing the BUSCO lineages for the genome species",
+                    "help_text": "If this file is not included, the relevant BUSCO lineages are automatically calculated using the taxon parameter.",
+                    "fa_icon": "fas fa-file-alt"
+                },
+                "busco": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Local directory where clade-specific BUSCO lineage datasets are stored",
+                    "fa_icon": "fas fa-folder-open"
+                },
                 "blastp_cols": {
                     "type": "string",
-                    "description": "When blastp_outext is 'txt', this is the list of columns that Diamond Blast should print.",
+                    "description": "When blastp_outext is 'txt', this is the list of columns that Diamond BLAST should print.",
                     "default": "qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore"
                 },
                 "blastp_outext": {
                     "type": "string",
-                    "description": "Extension (file format) of the output file from Diamond Blast.",
+                    "enum": ["blast", "xml", "txt", "daa", "sam", "tsv", "paf"],
+                    "description": "Extension (file format) of the output file from Diamond BLAST.",
                     "fa_icon": "fas fa-file-circle-question",
-                    "default": "txt",
-                    "enum": ["blast", "xml", "txt", "daa", "sam", "tsv", "paf"]
+                    "default": "txt"
                 },
-                "taxa_file": {
+                "uniprot": {
                     "type": "string",
-                    "description": "Path to file containing the BUSCO lineages for the genome species",
-                    "help_text": "If this file is not included, the relevant BUSCO lineages are automatically calculated using the taxon parameter.",
                     "format": "file-path",
-                    "fa_icon": "fas fa-file-alt"
-                },
-                "busco_lineages_path": {
-                    "type": "string",
-                    "description": "Local directory where clade-specific BUSCO lineage datasets are stored",
-                    "format": "directory-path",
-                    "fa_icon": "fas fa-folder-open"
-                },
-                "diamondblastp_db": {
-                    "type": "string",
-                    "description": "Path to the Diamond species-specific buscogenes database",
                     "pattern": "^\\S+\\.dmnd$",
-                    "format": "file-path",
+                    "description": "Path to the Diamond species-specific buscogenes database",
                     "fa_icon": "fas fa-file-archive"
                 },
-                "ncbi_taxdump": {
+                "taxdump": {
                     "type": "string",
-                    "description": "Path to the new NCBI tax dump database",
                     "format": "directory-path",
+                    "description": "Path to the new NCBI tax dump database",
                     "fa_icon": "fas fa-folder-open"
                 }
-            },
-            "fa_icon": "fas fa-database",
-            "required": ["diamondblastp_db", "ncbi_taxdump"]
+            }
         },
         "institutional_config_options": {
             "title": "Institutional config options",
@@ -214,6 +217,12 @@
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },
+                "version": {
+                    "type": "boolean",
+                    "description": "Display version and exit.",
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                },
                 "publish_dir_mode": {
                     "type": "string",
                     "default": "copy",
@@ -237,6 +246,14 @@
                     "fa_icon": "fas fa-remove-format",
                     "hidden": true
                 },
+                "max_multiqc_email_size": {
+                    "type": "string",
+                    "description": "File size limit when attaching MultiQC reports to summary emails.",
+                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
+                    "default": "25.MB",
+                    "fa_icon": "fas fa-file-upload",
+                    "hidden": true
+                },
                 "monochrome_logs": {
                     "type": "boolean",
                     "description": "Do not use coloured log outputs.",
@@ -249,6 +266,23 @@
                     "fa_icon": "fas fa-people-group",
                     "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
                     "hidden": true
+                },
+                "multiqc_config": {
+                    "type": "string",
+                    "description": "Custom config file to supply to MultiQC.",
+                    "fa_icon": "fas fa-cog",
+                    "hidden": true
+                },
+                "multiqc_logo": {
+                    "type": "string",
+                    "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file",
+                    "fa_icon": "fas fa-image",
+                    "hidden": true
+                },
+                "multiqc_methods_description": {
+                    "type": "string",
+                    "description": "Custom MultiQC yaml file containing HTML including a methods description.",
+                    "fa_icon": "fas fa-cog"
                 },
                 "tracedir": {
                     "type": "string",

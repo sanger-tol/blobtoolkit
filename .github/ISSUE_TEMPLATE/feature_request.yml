@@ -1,5 +1,5 @@
 name: Feature request
-description: Suggest an idea for the nf-core/blobtoolkit pipeline
+description: Suggest an idea for the sanger-tol/blobtoolkit pipeline
 labels: enhancement
 body:
   - type: textarea

@@ -24,7 +24,7 @@ indent_size = unset
 indent_size = unset
 
 # To prevent errors for these test diamond databases
-[/assets/*.dmnd]
+[/assets/test*/*.dmnd]
 charset = unset
 end_of_line = unset
 insert_final_newline = unset

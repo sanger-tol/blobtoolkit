@@ -10,11 +10,11 @@
 
 ## Pipeline tools
 
-- [blobtoolkit](https://github.com/blobtoolkit/blobtoolkit)
+- [BlobToolKit](https://github.com/blobtoolkit/blobtoolkit)
 
   > Challis, Richard, et al. “BlobToolKit – Interactive Quality Assessment of Genome Assemblies.” G3 Genes|Genomes|Genetics, vol. 10, no. 4, Apr. 2020, pp. 1361–74, https://doi.org/10.1534/g3.119.400908.
 
-- [Busco](https://gitlab.com/ezlab/busco)
+- [BUSCO](https://gitlab.com/ezlab/busco)
 
   > Manni, Mosè, et al. “BUSCO: Assessing Genomic Data Quality and Beyond.” Current Protocols, vol. 1, no. 12, Dec. 2021, https://doi.org/10.1002/cpz1.323.
 
@@ -22,7 +22,7 @@
 
   > Buchfink, Benjamin, et al. “Sensitive Protein Alignments at Tree-of-Life Scale Using DIAMOND.” Nature Methods, vol. 18, no. 4, Apr. 2021, pp. 366–68, https://doi.org/10.1038/s41592-021-01101-x.
 
-- [Fastawindows](https://github.com/tolkit/fasta_windows)
+- [Fasta_windows](https://github.com/tolkit/fasta_windows)
 
 - [GoaT](https://goat.genomehubs.org)
 
@@ -31,6 +31,10 @@
 - [Mosdepth](https://github.com/brentp/mosdepth)
 
   > Pedersen, Brent S., and Aaron R. Quinlan. “Mosdepth: Quick Coverage Calculation for Genomes and Exomes.” Bioinformatics, edited by John Hancock, vol. 34, no. 5, Oct. 2017, pp. 867–68, https://doi.org/10.1093/bioinformatics/btx699.
+
+- [MultiQC](https://multiqc.info)
+
+  > Ewels, Philip, et al. “MultiQC: Summarize Analysis Results for Multiple Tools and Samples in a Single Report.” Bioinformatics, vol. 32, no. 19, 2016, pp. 3047–3048., https://doi.org/10.1093/bioinformatics/btw354.
 
 - [Samtools](https://www.htslib.org)
 

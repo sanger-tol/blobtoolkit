@@ -6,34 +6,50 @@
 
 def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 
+// Validate input parameters
+WorkflowBlobtoolkit.initialise(params, log)
+
+// Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.fasta, params.taxa_file, params.ncbi_taxdump, params.busco_lineages_path, params.diamondblastp_db ]
+def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxa_file, params.taxdump, params.busco, params.uniprot ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
-if (params.input) { ch_input = Channel.fromPath(params.input) } else { exit 1, 'Input samplesheet not specified!' }
+if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.fasta && params.accession) { ch_fasta = Channel.of([ [ 'id': params.accession ], params.fasta ]).collect() } else { exit 1, 'Genome fasta file and accession must be specified!' }
 if (params.taxon) { ch_taxon = Channel.of(params.taxon) } else { exit 1, 'NCBI Taxon ID not specified!' }
-if (params.diamondblastp_db) { ch_blastp = Channel.fromPath(params.diamondblastp_db) } else { exit 1, 'Diamond BLASTp database location not specified!' }
-if (params.blastp_outext) { ch_outext = Channel.of(params.blastp_outext) } else { exit 1, 'Diamond BLASTp output format not specified!' }
-if (params.blastp_cols) { ch_cols = Channel.of(params.blastp_cols) } else { exit 1, 'Diamond BLASTp output columns not specified!' }
-if (params.ncbi_taxdump) { ch_taxdump = Channel.fromPath(params.ncbi_taxdump) } else { exit 1, 'NCBI Taxonomy database location not specified!' }
+if (params.uniprot) { ch_uniprot = file(params.uniprot) } else { exit 1, 'Diamond BLASTp database not specified!' }
+if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
 
 // Create channel for optional parameters
-if (params.busco_lineages_path) { ch_busco_db = Channel.fromPath(params.busco_lineages_path) } else { ch_busco_db = Channel.empty() }
+if (params.busco) { ch_busco_db = Channel.fromPath(params.busco) } else { ch_busco_db = Channel.empty() }
 if (params.yaml && params.accession) { ch_yaml = Channel.of([ [ 'id': params.accession ], params.yaml ]) } else { ch_yaml = Channel.empty() }
-
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT LOCAL/NF-CORE SUBWORKFLOWS
+    CONFIG FILES
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
+ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
+ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
+ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT LOCAL MODULES/SUBWORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 //
+// MODULE: Loaded from modules/local/
+//
+include { BLOBTOOLKIT_CONFIG } from '../modules/local/blobtoolkit/config'
+
+//
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-
 include { INPUT_CHECK    } from '../subworkflows/local/input_check'
 include { COVERAGE_STATS } from '../subworkflows/local/coverage_stats'
 include { BUSCO_DIAMOND  } from '../subworkflows/local/busco_diamond_blastp'
@@ -41,26 +57,18 @@ include { COLLATE_STATS  } from '../subworkflows/local/collate_stats'
 include { BLOBTOOLS      } from '../subworkflows/local/blobtools'
 include { VIEW           } from '../subworkflows/local/view'
 
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT LOCAL/NF-CORE MODULES
+    IMPORT NF-CORE MODULES/SUBWORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 //
-// MODULE: Created locally in this pipeline
-//
-
-include { BLOBTOOLKIT_CONFIG } from '../modules/local/blobtoolkit/config'
-
-//
 // MODULE: Installed directly from nf-core/modules
 //
-
 include { GUNZIP                      } from '../modules/nf-core/gunzip/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-
+include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,13 +76,15 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+// Info required for completion email and summary
+def multiqc_report = []
+
 workflow BLOBTOOLKIT {
 
     ch_versions = Channel.empty()
 
-
     //
-    // MODULE: Gunzip fasta file if needed
+    // MODULE: Decompress FASTA file if needed
     //
     if ( params.fasta.endsWith('.gz') ) {
         ch_genome   = GUNZIP ( ch_fasta ).gunzip
@@ -83,13 +93,11 @@ workflow BLOBTOOLKIT {
         ch_genome   = ch_fasta
     }
 
-
     //
     // SUBWORKFLOW: Check samplesheet and create channels for downstream analysis
     //
     INPUT_CHECK ( ch_input )
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
-
 
     //
     // SUBWORKFLOW: Calculate genome coverage and statistics 
@@ -97,27 +105,24 @@ workflow BLOBTOOLKIT {
     COVERAGE_STATS ( INPUT_CHECK.out.aln, ch_genome )
     ch_versions = ch_versions.mix ( COVERAGE_STATS.out.versions )
 
-
     //
     // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
     //
     if (params.taxa_file) { 
         ch_taxa = Channel.from(params.taxa_file)
-        ch_taxon_taxa = ch_genome.combine(ch_taxon).combine(ch_taxa).map { meta, fasta, taxon, taxa -> [ meta, taxon, taxa ] }
+        ch_taxon_taxa = ch_fasta.combine(ch_taxon).combine(ch_taxa).map { meta, fasta, taxon, taxa -> [ meta, taxon, taxa ] }
     } else { 
-        ch_taxon_taxa = ch_genome.combine(ch_taxon).map { meta, fasta, taxon -> [ meta, taxon, [] ] }
+        ch_taxon_taxa = ch_fasta.combine(ch_taxon).map { meta, fasta, taxon -> [ meta, taxon, [] ] }
     }
 
-    BUSCO_DIAMOND ( ch_genome, ch_taxon_taxa, ch_busco_db, ch_blastp, ch_outext, ch_cols )
+    BUSCO_DIAMOND ( ch_genome, ch_taxon_taxa, ch_busco_db, ch_uniprot, params.blastp_outext, params.blastp_cols )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
-
 
     //
     // SUBWORKFLOW: Collate genome statistics by various window sizes
     //
     COLLATE_STATS ( BUSCO_DIAMOND.out.full_table, COVERAGE_STATS.out.bed, COVERAGE_STATS.out.freq, COVERAGE_STATS.out.mononuc, COVERAGE_STATS.out.cov )
     ch_versions = ch_versions.mix ( COLLATE_STATS.out.versions )
-
 
     //
     // SUBWORKFLOW: Create BlobTools dataset
@@ -133,24 +138,43 @@ workflow BLOBTOOLKIT {
     BLOBTOOLS ( ch_config, COLLATE_STATS.out.window_tsv, BUSCO_DIAMOND.out.first_table, BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]), ch_taxdump )
     ch_versions = ch_versions.mix ( BLOBTOOLS.out.versions )
     
-
     //
     // SUBWORKFLOW: Generate summary and static images
     //
     VIEW ( BLOBTOOLS.out.blobdir )
     ch_versions = ch_versions.mix(VIEW.out.versions)
-    
-    
+
     //
     // MODULE: Combine different versions.yml
     //
     CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions
-        | unique { it.text }
-        | collectFile ( name: 'collated_versions.yml' )
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
-}
 
+    //
+    // MODULE: MultiQC
+    //
+    workflow_summary    = WorkflowBlobtoolkit.paramsSummaryMultiqc(workflow, summary_params)
+    ch_workflow_summary = Channel.value(workflow_summary)
+
+    methods_description    = WorkflowBlobtoolkit.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
+    ch_methods_description = Channel.value(methods_description)
+
+    ch_multiqc_files = Channel.empty()
+    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
+    ch_multiqc_files = ch_multiqc_files.mix(BUSCO_DIAMOND.out.multiqc.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(COVERAGE_STATS.out.multiqc.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+
+    MULTIQC (
+        ch_multiqc_files.collect(),
+        ch_multiqc_config.toList(),
+        ch_multiqc_custom_config.toList(),
+        ch_multiqc_logo.toList()
+    )
+    multiqc_report = MULTIQC.out.report.toList()
+}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -159,15 +183,14 @@ workflow BLOBTOOLKIT {
 */
 
 workflow.onComplete {
-    if ( params.email || params.email_on_fail ) {
-        NfcoreTemplate.email ( workflow, params, summary_params, projectDir, log )
+    if (params.email || params.email_on_fail) {
+        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
     }
-    NfcoreTemplate.summary ( workflow, params, log )
-    if ( params.hook_url ) {
-        NfcoreTemplate.IM_notification ( workflow, params, summary_params, projectDir, log )
+    NfcoreTemplate.summary(workflow, params, log)
+    if (params.hook_url) {
+        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
     }
 }
-
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
