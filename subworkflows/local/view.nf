@@ -24,7 +24,7 @@ workflow VIEW {
     //
     // Generate static plots in png format
     //
-    plots = [ "snail" ]
+    plots = [ "snail", "blob", "cumulative" ]
 
     BLOBTOOLKIT_IMAGES ( blobdir, plots )
     ch_versions = ch_versions.mix( BLOBTOOLKIT_IMAGES.out.versions )
