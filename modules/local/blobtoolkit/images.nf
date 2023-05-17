@@ -5,7 +5,7 @@ process BLOBTOOLKIT_IMAGES {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         exit 1, "BLOBTOOLKIT_IMAGES module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
-    container "genomehubs/blobtoolkit:4.1.5"
+    container "genomehubs/blobtk:0.3.3"
 
     input:
     tuple val(meta), path(blobdir)
@@ -21,11 +21,13 @@ process BLOBTOOLKIT_IMAGES {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def legend = plot.equals("snail") ? "" : "--legend full"
     """
     blobtk plot \\
         -v ${plot} \\
-        -o ${prefix}.${plot}.png \\
         -d ${blobdir} \\
+        -o ${prefix}.${plot}.png \\
+        ${legend} \\
         $args
 
     cat <<-END_VERSIONS > versions.yml
