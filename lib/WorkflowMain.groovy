@@ -13,7 +13,7 @@ class WorkflowMain {
         return "If you use ${workflow.manifest.name} for your analysis please cite:\n\n" +
             // Add Zenodo DOI for pipeline after first release
             "* The pipeline\n" +
-            "  https://doi.org/10.5281/zenodo.XXXXXXX\n\n" +
+            "  https://doi.org/10.5281/zenodo.7949058\n\n" +
             "* The nf-core framework\n" +
             "  https://doi.org/10.1038/s41587-020-0439-x\n\n" +
             "* Software dependencies\n" +
