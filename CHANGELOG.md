@@ -11,8 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Parameters
 
-| Old parameter | New parameter   |
-| ------------- | --------------- |
+| Old parameter | New parameter |
+| ------------- | ------------- |
+
 ...
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
@@ -36,7 +37,6 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | yaml          | 6.0         |             |
 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
-
 
 ## [[0.1.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.1.0)] – Vaporeon – [2023-05-18]
 
