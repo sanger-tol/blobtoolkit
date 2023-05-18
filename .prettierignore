@@ -1,9 +1,11 @@
 email_template.html
+adaptivecard.json
+slackreport.json
 .nextflow*
 work/
-data/
 results/
 .DS_Store
-testing/
-testing*
 *.pyc
+bin/
+assets/test/*yaml
+assets/test_full/*yaml

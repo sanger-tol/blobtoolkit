@@ -1,5 +1,5 @@
 //
-// Check input samplesheet and get read channels
+// Check input samplesheet and get aligned read channels
 //
 
 include { SAMPLESHEET_CHECK } from '../../modules/local/samplesheet_check'
@@ -12,33 +12,31 @@ workflow INPUT_CHECK {
     SAMPLESHEET_CHECK ( samplesheet )
         .csv
         .splitCsv ( header:true, sep:',' )
-        .map { create_fastq_channel(it) }
-        .set { reads }
+        .map { create_data_channels(it) }
+        .set { aln }
+
 
     emit:
-    reads                                     // channel: [ val(meta), [ reads ] ]
-    versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
+    aln                                          // channel: [ val(meta), path(datafile) ]
+    versions = SAMPLESHEET_CHECK.out.versions    // channel: [ versions.yml ]
 }
 
-// Function to get list of [ meta, [ fastq_1, fastq_2 ] ]
-def create_fastq_channel(LinkedHashMap row) {
+// Function to get list of [ meta, datafile ]
+def create_data_channels(LinkedHashMap row) {
     // create meta map
     def meta = [:]
     meta.id         = row.sample
-    meta.single_end = row.single_end.toBoolean()
+    meta.datatype   = row.datatype
 
-    // add path(s) of the fastq file(s) to the meta map
-    def fastq_meta = []
-    if (!file(row.fastq_1).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> Read 1 FastQ file does not exist!\n${row.fastq_1}"
-    }
-    if (meta.single_end) {
-        fastq_meta = [ meta, [ file(row.fastq_1) ] ]
+
+    // add path(s) of the read file(s) to the meta map
+    def data_meta = []
+
+    if ( !file(row.datafile).exists() ) {
+        exit 1, "ERROR: Please check input samplesheet -> Data file does not exist!\n${row.datafile}"
     } else {
-        if (!file(row.fastq_2).exists()) {
-            exit 1, "ERROR: Please check input samplesheet -> Read 2 FastQ file does not exist!\n${row.fastq_2}"
-        }
-        fastq_meta = [ meta, [ file(row.fastq_1), file(row.fastq_2) ] ]
+        data_meta = [ meta, file(row.datafile) ]
     }
-    return fastq_meta
+
+    return data_meta
 }

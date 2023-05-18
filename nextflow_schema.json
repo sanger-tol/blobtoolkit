@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/blobtoolkit/master/nextflow_schema.json",
-    "title": "nf-core/blobtoolkit pipeline parameters",
-    "description": "BlobToolKit Nextflow Pipeline.",
+    "$id": "https://raw.githubusercontent.com/sanger-tol/blobtoolkit/master/nextflow_schema.json",
+    "title": "sanger-tol/blobtoolkit pipeline parameters",
+    "description": "Quality assessment of genome assemblies",
     "type": "object",
     "definitions": {
         "input_output_options": {
@@ -19,21 +19,28 @@
                     "pattern": "^\\S+\\.csv$",
                     "schema": "assets/schema_input.json",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/blobtoolkit/usage#samplesheet-input).",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
                     "fa_icon": "fas fa-file-csv"
+                },
+                "yaml": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Custom config file for draft assembly",
+                    "fa_icon": "fas fa-file-alt"
                 },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
-                    "fa_icon": "fas fa-folder-open"
+                    "fa_icon": "fas fa-folder-open",
+                    "default": "results"
                 },
                 "email": {
                     "type": "string",
+                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
                     "description": "Email address for completion summary.",
-                    "fa_icon": "fas fa-envelope",
                     "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
-                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+                    "fa_icon": "fas fa-envelope"
                 },
                 "multiqc_title": {
                     "type": "string",
@@ -47,12 +54,15 @@
             "type": "object",
             "fa_icon": "fas fa-dna",
             "description": "Reference genome related files and options required for the workflow.",
+            "required": ["taxon", "accession", "fasta"],
             "properties": {
-                "genome": {
+                "taxon": {
                     "type": "string",
-                    "description": "Name of iGenomes reference.",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
+                    "description": "NCBI taxonomy ID for the genome species"
+                },
+                "accession": {
+                    "type": "string",
+                    "description": "Genome accession where available or an identifier for draft assemblies"
                 },
                 "fasta": {
                     "type": "string",
@@ -60,23 +70,54 @@
                     "mimetype": "text/plain",
                     "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
                     "description": "Path to FASTA genome file.",
-                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
                     "fa_icon": "far fa-file-code"
+                }
+            }
+        },
+        "databases": {
+            "title": "Databases",
+            "type": "object",
+            "fa_icon": "fas fa-database",
+            "description": "Define the location and parameters to work with databases.",
+            "required": ["uniprot", "taxdump"],
+            "properties": {
+                "taxa_file": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to file containing the BUSCO lineages for the genome species",
+                    "help_text": "If this file is not included, the relevant BUSCO lineages are automatically calculated using the taxon parameter.",
+                    "fa_icon": "fas fa-file-alt"
                 },
-                "igenomes_base": {
+                "busco": {
                     "type": "string",
                     "format": "directory-path",
-                    "description": "Directory / URL base for iGenomes references.",
-                    "default": "s3://ngi-igenomes/igenomes",
-                    "fa_icon": "fas fa-cloud-download-alt",
-                    "hidden": true
+                    "description": "Local directory where clade-specific BUSCO lineage datasets are stored",
+                    "fa_icon": "fas fa-folder-open"
                 },
-                "igenomes_ignore": {
-                    "type": "boolean",
-                    "description": "Do not load the iGenomes reference config.",
-                    "fa_icon": "fas fa-ban",
-                    "hidden": true,
-                    "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
+                "blastp_cols": {
+                    "type": "string",
+                    "description": "When blastp_outext is 'txt', this is the list of columns that Diamond BLAST should print.",
+                    "default": "qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore"
+                },
+                "blastp_outext": {
+                    "type": "string",
+                    "enum": ["blast", "xml", "txt", "daa", "sam", "tsv", "paf"],
+                    "description": "Extension (file format) of the output file from Diamond BLAST.",
+                    "fa_icon": "fas fa-file-circle-question",
+                    "default": "txt"
+                },
+                "uniprot": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.dmnd$",
+                    "description": "Path to the Diamond species-specific buscogenes database",
+                    "fa_icon": "fas fa-file-archive"
+                },
+                "taxdump": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to the new NCBI tax dump database",
+                    "fa_icon": "fas fa-folder-open"
                 }
             }
         },
@@ -176,6 +217,12 @@
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },
+                "version": {
+                    "type": "boolean",
+                    "description": "Display version and exit.",
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                },
                 "publish_dir_mode": {
                     "type": "string",
                     "default": "copy",
@@ -213,16 +260,34 @@
                     "fa_icon": "fas fa-palette",
                     "hidden": true
                 },
+                "hook_url": {
+                    "type": "string",
+                    "description": "Incoming hook URL for messaging service",
+                    "fa_icon": "fas fa-people-group",
+                    "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
+                    "hidden": true
+                },
                 "multiqc_config": {
                     "type": "string",
                     "description": "Custom config file to supply to MultiQC.",
                     "fa_icon": "fas fa-cog",
                     "hidden": true
                 },
+                "multiqc_logo": {
+                    "type": "string",
+                    "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file",
+                    "fa_icon": "fas fa-image",
+                    "hidden": true
+                },
+                "multiqc_methods_description": {
+                    "type": "string",
+                    "description": "Custom MultiQC yaml file containing HTML including a methods description.",
+                    "fa_icon": "fas fa-cog"
+                },
                 "tracedir": {
                     "type": "string",
                     "description": "Directory to keep pipeline Nextflow logs and reports.",
-                    "default": "${params.outdir}/pipeline_info",
+                    "default": "${params.outdir}/blobtoolkit_info",
                     "fa_icon": "fas fa-cogs",
                     "hidden": true
                 },
@@ -239,12 +304,6 @@
                     "description": "Show all params when using `--help`",
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
-                },
-                "enable_conda": {
-                    "type": "boolean",
-                    "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-bacon"
                 }
             }
         }
@@ -255,6 +314,9 @@
         },
         {
             "$ref": "#/definitions/reference_genome_options"
+        },
+        {
+            "$ref": "#/definitions/databases"
         },
         {
             "$ref": "#/definitions/institutional_config_options"
