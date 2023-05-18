@@ -165,6 +165,8 @@ The data in the YAML is currently ignored in the Nextflow pipeline version. The 
 
 ## Changes from Snakemake to Nextflow
 
+The current version of Nextflow pipeline is not compatible with the public version of the [GenomeHubs BlobToolKit portal](https://blobtoolkit.genomehubs.org).
+
 ### Commands
 
 Snakemake
