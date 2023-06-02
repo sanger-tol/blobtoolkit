@@ -106,6 +106,18 @@
                     "fa_icon": "fas fa-file-circle-question",
                     "default": "txt"
                 },
+                "blastx_cols": {
+                    "type": "string",
+                    "description": "When blastx_outext is 'txt', this is the list of columns that Diamond BLAST should print.",
+                    "default": "qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore"
+                },
+                "blastx_outext": {
+                    "type": "string",
+                    "enum": ["blast", "xml", "txt", "daa", "sam", "tsv", "paf"],
+                    "description": "Extension (file format) of the output file from Diamond BLAST.",
+                    "fa_icon": "fas fa-file-circle-question",
+                    "default": "txt"
+                },
                 "uniprot": {
                     "type": "string",
                     "format": "file-path",
