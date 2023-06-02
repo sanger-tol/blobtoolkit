@@ -3,7 +3,7 @@
 //
 
 include { BLOBTOOLKIT_CHUNK_BUSCO } from '../../modules/local/blobtoolkit/chunk_busco'
-include { DIAMOND_BLASTX          } from '../modules/nf-core/diamond/blastx/main'
+include { DIAMOND_BLASTX          } from '../../modules/nf-core/diamond/blastx/main'
 
 workflow RUN_DIAMOND_BLASTX {
     take:
