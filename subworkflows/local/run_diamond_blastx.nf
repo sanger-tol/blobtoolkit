@@ -3,6 +3,7 @@
 //
 
 include { BLOBTOOLKIT_CHUNK_BUSCO } from '../../modules/local/blobtoolkit/chunk_busco'
+include { BLOBTOOLKIT_UNCHUNK     } from '../../modules/local/blobtoolkit/unchunk_blastx'
 include { DIAMOND_BLASTX          } from '../../modules/nf-core/diamond/blastx/main'
 
 workflow RUN_DIAMOND_BLASTX {
@@ -29,8 +30,13 @@ workflow RUN_DIAMOND_BLASTX {
     //
     DIAMOND_BLASTX ( BLOBTOOLKIT_CHUNK_BUSCO.out.chunks, blastx, outext, cols)
 
+    //
+    // Unchunk chunked blastx results
+    //
+    BLOBTOOLKIT_UNCHUNK ( DIAMOND_BLASTX.out.txt )
+
 
     emit:
-    fasta_chunks = BLOBTOOLKIT_CHUNK_BUSCO.out.chunks  // channel: [ val(meta), path(chunks) ]
-    versions     = ch_versions                         // channel: [ versions.yml ]
+    blastx_out = BLOBTOOLKIT_UNCHUNK.out.blastx  // channel: [ val(meta), path(blastx_out) ]
+    versions   = ch_versions                     // channel: [ versions.yml ]
 }
