@@ -11,6 +11,7 @@ workflow BLOBTOOLS {
     windowstats // channel: [ val(meta), path(window_stats_tsvs) ]
     busco       // channel: [ val(meta), path(full_table) ]
     blastp      // channel: [ val(meta), path(txt) ]
+    blastx      // channel: [ val(meta), path(txt) ]
     taxdump     // channel: path(taxdump_db)
 
 
@@ -28,7 +29,7 @@ workflow BLOBTOOLS {
     //  
     // Create Blobtools dataset files
     //
-    BLOBTOOLKIT_BLOBDIR ( windowstats, busco, blastp, BLOBTOOLKIT_METADATA.out.yaml, taxdump )
+    BLOBTOOLKIT_BLOBDIR ( windowstats, busco, blastp, blastx, BLOBTOOLKIT_METADATA.out.yaml, taxdump )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_BLOBDIR.out.versions.first() )
 
 
