@@ -2,11 +2,11 @@
 // Create BlobTools dataset
 //
 
-include { BLOBTOOLKIT_CHUNK_BUSCO } from '../../modules/local/blobtoolkit/chunk_busco'
-include { BLOBTOOLKIT_UNCHUNK     } from '../../modules/local/blobtoolkit/unchunk_blastx'
-include { DIAMOND_BLASTX          } from '../../modules/nf-core/diamond/blastx/main'
+include { BLOBTOOLKIT_CHUNK   } from '../../modules/local/blobtoolkit/chunk'
+include { BLOBTOOLKIT_UNCHUNK } from '../../modules/local/blobtoolkit/unchunk'
+include { DIAMOND_BLASTX      } from '../../modules/nf-core/diamond/blastx/main'
 
-workflow RUN_DIAMOND_BLASTX {
+workflow RUN_BLASTX {
     take:
     fasta      // channel: [ val(meta), path(fasta) ]
     table      // channel: [ val(meta), path(busco_table) ]
@@ -22,13 +22,13 @@ workflow RUN_DIAMOND_BLASTX {
     //
     // Create metadata summary file
     //
-    BLOBTOOLKIT_CHUNK_BUSCO ( fasta, table )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_CHUNK_BUSCO.out.versions.first() )
+    BLOBTOOLKIT_CHUNK ( fasta, table )
+    ch_versions = ch_versions.mix ( BLOBTOOLKIT_CHUNK.out.versions.first() )
 
     //
     // Run diamond_blastx
     //
-    DIAMOND_BLASTX ( BLOBTOOLKIT_CHUNK_BUSCO.out.chunks, blastx, outext, cols)
+    DIAMOND_BLASTX ( BLOBTOOLKIT_CHUNK.out.chunks, blastx, outext, cols)
 
     //
     // Unchunk chunked blastx results

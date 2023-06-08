@@ -1,4 +1,4 @@
-process BLOBTOOLKIT_CHUNK_BUSCO {
+process BLOBTOOLKIT_CHUNK {
     tag "$meta.id"
     label 'process_single'
 

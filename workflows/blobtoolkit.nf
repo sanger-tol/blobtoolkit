@@ -54,7 +54,7 @@ include { BLOBTOOLKIT_CONFIG } from '../modules/local/blobtoolkit/config'
 include { INPUT_CHECK        } from '../subworkflows/local/input_check'
 include { COVERAGE_STATS     } from '../subworkflows/local/coverage_stats'
 include { BUSCO_DIAMOND      } from '../subworkflows/local/busco_diamond_blastp'
-include { RUN_DIAMOND_BLASTX } from '../subworkflows/local/run_diamond_blastx'
+include { RUN_BLASTX         } from '../subworkflows/local/run_blastx'
 include { COLLATE_STATS      } from '../subworkflows/local/collate_stats'
 include { BLOBTOOLS          } from '../subworkflows/local/blobtools'
 include { VIEW               } from '../subworkflows/local/view'
@@ -120,7 +120,7 @@ workflow BLOBTOOLKIT {
     BUSCO_DIAMOND ( ch_genome, ch_taxon_taxa, ch_busco_db, ch_uniprot, params.blastp_outext, params.blastp_cols )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
     
-    RUN_DIAMOND_BLASTX ( 
+    RUN_BLASTX ( 
         ch_genome.join(BUSCO_DIAMOND.out.first_table).map {[it[0],it[1]]},
         ch_genome.join(BUSCO_DIAMOND.out.first_table).map {[it[0],it[2]]},
         ch_uniprot_blastx,
