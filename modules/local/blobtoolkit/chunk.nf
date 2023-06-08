@@ -8,8 +8,8 @@ process BLOBTOOLKIT_CHUNK {
     container "genomehubs/blobtoolkit:4.1.5"
 
     input:
-    tuple val(meta), path(fasta)
-    tuple val(meta), path(busco_table)
+    tuple val(meta) , path(fasta)
+    tuple val(meta2), path(busco_table)
 
     output:
     tuple val(meta), path("*.chunks.fasta"), emit: chunks
