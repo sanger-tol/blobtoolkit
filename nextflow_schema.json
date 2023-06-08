@@ -125,6 +125,13 @@
                     "description": "Path to the Diamond species-specific buscogenes database",
                     "fa_icon": "fas fa-file-archive"
                 },
+                "uniprot_blastx": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.dmnd$",
+                    "description": "Path to the Diamond species-specific buscoregions database",
+                    "fa_icon": "fas fa-file-archive"
+                },
                 "taxdump": {
                     "type": "string",
                     "format": "directory-path",
