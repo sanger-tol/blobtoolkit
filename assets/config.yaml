@@ -1,0 +1,82 @@
+assembly:
+  accession: GCA_922984935.2
+  alias: mMelMel3.2 paternal haplotype
+  bioproject: PRJEB49353
+  biosample: SAMEA7524400
+  file: /lustre/scratch123/tol/resources/nextflow/test-data/Meles_meles/assembly/release/mMelMel3.1_paternal_haplotype/GCA_922984935.2.subset.fasta.gz
+  level: chromosome
+  prefix: CAKLPM02
+  scaffold-count: 538
+  span: 2738694574
+  url: ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/922/984/935/GCA_922984935.2_mMelMel3.2_paternal_haplotype/GCA_922984935.2_mMelMel3.2_paternal_haplotype_genomic.fna.gz
+busco:
+  basal_lineages:
+  - eukaryota_odb10
+  - bacteria_odb10
+  - archaea_odb10
+  download_dir: /lustre/scratch123/tol/resources/nextflow/busco_2021_06_reduced/
+  lineages:
+  - carnivora_odb10
+  - laurasiatheria_odb10
+  - eutheria_odb10
+  - mammalia_odb10
+  - tetrapoda_odb10
+  - vertebrata_odb10
+  - metazoa_odb10
+  - eukaryota_odb10
+#fields:
+#  categories:
+#    file: ./GCA_922984935.2/assembly/GCA_922984935.2.categories.tsv
+#  synonyms:
+#    file: ./GCA_922984935.2/assembly/GCA_922984935.2.synonyms.tsv
+#    prefix: insdc
+#reads:
+#  coverage:
+#    max: 30
+#  paired: []
+#  single:
+#  - base_count: 27436689772
+#    file: /blobtoolkit/datasets/GCA_949316205.1/reads/ERR10879948.fastq.gz
+#    platform: PACBIO_SMRT
+#    prefix: ERR10879948
+#    url: ftp.sra.ebi.ac.uk/vol1/fastq/ERR108/048/ERR10879948/ERR10879948.fastq.gz
+settings:
+  blast_chunk: 100000
+  blast_max_chunks: 10
+  blast_min_length: 1000
+  blast_overlap: 0
+  stats_chunk: 1000
+  stats_windows:
+  - 0.1
+  - 0.01
+  - 100000
+  - 1000000
+  taxdump: /lustre/scratch123/tol/teams/grit/geval_pipeline/btk_databases/taxdump
+  tmp: /tmp
+similarity:
+  blastn:
+    name: nt
+    path: /blobtoolkit/databases/nt_2021_06
+  defaults:
+    evalue: 1.0e-10
+    import_evalue: 1.0e-25
+    max_target_seqs: 10
+    taxrule: buscogenes
+  diamond_blastp:
+    import_max_target_seqs: 100000
+    name: reference_proteomes
+    path: /blobtoolkit/databases/uniprot_2021_06
+    taxrule: blastp=buscogenes
+  diamond_blastx:
+    name: reference_proteomes
+    path: /blobtoolkit/databases/uniprot_2021_06
+taxon:
+  class: Mammalia
+  family: Mustelidae
+  genus: Meles
+  kingdom: Metazoa
+  name: Meles meles
+  order: Carnivora
+  phylum: Chordata
+  superkingdom: Eukaryota
+  taxid: '9662'
