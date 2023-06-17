@@ -21,6 +21,9 @@ workflow BUSCO_DIAMOND {
     main:
     ch_versions = Channel.empty()
 
+    if (params.busco.lineages) {
+        ch_ancestral_lineages = Channel.of( params.busco.lineages )
+    } else {
 
     //
     // Fetch BUSCO lineages for taxon (or taxa)
@@ -37,11 +40,11 @@ workflow BUSCO_DIAMOND {
     | map { row -> row.odb10_lineage.findAll { it != "" } }
     | set { ch_ancestral_lineages }
 
+    }
 
     // Add the basal lineages to the list (excluding duplicates)
-    basal_lineages = [ "archaea_odb10", "bacteria_odb10", "eukaryota_odb10" ]
     ch_ancestral_lineages
-    | map { lineages -> (lineages + basal_lineages).unique() }
+    | map { lineages -> (lineages + params.busco.basal_lineages).unique() }
     | flatten ()
     | set { ch_lineages }
 

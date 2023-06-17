@@ -11,7 +11,7 @@ WorkflowBlobtoolkit.initialise(params, log)
 
 // Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxa_file, params.taxdump, params.busco, params.uniprot ]
+def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxdump, params.busco.download_dir, params.uniprot ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
@@ -22,7 +22,7 @@ if (params.uniprot) { ch_uniprot = file(params.uniprot) } else { exit 1, 'Diamon
 if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
 
 // Create channel for optional parameters
-if (params.busco) { ch_busco_db = Channel.fromPath(params.busco) } else { ch_busco_db = Channel.empty() }
+if (params.busco && params.busco.download_dir) { ch_busco_db = Channel.fromPath(params.busco.download_dir) } else { ch_busco_db = Channel.empty() }
 if (params.yaml && params.accession) { ch_yaml = Channel.of([ [ 'id': params.accession ], params.yaml ]) } else { ch_yaml = Channel.empty() }
 
 /*
@@ -108,12 +108,7 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
     //
-    if (params.taxa_file) { 
-        ch_taxa = Channel.from(params.taxa_file)
-        ch_taxon_taxa = ch_fasta.combine(ch_taxon).combine(ch_taxa).map { meta, fasta, taxon, taxa -> [ meta, taxon, taxa ] }
-    } else { 
-        ch_taxon_taxa = ch_fasta.combine(ch_taxon).map { meta, fasta, taxon -> [ meta, taxon, [] ] }
-    }
+    ch_taxon_taxa = ch_fasta.combine(ch_taxon).map { meta, fasta, taxon -> [ meta, taxon, [] ] }
 
     BUSCO_DIAMOND ( ch_genome, ch_taxon_taxa, ch_busco_db, ch_uniprot, params.blastp_outext, params.blastp_cols )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
