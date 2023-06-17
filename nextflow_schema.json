@@ -49,31 +49,6 @@
                 }
             }
         },
-        "reference_genome_options": {
-            "title": "Reference genome options",
-            "type": "object",
-            "fa_icon": "fas fa-dna",
-            "description": "Reference genome related files and options required for the workflow.",
-            "required": ["taxon", "accession", "fasta"],
-            "properties": {
-                "taxon": {
-                    "type": "string",
-                    "description": "NCBI taxonomy ID for the genome species"
-                },
-                "accession": {
-                    "type": "string",
-                    "description": "Genome accession where available or an identifier for draft assemblies"
-                },
-                "fasta": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
-                    "description": "Path to FASTA genome file.",
-                    "fa_icon": "far fa-file-code"
-                }
-            }
-        },
         "databases": {
             "title": "Databases",
             "type": "object",
@@ -292,9 +267,6 @@
     "allOf": [
         {
             "$ref": "#/definitions/input_output_options"
-        },
-        {
-            "$ref": "#/definitions/reference_genome_options"
         },
         {
             "$ref": "#/definitions/databases"

@@ -11,13 +11,13 @@ WorkflowBlobtoolkit.initialise(params, log)
 
 // Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.settings.taxdump, params.busco.download_dir, params.uniprot ]
+def checkPathParamList = [ params.input, params.multiqc_config, params.assembly.file, params.settings.taxdump, params.busco.download_dir, params.uniprot ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-if (params.fasta && params.accession) { ch_fasta = Channel.of([ [ 'id': params.accession ], params.fasta ]).collect() } else { exit 1, 'Genome fasta file and accession must be specified!' }
-if (params.taxon) { ch_taxon = Channel.of(params.taxon) } else { exit 1, 'NCBI Taxon ID not specified!' }
+if (params.assembly && params.assembly.file && params.assembly.accession) { ch_fasta = Channel.of([ [ 'id': params.assembly.accession ], params.assembly.file ]).collect() } else { exit 1, 'Genome fasta file and accession must be specified!' }
+if (params.taxon && params.taxon.name) { ch_taxon = Channel.of(params.taxon.name) } else { exit 1, 'NCBI Taxon ID not specified!' }
 if (params.uniprot) { ch_uniprot = file(params.uniprot) } else { exit 1, 'Diamond BLASTp database not specified!' }
 if (params.settings && params.settings.taxdump) { ch_taxdump = file(params.settings.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
 
@@ -86,7 +86,7 @@ workflow BLOBTOOLKIT {
     //
     // MODULE: Decompress FASTA file if needed
     //
-    if ( params.fasta.endsWith('.gz') ) {
+    if ( params.assembly.file.endsWith('.gz') ) {
         ch_genome   = GUNZIP ( ch_fasta ).gunzip
         ch_versions = ch_versions.mix ( GUNZIP.out.versions.first() )
     } else {
