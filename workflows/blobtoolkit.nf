@@ -11,7 +11,7 @@ WorkflowBlobtoolkit.initialise(params, log)
 
 // Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxdump, params.busco.download_dir, params.uniprot ]
+def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.settings.taxdump, params.busco.download_dir, params.uniprot ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
@@ -19,7 +19,7 @@ if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input sample
 if (params.fasta && params.accession) { ch_fasta = Channel.of([ [ 'id': params.accession ], params.fasta ]).collect() } else { exit 1, 'Genome fasta file and accession must be specified!' }
 if (params.taxon) { ch_taxon = Channel.of(params.taxon) } else { exit 1, 'NCBI Taxon ID not specified!' }
 if (params.uniprot) { ch_uniprot = file(params.uniprot) } else { exit 1, 'Diamond BLASTp database not specified!' }
-if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
+if (params.settings && params.settings.taxdump) { ch_taxdump = file(params.settings.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
 
 // Create channel for optional parameters
 if (params.busco && params.busco.download_dir) { ch_busco_db = Channel.fromPath(params.busco.download_dir) } else { ch_busco_db = Channel.empty() }

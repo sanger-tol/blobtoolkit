@@ -79,7 +79,7 @@
             "type": "object",
             "fa_icon": "fas fa-database",
             "description": "Define the location and parameters to work with databases.",
-            "required": ["uniprot", "taxdump"],
+            "required": ["uniprot"],
             "properties": {
                 "blastp_cols": {
                     "type": "string",
@@ -99,12 +99,6 @@
                     "pattern": "^\\S+\\.dmnd$",
                     "description": "Path to the Diamond species-specific buscogenes database",
                     "fa_icon": "fas fa-file-archive"
-                },
-                "taxdump": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "Path to the new NCBI tax dump database",
-                    "fa_icon": "fas fa-folder-open"
                 }
             }
         },
