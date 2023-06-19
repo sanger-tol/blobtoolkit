@@ -18,8 +18,8 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.fasta && params.accession) { ch_fasta = Channel.of([ [ 'id': params.accession ], params.fasta ]).collect() } else { exit 1, 'Genome fasta file and accession must be specified!' }
 if (params.taxon) { ch_taxon = Channel.of(params.taxon) } else { exit 1, 'NCBI Taxon ID not specified!' }
-if (params.uniprot) { ch_uniprot = file(params.uniprot) } else { exit 1, 'Diamond BLASTp database not specified!' }
-if (params.uniprot_blastx) { ch_uniprot_blastx = file(params.uniprot_blastx) } else { exit 1, 'Diamond BLASTx database not specified!' }
+if (params.blastp) { ch_blastp = file(params.blastp) } else { exit 1, 'Diamond BLASTp database not specified!' }
+if (params.blastx) { ch_blastx = file(params.blastx) } else { exit 1, 'Diamond BLASTx database not specified!' }
 if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
 
 // Create channel for optional parameters
@@ -117,13 +117,13 @@ workflow BLOBTOOLKIT {
         ch_taxon_taxa = ch_fasta.combine(ch_taxon).map { meta, fasta, taxon -> [ meta, taxon, [] ] }
     }
 
-    BUSCO_DIAMOND ( ch_genome, ch_taxon_taxa, ch_busco_db, ch_uniprot, params.blastp_outext, params.blastp_cols )
+    BUSCO_DIAMOND ( ch_genome, ch_taxon_taxa, ch_busco_db, ch_blastp, params.blastp_outext, params.blastp_cols )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
     
     RUN_BLASTX ( 
         ch_genome.join(BUSCO_DIAMOND.out.first_table).map { meta, fasta, first_table -> [ meta, fasta ] },
         ch_genome.join(BUSCO_DIAMOND.out.first_table).map { meta, fasta, first_table -> [ meta, first_table ] },
-        ch_uniprot_blastx,
+        ch_blastx,
         params.blastx_outext,
         params.blastx_cols
     )
