@@ -11,7 +11,7 @@ WorkflowBlobtoolkit.initialise(params, log)
 
 // Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxa_file, params.taxdump, params.busco, params.uniprot ]
+def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxa_file, params.taxdump, params.busco, params.blastp, params.blastx ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters

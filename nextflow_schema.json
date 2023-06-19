@@ -79,7 +79,7 @@
             "type": "object",
             "fa_icon": "fas fa-database",
             "description": "Define the location and parameters to work with databases.",
-            "required": ["uniprot", "taxdump"],
+            "required": ["blastp", "blastx", "taxdump"],
             "properties": {
                 "taxa_file": {
                     "type": "string",
