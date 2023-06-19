@@ -3,7 +3,7 @@ process BLOBTOOLKIT_CHUNK {
     label 'process_single'
 
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        exit 1, "BLOBTOOLKIT_CHUNK_BUSCO module does not support Conda. Please use Docker / Singularity / Podman instead."
+        exit 1, "BLOBTOOLKIT_CHUNK module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
     container "genomehubs/blobtoolkit:4.1.5"
 
