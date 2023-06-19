@@ -121,8 +121,8 @@ workflow BLOBTOOLKIT {
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
     
     RUN_BLASTX ( 
-        ch_genome.join(BUSCO_DIAMOND.out.first_table).map { meta, fasta, first_table -> [ meta, fasta ] },
-        ch_genome.join(BUSCO_DIAMOND.out.first_table).map { meta, fasta, first_table -> [ meta, first_table ] },
+        ch_genome,
+        BUSCO_DIAMOND.out.first_table,
         ch_blastx,
         params.blastx_outext,
         params.blastx_cols
