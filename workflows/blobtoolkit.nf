@@ -133,7 +133,7 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Run blastn search
     //
-    RUN_BLASTN ( RUN_BLASTX.out.txt, ch_genome )
+    RUN_BLASTN ( RUN_BLASTX.out.blastx_out, ch_genome )
     
 
     //
