@@ -55,6 +55,7 @@ include { INPUT_CHECK        } from '../subworkflows/local/input_check'
 include { COVERAGE_STATS     } from '../subworkflows/local/coverage_stats'
 include { BUSCO_DIAMOND      } from '../subworkflows/local/busco_diamond_blastp'
 include { RUN_BLASTX         } from '../subworkflows/local/run_blastx'
+include { RUN_BLASTN         } from '../subworkflows/local/run_blastn'
 include { COLLATE_STATS      } from '../subworkflows/local/collate_stats'
 include { BLOBTOOLS          } from '../subworkflows/local/blobtools'
 include { VIEW               } from '../subworkflows/local/view'
@@ -127,6 +128,13 @@ workflow BLOBTOOLKIT {
         params.blastx_outext,
         params.blastx_cols
     )
+
+
+    //
+    // SUBWORKFLOW: Run blastn search
+    //
+    RUN_BLASTN ( RUN_BLASTX.out.txt, ch_genome )
+    
 
     //
     // SUBWORKFLOW: Collate genome statistics by various window sizes
