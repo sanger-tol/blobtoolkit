@@ -18,17 +18,15 @@ process NOHIT_LIST {
     when:
     task.ext.when == null || task.ext.when
 
-    shell:
+    script: // This script is bundled with the pipeline, in sanger-tol/blobtoolkit/bin/
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    '''
-    grep '>' !{fasta} | \\
-        grep -v -w -f <(awk -v evalue="$args" '{{if($14<{evalue}){{print $1}}}}' !{blast} | sort | uniq) | \\
-        cut -f1 | sed 's/>//' > ${prefix}.nohit.txt
+    """
+    nohitlist.sh ${fasta} ${blast} ${prefix} $args
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         nohit_list: 1.0
     END_VERSIONS
-    '''
+    """
 }
