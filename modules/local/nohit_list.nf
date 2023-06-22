@@ -18,17 +18,17 @@ process NOHIT_LIST {
     when:
     task.ext.when == null || task.ext.when
 
-    script:
+    shell:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    """
-    grep '>' ${fasta} | \\
-        grep -v -w -f <(awk -v evalue="$args" '{{if($14<{evalue}){{print $1}}}}' ${blast} | sort | uniq) | \\
+    '''
+    grep '>' !{fasta} | \\
+        grep -v -w -f <(awk -v evalue="$args" '{{if($14<{evalue}){{print $1}}}}' !{blast} | sort | uniq) | \\
         cut -f1 | sed 's/>//' > ${prefix}.nohit.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         nohit_list: 1.0
     END_VERSIONS
-    """
+    '''
 }
