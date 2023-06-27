@@ -129,6 +129,7 @@ workflow BLOBTOOLKIT {
         params.blastx_outext,
         params.blastx_cols
     )
+    ch_versions = ch_versions.mix ( RUN_BLASTX.out.versions )
 
     //
     // SUBWORKFLOW: Collate genome statistics by various window sizes

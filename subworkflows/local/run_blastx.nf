@@ -25,15 +25,19 @@ workflow RUN_BLASTX {
     BLOBTOOLKIT_CHUNK ( fasta, table )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_CHUNK.out.versions.first() )
 
+
     //
     // Run diamond_blastx
     //
     DIAMOND_BLASTX ( BLOBTOOLKIT_CHUNK.out.chunks, blastx, outext, cols)
+    ch_versions = ch_versions.mix ( DIAMOND_BLASTX.out.versions.first() )
+    
 
     //
     // Unchunk chunked blastx results
     //
     BLOBTOOLKIT_UNCHUNK ( DIAMOND_BLASTX.out.txt )
+    ch_versions = ch_versions.mix ( BLOBTOOLKIT_UNCHUNK.out.versions.first() )
 
 
     emit:
