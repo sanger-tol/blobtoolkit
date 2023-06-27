@@ -21,11 +21,12 @@ workflow RUN_BLASTN {
     NOHIT_LIST ( blast_table, fasta )
     ch_versions = ch_versions.mix ( NOHIT_LIST.out.versions.first() ) 
 
-    // Subset of sequences with no hits
+    // Subset of sequences with no hits (meta is not propagated in this step)
     SEQTK_SUBSEQ (
         fasta.map { meta, genome -> genome },
         NOHIT_LIST.out.nohitlist.map { meta, nohit -> nohit }
     )
+    ch_versions = ch_versions.mix ( SEQTK_SUBSEQ.out.versions.first() )
 
     emit:
     nohits    = NOHIT_LIST.out.nohitlist   // channel: [ val(meta), path(freq) ]
