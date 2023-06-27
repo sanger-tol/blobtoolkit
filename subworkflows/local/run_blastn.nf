@@ -3,7 +3,8 @@
 //
 
 
-include { NOHIT_LIST } from '../../modules/local/nohit_list'
+include { NOHIT_LIST   } from '../../modules/local/nohit_list'
+include { SEQTK_SUBSEQ } from '../../modules/nf-core/seqtk/subseq/main'
 
 
 workflow RUN_BLASTN {
@@ -16,13 +17,18 @@ workflow RUN_BLASTN {
     ch_versions = Channel.empty()
 
 
-    // Get list of sequences with no hits in diamond blastx search
+    // Get list of sequence ids with no hits in diamond blastx search
     NOHIT_LIST ( blast_table, fasta )
     ch_versions = ch_versions.mix ( NOHIT_LIST.out.versions.first() ) 
 
-
+    // Subset of sequences with no hits
+    SEQTK_SUBSEQ (
+        fasta.map { meta, genome -> genome },
+        NOHIT_LIST.out.nohitlist.map { meta, nohit -> nohit }
+    )
 
     emit:
-    nohits    = NOHIT_LIST.out.nohitlist  // channel: [ val(meta), path(freq) ]
-    versions  = ch_versions               // channel: [ versions.yml ]
+    nohits    = NOHIT_LIST.out.nohitlist   // channel: [ val(meta), path(freq) ]
+    subseq    = SEQTK_SUBSEQ.out.sequences // channel: path() 
+    versions  = ch_versions                // channel: [ versions.yml ]
 }
