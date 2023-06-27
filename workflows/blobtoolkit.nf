@@ -120,6 +120,8 @@ workflow BLOBTOOLKIT {
     BUSCO_DIAMOND ( ch_genome, ch_taxon_taxa, ch_busco_db, ch_blastp, params.blastp_outext, params.blastp_cols )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
     
+    //
+    // SUBWORKFLOW: Diamond blastx search of assembly contigs against the UniProt reference proteomes
     RUN_BLASTX ( 
         ch_genome,
         BUSCO_DIAMOND.out.first_table,

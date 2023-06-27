@@ -1,5 +1,5 @@
 //
-// Create BlobTools dataset
+// Diamond blastx search of assembly contigs against the UniProt reference proteomes
 //
 
 include { BLOBTOOLKIT_CHUNK   } from '../../modules/local/blobtoolkit/chunk'
