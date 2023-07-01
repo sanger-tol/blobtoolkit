@@ -9,9 +9,7 @@ process BLOBTOOLKIT_EXTRACTBUSCOS {
 
     input:
     tuple val(meta), path(fasta)
-    tuple val(meta1), path(seq1, stageAs: "lineage1/*")
-    tuple val(meta2), path(seq2, stageAs: "lineage2/*")
-    tuple val(meta3), path(seq3, stageAs: "lineage3/*")
+    tuple val(metaseq), path(seq, stageAs: "lineage??/*")
 
     output:
     tuple val(meta), path("*_buscogenes.fasta"), emit: genes
@@ -23,11 +21,10 @@ process BLOBTOOLKIT_EXTRACTBUSCOS {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def seq_args = seq.collect { "--busco " + it } .join(' ')
     """
     btk pipeline extract-busco-genes \\
-        --busco $seq1 \\
-        --busco $seq2 \\
-        --busco $seq3 \\
+        $seq_args \\
         --out ${prefix}_buscogenes.fasta
 
     cat <<-END_VERSIONS > versions.yml
