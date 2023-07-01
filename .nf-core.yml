@@ -4,6 +4,7 @@ lint:
     - assets/nf-core-blobtoolkit_logo_light.png
     - docs/images/nf-core-blobtoolkit_logo_light.png
     - docs/images/nf-core-blobtoolkit_logo_dark.png
+    - .github/ISSUE_TEMPLATE/config.yml
   files_unchanged:
     - LICENSE
     - .github/ISSUE_TEMPLATE/bug_report.yml
