@@ -37,7 +37,6 @@ workflow RUN_BLASTN {
     ch_query = GUNZIP ( ch_gz ).out.gunzip
     BLAST_BLASTN ( ch_query, blastn )
     ch_versions = ch_versions.mix ( BLAST_BLASTN.out.versions.first() )
-    include { GUNZIP                      } from '../modules/nf-core/gunzip/main'
 
     emit:
     nohits      = NOHIT_LIST.out.nohitlist   // channel: [ val(meta), path(nohit) ]
