@@ -20,6 +20,7 @@ if (params.fasta && params.accession) { ch_fasta = Channel.of([ [ 'id': params.a
 if (params.taxon) { ch_taxon = Channel.of(params.taxon) } else { exit 1, 'NCBI Taxon ID not specified!' }
 if (params.blastp) { ch_blastp = file(params.blastp) } else { exit 1, 'Diamond BLASTp database not specified!' }
 if (params.blastx) { ch_blastx = file(params.blastx) } else { exit 1, 'Diamond BLASTx database not specified!' }
+if (params.blastn) { ch_blastn = file(params.blastn) } else { exit 1, 'BLASTn database not specified!' }
 if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
 
 // Create channel for optional parameters
@@ -133,7 +134,7 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Run blastn search
     //
-    RUN_BLASTN ( RUN_BLASTX.out.blastx_out, ch_genome )
+    RUN_BLASTN ( RUN_BLASTX.out.blastx_out, ch_genome, ch_blastn )
     
 
     //

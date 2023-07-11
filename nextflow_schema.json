@@ -79,7 +79,7 @@
             "type": "object",
             "fa_icon": "fas fa-database",
             "description": "Define the location and parameters to work with databases.",
-            "required": ["blastp", "blastx", "taxdump"],
+            "required": ["blastp", "blastx", "blastn", "taxdump"],
             "properties": {
                 "taxa_file": {
                     "type": "string",
@@ -130,6 +130,12 @@
                     "format": "file-path",
                     "pattern": "^\\S+\\.dmnd$",
                     "description": "Path to the Diamond species-specific buscoregions database",
+                    "fa_icon": "fas fa-file-archive"
+                },
+                "blastn": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to the nucleotide BLAST database",
                     "fa_icon": "fas fa-file-archive"
                 },
                 "taxdump": {
