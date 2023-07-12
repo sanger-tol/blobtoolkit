@@ -32,15 +32,17 @@ workflow RUN_BLASTN {
     ch_versions = ch_versions.mix ( SEQTK_SUBSEQ.out.versions.first() )
 
     // Run blastn search
-    // ch_query : [ val(meta), path(uncompressed_seq) ] 
-    ch_gz = fasta.join(SEQTK_SUBSEQ.out.sequences).map { meta, genome, seq ->  [ meta, seq ] }
-    ch_query = GUNZIP ( ch_gz ).out.gunzip
-    BLAST_BLASTN ( ch_query, blastn )
+    // add meta to fasta subset channel: [ val(meta), path(compressed_fasta) ]
+    ch_gz = fasta.combine(SEQTK_SUBSEQ.out.sequences).map { meta, genome, seq ->  [ meta, seq ] }
+    // uncompress fasta
+    GUNZIP ( ch_gz )
+    // channel to query fasta: [ val(meta), path(uncompressed_fasta) ] 
+    BLAST_BLASTN ( GUNZIP.out.gunzip, blastn )
     ch_versions = ch_versions.mix ( BLAST_BLASTN.out.versions.first() )
 
     emit:
     nohits      = NOHIT_LIST.out.nohitlist   // channel: [ val(meta), path(nohit) ]
     subseq      = SEQTK_SUBSEQ.out.sequences // channel: path(seq)
-    blastn_hits = BLAST_BLASTN.out.txt        // channel: [ val(meta), path(txt) ]
+    blastn_hits = BLAST_BLASTN.out.txt       // channel: [ val(meta), path(txt) ]
     versions    = ch_versions                // channel: [ versions.yml ]
 }
