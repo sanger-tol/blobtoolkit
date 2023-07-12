@@ -11,8 +11,8 @@ process BLOBTOOLKIT_UNCHUNK {
     tuple val(meta), path(blast_table)
 
     output:
-    tuple val(meta), path("*.blastx.out"), emit: blastx
-    path "versions.yml"                  , emit: versions
+    tuple val(meta), path("*.blast.out"), emit: blast_out
+    path "versions.yml"                 , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -23,7 +23,7 @@ process BLOBTOOLKIT_UNCHUNK {
     """
     btk pipeline unchunk-blast \\
         --in ${blast_table} \\
-        --out ${prefix}.blastx.out \\
+        --out ${prefix}.blast.out \\
         $args
 
     cat <<-END_VERSIONS > versions.yml
