@@ -21,10 +21,11 @@ process BLOBTOOLKIT_CHUNK {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def busco = busco_table ? "--busco ${busco_table}" : "--busco None"
     """
     btk pipeline chunk-fasta \\
         --in ${fasta} \\
-        --busco ${busco_table} \\
+        ${busco} \\
         --out ${prefix}.chunks.fasta \\
         $args
 
