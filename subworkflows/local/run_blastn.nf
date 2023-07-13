@@ -56,6 +56,6 @@ workflow RUN_BLASTN {
 
 
     emit:
-    blastn_out = BLOBTOOLKIT_UNCHUNK.out.blast_out  // channel: [ val(meta), path(blastm_out) ]
+    blastn_out = BLOBTOOLKIT_UNCHUNK.out.blast_out  // channel: [ val(meta), path(blastn_out) ]
     versions   = ch_versions                        // channel: [ versions.yml ]
 }

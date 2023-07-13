@@ -154,7 +154,15 @@ workflow BLOBTOOLKIT {
         ch_config   = ch_yaml
     }
 
-    BLOBTOOLS ( ch_config, COLLATE_STATS.out.window_tsv, BUSCO_DIAMOND.out.first_table, BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]), RUN_BLASTX.out.blastx_out.ifEmpty([[],[]]), ch_taxdump )
+    BLOBTOOLS ( 
+        ch_config,
+        COLLATE_STATS.out.window_tsv,
+        BUSCO_DIAMOND.out.first_table,
+        BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]),
+        RUN_BLASTX.out.blastx_out.ifEmpty([[],[]]),
+        RUN_BLASTN.out.blastn_out.ifEmpty([[],[]]),
+        ch_taxdump
+    )
     ch_versions = ch_versions.mix ( BLOBTOOLS.out.versions )
     
     //
