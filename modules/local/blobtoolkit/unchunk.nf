@@ -11,19 +11,19 @@ process BLOBTOOLKIT_UNCHUNK {
     tuple val(meta), path(blast_table)
 
     output:
-    tuple val(meta), path("*.blast.out"), emit: blast_out
-    path "versions.yml"                 , emit: versions
+    tuple val(meta), path("*.out"), emit: blast_out
+    path "versions.yml"           , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "${blast_table}"
     """
     btk pipeline unchunk-blast \\
         --in ${blast_table} \\
-        --out ${prefix}.blast.out \\
+        --out ${prefix}.out \\
         $args
 
     cat <<-END_VERSIONS > versions.yml
