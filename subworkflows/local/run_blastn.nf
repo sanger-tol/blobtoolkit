@@ -8,6 +8,7 @@ include { SEQTK_SUBSEQ        } from '../../modules/nf-core/seqtk/subseq/main'
 include { GUNZIP              } from '../../modules/nf-core/gunzip/main'
 include { BLOBTOOLKIT_CHUNK   } from '../../modules/local/blobtoolkit/chunk'
 include { BLAST_BLASTN        } from '../../modules/nf-core/blast/blastn/main'
+include { BLOBTOOLKIT_UNCHUNK } from '../../modules/local/blobtoolkit/unchunk'
 
 
 workflow RUN_BLASTN {
@@ -49,9 +50,12 @@ workflow RUN_BLASTN {
     ch_versions = ch_versions.mix ( BLAST_BLASTN.out.versions.first() )
 
 
+    // Unchunk chunked blastn results
+    BLOBTOOLKIT_UNCHUNK ( BLAST_BLASTN.out.txt )
+    ch_versions = ch_versions.mix ( BLOBTOOLKIT_UNCHUNK.out.versions.first() )
+
+
     emit:
-    nohits      = NOHIT_LIST.out.nohitlist   // channel: [ val(meta), path(nohit) ]
-    subseq      = SEQTK_SUBSEQ.out.sequences // channel: path(seq)
-    blastn_hits = BLAST_BLASTN.out.txt       // channel: [ val(meta), path(txt) ]
-    versions    = ch_versions                // channel: [ versions.yml ]
+    blastn_out = BLOBTOOLKIT_UNCHUNK.out.blast_out  // channel: [ val(meta), path(blastm_out) ]
+    versions   = ch_versions                        // channel: [ versions.yml ]
 }
