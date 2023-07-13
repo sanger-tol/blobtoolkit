@@ -122,6 +122,10 @@ workflow BLOBTOOLKIT {
     BUSCO_DIAMOND ( ch_genome, ch_taxon_taxa, ch_busco_db, ch_blastp, params.blastp_outext, params.blastp_cols )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
     
+
+    //
+    // SUBWORKFLOW: Run Diamond blastx to search protein database with assembly query
+    //
     RUN_BLASTX ( 
         ch_genome,
         BUSCO_DIAMOND.out.first_table,
