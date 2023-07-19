@@ -138,7 +138,7 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Run blastn search on sequences that had no blastx hits
     //
-    RUN_BLASTN ( RUN_BLASTX.out.blastx_out, ch_genome, ch_blastn )
+    RUN_BLASTN ( RUN_BLASTX.out.blastx_out, ch_genome, ch_blastn, BUSCO_DIAMOND.out.taxon_id )
     
 
     //
