@@ -7,7 +7,7 @@ include { NOHIT_LIST          } from '../../modules/local/nohit_list'
 include { SEQTK_SUBSEQ        } from '../../modules/nf-core/seqtk/subseq/main'
 include { GUNZIP              } from '../../modules/nf-core/gunzip/main'
 include { BLOBTOOLKIT_CHUNK   } from '../../modules/local/blobtoolkit/chunk'
-include { BLAST_BLASTN        } from '../../modules/nf-core/blast/blastn/main'
+include { BLASTN              } from '../../modules/local/blastn'
 include { BLOBTOOLKIT_UNCHUNK } from '../../modules/local/blobtoolkit/unchunk'
 
 
@@ -16,6 +16,7 @@ workflow RUN_BLASTN {
     blast_table  // channel: [ val(meta), path(blast_table) ] 
     fasta        // channel: [ val(meta), path(fasta) ]
     blastn       // channel: path(blastn_db)
+    taxon_id     // channel: val(taxon_id)
 
 
     main:
@@ -46,12 +47,12 @@ workflow RUN_BLASTN {
 
     // Run blastn search
     // channel to query fasta: [ val(meta), path(uncompressed_fasta) ] 
-    BLAST_BLASTN ( BLOBTOOLKIT_CHUNK.out.chunks, blastn )
-    ch_versions = ch_versions.mix ( BLAST_BLASTN.out.versions.first() )
+    BLASTN ( BLOBTOOLKIT_CHUNK.out.chunks, blastn, taxon_id )
+    ch_versions = ch_versions.mix ( BLASTN.out.versions.first() )
 
 
     // Unchunk chunked blastn results
-    BLOBTOOLKIT_UNCHUNK ( BLAST_BLASTN.out.txt )
+    BLOBTOOLKIT_UNCHUNK ( BLASTN.out.txt )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_UNCHUNK.out.versions.first() )
 
 
