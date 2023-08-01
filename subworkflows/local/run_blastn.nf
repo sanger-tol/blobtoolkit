@@ -3,12 +3,13 @@
 //
 
 
-include { NOHIT_LIST          } from '../../modules/local/nohit_list'
-include { SEQTK_SUBSEQ        } from '../../modules/nf-core/seqtk/subseq/main'
-include { GUNZIP              } from '../../modules/nf-core/gunzip/main'
-include { BLOBTOOLKIT_CHUNK   } from '../../modules/local/blobtoolkit/chunk'
-include { BLASTN              } from '../../modules/local/blastn'
-include { BLOBTOOLKIT_UNCHUNK } from '../../modules/local/blobtoolkit/unchunk'
+include { NOHIT_LIST             } from '../../modules/local/nohit_list'
+include { SEQTK_SUBSEQ           } from '../../modules/nf-core/seqtk/subseq/main'
+include { GUNZIP                 } from '../../modules/nf-core/gunzip/main'
+include { BLOBTOOLKIT_CHUNK      } from '../../modules/local/blobtoolkit/chunk'
+include { BLASTN as BLASTN_TAXON } from '../../modules/local/blastn'
+include { BLASTN                 } from '../../modules/local/blastn'
+include { BLOBTOOLKIT_UNCHUNK    } from '../../modules/local/blobtoolkit/unchunk'
 
 
 workflow RUN_BLASTN {
@@ -46,13 +47,26 @@ workflow RUN_BLASTN {
 
 
     // Run blastn search
-    // channel to query fasta: [ val(meta), path(uncompressed_fasta) ] 
-    BLASTN ( BLOBTOOLKIT_CHUNK.out.chunks, blastn, taxon_id )
+    // run blastn excluding taxon_id
+    BLASTN_TAXON ( BLOBTOOLKIT_CHUNK.out.chunks, blastn, taxon_id )
+    // check if blastn output table is empty
+    BLASTN_TAXON.out.txt
+    | map { meta, txt -> txt.isEmpty() }
+    | set { is_txt_empty }
+    // repeat the blastn search without excluding taxon_id
+    if ( is_txt_empty ) {
+    BLASTN ( BLOBTOOLKIT_CHUNK.out.chunks, blastn, [] )
+    ch_blastn_txt = BLASTN.out.txt
+    }
+    else {
+    ch_blastn_txt = BLASTN_TAXON.out.txt
+    }
+
     ch_versions = ch_versions.mix ( BLASTN.out.versions.first() )
 
 
     // Unchunk chunked blastn results
-    BLOBTOOLKIT_UNCHUNK ( BLASTN.out.txt )
+    BLOBTOOLKIT_UNCHUNK ( ch_blastn_txt )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_UNCHUNK.out.versions.first() )
 
 
