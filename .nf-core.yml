@@ -17,3 +17,4 @@ lint:
     - report_comment
   actions_ci: false
   template_strings: false
+  merge_markers: false 
