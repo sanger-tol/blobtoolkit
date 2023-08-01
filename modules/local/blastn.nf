@@ -13,7 +13,7 @@ process BLASTN {
     val   taxid
 
     output:
-    tuple val(meta), path('*.blastn.txt'), emit: txt
+    tuple val(meta), file('*.blastn.txt'), emit: txt
     path "versions.yml"                  , emit: versions
 
     when:
@@ -22,32 +22,16 @@ process BLASTN {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def output = "${prefix}.blastn.txt"
-    def log = "${prefix}.blastn.log"
+    def exclude_taxon = taxid ? "-negative_taxids ${taxid}" : ''
     """
     DB=`find -L ./ -name "*.ndb" | sed 's/\\.ndb\$//'`
-    if [ -s $fasta ]; then \\
-        blastn \\
-            -num_threads $task.cpus \\
-            -db \$DB \\
-            -query $fasta \\
-            -negative_taxids $taxid \\
-            $args \\
-            > $output 2> $log || \\
-            sleep 30; \\
-            if [ -s $log ]; then \\
-                echo "Restarting blastn without taxid filter" >> $log; \\
-                > $output; \\
-                blastn \\
-                    -num_threads $task.cpus \\
-                    -db \$DB \\
-                    -query $fasta \\
-                    $args \\
-                    > $output 2>> $log; \\
-            fi \\
-            else \\
-            > $output; \\
-    fi
+    blastn \\
+        -num_threads $task.cpus \\
+        -db \$DB \\
+        -query $fasta \\
+        $exclude_taxon \\
+        $args \\
+        -out ${prefix}.blastn.txt
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         blast: \$(blastn -version 2>&1 | sed 's/^.*blastn: //; s/ .*\$//')
