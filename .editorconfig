@@ -31,3 +31,12 @@ insert_final_newline = unset
 trim_trailing_whitespace = unset
 indent_style = unset
 indent_size = unset
+
+# To prevent errors for these test blastn databases
+[/assets/test*/nt_mMelMel3.1/*.{ndb,nhr,nin,nog,nos,not,nsq,ntf,nto}]
+charset = unset
+end_of_line = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+indent_style = unset
+indent_size = unset
