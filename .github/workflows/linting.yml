@@ -5,7 +5,7 @@ name: nf-core linting
 on:
   push:
     paths-ignore:
-      - 'assets/test/nt_mMelMel3.1/**'
+      - './assets/test/nt_mMelMel3.1/**'
     branches:
       - dev
   pull_request:
