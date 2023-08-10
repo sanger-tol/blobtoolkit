@@ -4,6 +4,8 @@ name: nf-core linting
 # that the code meets the nf-core guidelines.
 on:
   push:
+    paths-ignore:
+      - 'assets/test/nt_mMelMel3.1/**'
     branches:
       - dev
   pull_request:
