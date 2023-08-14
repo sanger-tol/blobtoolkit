@@ -42,11 +42,12 @@ jobs:
 
       - name: Download the BUSCO lineage database
         run: |
-          curl -L https://tolit.cog.sanger.ac.uk/test-data/resources/busco_2021_06_reduced.tar.gz | tar -xzf -
+          mkdir busco_database
+          curl -L https://tolit.cog.sanger.ac.uk/test-data/resources/busco/blobtoolkit.GCA_922984935.2.2023-08-03.lineages.tar.gz | tar -C busco_database -xzf -
 
       - name: Run pipeline with test data
         # You can customise CI pipeline run tests as required
         # For example: adding multiple test runs with different parameters
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --taxdump $PWD/ncbi_taxdump --busco $PWD/busco_2021_06_reduced --outdir ./results
+          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --taxdump $PWD/ncbi_taxdump --busco $PWD/busco_database --outdir ./results
