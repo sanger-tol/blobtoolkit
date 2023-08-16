@@ -1,4 +1,4 @@
-name: nf-core Sanger LSF full size tests
+name: sanger-tol LSF full size tests
 
 on:
   workflow_dispatch:
