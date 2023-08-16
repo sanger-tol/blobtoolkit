@@ -1,4 +1,4 @@
-name: nf-core Sanger LSF tests
+name: sanger-tol LSF tests
 
 on:
   workflow_dispatch:
