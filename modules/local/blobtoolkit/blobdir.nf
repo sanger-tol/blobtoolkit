@@ -11,8 +11,7 @@ process BLOBTOOLKIT_BLOBDIR {
     tuple val(meta), path(window, stageAs: 'windowstats/*')
     tuple val(meta1), path(busco)
     tuple val(meta2), path(blastp)
-    tuple val(meta3), path(blastx)
-    tuple val(meta4), path(yaml)
+    tuple val(meta3), path(yaml)
     path(taxdump)
 
     output:
@@ -25,17 +24,15 @@ process BLOBTOOLKIT_BLOBDIR {
     script:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"
-    def hits_blastp = blastp ? "--hits ${blastp}" : ""
-    def hits_blastx = blastx ? "--hits ${blastx}" : ""
+    def hits = blastp ? "--hits ${blastp}" : ""
     """
     blobtools replace \\
         --bedtsvdir windowstats \\
         --meta ${yaml} \\
         --taxdump ${taxdump} \\
-        --taxrule bestdistorder=buscoregions \\
+        --taxrule buscogenes \\
         --busco ${busco} \\
-        ${hits_blastp} \\
-        ${hits_blastx} \\
+        ${hits} \\
         --threads ${task.cpus} \\
         $args \\
         ${prefix}
