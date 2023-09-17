@@ -1,36 +1,86 @@
-// TODO nf-core: If in doubt look at other nf-core/subworkflows to see how we are doing things! :)
-//               https://github.com/nf-core/modules/tree/master/subworkflows
-//               You can also ask for help via your pull request or on the #subworkflows channel on the nf-core Slack workspace:
-//               https://nf-co.re/join
-// TODO nf-core: A subworkflow SHOULD import at least two modules
+// 
+// Optional alignment subworkflow using Minimap2
+//
 
-include { SAMTOOLS_SORT      } from '../../../modules/nf-core/samtools/sort/main'
-include { SAMTOOLS_INDEX     } from '../../../modules/nf-core/samtools/index/main'
+include { SAMTOOLS_FASTA                  } from '../../../modules/nf-core/samtools/fasta/main'
+include { MINIMAP2_ALIGN as MINIMAP2_HIC  } from '../../../modules/nf-core/minimap2/align/main'
+include { MINIMAP2_ALIGN as MINIMAP2_ILMN } from '../../../modules/nf-core/minimap2/align/main'
+include { MINIMAP2_ALIGN as MINIMAP2_CCS  } from '../../../modules/nf-core/minimap2/align/main'
+include { MINIMAP2_ALIGN as MINIMAP2_CLR  } from '../../../modules/nf-core/minimap2/align/main'
+include { MINIMAP2_ALIGN as MINIMAP2_ONT  } from '../../../modules/nf-core/minimap2/align/main'
+include { SAMTOOLS_SORT                   } from '../../../modules/nf-core/samtools/sort/main'
+include { SAMTOOLS_INDEX                  } from '../../../modules/nf-core/samtools/index/main'
 
-workflow  {
 
+workflow MINIMAP2_ALIGNMENT {
     take:
-    // TODO nf-core: edit input (take) channels
-    ch_bam // channel: [ val(meta), [ bam ] ]
+    input      // channel: [ val(meta), path(datafile) ]
+    fasta      // channel: [ val(meta), path(fasta) ]
+
 
     main:
-
     ch_versions = Channel.empty()
 
-    // TODO nf-core: substitute modules here for the modules of your subworkflow
 
-    SAMTOOLS_SORT ( ch_bam )
-    ch_versions = ch_versions.mix(SAMTOOLS_SORT.out.versions.first())
+    // Convert reads to FASTA
+    SAMTOOLS_FASTA ( input, true )
+    ch_versions = ch_versions.mix(SAMTOOLS_FASTA.out.versions.first())
 
-    SAMTOOLS_INDEX ( SAMTOOLS_SORT.out.bam )
+
+    // Branch input by sequencing type
+    SAMTOOLS_FASTA.out.interleaved
+    | branch {
+        meta, reads ->
+            hic: meta.datatype == "hic"
+            illumina : meta.datatype == "illumina"
+            pacbio : meta.datatype == "pacbio"
+            clr : meta.datatype == "pacbio_clr"
+            ont : meta.datatype == "ont"
+    }
+    | set { ch_input }
+
+
+    // Align with Minimap2
+    fasta
+    | map { meta, genome -> genome }
+    | set { ch_ref }
+
+    MINIMAP2_HIC ( ch_input.hic, ch_ref, true, false, false )
+    ch_versions = ch_versions.mix(MINIMAP2_HIC.out.versions.first())
+    
+    MINIMAP2_ILMN ( ch_input.illumina, ch_ref, true, false, false )
+    ch_versions = ch_versions.mix(MINIMAP2_ILMN.out.versions.first())
+
+    MINIMAP2_CCS ( ch_input.pacbio, ch_ref, true, false, false )
+    ch_versions = ch_versions.mix(MINIMAP2_CCS.out.versions.first())
+
+    MINIMAP2_CLR ( ch_input.clr, ch_ref, true, false, false )
+    ch_versions = ch_versions.mix(MINIMAP2_CLR.out.versions.first())
+
+    MINIMAP2_ONT ( ch_input.ont, ch_ref, true, false, false )
+    ch_versions = ch_versions.mix(MINIMAP2_ONT.out.versions.first())
+
+
+    // Index aligned reads
+    Channel.empty()
+    | mix ( MINIMAP2_HIC.out.bam )
+    | mix ( MINIMAP2_ILMN.out.bam )
+    | mix ( MINIMAP2_CCS.out.bam )
+    | mix ( MINIMAP2_CLR.out.bam )
+    | mix ( MINIMAP2_ONT.out.bam )
+    | set { ch_aligned }
+
+    SAMTOOLS_INDEX ( ch_aligned )
     ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions.first())
 
+
+    // Combine aligned reads and indices
+    ch_aligned
+    | join ( SAMTOOLS_INDEX.out.csi )
+    | set { bam_csi }
+
+
     emit:
-    // TODO nf-core: edit emitted channels
-    bam      = SAMTOOLS_SORT.out.bam           // channel: [ val(meta), [ bam ] ]
-    bai      = SAMTOOLS_INDEX.out.bai          // channel: [ val(meta), [ bai ] ]
-    csi      = SAMTOOLS_INDEX.out.csi          // channel: [ val(meta), [ csi ] ]
-
-    versions = ch_versions                     // channel: [ versions.yml ]
+    bam_csi                      // channel: [ val(meta), bam, csi ]
+    versions = ch_versions       // channel: [ versions.yml ]
 }
-

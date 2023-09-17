@@ -10,25 +10,37 @@ include { CREATE_BED    } from '../../modules/local/create_bed'
 
 workflow COVERAGE_STATS {
     take: 
-    cram    // channel: [ val(meta), path(cram) ] 
-    fasta   // channel: [ val(meta), path(fasta) ]
+    input    // channel: [ val(meta), path(aligned) or path(aligned), path(index) ] 
+    fasta    // channel: [ val(meta), path(fasta) ]
 
 
     main:
     ch_versions = Channel.empty()
 
 
-    // Convert from CRAM to BAM
-    cram
-    | map { meta, cram -> [ meta, cram, [] ] }
-    | set { ch_cram_crai}
+    // Create aligned BAM and index CSI channel
+    if (params.align) {
 
-    fasta
-    | map { meta, fasta -> fasta }
-    | set { ch_fasta }
+        ch_bam_csi = input
 
-    SAMTOOLS_VIEW ( ch_cram_crai, ch_fasta, [] )
-    ch_versions = ch_versions.mix ( SAMTOOLS_VIEW.out.versions.first() ) 
+    } else {
+
+        input
+        | map { meta, cram -> [ meta, cram, [] ] }
+        | set { ch_cram_crai}
+
+        fasta
+        | map { meta, fasta -> fasta }
+        | set { ch_fasta }
+
+        SAMTOOLS_VIEW ( ch_cram_crai, ch_fasta, [] )
+        ch_versions = ch_versions.mix ( SAMTOOLS_VIEW.out.versions.first() )
+
+        SAMTOOLS_VIEW.out.bam
+        | join ( SAMTOOLS_VIEW.out.csi )
+        | set { ch_bam_csi }
+
+    }
 
 
     // Calculate genome statistics
@@ -42,8 +54,7 @@ workflow COVERAGE_STATS {
 
     
     // Calculate coverage
-    SAMTOOLS_VIEW.out.bam
-    | join ( SAMTOOLS_VIEW.out.csi )
+    ch_bam_csi
     | combine ( CREATE_BED.out.bed )
     | map { meta, bam, csi, meta2, bed -> [ meta, bam, csi, bed ] }
     | set { ch_bam_csi_bed }

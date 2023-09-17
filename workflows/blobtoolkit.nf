@@ -50,12 +50,13 @@ include { BLOBTOOLKIT_CONFIG } from '../modules/local/blobtoolkit/config'
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK    } from '../subworkflows/local/input_check'
-include { COVERAGE_STATS } from '../subworkflows/local/coverage_stats'
-include { BUSCO_DIAMOND  } from '../subworkflows/local/busco_diamond_blastp'
-include { COLLATE_STATS  } from '../subworkflows/local/collate_stats'
-include { BLOBTOOLS      } from '../subworkflows/local/blobtools'
-include { VIEW           } from '../subworkflows/local/view'
+include { MINIMAP2_ALIGNMENT } from '../subworkflows/local/minimap_alignment'
+include { INPUT_CHECK        } from '../subworkflows/local/input_check'
+include { COVERAGE_STATS     } from '../subworkflows/local/coverage_stats'
+include { BUSCO_DIAMOND      } from '../subworkflows/local/busco_diamond_blastp'
+include { COLLATE_STATS      } from '../subworkflows/local/collate_stats'
+include { BLOBTOOLS          } from '../subworkflows/local/blobtools'
+include { VIEW               } from '../subworkflows/local/view'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -99,10 +100,21 @@ workflow BLOBTOOLKIT {
     INPUT_CHECK ( ch_input )
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
 
+    // 
+    // SUBWORKFLOW: Optional read alignment
+    //
+    if ( params.align ) {
+        MINIMAP2_ALIGNMENT ( INPUT_CHECK.out.aln, ch_genome )
+        ch_versions = ch_versions.mix ( MINIMAP2_ALIGNMENT.out.versions )
+        ch_aligned = MINIMAP2_ALIGNMENT.out.bam
+    } else {
+        ch_aligned = INPUT_CHECK.out.aln
+    }
+
     //
     // SUBWORKFLOW: Calculate genome coverage and statistics 
     //
-    COVERAGE_STATS ( INPUT_CHECK.out.aln, ch_genome )
+    COVERAGE_STATS ( ch_aligned, ch_genome )
     ch_versions = ch_versions.mix ( COVERAGE_STATS.out.versions )
 
     //
@@ -115,13 +127,26 @@ workflow BLOBTOOLKIT {
         ch_taxon_taxa = ch_fasta.combine(ch_taxon).map { meta, fasta, taxon -> [ meta, taxon, [] ] }
     }
 
-    BUSCO_DIAMOND ( ch_genome, ch_taxon_taxa, ch_busco_db, ch_uniprot, params.blastp_outext, params.blastp_cols )
+    BUSCO_DIAMOND ( 
+        ch_genome, 
+        ch_taxon_taxa, 
+        ch_busco_db, 
+        ch_uniprot, 
+        params.blastp_outext, 
+        params.blastp_cols 
+    )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
 
     //
     // SUBWORKFLOW: Collate genome statistics by various window sizes
     //
-    COLLATE_STATS ( BUSCO_DIAMOND.out.full_table, COVERAGE_STATS.out.bed, COVERAGE_STATS.out.freq, COVERAGE_STATS.out.mononuc, COVERAGE_STATS.out.cov )
+    COLLATE_STATS ( 
+        BUSCO_DIAMOND.out.full_table, 
+        COVERAGE_STATS.out.bed, 
+        COVERAGE_STATS.out.freq, 
+        COVERAGE_STATS.out.mononuc, 
+        COVERAGE_STATS.out.cov 
+    )
     ch_versions = ch_versions.mix ( COLLATE_STATS.out.versions )
 
     //
@@ -135,7 +160,13 @@ workflow BLOBTOOLKIT {
         ch_config   = ch_yaml
     }
 
-    BLOBTOOLS ( ch_config, COLLATE_STATS.out.window_tsv, BUSCO_DIAMOND.out.first_table, BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]), ch_taxdump )
+    BLOBTOOLS ( 
+        ch_config, 
+        COLLATE_STATS.out.window_tsv, 
+        BUSCO_DIAMOND.out.first_table, 
+        BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]), 
+        ch_taxdump 
+    )
     ch_versions = ch_versions.mix ( BLOBTOOLS.out.versions )
     
     //
