@@ -1,4 +1,4 @@
-process BLOBTOOLKIT_BLOBDIR {
+process BLOBTOOLKIT_CREATEBLOBDIR {
     tag "$meta.id"
     label 'process_medium'
 
