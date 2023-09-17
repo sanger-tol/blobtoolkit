@@ -29,11 +29,7 @@ workflow COVERAGE_STATS {
         | map { meta, cram -> [ meta, cram, [] ] }
         | set { ch_cram_crai}
 
-        fasta
-        | map { meta, fasta -> fasta }
-        | set { ch_fasta }
-
-        SAMTOOLS_VIEW ( ch_cram_crai, ch_fasta, [] )
+        SAMTOOLS_VIEW ( ch_cram_crai, fasta, [] )
         ch_versions = ch_versions.mix ( SAMTOOLS_VIEW.out.versions.first() )
 
         SAMTOOLS_VIEW.out.bam

@@ -2,14 +2,13 @@
 // Optional alignment subworkflow using Minimap2
 //
 
-include { SAMTOOLS_FASTA                  } from '../../../modules/nf-core/samtools/fasta/main'
-include { MINIMAP2_ALIGN as MINIMAP2_HIC  } from '../../../modules/nf-core/minimap2/align/main'
-include { MINIMAP2_ALIGN as MINIMAP2_ILMN } from '../../../modules/nf-core/minimap2/align/main'
-include { MINIMAP2_ALIGN as MINIMAP2_CCS  } from '../../../modules/nf-core/minimap2/align/main'
-include { MINIMAP2_ALIGN as MINIMAP2_CLR  } from '../../../modules/nf-core/minimap2/align/main'
-include { MINIMAP2_ALIGN as MINIMAP2_ONT  } from '../../../modules/nf-core/minimap2/align/main'
-include { SAMTOOLS_SORT                   } from '../../../modules/nf-core/samtools/sort/main'
-include { SAMTOOLS_INDEX                  } from '../../../modules/nf-core/samtools/index/main'
+include { SAMTOOLS_FASTA                  } from '../../modules/nf-core/samtools/fasta/main'
+include { MINIMAP2_ALIGN as MINIMAP2_HIC  } from '../../modules/nf-core/minimap2/align/main'
+include { MINIMAP2_ALIGN as MINIMAP2_ILMN } from '../../modules/nf-core/minimap2/align/main'
+include { MINIMAP2_ALIGN as MINIMAP2_CCS  } from '../../modules/nf-core/minimap2/align/main'
+include { MINIMAP2_ALIGN as MINIMAP2_CLR  } from '../../modules/nf-core/minimap2/align/main'
+include { MINIMAP2_ALIGN as MINIMAP2_ONT  } from '../../modules/nf-core/minimap2/align/main'
+include { SAMTOOLS_INDEX                  } from '../../modules/nf-core/samtools/index/main'
 
 
 workflow MINIMAP2_ALIGNMENT {
