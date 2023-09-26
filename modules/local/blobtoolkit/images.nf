@@ -5,7 +5,7 @@ process BLOBTOOLKIT_IMAGES {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         exit 1, "BLOBTOOLKIT_IMAGES module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
-    container "genomehubs/blobtk:0.3.3"
+    container "docker.io/genomehubs/blobtk:0.3.3"
 
     input:
     tuple val(meta), path(blobdir)
