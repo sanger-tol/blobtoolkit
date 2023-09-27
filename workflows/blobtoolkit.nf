@@ -106,7 +106,7 @@ workflow BLOBTOOLKIT {
     if ( params.align ) {
         MINIMAP2_ALIGNMENT ( INPUT_CHECK.out.aln, ch_genome )
         ch_versions = ch_versions.mix ( MINIMAP2_ALIGNMENT.out.versions )
-        ch_aligned = MINIMAP2_ALIGNMENT.out.bam_csi
+        ch_aligned = MINIMAP2_ALIGNMENT.out.aln
     } else {
         ch_aligned = INPUT_CHECK.out.aln
     }

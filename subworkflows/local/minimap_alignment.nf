@@ -8,7 +8,6 @@ include { MINIMAP2_ALIGN as MINIMAP2_ILMN } from '../../modules/nf-core/minimap2
 include { MINIMAP2_ALIGN as MINIMAP2_CCS  } from '../../modules/nf-core/minimap2/align/main'
 include { MINIMAP2_ALIGN as MINIMAP2_CLR  } from '../../modules/nf-core/minimap2/align/main'
 include { MINIMAP2_ALIGN as MINIMAP2_ONT  } from '../../modules/nf-core/minimap2/align/main'
-include { SAMTOOLS_INDEX                  } from '../../modules/nf-core/samtools/index/main'
 
 
 workflow MINIMAP2_ALIGNMENT {
@@ -60,7 +59,7 @@ workflow MINIMAP2_ALIGNMENT {
     ch_versions = ch_versions.mix(MINIMAP2_ONT.out.versions.first())
 
 
-    // Index aligned reads
+    // Combine aligned reads
     Channel.empty()
     | mix ( MINIMAP2_HIC.out.bam )
     | mix ( MINIMAP2_ILMN.out.bam )
@@ -69,17 +68,8 @@ workflow MINIMAP2_ALIGNMENT {
     | mix ( MINIMAP2_ONT.out.bam )
     | set { ch_aligned }
 
-    SAMTOOLS_INDEX ( ch_aligned )
-    ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions.first())
-
-
-    // Combine aligned reads and indices
-    ch_aligned
-    | join ( SAMTOOLS_INDEX.out.csi )
-    | set { bam_csi }
-
 
     emit:
-    bam_csi                      // channel: [ val(meta), bam, csi ]
+    aln      = ch_aligned        // channel: [ val(meta), bam ]
     versions = ch_versions       // channel: [ versions.yml ]
 }

@@ -33,6 +33,7 @@ class RowChecker:
         "hic",
         "illumina",
         "pacbio",
+        "pacbio_clr",
         "ont",
     )
 

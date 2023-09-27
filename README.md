@@ -60,7 +60,7 @@ mMelMel1,illumina,GCA_922984935.2.illumina.mMelMel1.cram
 mMelMel3,ont,GCA_922984935.2.ont.mMelMel3.cram
 ```
 
-Each row represents an aligned file. Rows with the same sample identifier are considered technical replicates. The datatype refers to the sequencing technology used to generate the underlying raw data and follows a controlled vocabulary (ont, hic, pacbio, illumina). The aligned read files can be generated using the [sanger-tol/readmapping](https://github.com/sanger-tol/readmapping) pipeline.
+Each row represents an aligned file. Rows with the same sample identifier are considered technical replicates. The datatype refers to the sequencing technology used to generate the underlying raw data and follows a controlled vocabulary (ont, hic, pacbio, pacbio_clr illumina). The aligned read files can be generated using the [sanger-tol/readmapping](https://github.com/sanger-tol/readmapping) pipeline.
 
 Now, you can run the pipeline using:
 
