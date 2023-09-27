@@ -43,7 +43,7 @@ sample3,ont,ont.cram
 | Column     | Description                                                                                                                                                                           |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sample`   | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (\_). |
-| `datatype` | Type of sequencing data. Must be one of `hic`, `illumina`, `pacbio`, `pacbio_clr` or `ont`.                                                                                                        |
+| `datatype` | Type of sequencing data. Must be one of `hic`, `illumina`, `pacbio`, `pacbio_clr` or `ont`.                                                                                           |
 | `datafile` | Full path to read data file.                                                                                                                                                          |
 
 An [example samplesheet](https://raw.githubusercontent.com/sanger-tol/blobtoolkit/main/assets/test/samplesheet.csv) has been provided with the pipeline.

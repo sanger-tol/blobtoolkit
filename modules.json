@@ -8,87 +8,63 @@
                     "busco": {
                         "branch": "master",
                         "git_sha": "6d6552cb582f56b6101c452e16ee7c23073f91de",
-                        "installed_by": [
-                            "modules"
-                        ],
+                        "installed_by": ["modules"],
                         "patch": "modules/nf-core/busco/busco.diff"
                     },
                     "custom/dumpsoftwareversions": {
                         "branch": "master",
                         "git_sha": "05c280924b6c768d484c7c443dad5e605c4ff4b4",
-                        "installed_by": [
-                            "modules"
-                        ]
+                        "installed_by": ["modules"]
                     },
                     "diamond/blastp": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
-                        "installed_by": [
-                            "modules"
-                        ]
+                        "installed_by": ["modules"]
                     },
                     "fastawindows": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
-                        "installed_by": [
-                            "modules"
-                        ]
+                        "installed_by": ["modules"]
                     },
                     "goat/taxonsearch": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
-                        "installed_by": [
-                            "modules"
-                        ]
+                        "installed_by": ["modules"]
                     },
                     "gunzip": {
                         "branch": "master",
                         "git_sha": "e06548bfa36ee31869b81041879dd6b3a83b1d57",
-                        "installed_by": [
-                            "modules"
-                        ]
+                        "installed_by": ["modules"]
                     },
                     "minimap2/align": {
                         "branch": "master",
                         "git_sha": "603ecbd9f45300c9788f197d2a15a005685b4220",
-                        "installed_by": [
-                            "modules"
-                        ]
+                        "installed_by": ["modules"]
                     },
                     "mosdepth": {
                         "branch": "master",
                         "git_sha": "ebb27711cd5f4de921244bfa81c676504072d31c",
-                        "installed_by": [
-                            "modules"
-                        ]
+                        "installed_by": ["modules"]
                     },
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "a6e11ac655e744f7ebc724be669dd568ffdc0e80",
-                        "installed_by": [
-                            "modules"
-                        ]
+                        "installed_by": ["modules"]
                     },
                     "samtools/fasta": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
-                        "installed_by": [
-                            "modules"
-                        ]
+                        "installed_by": ["modules"]
                     },
                     "samtools/index": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
-                        "installed_by": [
-                            "modules"
-                        ]
+                        "installed_by": ["modules"]
                     },
                     "samtools/view": {
                         "branch": "master",
                         "git_sha": "3ffae3598260a99e8db3207dead9f73f87f90d1f",
-                        "installed_by": [
-                            "modules"
-                        ]
+                        "installed_by": ["modules"]
                     }
                 }
             },
