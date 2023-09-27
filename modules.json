@@ -65,6 +65,16 @@
                         "branch": "master",
                         "git_sha": "3ffae3598260a99e8db3207dead9f73f87f90d1f",
                         "installed_by": ["modules"]
+                    },
+                    "windowmasker/mkcounts": {
+                        "branch": "master",
+                        "git_sha": "30c3ed32e8bd5ddaf349ba2f4f99d38182fdc08c",
+                        "installed_by": ["modules"]
+                    },
+                    "windowmasker/ustat": {
+                        "branch": "master",
+                        "git_sha": "726ee59cd9360a965d96ea9ea8770f16b8ddd6cc",
+                        "installed_by": ["modules"]
                     }
                 }
             },

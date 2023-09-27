@@ -16,7 +16,7 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-if (params.fasta && params.accession) { ch_fasta = Channel.of([ [ 'id': params.accession ], params.fasta ]).collect() } else { exit 1, 'Genome fasta file and accession must be specified!' }
+if (params.fasta && params.accession) { ch_fasta = Channel.of([ [ 'id': params.accession ], params.fasta ]).first() } else { exit 1, 'Genome fasta file and accession must be specified!' }
 if (params.taxon) { ch_taxon = Channel.of(params.taxon) } else { exit 1, 'NCBI Taxon ID not specified!' }
 if (params.uniprot) { ch_uniprot = file(params.uniprot) } else { exit 1, 'Diamond BLASTp database not specified!' }
 if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
@@ -50,6 +50,7 @@ include { BLOBTOOLKIT_CONFIG } from '../modules/local/blobtoolkit/config'
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
+include { PREPARE_GENOME     } from '../subworkflows/local/prepare_genome'
 include { MINIMAP2_ALIGNMENT } from '../subworkflows/local/minimap_alignment'
 include { INPUT_CHECK        } from '../subworkflows/local/input_check'
 include { COVERAGE_STATS     } from '../subworkflows/local/coverage_stats'
@@ -67,7 +68,6 @@ include { VIEW               } from '../subworkflows/local/view'
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { GUNZIP                      } from '../modules/nf-core/gunzip/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 
@@ -85,14 +85,10 @@ workflow BLOBTOOLKIT {
     ch_versions = Channel.empty()
 
     //
-    // MODULE: Decompress FASTA file if needed
+    // SUBWORKFLOW: Prepare genome for downstream processing
     //
-    if ( params.fasta.endsWith('.gz') ) {
-        ch_genome   = GUNZIP ( ch_fasta ).gunzip
-        ch_versions = ch_versions.mix ( GUNZIP.out.versions.first() )
-    } else {
-        ch_genome   = ch_fasta
-    }
+    PREPARE_GENOME ( ch_fasta )
+    ch_versions = ch_versions.mix ( PREPARE_GENOME.out.versions )
 
     //
     // SUBWORKFLOW: Check samplesheet and create channels for downstream analysis
@@ -104,7 +100,7 @@ workflow BLOBTOOLKIT {
     // SUBWORKFLOW: Optional read alignment
     //
     if ( params.align ) {
-        MINIMAP2_ALIGNMENT ( INPUT_CHECK.out.aln, ch_genome )
+        MINIMAP2_ALIGNMENT ( INPUT_CHECK.out.aln, PREPARE_GENOME.out.genome )
         ch_versions = ch_versions.mix ( MINIMAP2_ALIGNMENT.out.versions )
         ch_aligned = MINIMAP2_ALIGNMENT.out.aln
     } else {
@@ -114,7 +110,7 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Calculate genome coverage and statistics 
     //
-    COVERAGE_STATS ( ch_aligned, ch_genome )
+    COVERAGE_STATS ( ch_aligned, PREPARE_GENOME.out.genome )
     ch_versions = ch_versions.mix ( COVERAGE_STATS.out.versions )
 
     //
@@ -128,7 +124,7 @@ workflow BLOBTOOLKIT {
     }
 
     BUSCO_DIAMOND ( 
-        ch_genome, 
+        PREPARE_GENOME.out.genome, 
         ch_taxon_taxa, 
         ch_busco_db, 
         ch_uniprot, 
@@ -153,7 +149,7 @@ workflow BLOBTOOLKIT {
     // SUBWORKFLOW: Create BlobTools dataset
     //
     if ( !params.yaml ) {
-        BLOBTOOLKIT_CONFIG ( ch_genome )
+        BLOBTOOLKIT_CONFIG ( PREPARE_GENOME.out.genome )
         ch_config   = BLOBTOOLKIT_CONFIG.out.yaml
         ch_versions = ch_versions.mix ( BLOBTOOLKIT_CONFIG.out.versions.first() )
     } else {
