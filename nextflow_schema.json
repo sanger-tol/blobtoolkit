@@ -24,7 +24,13 @@
                 },
                 "align": {
                     "type": "boolean",
-                    "description": "Boolean to turn on optional alignment before running the rest of the pipeline."
+                    "description": "Turn on optional alignment before running the rest of the pipeline.",
+                    "fa_icon": "fas fa-toggle-off"
+                },
+                "mask": {
+                    "type": "boolean",
+                    "description": "Turn on optional genome masking if needed.",
+                    "fa_icon": "fas fa-toggle-off"
                 },
                 "yaml": {
                     "type": "string",
