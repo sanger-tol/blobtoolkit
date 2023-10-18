@@ -24,12 +24,16 @@ class RowChecker:
 
     """
 
-    VALID_FORMATS = (".cram",)
+    VALID_FORMATS = (
+        ".cram",
+        ".bam",
+    )
 
     VALID_DATATYPES = (
         "hic",
         "illumina",
         "pacbio",
+        "pacbio_clr",
         "ont",
     )
 

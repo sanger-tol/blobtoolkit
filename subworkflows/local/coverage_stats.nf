@@ -2,33 +2,50 @@
 // Calculate genome coverage and statistics
 //
 
-include { SAMTOOLS_VIEW } from '../../modules/nf-core/samtools/view/main'
-include { MOSDEPTH      } from '../../modules/nf-core/mosdepth/main'
-include { FASTAWINDOWS  } from '../../modules/nf-core/fastawindows/main'
-include { CREATE_BED    } from '../../modules/local/create_bed'
+include { SAMTOOLS_VIEW  } from '../../modules/nf-core/samtools/view/main'
+include { SAMTOOLS_INDEX } from '../../modules/nf-core/samtools/index/main'
+include { MOSDEPTH       } from '../../modules/nf-core/mosdepth/main'
+include { FASTAWINDOWS   } from '../../modules/nf-core/fastawindows/main'
+include { CREATE_BED     } from '../../modules/local/create_bed'
 
 
 workflow COVERAGE_STATS {
     take: 
-    cram    // channel: [ val(meta), path(cram) ] 
-    fasta   // channel: [ val(meta), path(fasta) ]
+    input    // channel: [ val(meta), path(aln) ] 
+    fasta    // channel: [ val(meta), path(fasta) ]
 
 
     main:
     ch_versions = Channel.empty()
 
 
-    // Convert from CRAM to BAM
-    cram
-    | map { meta, cram -> [ meta, cram, [] ] }
-    | set { ch_cram_crai}
+    // Create aligned BAM and index CSI channel
+    input
+    | branch { meta, aln ->
+        bam : aln.toString().endsWith("bam") == true
+            return [ meta, aln ]
+        cram : aln.toString().endsWith("cram") == true
+            return [ meta, aln, [] ]
+    }
+    | set { ch_aln_idx}
 
-    fasta
-    | map { meta, fasta -> fasta }
-    | set { ch_fasta }
+    SAMTOOLS_VIEW ( ch_aln_idx.cram, fasta, [] )
+    ch_versions = ch_versions.mix ( SAMTOOLS_VIEW.out.versions.first() )
 
-    SAMTOOLS_VIEW ( ch_cram_crai, ch_fasta, [] )
-    ch_versions = ch_versions.mix ( SAMTOOLS_VIEW.out.versions.first() ) 
+    SAMTOOLS_VIEW.out.bam
+    | join ( SAMTOOLS_VIEW.out.csi )
+    | set { ch_view }
+
+    SAMTOOLS_INDEX ( ch_aln_idx.bam )
+    ch_versions = ch_versions.mix ( SAMTOOLS_INDEX.out.versions.first() )
+
+    ch_aln_idx.bam
+    | join ( SAMTOOLS_INDEX.out.csi )
+    | set { ch_index }
+
+    ch_view
+    | mix ( ch_index )
+    | set { ch_bam_csi }
 
 
     // Calculate genome statistics
@@ -42,8 +59,7 @@ workflow COVERAGE_STATS {
 
     
     // Calculate coverage
-    SAMTOOLS_VIEW.out.bam
-    | join ( SAMTOOLS_VIEW.out.csi )
+    ch_bam_csi
     | combine ( CREATE_BED.out.bed )
     | map { meta, bam, csi, meta2, bed -> [ meta, bam, csi, bed ] }
     | set { ch_bam_csi_bed }

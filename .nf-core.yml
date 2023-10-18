@@ -8,6 +8,7 @@ lint:
   files_unchanged:
     - LICENSE
     - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/workflows/linting.yml
     - assets/sendmail_template.txt
     - lib/NfcoreTemplate.groovy
     - .prettierignore

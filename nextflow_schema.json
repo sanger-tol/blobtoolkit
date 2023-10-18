@@ -22,6 +22,16 @@
                     "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
                     "fa_icon": "fas fa-file-csv"
                 },
+                "align": {
+                    "type": "boolean",
+                    "description": "Turn on optional alignment before running the rest of the pipeline.",
+                    "fa_icon": "fas fa-toggle-off"
+                },
+                "mask": {
+                    "type": "boolean",
+                    "description": "Turn on optional genome masking if needed.",
+                    "fa_icon": "fas fa-toggle-off"
+                },
                 "yaml": {
                     "type": "string",
                     "format": "file-path",
@@ -287,7 +297,7 @@
                 "tracedir": {
                     "type": "string",
                     "description": "Directory to keep pipeline Nextflow logs and reports.",
-                    "default": "${params.outdir}/blobtoolkit_info",
+                    "default": "${params.outdir}/pipeline_info/blobtoolkit",
                     "fa_icon": "fas fa-cogs",
                     "hidden": true
                 },
