@@ -1,23 +1,5 @@
-repository_type: pipeline
-lint:
-  files_exist:
-    - assets/nf-core-blobtoolkit_logo_light.png
-    - docs/images/nf-core-blobtoolkit_logo_light.png
-    - docs/images/nf-core-blobtoolkit_logo_dark.png
-    - .github/ISSUE_TEMPLATE/config.yml
-  files_unchanged:
-    - LICENSE
-    - .github/ISSUE_TEMPLATE/bug_report.yml
-    - .github/workflows/linting.yml
-    - assets/sendmail_template.txt
-    - lib/NfcoreTemplate.groovy
-    - .prettierignore
-    - .github/workflows/linting.yml
-  nextflow_config:
-    - manifest.name
-    - manifest.homePage
-  multiqc_config:
-    - report_comment
-  actions_ci: false
-  template_strings: false
-  merge_markers: false
+template:
+  name: blobtoolkit
+  description: Quality assessment of genome assemblies
+  author: priyanka-surana
+  prefix: sanger-tol
