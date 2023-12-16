@@ -89,7 +89,7 @@
             "type": "object",
             "fa_icon": "fas fa-database",
             "description": "Define the location and parameters to work with databases.",
-            "required": ["uniprot", "taxdump"],
+            "required": ["blastp", "blastx", "taxdump"],
             "properties": {
                 "taxa_file": {
                     "type": "string",
@@ -116,11 +116,30 @@
                     "fa_icon": "fas fa-file-circle-question",
                     "default": "txt"
                 },
-                "uniprot": {
+                "blastx_cols": {
+                    "type": "string",
+                    "description": "When blastx_outext is 'txt', this is the list of columns that Diamond BLAST should print.",
+                    "default": "qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore"
+                },
+                "blastx_outext": {
+                    "type": "string",
+                    "enum": ["blast", "xml", "txt", "daa", "sam", "tsv", "paf"],
+                    "description": "Extension (file format) of the output file from Diamond BLAST.",
+                    "fa_icon": "fas fa-file-circle-question",
+                    "default": "txt"
+                },
+                "blastp": {
                     "type": "string",
                     "format": "file-path",
                     "pattern": "^\\S+\\.dmnd$",
                     "description": "Path to the Diamond species-specific buscogenes database",
+                    "fa_icon": "fas fa-file-archive"
+                },
+                "blastx": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.dmnd$",
+                    "description": "Path to the Diamond species-specific buscoregions database",
                     "fa_icon": "fas fa-file-archive"
                 },
                 "taxdump": {

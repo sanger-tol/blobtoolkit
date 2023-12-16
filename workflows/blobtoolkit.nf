@@ -11,14 +11,15 @@ WorkflowBlobtoolkit.initialise(params, log)
 
 // Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxa_file, params.taxdump, params.busco, params.uniprot ]
+def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxa_file, params.taxdump, params.busco, params.blastp, params.blastx ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.fasta && params.accession) { ch_fasta = Channel.of([ [ 'id': params.accession ], params.fasta ]).first() } else { exit 1, 'Genome fasta file and accession must be specified!' }
 if (params.taxon) { ch_taxon = Channel.of(params.taxon) } else { exit 1, 'NCBI Taxon ID not specified!' }
-if (params.uniprot) { ch_uniprot = file(params.uniprot) } else { exit 1, 'Diamond BLASTp database not specified!' }
+if (params.blastp) { ch_blastp = file(params.blastp) } else { exit 1, 'Diamond BLASTp database not specified!' }
+if (params.blastx) { ch_blastx = file(params.blastx) } else { exit 1, 'Diamond BLASTx database not specified!' }
 if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
 
 // Create channel for optional parameters
@@ -55,6 +56,7 @@ include { MINIMAP2_ALIGNMENT } from '../subworkflows/local/minimap_alignment'
 include { INPUT_CHECK        } from '../subworkflows/local/input_check'
 include { COVERAGE_STATS     } from '../subworkflows/local/coverage_stats'
 include { BUSCO_DIAMOND      } from '../subworkflows/local/busco_diamond_blastp'
+include { RUN_BLASTX         } from '../subworkflows/local/run_blastx'
 include { COLLATE_STATS      } from '../subworkflows/local/collate_stats'
 include { BLOBTOOLS          } from '../subworkflows/local/blobtools'
 include { VIEW               } from '../subworkflows/local/view'
@@ -127,11 +129,22 @@ workflow BLOBTOOLKIT {
         PREPARE_GENOME.out.genome, 
         ch_taxon_taxa, 
         ch_busco_db, 
-        ch_uniprot, 
+        ch_blastp, 
         params.blastp_outext, 
         params.blastp_cols 
     )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
+    
+    //
+    // SUBWORKFLOW: Diamond blastx search of assembly contigs against the UniProt reference proteomes
+    RUN_BLASTX ( 
+        ch_genome,
+        BUSCO_DIAMOND.out.first_table,
+        ch_blastx,
+        params.blastx_outext,
+        params.blastx_cols
+    )
+    ch_versions = ch_versions.mix ( RUN_BLASTX.out.versions )
 
     //
     // SUBWORKFLOW: Collate genome statistics by various window sizes
@@ -161,7 +174,8 @@ workflow BLOBTOOLKIT {
         COLLATE_STATS.out.window_tsv, 
         BUSCO_DIAMOND.out.first_table, 
         BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]), 
-        ch_taxdump 
+        RUN_BLASTX.out.blastx_out.ifEmpty([[],[]]),
+        ch_taxdump
     )
     ch_versions = ch_versions.mix ( BLOBTOOLS.out.versions )
     
