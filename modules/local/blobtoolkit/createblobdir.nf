@@ -24,7 +24,7 @@ process BLOBTOOLKIT_CREATEBLOBDIR {
     script:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"
-    def hits = blastp ? "--hits ${blastp}" : ""
+    def hits_blastp = blastp ? "--hits ${blastp}" : ""
     """
     blobtools replace \\
         --bedtsvdir windowstats \\
@@ -32,7 +32,7 @@ process BLOBTOOLKIT_CREATEBLOBDIR {
         --taxdump ${taxdump} \\
         --taxrule buscogenes \\
         --busco ${busco} \\
-        ${hits} \\
+        ${hits_blastp} \\
         --threads ${task.cpus} \\
         $args \\
         ${prefix}

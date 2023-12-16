@@ -41,6 +41,6 @@ workflow RUN_BLASTX {
 
 
     emit:
-    blastx_out = BLOBTOOLKIT_UNCHUNK.out.blastx  // channel: [ val(meta), path(blastx_out) ]
-    versions   = ch_versions                     // channel: [ versions.yml ]
+    blastx_out = BLOBTOOLKIT_UNCHUNK.out.blast_out  // channel: [ val(meta), path(blastx_out) ]
+    versions   = ch_versions                        // channel: [ versions.yml ]
 }

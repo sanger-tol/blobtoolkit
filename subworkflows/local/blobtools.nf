@@ -12,6 +12,7 @@ workflow BLOBTOOLS {
     busco       // channel: [ val(meta), path(full_table) ]
     blastp      // channel: [ val(meta), path(txt) ]
     blastx      // channel: [ val(meta), path(txt) ]
+    blastn      // channel: [ val(meta), path(txt) ]
     taxdump     // channel: path(taxdump_db)
 
 

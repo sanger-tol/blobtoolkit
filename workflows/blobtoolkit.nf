@@ -20,6 +20,7 @@ if (params.fasta && params.accession) { ch_fasta = Channel.of([ [ 'id': params.a
 if (params.taxon) { ch_taxon = Channel.of(params.taxon) } else { exit 1, 'NCBI Taxon ID not specified!' }
 if (params.blastp) { ch_blastp = file(params.blastp) } else { exit 1, 'Diamond BLASTp database not specified!' }
 if (params.blastx) { ch_blastx = file(params.blastx) } else { exit 1, 'Diamond BLASTx database not specified!' }
+if (params.blastn) { ch_blastn = file(params.blastn) } else { exit 1, 'BLASTn database not specified!' }
 if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
 
 // Create channel for optional parameters
@@ -57,6 +58,7 @@ include { INPUT_CHECK        } from '../subworkflows/local/input_check'
 include { COVERAGE_STATS     } from '../subworkflows/local/coverage_stats'
 include { BUSCO_DIAMOND      } from '../subworkflows/local/busco_diamond_blastp'
 include { RUN_BLASTX         } from '../subworkflows/local/run_blastx'
+include { RUN_BLASTN         } from '../subworkflows/local/run_blastn'
 include { COLLATE_STATS      } from '../subworkflows/local/collate_stats'
 include { BLOBTOOLS          } from '../subworkflows/local/blobtools'
 include { VIEW               } from '../subworkflows/local/view'
@@ -137,6 +139,7 @@ workflow BLOBTOOLKIT {
     
     //
     // SUBWORKFLOW: Diamond blastx search of assembly contigs against the UniProt reference proteomes
+    //
     RUN_BLASTX ( 
         ch_genome,
         BUSCO_DIAMOND.out.first_table,
@@ -145,6 +148,13 @@ workflow BLOBTOOLKIT {
         params.blastx_cols
     )
     ch_versions = ch_versions.mix ( RUN_BLASTX.out.versions )
+
+
+    //
+    // SUBWORKFLOW: Run blastn search on sequences that had no blastx hits
+    //
+    RUN_BLASTN ( RUN_BLASTX.out.blastx_out, ch_genome, ch_blastn, BUSCO_DIAMOND.out.taxon_id )
+    
 
     //
     // SUBWORKFLOW: Collate genome statistics by various window sizes
@@ -170,11 +180,12 @@ workflow BLOBTOOLKIT {
     }
 
     BLOBTOOLS ( 
-        ch_config, 
-        COLLATE_STATS.out.window_tsv, 
-        BUSCO_DIAMOND.out.first_table, 
-        BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]), 
+        ch_config,
+        COLLATE_STATS.out.window_tsv,
+        BUSCO_DIAMOND.out.first_table,
+        BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]),
         RUN_BLASTX.out.blastx_out.ifEmpty([[],[]]),
+        RUN_BLASTN.out.blastn_out.ifEmpty([[],[]]),
         ch_taxdump
     )
     ch_versions = ch_versions.mix ( BLOBTOOLS.out.versions )

@@ -89,7 +89,7 @@
             "type": "object",
             "fa_icon": "fas fa-database",
             "description": "Define the location and parameters to work with databases.",
-            "required": ["blastp", "blastx", "taxdump"],
+            "required": ["blastp", "blastx", "blastn", "taxdump"],
             "properties": {
                 "taxa_file": {
                     "type": "string",
@@ -140,6 +140,12 @@
                     "format": "file-path",
                     "pattern": "^\\S+\\.dmnd$",
                     "description": "Path to the Diamond species-specific buscoregions database",
+                    "fa_icon": "fas fa-file-archive"
+                },
+                "blastn": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to the nucleotide BLAST database",
                     "fa_icon": "fas fa-file-archive"
                 },
                 "taxdump": {
@@ -331,6 +337,14 @@
                     "type": "boolean",
                     "fa_icon": "far fa-eye-slash",
                     "description": "Show all params when using `--help`",
+                    "hidden": true,
+                    "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
+                },
+                "validationShowHiddenParams": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-eye-slash",
+                    "description": "Show all params when using `--help`",
+                    "default": false,
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
                 }

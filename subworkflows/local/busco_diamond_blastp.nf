@@ -27,6 +27,18 @@ workflow BUSCO_DIAMOND {
     //
     GOAT_TAXONSEARCH ( taxon_taxa )
     ch_versions = ch_versions.mix ( GOAT_TAXONSEARCH.out.versions.first() )
+    
+
+    //
+    // Get NCBI species ID
+    //
+    GOAT_TAXONSEARCH.out.taxonsearch
+    | map { meta, csv -> csv.splitCsv(header:true, sep:'\t', strip:true) }
+    | map { row -> [ row.taxon_rank, row.taxon_id ] }
+    | transpose()
+    | filter { rank,id -> rank =~ /species/ }
+    | map { rank, id -> id}
+    | set { ch_taxid }
 
 
     //
@@ -92,6 +104,7 @@ workflow BUSCO_DIAMOND {
     first_table = ch_first_table          // channel: [ val(meta), path(full_table) ] 
     full_table  = BUSCO.out.full_table    // channel: [ val(meta), path(full_tables) ]
     blastp_txt  = DIAMOND_BLASTP.out.txt  // channel: [ val(meta), path(txt) ]
+    taxon_id    = ch_taxid                // channel: taxon_id
     multiqc                               // channel: [ meta, summary ]
     versions    = ch_versions             // channel: [ versions.yml ]
 }
