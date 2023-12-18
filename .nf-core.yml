@@ -8,6 +8,8 @@ lint:
   - .github/workflows/awstest.yml
   - .github/workflows/awsfulltest.yml
   files_unchanged:
+  - LICENCE
+  - lib/NfcoreTemplate.groovy
   - CODE_OF_CONDUCT.md
   - assets/nf-core-blobtoolkit_logo_light.png
   - docs/images/nf-core-blobtoolkit_logo_light.png
@@ -18,6 +20,8 @@ lint:
   nextflow_config:
   - manifest.name
   - manifest.homePage
+  template_strings: False
+  merge_markers: False
 repository_type: pipeline
 template:
   author: priyanka-surana
