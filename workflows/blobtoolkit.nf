@@ -24,9 +24,9 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.fasta && params.accession) { ch_fasta = Channel.of([ [ 'id': params.accession ], params.fasta ]).first() } else { exit 1, 'Genome fasta file and accession must be specified!' }
 if (params.taxon) { ch_taxon = Channel.of(params.taxon) } else { exit 1, 'NCBI Taxon ID not specified!' }
-if (params.blastp) { ch_blastp = file(params.blastp) } else { exit 1, 'Diamond BLASTp database not specified!' }
-if (params.blastx) { ch_blastx = file(params.blastx) } else { exit 1, 'Diamond BLASTx database not specified!' }
-if (params.blastn) { ch_blastn = file(params.blastn) } else { exit 1, 'BLASTn database not specified!' }
+if (params.blastp && params.accession) { ch_blastp = Channel.of([ [ 'id': params.accession ], params.blastp ]).first() } else { exit 1, 'Diamond BLASTp database and accession must be specified!' }
+if (params.blastx && params.accession) { ch_blastx = Channel.of([ [ 'id': params.accession ], params.blastx ]).first() } else { exit 1, 'Diamond BLASTx database and accession must be specified!' }
+if (params.blastn && params.accession) { ch_blastn = Channel.of([ [ 'id': params.accession ], params.blastn ]).first() } else { exit 1, 'BLASTn database not specified!' }
 if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
 
 // Create channel for optional parameters
@@ -147,7 +147,7 @@ workflow BLOBTOOLKIT {
     // SUBWORKFLOW: Diamond blastx search of assembly contigs against the UniProt reference proteomes
     //
     RUN_BLASTX ( 
-        ch_genome,
+        PREPARE_GENOME.out.genome,
         BUSCO_DIAMOND.out.first_table,
         ch_blastx,
         params.blastx_outext,
@@ -159,9 +159,13 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Run blastn search on sequences that had no blastx hits
     //
-    RUN_BLASTN ( RUN_BLASTX.out.blastx_out, ch_genome, ch_blastn, BUSCO_DIAMOND.out.taxon_id )
+    RUN_BLASTN ( 
+        RUN_BLASTX.out.blastx_out, 
+        PREPARE_GENOME.out.genome, 
+        ch_blastn, 
+        BUSCO_DIAMOND.out.taxon_id
+    )
     
-
     //
     // SUBWORKFLOW: Collate genome statistics by various window sizes
     //

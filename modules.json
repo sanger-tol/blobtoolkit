@@ -10,7 +10,8 @@
                         "git_sha": "f0d13ae7e1f9b24a705764f8673af859268d7077",
                         "installed_by": [
                             "modules"
-                        ]
+                        ],
+                        "patch": "modules/nf-core/blast/blastn/blast-blastn.diff"
                     },
                     "busco": {
                         "branch": "master",

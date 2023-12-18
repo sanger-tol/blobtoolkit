@@ -57,7 +57,7 @@ workflow BUSCO_DIAMOND {
     | flatten ()
     | set { ch_lineages }
 
-    BUSCO ( fasta, ch_lineages, busco_db.collect().ifEmpty([]), [] )
+    BUSCO ( fasta, "genome", ch_lineages, busco_db.collect().ifEmpty([]), [] )
     ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
 
 

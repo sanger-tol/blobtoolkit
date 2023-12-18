@@ -2,8 +2,9 @@
 // Create BlobTools dataset
 //
 
-include { BLOBTOOLKIT_METADATA } from '../../modules/local/blobtoolkit/metadata'
-include { BLOBTOOLKIT_BLOBDIR  } from '../../modules/local/blobtoolkit/blobdir'
+include { BLOBTOOLKIT_METADATA      } from '../../modules/local/blobtoolkit/metadata'
+include { BLOBTOOLKIT_CREATEBLOBDIR } from '../../modules/local/blobtoolkit/createblobdir'
+include { BLOBTOOLKIT_UPDATEBLOBDIR } from '../../modules/local/blobtoolkit/updateblobdir'
 
 workflow BLOBTOOLS {
     take:
@@ -37,7 +38,7 @@ workflow BLOBTOOLS {
     //  
     // Update Blobtools dataset files
     //
-    BLOBTOOLKIT_UPDATEBLOBDIR ( BLOBTOOLKIT_CREATEBLOBDIR.out.blobdir, blastx, taxdump )
+    BLOBTOOLKIT_UPDATEBLOBDIR ( BLOBTOOLKIT_CREATEBLOBDIR.out.blobdir, blastx, blastn, taxdump )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_UPDATEBLOBDIR.out.versions.first() )
 
 

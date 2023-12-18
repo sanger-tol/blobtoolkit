@@ -5,11 +5,12 @@ process BLOBTOOLKIT_UPDATEBLOBDIR {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         exit 1, "BLOBTOOLKIT_BLOBDIR module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
-    container "genomehubs/blobtoolkit:4.1.5"
+    container "docker.io/genomehubs/blobtoolkit:4.3.0"
 
     input:
     tuple val(meta), path(input)
-    tuple val(meta1), path(blastx)
+    tuple val(meta1), path(blastx, stageAs: "blastx.txt")
+    tuple val(meta2), path(blastn, stageAs: "blastn.txt")
     path(taxdump)
 
     output:
@@ -23,13 +24,13 @@ process BLOBTOOLKIT_UPDATEBLOBDIR {
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"
     def hits_blastx = blastx ? "--hits ${blastx}" : ""
+    def hits_blastn = blastn ? "--hits ${blastn}" : ""
     """
     blobtools replace \\
         --taxdump ${taxdump} \\
         --taxrule bestdistorder=buscoregions \\
         ${hits_blastx} \\
-        --bedtsvdir windowstats \\
-        --meta ${yaml} \\
+        ${hits_blastn} \\
         --threads ${task.cpus} \\
         $args \\
         ${input}

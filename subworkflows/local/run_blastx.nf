@@ -10,7 +10,7 @@ workflow RUN_BLASTX {
     take:
     fasta      // channel: [ val(meta), path(fasta) ]
     table      // channel: [ val(meta), path(busco_table) ]
-    blastx     // channel: path(blastx_db)
+    blastx     // channel: [ val(meta), path(blastx_db) ]
     outext     // channel: val(out_format)
     cols       // channel: val(column_names)
 

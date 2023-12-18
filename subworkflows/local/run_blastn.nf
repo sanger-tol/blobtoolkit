@@ -3,20 +3,20 @@
 //
 
 
-include { NOHIT_LIST             } from '../../modules/local/nohit_list'
-include { SEQTK_SUBSEQ           } from '../../modules/nf-core/seqtk/subseq/main'
-include { GUNZIP                 } from '../../modules/nf-core/gunzip/main'
-include { BLOBTOOLKIT_CHUNK      } from '../../modules/local/blobtoolkit/chunk'
-include { BLASTN as BLASTN_TAXON } from '../../modules/local/blastn'
-include { BLASTN                 } from '../../modules/local/blastn'
-include { BLOBTOOLKIT_UNCHUNK    } from '../../modules/local/blobtoolkit/unchunk'
+include { NOHIT_LIST                   } from '../../modules/local/nohit_list'
+include { SEQTK_SUBSEQ                 } from '../../modules/nf-core/seqtk/subseq/main'
+include { GUNZIP                       } from '../../modules/nf-core/gunzip/main'
+include { BLOBTOOLKIT_CHUNK            } from '../../modules/local/blobtoolkit/chunk'
+include { BLAST_BLASTN as BLASTN_TAXON } from '../../modules/nf-core/blast/blastn/main'
+include { BLAST_BLASTN                 } from '../../modules/nf-core/blast/blastn/main'
+include { BLOBTOOLKIT_UNCHUNK          } from '../../modules/local/blobtoolkit/unchunk'
 
 
 workflow RUN_BLASTN {
     take: 
     blast_table  // channel: [ val(meta), path(blast_table) ] 
     fasta        // channel: [ val(meta), path(fasta) ]
-    blastn       // channel: path(blastn_db)
+    blastn       // channel: [ val(meta), path(blastn_db) ]
     taxon_id     // channel: val(taxon_id)
 
 
@@ -27,7 +27,8 @@ workflow RUN_BLASTN {
     // Extract no hits fasta
     // Get list of sequence ids with no hits in diamond blastx search
     NOHIT_LIST ( blast_table, fasta )
-    ch_versions = ch_versions.mix ( NOHIT_LIST.out.versions.first() ) 
+    ch_versions = ch_versions.mix ( NOHIT_LIST.out.versions.first() )
+ 
     // Subset of sequences with no hits (meta is not propagated in this step)
     SEQTK_SUBSEQ (
         fasta.map { meta, genome -> genome },
@@ -39,8 +40,10 @@ workflow RUN_BLASTN {
     //  Split long contigs into chunks 
     // add meta to fasta subset channel: [ val(meta), path(compressed_fasta) ]
     ch_gz = fasta.combine(SEQTK_SUBSEQ.out.sequences).map { meta, genome, seq ->  [ meta, seq ] }
+
     // uncompress fasta
     GUNZIP ( ch_gz )
+
     // create chunks
     BLOBTOOLKIT_CHUNK ( GUNZIP.out.gunzip, [[],[]] )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_CHUNK.out.versions.first() )
@@ -49,20 +52,22 @@ workflow RUN_BLASTN {
     // Run blastn search
     // run blastn excluding taxon_id
     BLASTN_TAXON ( BLOBTOOLKIT_CHUNK.out.chunks, blastn, taxon_id )
+
     // check if blastn output table is empty
     BLASTN_TAXON.out.txt
     | map { meta, txt -> txt.isEmpty() }
     | set { is_txt_empty }
+
     // repeat the blastn search without excluding taxon_id
     if ( is_txt_empty ) {
-    BLASTN ( BLOBTOOLKIT_CHUNK.out.chunks, blastn, [] )
-    ch_blastn_txt = BLASTN.out.txt
+        BLAST_BLASTN ( BLOBTOOLKIT_CHUNK.out.chunks, blastn, [] )
+        ch_blastn_txt = BLAST_BLASTN.out.txt
     }
     else {
-    ch_blastn_txt = BLASTN_TAXON.out.txt
+        ch_blastn_txt = BLASTN_TAXON.out.txt
     }
 
-    ch_versions = ch_versions.mix ( BLASTN.out.versions.first() )
+    ch_versions = ch_versions.mix ( BLAST_BLASTN.out.versions.first() )
 
 
     // Unchunk chunked blastn results
