@@ -5,7 +5,7 @@ process NOHIT_LIST {
     conda "conda-forge::gawk=5.1.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
     'https://depot.galaxyproject.org/singularity/gawk:5.1.0' :
-    'quay.io/biocontainers/gawk:5.1.0' }"
+    'biocontainers/gawk:5.1.0' }"
 
     input:
     tuple val(meta), path(blast)      //path to blast output table in txt format
