@@ -1,13 +1,13 @@
 lint:
   files_exist:
-  - CODE_OF_CONDUCT.md
-  - assets/nf-core-blobtoolkit_logo_light.png
-  - docs/images/nf-core-blobtoolkit_logo_light.png
-  - docs/images/nf-core-blobtoolkit_logo_dark.png
-  - .github/ISSUE_TEMPLATE/config.yml
-  - .github/workflows/awstest.yml
-  - .github/workflows/awsfulltest.yml
-  - conf/igenomes.config
+    - CODE_OF_CONDUCT.md
+    - assets/nf-core-blobtoolkit_logo_light.png
+    - docs/images/nf-core-blobtoolkit_logo_light.png
+    - docs/images/nf-core-blobtoolkit_logo_dark.png
+    - .github/ISSUE_TEMPLATE/config.yml
+    - .github/workflows/awstest.yml
+    - .github/workflows/awsfulltest.yml
+    - conf/igenomes.config
   files_unchanged:
     - LICENCE
     - lib/NfcoreTemplate.groovy
@@ -30,4 +30,4 @@ template:
   name: blobtoolkit
   prefix: sanger-tol
   skip:
-  - igenomes
+    - igenomes
