@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Use the @sanger-tolsoft token to check out so we can push later
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.sangertolsoft_access_token }}
 
@@ -24,7 +24,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.sangertolsoft_access_token }}
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
 
       - name: Install Prettier
         run: npm install -g prettier @prettier/plugin-php
