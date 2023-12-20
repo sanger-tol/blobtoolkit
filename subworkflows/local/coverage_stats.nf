@@ -2,11 +2,11 @@
 // Calculate genome coverage and statistics
 //
 
-include { SAMTOOLS_VIEW  } from '../../modules/nf-core/samtools/view/main'
-include { SAMTOOLS_INDEX } from '../../modules/nf-core/samtools/index/main'
-include { MOSDEPTH       } from '../../modules/nf-core/mosdepth/main'
-include { FASTAWINDOWS   } from '../../modules/nf-core/fastawindows/main'
-include { CREATE_BED     } from '../../modules/local/create_bed'
+include { SAMTOOLS_VIEW     } from '../../modules/nf-core/samtools/view/main'
+include { SAMTOOLS_INDEX    } from '../../modules/nf-core/samtools/index/main'
+include { BLOBTOOLKIT_DEPTH } from '../../modules/local/blobtoolkit/depth'
+include { FASTAWINDOWS      } from '../../modules/nf-core/fastawindows/main'
+include { CREATE_BED        } from '../../modules/local/create_bed'
 
 
 workflow COVERAGE_STATS {
@@ -59,27 +59,16 @@ workflow COVERAGE_STATS {
 
     
     // Calculate coverage
-    ch_bam_csi
-    | combine ( CREATE_BED.out.bed )
-    | map { meta, bam, csi, meta2, bed -> [ meta, bam, csi, bed ] }
-    | set { ch_bam_csi_bed }
-    
-    MOSDEPTH ( ch_bam_csi_bed, fasta )
-    ch_versions = ch_versions.mix ( MOSDEPTH.out.versions.first() )
+    BLOBTOOLKIT_DEPTH ( ch_bam_csi )
+    ch_versions = ch_versions.mix ( BLOBTOOLKIT_DEPTH.out.versions.first() )
 
 
-    // Combining mosdepth regions_bed in single channel
-    MOSDEPTH.out.regions_bed
+    // Combining  regions_bed in single channel
+    BLOBTOOLKIT_DEPTH.out.bed
     | combine ( fasta )
     | map { meta, bed, meta2, fasta -> [ meta2, bed ] }
     | groupTuple ()
     | set { ch_coverage }
-
-
-    // Mosdepth results for MULTIQC
-    MOSDEPTH.out.regions_txt
-    | ifEmpty ( MOSDEPTH.out.global_txt )
-    | set { multiqc }
 
 
     emit:
@@ -87,6 +76,5 @@ workflow COVERAGE_STATS {
     mononuc  = FASTAWINDOWS.out.mononuc    // channel: [ val(meta), path(mononuc) ]
     bed      = CREATE_BED.out.bed          // channel: [ val(meta), path(bed) ]
     cov      = ch_coverage                 // channel: [ val(meta), path(regions.bed.gz) ]
-    multiqc                                // channel: [ val(meta), path(dist.txt) ]
     versions = ch_versions                 // channel: [ versions.yml ]
 }

@@ -9,7 +9,6 @@ process BLOBTOOLKIT_DEPTH {
 
     input:
     tuple val(meta), path(bam), path(bai)
-    each plot
 
     output:
     tuple val(meta), path('*.regions.bed.gz') , emit: bed
