@@ -27,15 +27,17 @@
 <!-- Fill in short bullet-pointed list of the default steps in the pipeline -->
 
 1. Calculate genome statistics in windows ([`fastawindows`](https://github.com/tolkit/fasta_windows))
-2. Calculate Coverage ([`mosdepth`](https://github.com/brentp/mosdepth))
+2. Calculate Coverage ([`blobtk/depth`](https://github.com/blobtoolkit/blobtk))
 3. Fetch associated BUSCO lineages ([`goat/taxonsearch`](https://github.com/genomehubs/goat-cli))
 4. Run BUSCO ([`busco`](https://busco.ezlab.org/))
-5. Extract BUSCO genes (blobtoolkit/extractbuscos)
+5. Extract BUSCO genes ([`blobtoolkit/extractbuscos`](https://github.com/blobtoolkit/blobtoolkit))
 6. Run Diamond BLASTp against extracted BUSCO genes ([`diamond/blastp`](https://github.com/bbuchfink/diamond))
-7. Count BUSCO genes (blobtoolkit/countbuscos)
-8. Generate combined sequence stats across various window sizes (blobtoolkit/windowstats)
-9. Imports analysis results into a BlobDir dataset (blobtoolkit/blobdir)
-10. Create static plot images (blobtoolkit/images)
+7. Run BLASTn against extracted BUSCO genes ([`blast/blastn`](https://www.ncbi.nlm.nih.gov/books/NBK131777/))
+8. Run BLASTx against extracted BUSCO genes ([`blast/blastx`](https://www.ncbi.nlm.nih.gov/books/NBK131777/))
+9. Count BUSCO genes ([`blobtoolkit/countbuscos`](https://github.com/blobtoolkit/blobtoolkit))
+10. Generate combined sequence stats across various window sizes ([`blobtoolkit/windowstats`](https://github.com/blobtoolkit/blobtoolkit))
+11. Imports analysis results into a BlobDir dataset ([`blobtoolkit/blobdir`](https://github.com/blobtoolkit/blobtoolkit))
+12. Create static plot images ([`blobtk/images`](https://github.com/blobtoolkit/blobtk))
 
 ## Usage
 
@@ -71,7 +73,9 @@ nextflow run sanger-tol/blobtoolkit \
    --accession GCA_XXXXXXXXX.X \
    --taxon XXXX \
    --taxdump /path/to/taxdump/database \
-   --uniprot /path/to/diamond/database
+   --blastp /path/to/diamond/database \
+   --blastn /path/to/blastn/database \
+   --blastx /path/to/blastx/database
 ```
 
 > [!WARNING]
