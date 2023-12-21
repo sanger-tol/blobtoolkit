@@ -35,8 +35,6 @@ def update_meta(meta, software):
     del new_dict["sanger-tol/blobtoolkit"]
     infile["settings"]["software_versions"] = new_dict
 
-    del infile["settings"]["tmp"]
-
     return infile
 
 
