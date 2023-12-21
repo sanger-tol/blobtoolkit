@@ -26,13 +26,13 @@ def update_meta(meta, software):
         versions = yaml.safe_load(fh)
 
     new_dict = dict()
-    for k,v in versions.items():
+    for k, v in versions.items():
         new_dict.update(v)
 
     infile["settings"]["pipeline"] = "https://github.com/sanger-tol/blobtoolkit"
-    infile["settings"]["release"] = new_dict['sanger-tol/blobtoolkit']
-    
-    del new_dict['sanger-tol/blobtoolkit']
+    infile["settings"]["release"] = new_dict["sanger-tol/blobtoolkit"]
+
+    del new_dict["sanger-tol/blobtoolkit"]
     infile["settings"]["software_versions"] = new_dict
 
     del infile["settings"]["tmp"]
@@ -50,5 +50,3 @@ def main(args=None):
 
 if __name__ == "__main__":
     sys.exit(main())
-
-
