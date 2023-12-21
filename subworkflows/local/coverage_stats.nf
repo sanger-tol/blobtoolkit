@@ -2,11 +2,11 @@
 // Calculate genome coverage and statistics
 //
 
-include { SAMTOOLS_VIEW     } from '../../modules/nf-core/samtools/view/main'
-include { SAMTOOLS_INDEX    } from '../../modules/nf-core/samtools/index/main'
-include { BLOBTOOLKIT_DEPTH } from '../../modules/local/blobtoolkit/depth'
-include { FASTAWINDOWS      } from '../../modules/nf-core/fastawindows/main'
-include { CREATE_BED        } from '../../modules/local/create_bed'
+include { SAMTOOLS_VIEW  } from '../../modules/nf-core/samtools/view/main'
+include { SAMTOOLS_INDEX } from '../../modules/nf-core/samtools/index/main'
+include { BLOBTK_DEPTH   } from '../../modules/local/blobtk/depth'
+include { FASTAWINDOWS   } from '../../modules/nf-core/fastawindows/main'
+include { CREATE_BED     } from '../../modules/local/create_bed'
 
 
 workflow COVERAGE_STATS {
@@ -59,12 +59,12 @@ workflow COVERAGE_STATS {
 
     
     // Calculate coverage
-    BLOBTOOLKIT_DEPTH ( ch_bam_csi )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_DEPTH.out.versions.first() )
+    BLOBTK_DEPTH ( ch_bam_csi )
+    ch_versions = ch_versions.mix ( BLOBTK_DEPTH.out.versions.first() )
 
 
     // Combining  regions_bed in single channel
-    BLOBTOOLKIT_DEPTH.out.bed
+    BLOBTK_DEPTH.out.bed
     | combine ( fasta )
     | map { meta, bed, meta2, fasta -> [ meta2, bed ] }
     | groupTuple ()

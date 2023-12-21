@@ -10,7 +10,7 @@ process WINDOWSTATS_INPUT {
     input:
     tuple val(meta), path(freq)
     tuple val(meta), path(mononuc)
-    tuple val(meta), path(mosdepth)
+    tuple val(meta), path(depth)
     tuple val(meta), path(countbusco)
 
     output:
@@ -27,7 +27,7 @@ process WINDOWSTATS_INPUT {
     windowstats_input.py \\
         --freq ${freq} \\
         --mononuc ${mononuc} \\
-        --mosdepth ${mosdepth} \\
+        --depth ${depth} \\
         --countbusco ${countbusco} \\
         --output ${prefix}.tsv \\
         ${args}

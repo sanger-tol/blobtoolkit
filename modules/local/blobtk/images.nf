@@ -1,4 +1,4 @@
-process BLOBTOOLKIT_IMAGES {
+process BLOBTK_IMAGES {
     tag "${meta.id}_${plot}"
     label 'process_single'
 
@@ -32,7 +32,7 @@ process BLOBTOOLKIT_IMAGES {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
+        blobtk: \$(blobtk --version | cut -d' ' -f2)
     END_VERSIONS
     """
 }

@@ -3,7 +3,7 @@
 //
 
 include { BLOBTOOLKIT_SUMMARY } from '../../modules/local/blobtoolkit/summary'
-include { BLOBTOOLKIT_IMAGES  } from '../../modules/local/blobtoolkit/images'
+include { BLOBTK_IMAGES       } from '../../modules/local/blobtk/images'
 
 workflow VIEW {
     take:
@@ -26,12 +26,12 @@ workflow VIEW {
     //
     plots = [ "blob", "cumulative", "snail" ]
 
-    BLOBTOOLKIT_IMAGES ( blobdir, plots )
-    ch_versions = ch_versions.mix( BLOBTOOLKIT_IMAGES.out.versions )
+    BLOBTK_IMAGES ( blobdir, plots )
+    ch_versions = ch_versions.mix( BLOBTK_IMAGES.out.versions )
 
 
     emit:
     summary  = BLOBTOOLKIT_SUMMARY.out.json  // channel: [ val(meta), path(json) ]
-    images   = BLOBTOOLKIT_IMAGES.out.png    // channel: [ val(meta), path(png) ]
+    images   = BLOBTK_IMAGES.out.png         // channel: [ val(meta), path(png) ]
     versions = ch_versions                   // channel: [ versions.yml ]
 }

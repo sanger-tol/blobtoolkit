@@ -1,4 +1,4 @@
-process BLOBTOOLKIT_DEPTH {
+process BLOBTK_DEPTH {
     tag "${meta.id}"
     label 'process_single'
 
@@ -28,7 +28,7 @@ process BLOBTOOLKIT_DEPTH {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
+        blobtk: \$(blobtk --version | cut -d' ' -f2)
     END_VERSIONS
     """
 }
