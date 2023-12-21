@@ -53,7 +53,8 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 // MODULE: Loaded from modules/local/
 //
-include { BLOBTOOLKIT_CONFIG } from '../modules/local/blobtoolkit/config'
+include { BLOBTOOLKIT_CONFIG     } from '../modules/local/blobtoolkit/config'
+include { BLOBTOOLKIT_UPDATEMETA } from '../modules/local/blobtoolkit/updatemeta'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -103,7 +104,7 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Check samplesheet and create channels for downstream analysis
     //
-    INPUT_CHECK ( ch_input )
+    INPUT_CHECK ( ch_input, ch_fasta, ch_yaml )
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
 
     // 
@@ -181,16 +182,8 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Create BlobTools dataset
     //
-    if ( !params.yaml ) {
-        BLOBTOOLKIT_CONFIG ( PREPARE_GENOME.out.genome )
-        ch_config   = BLOBTOOLKIT_CONFIG.out.yaml
-        ch_versions = ch_versions.mix ( BLOBTOOLKIT_CONFIG.out.versions.first() )
-    } else {
-        ch_config   = ch_yaml
-    }
-
     BLOBTOOLS ( 
-        ch_config,
+        INPUT_CHECK.out.config,
         COLLATE_STATS.out.window_tsv,
         BUSCO_DIAMOND.out.first_table,
         BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]),
@@ -212,6 +205,12 @@ workflow BLOBTOOLKIT {
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
+
+    //
+    // MODULE: Update meta json file
+    //
+    BLOBTOOLKIT_UPDATEMETA ( BLOBTOOLS.out.blobdir, CUSTOM_DUMPSOFTWAREVERSIONS.out.yml )
+
 
     //
     // MODULE: MultiQC
