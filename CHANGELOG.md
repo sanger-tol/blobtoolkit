@@ -3,18 +3,27 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[0.2.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.2.0)] – <Pokemon> – [2023-MM-DD]
+## [[0.2.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.2.0)] – Pikachu – [2023-12-22]
 
 ### Enhancements & fixes
 
-...
+- Template updated to nf-core/tools 2.11.1
+- Includes all subworkflows in the [Snakemake version](https://github.com/blobtoolkit/blobtoolkit)
+- Added blastx and blastn subworkflows
+- Replaced mosdepth with blobtk depth
+- Updated config creation script
 
 ### Parameters
 
-| Old parameter | New parameter |
-| ------------- | ------------- |
-
-...
+| Old parameter | New parameter   |
+| ------------- | --------------- |
+|               | --mask          |
+|               | --align         |
+| --uniprot     | --blastp        |
+|               | --blastx        |
+|               | --blastn        |
+|               | --blastx_outext |
+|               | --blastx_cols   |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
@@ -24,17 +33,18 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 
 | Dependency    | Old version | New version |
 | ------------- | ----------- | ----------- |
-| blobtoolkit   | 4.1.4       |             |
-| busco         | 5.4.3       |             |
-| fasta_windows | 0.2.4       |             |
-| goat          | 0.2.0       |             |
-| gunzip        | 1.10        |             |
+| blobtoolkit   | 4.1.4       | 4.3.2       |
+| busco         | 5.4.3       | 5.5.0       |
+| goat          | 0.2.0       | 0.2.5       |
 | mosdepth      | 0.3.3       |             |
-| nextflow      | 22.10.6     |             |
-| python        | 3.10.6      |             |
-| samtools      | 1.15.1      |             |
+| nextflow      | 22.10.6     | 23.10.0     |
+| python        | 3.10.6      | 3.12.0      |
+| samtools      | 1.15.1      | 1.18        |
 | tar           | 1.30        |             |
-| yaml          | 6.0         |             |
+| yaml          | 6.0         | 6.0.1       |
+| blobtk        | 0.3.3       | 0.5.1       |
+| diamond       | 2.0.15      | 2.1.8       |
+| minimap2      |             | 2.24-r1122  |
 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
 
