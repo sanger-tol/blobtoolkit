@@ -27,6 +27,18 @@ workflow BUSCO_DIAMOND {
     //
     GOAT_TAXONSEARCH ( taxon_taxa )
     ch_versions = ch_versions.mix ( GOAT_TAXONSEARCH.out.versions.first() )
+    
+
+    //
+    // Get NCBI species ID
+    //
+    GOAT_TAXONSEARCH.out.taxonsearch
+    | map { meta, csv -> csv.splitCsv(header:true, sep:'\t', strip:true) }
+    | map { row -> [ row.taxon_rank, row.taxon_id ] }
+    | transpose()
+    | filter { rank,id -> rank =~ /species/ }
+    | map { rank, id -> id}
+    | set { ch_taxid }
 
 
     //
@@ -35,11 +47,17 @@ workflow BUSCO_DIAMOND {
     GOAT_TAXONSEARCH.out.taxonsearch
     | map { meta, csv -> csv.splitCsv(header:true, sep:'\t', strip:true) }
     | map { row -> row.odb10_lineage.findAll { it != "" } }
-    | map { lineages -> [ lineages + [ "bacteria_odb10", "archaea_odb10" ] ] }
+    | set { ch_ancestral_lineages }
+
+
+    // Add the basal lineages to the list (excluding duplicates)
+    basal_lineages = [ "archaea_odb10", "bacteria_odb10", "eukaryota_odb10" ]
+    ch_ancestral_lineages
+    | map { lineages -> (lineages + basal_lineages).unique() }
     | flatten ()
     | set { ch_lineages }
 
-    BUSCO ( fasta, ch_lineages, busco_db.collect().ifEmpty([]), [] )
+    BUSCO ( fasta, "genome", ch_lineages, busco_db.collect().ifEmpty([]), [] )
     ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
 
 
@@ -47,18 +65,13 @@ workflow BUSCO_DIAMOND {
     // Select input for BLOBTOOLKIT_EXTRACTBUSCOS
     //
     BUSCO.out.seq_dir
-    | map { meta, seq -> [ [ "id": seq.parent.baseName ], seq ] }
-    | branch {
-        meta, seq ->
-            archaea   : meta.id == "run_archaea_odb10"
-            bacteria  : meta.id == "run_bacteria_odb10"
-            eukaryota : meta.id == "run_eukaryota_odb10"
-    }
-    | set { ch_busco }
+    | filter { meta, seq -> basal_lineages.contains(seq.parent.baseName.minus("run_")) }
+    | groupTuple()
+    | set { ch_basal_buscos }
 
 
-    // Extract BUSCO genes from the 3 kingdoms
-    BLOBTOOLKIT_EXTRACTBUSCOS ( fasta, ch_busco.archaea, ch_busco.bacteria, ch_busco.eukaryota )
+    // Extract BUSCO genes from the basal lineages
+    BLOBTOOLKIT_EXTRACTBUSCOS ( fasta, ch_basal_buscos )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_EXTRACTBUSCOS.out.versions.first() )
 
 
@@ -91,6 +104,7 @@ workflow BUSCO_DIAMOND {
     first_table = ch_first_table          // channel: [ val(meta), path(full_table) ] 
     full_table  = BUSCO.out.full_table    // channel: [ val(meta), path(full_tables) ]
     blastp_txt  = DIAMOND_BLASTP.out.txt  // channel: [ val(meta), path(txt) ]
+    taxon_id    = ch_taxid                // channel: taxon_id
     multiqc                               // channel: [ meta, summary ]
     versions    = ch_versions             // channel: [ versions.yml ]
 }

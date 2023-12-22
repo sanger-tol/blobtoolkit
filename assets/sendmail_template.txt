@@ -12,9 +12,9 @@ $email_html
 Content-Type: image/png;name="sanger-tol-blobtoolkit_logo.png"
 Content-Transfer-Encoding: base64
 Content-ID: <nfcorepipelinelogo>
-Content-Disposition: inline; filename="sanger-tol-blobtoolkit_logo.png"
+Content-Disposition: inline; filename="sanger-tol-blobtoolkit_logo_light.png"
 
-<% out << new File("$projectDir/docs/images/nf-core-blobtoolkit_logo.png").
+<% out << new File("$projectDir/assets/sanger-tol-blobtoolkit_logo_light.png").
     bytes.
     encodeBase64().
     toString().

@@ -16,7 +16,7 @@
             "datatype": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "enum": ["hic", "illumina", "ont", "pacbio"],
+                "enum": ["hic", "illumina", "ont", "pacbio", "pacbio_clr"],
                 "errorMessage": "Data type, and must be one of: 'hic' or 'illumina' or 'ont' or 'pacbio'"
             },
             "datafile": {

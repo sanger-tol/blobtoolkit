@@ -1,18 +1,34 @@
-repository_type: pipeline
 lint:
   files_exist:
+    - CODE_OF_CONDUCT.md
     - assets/nf-core-blobtoolkit_logo_light.png
     - docs/images/nf-core-blobtoolkit_logo_light.png
     - docs/images/nf-core-blobtoolkit_logo_dark.png
+    - .github/ISSUE_TEMPLATE/config.yml
+    - .github/workflows/awstest.yml
+    - .github/workflows/awsfulltest.yml
+    - conf/igenomes.config
   files_unchanged:
-    - LICENSE
-    - .github/ISSUE_TEMPLATE/bug_report.yml
-    - assets/sendmail_template.txt
+    - LICENCE
     - lib/NfcoreTemplate.groovy
-    - .prettierignore
+    - CODE_OF_CONDUCT.md
+    - assets/nf-core-blobtoolkit_logo_light.png
+    - docs/images/nf-core-blobtoolkit_logo_light.png
+    - docs/images/nf-core-blobtoolkit_logo_dark.png
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
+  multiqc_config:
+    - report_comment
   nextflow_config:
     - manifest.name
     - manifest.homePage
-  multiqc_config:
-    - report_comment
-  actions_ci: false
+  template_strings: False
+  merge_markers: False
+repository_type: pipeline
+template:
+  author: priyanka-surana
+  description: Quality assessment of genome assemblies
+  name: blobtoolkit
+  prefix: sanger-tol
+  skip:
+    - igenomes

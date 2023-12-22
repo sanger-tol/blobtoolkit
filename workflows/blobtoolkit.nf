@@ -1,24 +1,32 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    VALIDATE INPUTS
+    PRINT PARAMS SUMMARY
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
+include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
 
-// Validate input parameters
+def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
+def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
+def summary_params = paramsSummaryMap(workflow)
+
+// Print parameter summary log to screen
+log.info logo + paramsSummaryLog(workflow) + citation
+
 WorkflowBlobtoolkit.initialise(params, log)
 
 // Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxa_file, params.taxdump, params.busco, params.uniprot ]
+def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxa_file, params.taxdump, params.busco, params.blastp, params.blastx ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-if (params.fasta && params.accession) { ch_fasta = Channel.of([ [ 'id': params.accession ], params.fasta ]).collect() } else { exit 1, 'Genome fasta file and accession must be specified!' }
+if (params.fasta && params.accession) { ch_fasta = Channel.of([ [ 'id': params.accession ], params.fasta ]).first() } else { exit 1, 'Genome fasta file and accession must be specified!' }
 if (params.taxon) { ch_taxon = Channel.of(params.taxon) } else { exit 1, 'NCBI Taxon ID not specified!' }
-if (params.uniprot) { ch_uniprot = file(params.uniprot) } else { exit 1, 'Diamond BLASTp database not specified!' }
+if (params.blastp && params.accession) { ch_blastp = Channel.of([ [ 'id': params.accession ], params.blastp ]).first() } else { exit 1, 'Diamond BLASTp database and accession must be specified!' }
+if (params.blastx && params.accession) { ch_blastx = Channel.of([ [ 'id': params.accession ], params.blastx ]).first() } else { exit 1, 'Diamond BLASTx database and accession must be specified!' }
+if (params.blastn && params.accession) { ch_blastn = Channel.of([ [ 'id': params.accession ], params.blastn ]).first() } else { exit 1, 'BLASTn database not specified!' }
 if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
 
 // Create channel for optional parameters
@@ -45,17 +53,22 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 // MODULE: Loaded from modules/local/
 //
-include { BLOBTOOLKIT_CONFIG } from '../modules/local/blobtoolkit/config'
+include { BLOBTOOLKIT_CONFIG     } from '../modules/local/blobtoolkit/config'
+include { BLOBTOOLKIT_UPDATEMETA } from '../modules/local/blobtoolkit/updatemeta'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK    } from '../subworkflows/local/input_check'
-include { COVERAGE_STATS } from '../subworkflows/local/coverage_stats'
-include { BUSCO_DIAMOND  } from '../subworkflows/local/busco_diamond_blastp'
-include { COLLATE_STATS  } from '../subworkflows/local/collate_stats'
-include { BLOBTOOLS      } from '../subworkflows/local/blobtools'
-include { VIEW           } from '../subworkflows/local/view'
+include { PREPARE_GENOME     } from '../subworkflows/local/prepare_genome'
+include { MINIMAP2_ALIGNMENT } from '../subworkflows/local/minimap_alignment'
+include { INPUT_CHECK        } from '../subworkflows/local/input_check'
+include { COVERAGE_STATS     } from '../subworkflows/local/coverage_stats'
+include { BUSCO_DIAMOND      } from '../subworkflows/local/busco_diamond_blastp'
+include { RUN_BLASTX         } from '../subworkflows/local/run_blastx'
+include { RUN_BLASTN         } from '../subworkflows/local/run_blastn'
+include { COLLATE_STATS      } from '../subworkflows/local/collate_stats'
+include { BLOBTOOLS          } from '../subworkflows/local/blobtools'
+include { VIEW               } from '../subworkflows/local/view'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,7 +79,6 @@ include { VIEW           } from '../subworkflows/local/view'
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { GUNZIP                      } from '../modules/nf-core/gunzip/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 
@@ -84,25 +96,32 @@ workflow BLOBTOOLKIT {
     ch_versions = Channel.empty()
 
     //
-    // MODULE: Decompress FASTA file if needed
+    // SUBWORKFLOW: Prepare genome for downstream processing
     //
-    if ( params.fasta.endsWith('.gz') ) {
-        ch_genome   = GUNZIP ( ch_fasta ).gunzip
-        ch_versions = ch_versions.mix ( GUNZIP.out.versions.first() )
-    } else {
-        ch_genome   = ch_fasta
-    }
+    PREPARE_GENOME ( ch_fasta )
+    ch_versions = ch_versions.mix ( PREPARE_GENOME.out.versions )
 
     //
     // SUBWORKFLOW: Check samplesheet and create channels for downstream analysis
     //
-    INPUT_CHECK ( ch_input )
+    INPUT_CHECK ( ch_input, ch_fasta, ch_yaml )
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
+
+    // 
+    // SUBWORKFLOW: Optional read alignment
+    //
+    if ( params.align ) {
+        MINIMAP2_ALIGNMENT ( INPUT_CHECK.out.aln, PREPARE_GENOME.out.genome )
+        ch_versions = ch_versions.mix ( MINIMAP2_ALIGNMENT.out.versions )
+        ch_aligned = MINIMAP2_ALIGNMENT.out.aln
+    } else {
+        ch_aligned = INPUT_CHECK.out.aln
+    }
 
     //
     // SUBWORKFLOW: Calculate genome coverage and statistics 
     //
-    COVERAGE_STATS ( INPUT_CHECK.out.aln, ch_genome )
+    COVERAGE_STATS ( ch_aligned, PREPARE_GENOME.out.genome )
     ch_versions = ch_versions.mix ( COVERAGE_STATS.out.versions )
 
     //
@@ -115,27 +134,63 @@ workflow BLOBTOOLKIT {
         ch_taxon_taxa = ch_fasta.combine(ch_taxon).map { meta, fasta, taxon -> [ meta, taxon, [] ] }
     }
 
-    BUSCO_DIAMOND ( ch_genome, ch_taxon_taxa, ch_busco_db, ch_uniprot, params.blastp_outext, params.blastp_cols )
+    BUSCO_DIAMOND ( 
+        PREPARE_GENOME.out.genome, 
+        ch_taxon_taxa, 
+        ch_busco_db, 
+        ch_blastp, 
+        params.blastp_outext, 
+        params.blastp_cols 
+    )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
+    
+    //
+    // SUBWORKFLOW: Diamond blastx search of assembly contigs against the UniProt reference proteomes
+    //
+    RUN_BLASTX ( 
+        PREPARE_GENOME.out.genome,
+        BUSCO_DIAMOND.out.first_table,
+        ch_blastx,
+        params.blastx_outext,
+        params.blastx_cols
+    )
+    ch_versions = ch_versions.mix ( RUN_BLASTX.out.versions )
 
+
+    //
+    // SUBWORKFLOW: Run blastn search on sequences that had no blastx hits
+    //
+    RUN_BLASTN ( 
+        RUN_BLASTX.out.blastx_out, 
+        PREPARE_GENOME.out.genome, 
+        ch_blastn, 
+        BUSCO_DIAMOND.out.taxon_id
+    )
+    
     //
     // SUBWORKFLOW: Collate genome statistics by various window sizes
     //
-    COLLATE_STATS ( BUSCO_DIAMOND.out.full_table, COVERAGE_STATS.out.bed, COVERAGE_STATS.out.freq, COVERAGE_STATS.out.mononuc, COVERAGE_STATS.out.cov )
+    COLLATE_STATS ( 
+        BUSCO_DIAMOND.out.full_table, 
+        COVERAGE_STATS.out.bed, 
+        COVERAGE_STATS.out.freq, 
+        COVERAGE_STATS.out.mononuc, 
+        COVERAGE_STATS.out.cov 
+    )
     ch_versions = ch_versions.mix ( COLLATE_STATS.out.versions )
 
     //
     // SUBWORKFLOW: Create BlobTools dataset
     //
-    if ( !params.yaml ) {
-        BLOBTOOLKIT_CONFIG ( ch_genome )
-        ch_config   = BLOBTOOLKIT_CONFIG.out.yaml
-        ch_versions = ch_versions.mix ( BLOBTOOLKIT_CONFIG.out.versions.first() )
-    } else {
-        ch_config   = ch_yaml
-    }
-
-    BLOBTOOLS ( ch_config, COLLATE_STATS.out.window_tsv, BUSCO_DIAMOND.out.first_table, BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]), ch_taxdump )
+    BLOBTOOLS ( 
+        INPUT_CHECK.out.config,
+        COLLATE_STATS.out.window_tsv,
+        BUSCO_DIAMOND.out.first_table,
+        BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]),
+        RUN_BLASTX.out.blastx_out.ifEmpty([[],[]]),
+        RUN_BLASTN.out.blastn_out.ifEmpty([[],[]]),
+        ch_taxdump
+    )
     ch_versions = ch_versions.mix ( BLOBTOOLS.out.versions )
     
     //
@@ -152,19 +207,24 @@ workflow BLOBTOOLKIT {
     )
 
     //
+    // MODULE: Update meta json file
+    //
+    BLOBTOOLKIT_UPDATEMETA ( BLOBTOOLS.out.blobdir, CUSTOM_DUMPSOFTWAREVERSIONS.out.yml )
+
+
+    //
     // MODULE: MultiQC
     //
     workflow_summary    = WorkflowBlobtoolkit.paramsSummaryMultiqc(workflow, summary_params)
     ch_workflow_summary = Channel.value(workflow_summary)
 
-    methods_description    = WorkflowBlobtoolkit.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
+    methods_description    = WorkflowBlobtoolkit.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
     ch_methods_description = Channel.value(methods_description)
 
     ch_multiqc_files = Channel.empty()
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(BUSCO_DIAMOND.out.multiqc.collect{it[1]}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(COVERAGE_STATS.out.multiqc.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
 
     MULTIQC (
@@ -186,6 +246,7 @@ workflow.onComplete {
     if (params.email || params.email_on_fail) {
         NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
     }
+    NfcoreTemplate.dump_parameters(workflow, params)
     NfcoreTemplate.summary(workflow, params, log)
     if (params.hook_url) {
         NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)

@@ -28,7 +28,7 @@ workflow COLLATE_STATS {
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_COUNTBUSCOS.out.versions.first() )
 
 
-    // Combine outputs from Fasta windows, mosdepth, and count BUSCO genes
+    // Combine outputs from Fasta windows, blobtk depth, and count BUSCO genes
     WINDOWSTATS_INPUT ( freq, mononuc, cov, BLOBTOOLKIT_COUNTBUSCOS.out.tsv )
     ch_versions = ch_versions.mix ( WINDOWSTATS_INPUT.out.versions.first() )
 
