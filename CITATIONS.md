@@ -1,5 +1,7 @@
 # sanger-tol/blobtoolkit: Citations
 
+> Butt, Zaynab, et al. "sanger-tol/blobtoolkit" Zenodo, 2023, https://zenodo.org/doi/10.5281/zenodo.7949058.
+
 ## [nf-core](https://nf-co.re)
 
 > Ewels, Philip A., et al. “The Nf-Core Framework for Community-Curated Bioinformatics Pipelines.” Nature Biotechnology, vol. 38, no. 3, Feb. 2020, pp. 276–78, https://doi.org/10.1038/s41587-020-0439-x.
@@ -28,9 +30,9 @@
 
   > Challis, Richard, et al. “Genomes on a Tree (GoaT): A versatile, scalable search engine for genomic and sequencing project metadata across the eukaryotic tree of life.” Wellcome Open Research, vol. 8, no. 24, 2023, https://doi.org/10.12688/wellcomeopenres.18658.1.
 
-- [Mosdepth](https://github.com/brentp/mosdepth)
+- [Minimap2](https://github.com/lh3/minimap2)
 
-  > Pedersen, Brent S., and Aaron R. Quinlan. “Mosdepth: Quick Coverage Calculation for Genomes and Exomes.” Bioinformatics, edited by John Hancock, vol. 34, no. 5, Oct. 2017, pp. 867–68, https://doi.org/10.1093/bioinformatics/btx699.
+  > Li, Heng. "Minimap2: pairwise alignment for nucleotide sequences." Bioinformatics, vol. 34, no. 18, Sep. 2018, pp. 3094-100, https://doi.org/10.1093/bioinformatics/bty191.
 
 - [MultiQC](https://multiqc.info)
 

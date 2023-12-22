@@ -2,8 +2,9 @@
 // Create BlobTools dataset
 //
 
-include { BLOBTOOLKIT_METADATA } from '../../modules/local/blobtoolkit/metadata'
-include { BLOBTOOLKIT_BLOBDIR  } from '../../modules/local/blobtoolkit/blobdir'
+include { BLOBTOOLKIT_METADATA      } from '../../modules/local/blobtoolkit/metadata'
+include { BLOBTOOLKIT_CREATEBLOBDIR } from '../../modules/local/blobtoolkit/createblobdir'
+include { BLOBTOOLKIT_UPDATEBLOBDIR } from '../../modules/local/blobtoolkit/updateblobdir'
 
 workflow BLOBTOOLS {
     take:
@@ -11,6 +12,8 @@ workflow BLOBTOOLS {
     windowstats // channel: [ val(meta), path(window_stats_tsvs) ]
     busco       // channel: [ val(meta), path(full_table) ]
     blastp      // channel: [ val(meta), path(txt) ]
+    blastx      // channel: [ val(meta), path(txt) ]
+    blastn      // channel: [ val(meta), path(txt) ]
     taxdump     // channel: path(taxdump_db)
 
 
@@ -28,12 +31,19 @@ workflow BLOBTOOLS {
     //  
     // Create Blobtools dataset files
     //
-    BLOBTOOLKIT_BLOBDIR ( windowstats, busco, blastp, BLOBTOOLKIT_METADATA.out.yaml, taxdump )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_BLOBDIR.out.versions.first() )
+    BLOBTOOLKIT_CREATEBLOBDIR ( windowstats, busco, blastp, BLOBTOOLKIT_METADATA.out.yaml, taxdump )
+    ch_versions = ch_versions.mix ( BLOBTOOLKIT_CREATEBLOBDIR.out.versions.first() )
+
+
+    //  
+    // Update Blobtools dataset files
+    //
+    BLOBTOOLKIT_UPDATEBLOBDIR ( BLOBTOOLKIT_CREATEBLOBDIR.out.blobdir, blastx, blastn, taxdump )
+    ch_versions = ch_versions.mix ( BLOBTOOLKIT_UPDATEBLOBDIR.out.versions.first() )
 
 
     emit:
-    metadata = BLOBTOOLKIT_METADATA.out.yaml    // channel: [ val(meta), path(yaml) ]
-    blobdir  = BLOBTOOLKIT_BLOBDIR.out.blobdir  // channel: [ val(meta), path(dir) ]
-    versions = ch_versions                      // channel: [ versions.yml ]
+    metadata = BLOBTOOLKIT_METADATA.out.yaml          // channel: [ val(meta), path(yaml) ]
+    blobdir  = BLOBTOOLKIT_UPDATEBLOBDIR.out.blobdir  // channel: [ val(meta), path(dir) ]
+    versions = ch_versions                            // channel: [ versions.yml ]
 }

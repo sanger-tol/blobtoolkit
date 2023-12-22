@@ -12,7 +12,7 @@ def parse_args(args=None):
     parser = argparse.ArgumentParser(description=Description)
     parser.add_argument("--freq", help="Frequence fasta windows input file", required=True)
     parser.add_argument("--mononuc", help="Mononucleotide fasta windows input file", required=True)
-    parser.add_argument("--mosdepth", help="Mosdepth coverage input file", nargs="+", required=True)
+    parser.add_argument("--depth", help="Depth coverage input file", nargs="+", required=True)
     parser.add_argument("--countbusco", help="BUSCO gene counts by region", required=True)
     parser.add_argument("--output", help="Output TSV file.", required=True)
     parser.add_argument("--version", action="version", version="%(prog)s 1.0.0")
@@ -24,7 +24,7 @@ def make_dir(path):
         os.makedirs(path, exist_ok=True)
 
 
-def merge_all(freq, mononuc, mosdepth, countbusco):
+def merge_all(freq, mononuc, depth, countbusco):
     freq_fw = pd.read_csv(freq, sep="\t")
     mononuc_fw = pd.read_csv(mononuc, sep="\t")
     combo_fw = freq_fw.merge(mononuc_fw).rename(
@@ -32,7 +32,7 @@ def merge_all(freq, mononuc, mosdepth, countbusco):
     )
 
     count_df = pd.read_csv(countbusco, sep="\t").rename(columns={"ID": "sequence"})
-    for f in mosdepth:
+    for f in depth:
         tag = os.path.basename(f).replace(".regions.bed.gz", "")
         cov_df = pd.read_csv(
             f,
@@ -52,7 +52,7 @@ def main(args=None):
     out_dir = os.path.dirname(args.output)
     make_dir(out_dir)
 
-    merge_all(args.freq, args.mononuc, args.mosdepth, args.countbusco).to_csv(args.output, sep="\t", index=False)
+    merge_all(args.freq, args.mononuc, args.depth, args.countbusco).to_csv(args.output, sep="\t", index=False)
 
 
 if __name__ == "__main__":

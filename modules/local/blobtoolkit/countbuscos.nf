@@ -5,7 +5,7 @@ process BLOBTOOLKIT_COUNTBUSCOS {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         exit 1, "BLOBTOOLKIT_COUNTBUSCOS module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
-    container "genomehubs/blobtoolkit:4.1.5"
+    container "docker.io/genomehubs/blobtoolkit:4.3.2"
 
     input:
     tuple val(meta), path(table, stageAs: 'dir??/*')

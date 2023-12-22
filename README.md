@@ -1,11 +1,9 @@
 # ![sanger-tol/blobtoolkit](docs/images/sanger-tol-blobtoolkit_logo.png)
 
-<!--[![GitHub Actions CI Status](https://github.com/sanger-tol/blobtoolkit/workflows/nf-core%20CI/badge.svg)](https://github.com/sanger-tol/blobtoolkit/actions?query=workflow%3A%22nf-core+CI%22)-->
+[![GitHub Actions CI Status](https://github.com/sanger-tol/blobtoolkit/workflows/nf-core%20CI/badge.svg)](https://github.com/sanger-tol/blobtoolkit/actions?query=workflow%3A%22nf-core+CI%22)
+[![GitHub Actions Linting Status](https://github.com/sanger-tol/blobtoolkit/workflows/nf-core%20linting/badge.svg)](https://github.com/sanger-tol/blobtoolkit/actions?query=workflow%3A%22nf-core+linting%22)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.7949058-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.7949058)
 
-[![GitHub Actions Linting Status](https://github.com/sanger-tol/blobtoolkit/workflows/nf-core%20linting/badge.svg)](https://github.com/sanger-tol/blobtoolkit/actions?query=workflow%3A%22nf-core+linting%22)
-[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.7949058-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.7949058)
-
-[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A522.10.1-23aa62.svg)](https://www.nextflow.io/)
+[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A523.04.0-23aa62.svg)](https://www.nextflow.io/)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
@@ -29,22 +27,22 @@
 <!-- Fill in short bullet-pointed list of the default steps in the pipeline -->
 
 1. Calculate genome statistics in windows ([`fastawindows`](https://github.com/tolkit/fasta_windows))
-2. Calculate Coverage ([`mosdepth`](https://github.com/brentp/mosdepth))
+2. Calculate Coverage ([`blobtk/depth`](https://github.com/blobtoolkit/blobtk))
 3. Fetch associated BUSCO lineages ([`goat/taxonsearch`](https://github.com/genomehubs/goat-cli))
 4. Run BUSCO ([`busco`](https://busco.ezlab.org/))
-5. Extract BUSCO genes (blobtoolkit/extractbuscos)
+5. Extract BUSCO genes ([`blobtoolkit/extractbuscos`](https://github.com/blobtoolkit/blobtoolkit))
 6. Run Diamond BLASTp against extracted BUSCO genes ([`diamond/blastp`](https://github.com/bbuchfink/diamond))
-7. Count BUSCO genes (blobtoolkit/countbuscos)
-8. Generate combined sequence stats across various window sizes (blobtoolkit/windowstats)
-9. Imports analysis results into a BlobDir dataset (blobtoolkit/blobdir)
-10. Create static plot images (blobtoolkit/images)
+7. Run BLASTn against extracted BUSCO genes ([`blast/blastn`](https://www.ncbi.nlm.nih.gov/books/NBK131777/))
+8. Run BLASTx against extracted BUSCO genes ([`blast/blastx`](https://www.ncbi.nlm.nih.gov/books/NBK131777/))
+9. Count BUSCO genes ([`blobtoolkit/countbuscos`](https://github.com/blobtoolkit/blobtoolkit))
+10. Generate combined sequence stats across various window sizes ([`blobtoolkit/windowstats`](https://github.com/blobtoolkit/blobtoolkit))
+11. Imports analysis results into a BlobDir dataset ([`blobtoolkit/blobdir`](https://github.com/blobtoolkit/blobtoolkit))
+12. Create static plot images ([`blobtk/images`](https://github.com/blobtoolkit/blobtk))
 
 ## Usage
 
-> **Note**
-> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how
-> to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
-> with `-profile test` before running the workflow on actual data.
+> [!NOTE]
+> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
 
 <!-- Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
      Explain what rows and columns represent. For instance (please edit as appropriate): -->
@@ -60,7 +58,7 @@ mMelMel1,illumina,GCA_922984935.2.illumina.mMelMel1.cram
 mMelMel3,ont,GCA_922984935.2.ont.mMelMel3.cram
 ```
 
-Each row represents an aligned file. Rows with the same sample identifier are considered technical replicates. The datatype refers to the sequencing technology used to generate the underlying raw data and follows a controlled vocabulary (ont, hic, pacbio, illumina). The aligned read files can be generated using the [sanger-tol/readmapping](https://github.com/sanger-tol/readmapping) pipeline.
+Each row represents an aligned file. Rows with the same sample identifier are considered technical replicates. The datatype refers to the sequencing technology used to generate the underlying raw data and follows a controlled vocabulary (ont, hic, pacbio, pacbio_clr, illumina). The aligned read files can be generated using the [sanger-tol/readmapping](https://github.com/sanger-tol/readmapping) pipeline.
 
 Now, you can run the pipeline using:
 
@@ -75,12 +73,13 @@ nextflow run sanger-tol/blobtoolkit \
    --accession GCA_XXXXXXXXX.X \
    --taxon XXXX \
    --taxdump /path/to/taxdump/database \
-   --uniprot /path/to/diamond/database
+   --blastp /path/to/diamond/database \
+   --blastn /path/to/blastn/database \
+   --blastx /path/to/blastx/database
 ```
 
-> **Warning:**
-> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
-> provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
+> [!WARNING]
+> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
 > see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 
 For more details, please refer to the [usage documentation](https://pipelines.tol.sanger.ac.uk/blobtoolkit/usage) and the [parameter documentation](https://pipelines.tol.sanger.ac.uk/blobtoolkit/parameters).
@@ -104,8 +103,6 @@ We thank the following people for their assistance in the development of this pi
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
 ## Citations
-
-<!-- Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
 
 If you use sanger-tol/blobtoolkit for your analysis, please cite it using the following doi: [10.5281/zenodo.7949058](https://doi.org/10.5281/zenodo.7949058)
 
