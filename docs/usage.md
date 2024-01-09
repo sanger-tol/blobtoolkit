@@ -91,6 +91,7 @@ Retrieve the NCBI blast nt database (version 5) files and tar gunzip them. We ar
 
 ```bash
 wget "ftp://ftp.ncbi.nlm.nih.gov/blast/db/v5/nt.??.tar.gz" -P $NT/ &&
+wget https://ftp.ncbi.nlm.nih.gov/blast/db/taxdb.tar.gz -P $NT &&
 for file in $NT/*.tar.gz; do
     tar xf $file -C $NT && rm $file;
 done
