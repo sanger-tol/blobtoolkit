@@ -20,13 +20,22 @@ workflow MINIMAP2_ALIGNMENT {
     ch_versions = Channel.empty()
 
 
-    // Convert reads to FASTA
-    SAMTOOLS_FASTA ( input, true )
+    // Convert BAM/CRAM reads to FASTA
+    input
+    | branch {
+        meta, reads ->
+            fastq:   reads.toString().endsWith(".fastq") || reads.toString().endsWith(".fastq.gz") || reads.toString().endsWith(".fq") || reads.toString().endsWith(".fq.gz")
+            bamcram: true
+    }
+    | set { ch_reads_by_type }
+
+    SAMTOOLS_FASTA ( ch_reads_by_type.bamcram, true )
     ch_versions = ch_versions.mix(SAMTOOLS_FASTA.out.versions.first())
 
 
     // Branch input by sequencing type
     SAMTOOLS_FASTA.out.interleaved
+    | mix ( ch_reads_by_type.fastq )
     | branch {
         meta, reads ->
             hic: meta.datatype == "hic"
