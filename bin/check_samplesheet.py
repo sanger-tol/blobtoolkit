@@ -27,6 +27,8 @@ class RowChecker:
     VALID_FORMATS = (
         ".cram",
         ".bam",
+        ".fastq",
+        ".fastq.gz",
     )
 
     VALID_DATATYPES = (
