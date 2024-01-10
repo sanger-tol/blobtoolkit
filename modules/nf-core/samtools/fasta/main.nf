@@ -32,7 +32,6 @@ process SAMTOOLS_FASTA {
         fasta \\
         $args \\
         --threads ${task.cpus-1} \\
-        -0 ${prefix}_other.fasta.gz \\
         $input \\
         $output
 
