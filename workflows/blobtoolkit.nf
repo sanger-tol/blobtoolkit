@@ -28,6 +28,7 @@ if (params.blastp && params.accession) { ch_blastp = Channel.of([ [ 'id': params
 if (params.blastx && params.accession) { ch_blastx = Channel.of([ [ 'id': params.accession ], params.blastx ]).first() } else { exit 1, 'Diamond BLASTx database and accession must be specified!' }
 if (params.blastn && params.accession) { ch_blastn = Channel.of([ [ 'id': params.accession ], params.blastn ]).first() } else { exit 1, 'BLASTn database not specified!' }
 if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
+if (params.fetchngs_samplesheet && !params.align) { exit 1, '--align not specified, even though the input samplesheet is a nf-core/fetchngs one - i.e has fastq files!' }
 
 // Create channel for optional parameters
 if (params.busco) { ch_busco_db = Channel.fromPath(params.busco) } else { ch_busco_db = Channel.empty() }

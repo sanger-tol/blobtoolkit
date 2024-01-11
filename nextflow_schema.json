@@ -32,6 +32,11 @@
                     "description": "Turn on optional genome masking if needed.",
                     "fa_icon": "fas fa-toggle-off"
                 },
+                "fetchngs_samplesheet": {
+                    "type": "boolean",
+                    "description": "Turn on the conversion from a nf-core/fetchngs samplesheet.",
+                    "fa_icon": "fas fa-toggle-off"
+                },
                 "yaml": {
                     "type": "string",
                     "format": "file-path",
