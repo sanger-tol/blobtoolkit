@@ -2,6 +2,7 @@
 // Check input samplesheet and get aligned read channels
 //
 
+include { CAT_CAT                   } from '../../modules/nf-core/cat/cat/main'
 include { SAMPLESHEET_CHECK         } from '../../modules/local/samplesheet_check'
 include { FETCHNGSSAMPLESHEET_CHECK } from '../../modules/local/fetchngssamplesheet_check'
 include { BLOBTOOLKIT_CONFIG        } from '../../modules/local/blobtoolkit/config'
@@ -19,9 +20,22 @@ workflow INPUT_CHECK {
         FETCHNGSSAMPLESHEET_CHECK ( samplesheet )
             .csv
             .splitCsv ( header:true, sep:',' )
-            .map { create_data_channels_from_fetchngs(it) }
-            .set { aln }
+            .branch { row ->
+                paired: row.fastq_2
+                    [[id: row.run_accession, row:row], [row.fastq_1, row.fastq_2]]
+                not_paired: true
+            }
+            .set { reads_pairedness }
         ch_versions = ch_versions.mix ( FETCHNGSSAMPLESHEET_CHECK.out.versions.first() )
+
+        CAT_CAT ( reads_pairedness.paired )
+        ch_versions = ch_versions.mix ( CAT_CAT.out.versions.first() )
+
+        CAT_CAT.out.file_out
+        | map { meta, file -> meta.row + [fastq_1: file] }
+        | mix ( reads_pairedness.not_paired )
+        | map { create_data_channels_from_fetchngs(it) }
+        | set { aln }
 
     } else {
         SAMPLESHEET_CHECK ( samplesheet )

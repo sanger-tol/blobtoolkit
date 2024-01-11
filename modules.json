@@ -17,6 +17,11 @@
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/busco/busco.diff"
                     },
+                    "cat/cat": {
+                        "branch": "master",
+                        "git_sha": "d593e8f6b7d1bbbb2acf43a4b9efeeac8d6720f2",
+                        "installed_by": ["modules"]
+                    },
                     "custom/dumpsoftwareversions": {
                         "branch": "master",
                         "git_sha": "bba7e362e4afead70653f84d8700588ea28d0f9e",

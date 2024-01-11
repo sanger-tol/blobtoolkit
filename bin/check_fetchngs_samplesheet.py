@@ -35,6 +35,7 @@ class RowChecker:
         platform_col="instrument_platform",
         library_col="library_strategy",
         file1_col="fastq_1",
+        file2_col="fastq_2",
         **kwargs,
     ):
         """
@@ -49,6 +50,8 @@ class RowChecker:
                 of the instrument (default "instrument_platform").
             library_col (str): The name of the column that contains the strategy of the
                 preparation of the library (default "library_strategy").
+            file2_col (str): The name of the column that contains the second file path
+                for the paired-end read data (default "fastq_2").
         """
         super().__init__(**kwargs)
         self._accession_col = accession_col
@@ -56,6 +59,7 @@ class RowChecker:
         self._platform_col = platform_col
         self._library_col = library_col
         self._file1_col = file1_col
+        self._file2_col = file2_col
         self._seen = set()
         self.modified = []
 
@@ -83,6 +87,8 @@ class RowChecker:
         if len(row[self._file1_col]) <= 0:
             raise AssertionError("Data file is required.")
         self._validate_data_format(row[self._file1_col])
+        if row[self._file2_col]:
+            self._validate_data_format(row[self._file2_col])
 
     def _validate_data_format(self, filename):
         """Assert that a given filename has one of the expected FASTQ extensions."""
@@ -165,7 +171,7 @@ def check_samplesheet(file_in, file_out):
         https://raw.githubusercontent.com/sanger-tol/blobtoolkit/main/assets/test/samplesheet.csv
 
     """
-    required_columns = {"run_accession", "instrument_model", "instrument_platform", "library_strategy", "fastq_1"}
+    required_columns = {"run_accession", "instrument_model", "instrument_platform", "library_strategy", "fastq_1", "fastq_2"}
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))
