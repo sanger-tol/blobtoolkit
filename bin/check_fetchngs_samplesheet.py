@@ -24,9 +24,7 @@ class RowChecker:
 
     """
 
-    VALID_FORMATS = (
-        ".fastq.gz",
-    )
+    VALID_FORMATS = (".fastq.gz",)
 
     def __init__(
         self,
@@ -171,7 +169,14 @@ def check_samplesheet(file_in, file_out):
         https://raw.githubusercontent.com/sanger-tol/blobtoolkit/main/assets/test/samplesheet.csv
 
     """
-    required_columns = {"run_accession", "instrument_model", "instrument_platform", "library_strategy", "fastq_1", "fastq_2"}
+    required_columns = {
+        "run_accession",
+        "instrument_model",
+        "instrument_platform",
+        "library_strategy",
+        "fastq_1",
+        "fastq_2",
+    }
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))
