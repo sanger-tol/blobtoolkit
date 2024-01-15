@@ -172,7 +172,7 @@ workflow BLOBTOOLKIT {
     // SUBWORKFLOW: Collate genome statistics by various window sizes
     //
     COLLATE_STATS ( 
-        BUSCO_DIAMOND.out.full_table, 
+        BUSCO_DIAMOND.out.all_tables,
         COVERAGE_STATS.out.bed, 
         COVERAGE_STATS.out.freq, 
         COVERAGE_STATS.out.mononuc, 
@@ -186,7 +186,7 @@ workflow BLOBTOOLKIT {
     BLOBTOOLS ( 
         INPUT_CHECK.out.config,
         COLLATE_STATS.out.window_tsv,
-        BUSCO_DIAMOND.out.first_table,
+        BUSCO_DIAMOND.out.all_tables,
         BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]),
         RUN_BLASTX.out.blastx_out.ifEmpty([[],[]]),
         RUN_BLASTN.out.blastn_out.ifEmpty([[],[]]),

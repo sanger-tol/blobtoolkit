@@ -9,7 +9,7 @@ process BLOBTOOLKIT_CREATEBLOBDIR {
 
     input:
     tuple val(meta), path(window, stageAs: 'windowstats/*')
-    tuple val(meta1), path(busco)
+    tuple val(meta1), path(busco, stageAs: 'lineage??/*')
     tuple val(meta2), path(blastp)
     tuple val(meta3), path(yaml)
     path(taxdump)
@@ -24,6 +24,7 @@ process BLOBTOOLKIT_CREATEBLOBDIR {
     script:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"
+    def busco_args = busco.collect { "--busco " + it } .join(' ')
     def hits_blastp = blastp ? "--hits ${blastp}" : ""
     """
     blobtools replace \\
@@ -31,7 +32,7 @@ process BLOBTOOLKIT_CREATEBLOBDIR {
         --meta ${yaml} \\
         --taxdump ${taxdump} \\
         --taxrule buscogenes \\
-        --busco ${busco} \\
+        ${busco_args} \\
         ${hits_blastp} \\
         --threads ${task.cpus} \\
         $args \\
