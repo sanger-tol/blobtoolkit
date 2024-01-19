@@ -98,6 +98,8 @@ def create_data_channels_from_fetchngs(LinkedHashMap row) {
     def meta = [:]
     meta.id         = row.run_accession
 
+    // Same as https://github.com/blobtoolkit/blobtoolkit/blob/4.3.3/src/blobtoolkit-pipeline/src/lib/functions.py#L30-L39
+    // with the addition of "hic"
     switch (row.instrument_platform) {
         case "ILLUMINA":
             meta.datatype = (row.library_strategy == "Hi-C" ? "hic" : "illumina")
