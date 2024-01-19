@@ -13,19 +13,6 @@
 
 **sanger-tol/blobtoolkit** is a bioinformatics pipeline that can be used to identify and analyse non-target DNA for eukaryotic genomes. It takes a samplesheet and aligned CRAM files as input, calculates genome statistics, coverage and completeness information, combines them in a TSV file by window size to create a BlobDir dataset and static plots.
 
-<!--
-   Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
-   major pipeline sections and the types of output it produces. You're giving an overview to someone new
-   to nf-core here, in 15-20 seconds. For an example, see https://github.com/nf-core/rnaseq/blob/master/README.md#introduction
--->
-
-<!-- Include a figure that guides the user through the major workflow steps. Many nf-core
-     workflows use the "tube map" design for that. See https://nf-co.re/docs/contributing/design_guidelines#examples for examples. -->
-
-<!-- # ![sanger-tol/blobtoolkit](https://raw.githubusercontent.com/sanger-tol/blobtoolkit/main/docs/images/sanger-tol-blobtoolkit_workflow.png) -->
-
-<!-- Fill in short bullet-pointed list of the default steps in the pipeline -->
-
 1. Calculate genome statistics in windows ([`fastawindows`](https://github.com/tolkit/fasta_windows))
 2. Calculate Coverage ([`blobtk/depth`](https://github.com/blobtoolkit/blobtk))
 3. Fetch associated BUSCO lineages ([`goat/taxonsearch`](https://github.com/genomehubs/goat-cli))
@@ -44,9 +31,6 @@
 > [!NOTE]
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
 
-<!-- Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate): -->
-
 First, prepare a samplesheet with your input data that looks as follows:
 
 `samplesheet.csv`:
@@ -58,11 +42,9 @@ mMelMel1,illumina,GCA_922984935.2.illumina.mMelMel1.cram
 mMelMel3,ont,GCA_922984935.2.ont.mMelMel3.cram
 ```
 
-Each row represents an aligned file. Rows with the same sample identifier are considered technical replicates. The datatype refers to the sequencing technology used to generate the underlying raw data and follows a controlled vocabulary (ont, hic, pacbio, pacbio_clr, illumina). The aligned read files can be generated using the [sanger-tol/readmapping](https://github.com/sanger-tol/readmapping) pipeline.
+Each row represents an aligned file. Rows with the same sample identifier are considered technical replicates. The datatype refers to the sequencing technology used to generate the underlying raw data and follows a controlled vocabulary (`ont`, `hic`, `pacbio`, `pacbio_clr`, `illumina`). The aligned read files can be generated using the [sanger-tol/readmapping](https://github.com/sanger-tol/readmapping) pipeline.
 
 Now, you can run the pipeline using:
-
-<!-- update the following command to include all required parameters for a minimal example -->
 
 ```bash
 nextflow run sanger-tol/blobtoolkit \
@@ -86,7 +68,7 @@ For more details, please refer to the [usage documentation](https://pipelines.to
 
 ## Pipeline output
 
-<!-- To see the the results of a test run with a full size dataset refer to the [results](https://pipelines.tol.sanger.ac.uk/blobtoolkit/results) tab on the sanger-tol website pipeline page. --> For more details about the output files and reports, please refer to the [output documentation](https://pipelines.tol.sanger.ac.uk/blobtoolkit/output).
+For more details about the output files and reports, please refer to the [output documentation](https://pipelines.tol.sanger.ac.uk/blobtoolkit/output).
 
 ## Credits
 
