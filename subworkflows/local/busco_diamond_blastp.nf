@@ -87,19 +87,19 @@ workflow BUSCO_DIAMOND {
 
 
     // Index the lineages in the taxonomic order
-    def lineage_index = 0
+    def lineage_position = 0
     ch_lineages
-    | map { lineage -> [lineage, lineage_index++] }
+    | map { lineage -> [lineage, lineage_position++] }
     | set { ch_ordered_lineages }
 
 
-    // Order BUSCO results accoring to ch_lineages
+    // Order BUSCO results according to ch_ordered_lineages
     BUSCO.out.full_table
     | map { meta, table -> [table.parent.baseName.minus("run_"), meta, table] }
     | join ( ch_ordered_lineages )
     | map { lineage, meta, table, index -> [meta, table, index] }
     | groupTuple()
-    | map { meta, tables, indexes -> [ meta, tables.withIndex().sort { a, b -> indexes[a[1]] <=> indexes[b[1]] } . collect { table, i -> table } ] }
+    | map { meta, tables, positions -> [ meta, tables.withIndex().sort { a, b -> positions[a[1]] <=> positions[b[1]] } . collect { table, i -> table } ] }
     | set { ch_indexed_buscos }
 
 
