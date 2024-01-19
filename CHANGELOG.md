@@ -5,6 +5,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [[0.3.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.3.0)] – Poliwag – [2024-01-19]
 
+The pipeline has now been validated on five genomes, all under 100 Mbp: a
+sponge, a platyhelminth, and three fungi.
+
 ### Enhancements & fixes
 
 - Fixed the conditional runs of blastn
