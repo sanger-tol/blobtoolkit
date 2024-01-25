@@ -21,7 +21,7 @@ process BLOBTOOLKIT_EXTRACTBUSCOS {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def seq_args = seq.collect { "--busco " + it } .join(' ')
+    def seq_args = (seq instanceof List ? seq : [seq]).collect { "--busco " + it } .join(' ')
     """
     btk pipeline extract-busco-genes \\
         $seq_args \\
