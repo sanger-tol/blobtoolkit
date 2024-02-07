@@ -21,6 +21,7 @@ sponge, a platyhelminth, and three fungi.
 - FastQ files can bypass the conversion to Fasta
 - Fixed missing BUSCO results from the blobdir (only 1 BUSCO was loaded)
 - Fixed the default category used to colour the blob plots
+- Fixed the output directory of the images
 - Added an option to select the format of the images (PNG or SVG)
 
 ### Parameters
