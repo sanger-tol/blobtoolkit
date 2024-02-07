@@ -21,12 +21,14 @@ sponge, a platyhelminth, and three fungi.
 - FastQ files can bypass the conversion to Fasta
 - Fixed missing BUSCO results from the blobdir (only 1 BUSCO was loaded)
 - Fixed the default category used to colour the blob plots
+- Added an option to select the format of the images (PNG or SVG)
 
 ### Parameters
 
 | Old parameter | New parameter          |
 | ------------- | ---------------------- |
 |               | --fetchngs_samplesheet |
+|               | --image_format         |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
