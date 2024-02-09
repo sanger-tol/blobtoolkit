@@ -13,8 +13,8 @@ process BLOBTK_IMAGES {
     val format
 
     output:
-    tuple val(meta), path('*.png') , emit: png
-    tuple val(meta), path('*.svg') , emit: svg
+    tuple val(meta), path('*.png') , optional: true, emit: png
+    tuple val(meta), path('*.svg') , optional: true, emit: svg
     path "versions.yml"            , emit: versions
 
     when:
