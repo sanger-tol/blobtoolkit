@@ -55,7 +55,7 @@
                     },
                     "minimap2/align": {
                         "branch": "master",
-                        "git_sha": "a64788f5ad388f1d2ac5bd5f1f3f8fc81476148c",
+                        "git_sha": "efbf86bb487f288ac30660282709d9620dd6048e",
                         "installed_by": ["modules"]
                     },
                     "multiqc": {
