@@ -5,7 +5,7 @@ process BLOBTOOLKIT_SUMMARY {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         exit 1, "BLOBTOOLKIT_SUMMARY module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
-    container "docker.io/genomehubs/blobtoolkit:4.3.3"
+    container "docker.io/genomehubs/blobtoolkit:4.3.4"
 
     input:
     tuple val(meta), path(blobdir)
