@@ -24,43 +24,40 @@ class RowChecker:
 
     """
 
-    VALID_FORMATS = (
-        ".cram",
-        ".bam",
-        ".fastq",
-        ".fastq.gz",
-    )
-
-    VALID_DATATYPES = (
-        "hic",
-        "illumina",
-        "pacbio",
-        "pacbio_clr",
-        "ont",
-    )
+    VALID_FORMATS = (".fastq.gz",)
 
     def __init__(
         self,
-        sample_col="sample",
-        type_col="datatype",
-        file_col="datafile",
+        accession_col="run_accession",
+        model_col="instrument_model",
+        platform_col="instrument_platform",
+        library_col="library_strategy",
+        file1_col="fastq_1",
+        file2_col="fastq_2",
         **kwargs,
     ):
         """
         Initialize the row checker with the expected column names.
 
         Args:
-            sample_col (str): The name of the column that contains the sample name
-                (default "sample").
-            type_col (str): The name of the column that contains the dataype for
-                the read data (default "datatype").
-            file_col (str): The name of the column that contains the file path for
-                the read data (default "datafile").
+            accession_col (str): The name of the column that contains the accession name
+                (default "run_accession").
+            model_col (str): The name of the column that contains the model name
+                of the instrument (default "instrument_model").
+            platform_col (str): The name of the column that contains the platform name
+                of the instrument (default "instrument_platform").
+            library_col (str): The name of the column that contains the strategy of the
+                preparation of the library (default "library_strategy").
+            file2_col (str): The name of the column that contains the second file path
+                for the paired-end read data (default "fastq_2").
         """
         super().__init__(**kwargs)
-        self._sample_col = sample_col
-        self._type_col = type_col
-        self._file_col = file_col
+        self._accession_col = accession_col
+        self._model_col = model_col
+        self._platform_col = platform_col
+        self._library_col = library_col
+        self._file1_col = file1_col
+        self._file2_col = file2_col
         self._seen = set()
         self.modified = []
 
@@ -73,32 +70,23 @@ class RowChecker:
                 (values).
 
         """
-        self._validate_sample(row)
-        self._validate_type(row)
+        self._validate_accession(row)
         self._validate_file(row)
-        self._seen.add((row[self._sample_col], row[self._file_col]))
+        self._seen.add((row[self._accession_col], row[self._file1_col]))
         self.modified.append(row)
 
-    def _validate_sample(self, row):
-        """Assert that the sample name exists and convert spaces to underscores."""
-        if len(row[self._sample_col]) <= 0:
-            raise AssertionError("Sample input is required.")
-        # Sanitize samples slightly.
-        row[self._sample_col] = row[self._sample_col].replace(" ", "_")
-
-    def _validate_type(self, row):
-        """Assert that the data type matches expected values."""
-        if not any(row[self._type_col] for datatype in self.VALID_DATATYPES):
-            raise AssertionError(
-                f"The datatype is unrecognized: {row[self._type_col]}\n"
-                f"It should be one of: {', '.join(self.VALID_DATATYPES)}"
-            )
+    def _validate_accession(self, row):
+        """Assert that the run accession name exists."""
+        if len(row[self._accession_col]) <= 0:
+            raise AssertionError("Run accession is required.")
 
     def _validate_file(self, row):
         """Assert that the datafile is non-empty and has the right format."""
-        if len(row[self._file_col]) <= 0:
+        if len(row[self._file1_col]) <= 0:
             raise AssertionError("Data file is required.")
-        self._validate_data_format(row[self._file_col])
+        self._validate_data_format(row[self._file1_col])
+        if row[self._file2_col]:
+            self._validate_data_format(row[self._file2_col])
 
     def _validate_data_format(self, filename):
         """Assert that a given filename has one of the expected FASTQ extensions."""
@@ -108,21 +96,21 @@ class RowChecker:
                 f"It should be one of: {', '.join(self.VALID_FORMATS)}"
             )
 
-    def validate_unique_samples(self):
+    def validate_unique_accessions(self):
         """
-        Assert that the combination of sample name and aligned filename is unique.
+        Assert that the combination of accession name and aligned filename is unique.
 
-        In addition to the validation, also rename all samples to have a suffix of _T{n}, where n is the
-        number of times the same sample exist, but with different FASTQ files, e.g., multiple runs per experiment.
+        In addition to the validation, also rename all accessions to have a suffix of _T{n}, where n is the
+        number of times the same accession exist, but with different FASTQ files, e.g., multiple runs per experiment.
 
         """
         if len(self._seen) != len(self.modified):
-            raise AssertionError("The pair of sample and file name must be unique.")
+            raise AssertionError("The pair of accession and file name must be unique.")
         seen = Counter()
         for row in self.modified:
-            sample = row[self._sample_col]
-            seen[sample] += 1
-            row[self._sample_col] = f"{sample}_T{seen[sample]}"
+            accession = row[self._accession_col]
+            seen[accession] += 1
+            row[self._accession_col] = f"{accession}_T{seen[accession]}"
 
 
 def read_head(handle, num_lines=10):
@@ -181,7 +169,14 @@ def check_samplesheet(file_in, file_out):
         https://raw.githubusercontent.com/sanger-tol/blobtoolkit/main/assets/test/samplesheet.csv
 
     """
-    required_columns = {"sample", "datatype", "datafile"}
+    required_columns = {
+        "run_accession",
+        "instrument_model",
+        "instrument_platform",
+        "library_strategy",
+        "fastq_1",
+        "fastq_2",
+    }
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))
@@ -198,7 +193,7 @@ def check_samplesheet(file_in, file_out):
             except AssertionError as error:
                 logger.critical(f"{str(error)} On line {i + 2}.")
                 sys.exit(1)
-        checker.validate_unique_samples()
+        checker.validate_unique_accessions()
     header = list(reader.fieldnames)
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_out.open(mode="w", newline="") as out_handle:

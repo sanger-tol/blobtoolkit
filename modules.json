@@ -7,7 +7,7 @@
                 "nf-core": {
                     "blast/blastn": {
                         "branch": "master",
-                        "git_sha": "f0d13ae7e1f9b24a705764f8673af859268d7077",
+                        "git_sha": "209e5a3e2753c5e628736a662c877c20f341ee15",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/blast/blastn/blast-blastn.diff"
                     },
@@ -16,6 +16,12 @@
                         "git_sha": "e3126f437c336c826f242842fe51769cfce0ec2d",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/busco/busco.diff"
+                    },
+                    "cat/cat": {
+                        "branch": "master",
+                        "git_sha": "81f27e75847087865299cc46605deb3b09b4e0a2",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/cat/cat/cat-cat.diff"
                     },
                     "custom/dumpsoftwareversions": {
                         "branch": "master",
@@ -59,8 +65,9 @@
                     },
                     "samtools/fasta": {
                         "branch": "master",
-                        "git_sha": "a64788f5ad388f1d2ac5bd5f1f3f8fc81476148c",
-                        "installed_by": ["modules"]
+                        "git_sha": "9b1071e19265cf9c0d06958a011cf7a9cfe37213",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/samtools/fasta/samtools-fasta.diff"
                     },
                     "samtools/index": {
                         "branch": "master",

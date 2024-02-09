@@ -28,6 +28,7 @@ if (params.blastp && params.accession) { ch_blastp = Channel.of([ [ 'id': params
 if (params.blastx && params.accession) { ch_blastx = Channel.of([ [ 'id': params.accession ], params.blastx ]).first() } else { exit 1, 'Diamond BLASTx database and accession must be specified!' }
 if (params.blastn && params.accession) { ch_blastn = Channel.of([ [ 'id': params.accession ], params.blastn ]).first() } else { exit 1, 'BLASTn database not specified!' }
 if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
+if (params.fetchngs_samplesheet && !params.align) { exit 1, '--align not specified, even though the input samplesheet is a nf-core/fetchngs one - i.e has fastq files!' }
 
 // Create channel for optional parameters
 if (params.busco) { ch_busco_db = Channel.fromPath(params.busco) } else { ch_busco_db = Channel.empty() }
@@ -171,7 +172,7 @@ workflow BLOBTOOLKIT {
     // SUBWORKFLOW: Collate genome statistics by various window sizes
     //
     COLLATE_STATS ( 
-        BUSCO_DIAMOND.out.full_table, 
+        BUSCO_DIAMOND.out.all_tables,
         COVERAGE_STATS.out.bed, 
         COVERAGE_STATS.out.freq, 
         COVERAGE_STATS.out.mononuc, 
@@ -185,7 +186,7 @@ workflow BLOBTOOLKIT {
     BLOBTOOLS ( 
         INPUT_CHECK.out.config,
         COLLATE_STATS.out.window_tsv,
-        BUSCO_DIAMOND.out.first_table,
+        BUSCO_DIAMOND.out.all_tables,
         BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]),
         RUN_BLASTX.out.blastx_out.ifEmpty([[],[]]),
         RUN_BLASTN.out.blastn_out.ifEmpty([[],[]]),

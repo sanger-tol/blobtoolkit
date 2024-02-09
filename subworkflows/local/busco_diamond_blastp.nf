@@ -51,7 +51,7 @@ workflow BUSCO_DIAMOND {
 
 
     // Add the basal lineages to the list (excluding duplicates)
-    basal_lineages = [ "archaea_odb10", "bacteria_odb10", "eukaryota_odb10" ]
+    basal_lineages = [ "eukaryota_odb10", "bacteria_odb10", "archaea_odb10" ]
     ch_ancestral_lineages
     | map { lineages -> (lineages + basal_lineages).unique() }
     | flatten ()
@@ -86,11 +86,26 @@ workflow BUSCO_DIAMOND {
     ch_versions = ch_versions.mix ( DIAMOND_BLASTP.out.versions.first() )
 
 
-    // Select BUSCO results for taxonomically closest database
+    // Index the lineages in the taxonomic order
+    def lineage_position = 0
+    ch_lineages
+    | map { lineage -> [lineage, lineage_position++] }
+    | set { ch_ordered_lineages }
+
+
+    // Order BUSCO results according to ch_ordered_lineages
     BUSCO.out.full_table
-    | combine ( ch_lineages.toList().map { it[0] } )
-    | filter { meta, table, lineage -> table =~ /$lineage/ }
-    | map { meta, table, lineage -> [ meta, table ] }
+    | map { meta, table -> [table.parent.baseName.minus("run_"), meta, table] }
+    | join ( ch_ordered_lineages )
+    | map { lineage, meta, table, index -> [meta, table, index] }
+    | groupTuple()
+    | map { meta, tables, positions -> [ meta, tables.withIndex().sort { a, b -> positions[a[1]] <=> positions[b[1]] } . collect { table, i -> table } ] }
+    | set { ch_indexed_buscos }
+
+
+    // Select BUSCO results for taxonomically closest database
+    ch_indexed_buscos
+    | map { meta, tables -> [meta, tables[0]] }
     | set { ch_first_table }
 
 
@@ -102,7 +117,7 @@ workflow BUSCO_DIAMOND {
 
     emit:
     first_table = ch_first_table          // channel: [ val(meta), path(full_table) ] 
-    full_table  = BUSCO.out.full_table    // channel: [ val(meta), path(full_tables) ]
+    all_tables  = ch_indexed_buscos       // channel: [ val(meta), path(full_tables) ]
     blastp_txt  = DIAMOND_BLASTP.out.txt  // channel: [ val(meta), path(txt) ]
     taxon_id    = ch_taxid                // channel: taxon_id
     multiqc                               // channel: [ meta, summary ]

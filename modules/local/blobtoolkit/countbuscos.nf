@@ -5,7 +5,7 @@ process BLOBTOOLKIT_COUNTBUSCOS {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         exit 1, "BLOBTOOLKIT_COUNTBUSCOS module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
-    container "docker.io/genomehubs/blobtoolkit:4.3.2"
+    container "docker.io/genomehubs/blobtoolkit:4.3.3"
 
     input:
     tuple val(meta), path(table, stageAs: 'dir??/*')
@@ -21,7 +21,7 @@ process BLOBTOOLKIT_COUNTBUSCOS {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def busco_inputs = table.collect{"--in $it"}.join(' ')
+    def busco_inputs = (table instanceof List ? table : [table]).collect{"--in $it"}.join(' ')
     """
     btk pipeline count-busco-genes \\
         $busco_inputs \\
