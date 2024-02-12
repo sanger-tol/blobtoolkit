@@ -29,6 +29,8 @@ The files in the BlobDir dataset which is used to create the online interactive 
   - `*.json`: files generated from genome and alignment coverage statistics
   - `*.png`: static plot images
 
+More information about visualising the data in the [BlobToolKit repository](https://github.com/blobtoolkit/blobtoolkit/tree/main/src/viewer)
+
 </details>
 
 ### MultiQC

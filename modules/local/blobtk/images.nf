@@ -10,9 +10,11 @@ process BLOBTK_IMAGES {
     input:
     tuple val(meta), path(blobdir)
     each plot
+    val format
 
     output:
-    tuple val(meta), path('*.png') , emit: png
+    tuple val(meta), path('*.png') , optional: true, emit: png
+    tuple val(meta), path('*.svg') , optional: true, emit: svg
     path "versions.yml"            , emit: versions
 
     when:
@@ -26,7 +28,7 @@ process BLOBTK_IMAGES {
     blobtk plot \\
         -v ${plot} \\
         -d ${blobdir} \\
-        -o ${prefix}.${plot}.png \\
+        -o ${prefix}.${plot}.${format} \\
         ${legend} \\
         $args
 

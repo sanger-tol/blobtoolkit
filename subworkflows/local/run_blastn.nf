@@ -52,23 +52,27 @@ workflow RUN_BLASTN {
     // Run blastn search
     // run blastn excluding taxon_id
     BLASTN_TAXON ( BLOBTOOLKIT_CHUNK.out.chunks, blastn, taxon_id )
+    ch_versions = ch_versions.mix ( BLASTN_TAXON.out.versions.first() )
 
     // check if blastn output table is empty
     BLASTN_TAXON.out.txt
-    | map { meta, txt -> txt.isEmpty() }
-    | set { is_txt_empty }
+    | branch { meta, txt ->
+        empty:     txt.isEmpty()
+        not_empty: true
+    }
+    | set { ch_blastn_taxon_out }
 
     // repeat the blastn search without excluding taxon_id
-    if ( is_txt_empty ) {
-        BLAST_BLASTN ( BLOBTOOLKIT_CHUNK.out.chunks, blastn, [] )
-        ch_blastn_txt = BLAST_BLASTN.out.txt
-    }
-    else {
-        ch_blastn_txt = BLASTN_TAXON.out.txt
-    }
+    ch_blastn_taxon_out.empty.join ( BLOBTOOLKIT_CHUNK.out.chunks )
+    | map { meta, txt, fasta -> [meta, fasta] }
+    | set { ch_blast_blastn_input }
 
+    BLAST_BLASTN ( ch_blast_blastn_input, blastn, [] )
     ch_versions = ch_versions.mix ( BLAST_BLASTN.out.versions.first() )
 
+    BLAST_BLASTN.out.txt
+    | mix( ch_blastn_taxon_out.not_empty )
+    | set { ch_blastn_txt }
 
     // Unchunk chunked blastn results
     BLOBTOOLKIT_UNCHUNK ( ch_blastn_txt )

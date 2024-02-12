@@ -25,12 +25,18 @@ process BLAST_BLASTN {
     def is_compressed = fasta.getExtension() == "gz" ? true : false
     def fasta_name = is_compressed ? fasta.getBaseName() : fasta
     def exclude_taxon = taxid ? "-negative_taxids ${taxid}" : ''
+
     """
     if [ "${is_compressed}" == "true" ]; then
         gzip -c -d ${fasta} > ${fasta_name}
     fi
 
-    DB=`find -L ./ -name "*.nin" | sed 's/\\.nin\$//'`
+    DB=`find -L ./ -name "*.nal" | sed 's/\\.nal\$//'`
+    if [ -z "\$DB" ]; then
+        DB=`find -L ./ -name "*.nin" | sed 's/\\.nin\$//'`
+    fi
+    echo Using \$DB
+
     blastn \\
         -num_threads ${task.cpus} \\
         -db \$DB \\

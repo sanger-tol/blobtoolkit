@@ -32,11 +32,22 @@
                     "description": "Turn on optional genome masking if needed.",
                     "fa_icon": "fas fa-toggle-off"
                 },
+                "fetchngs_samplesheet": {
+                    "type": "boolean",
+                    "description": "Turn on the conversion from a nf-core/fetchngs samplesheet.",
+                    "fa_icon": "fas fa-toggle-off"
+                },
                 "yaml": {
                     "type": "string",
                     "format": "file-path",
                     "description": "Custom config file for draft assembly",
                     "fa_icon": "fas fa-file-alt"
+                },
+                "image_format": {
+                    "type": "string",
+                    "enum": ["png", "svg"],
+                    "description": "Select the format of the output images.",
+                    "fa_icon": "fas fa-image"
                 },
                 "outdir": {
                     "type": "string",
@@ -67,8 +78,8 @@
             "required": ["taxon", "accession", "fasta"],
             "properties": {
                 "taxon": {
-                    "type": "string",
-                    "description": "NCBI taxonomy ID for the genome species"
+                    "type": ["string", "integer"],
+                    "description": "Name or taxonomy ID for the genome species"
                 },
                 "accession": {
                     "type": "string",

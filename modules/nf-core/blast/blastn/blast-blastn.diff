@@ -9,16 +9,15 @@ Changes in module 'nf-core/blast/blastn'
  
      output:
      tuple val(meta), path('*.txt'), emit: txt
-@@ -23,7 +24,7 @@
+@@ -23,6 +24,7 @@
      def prefix = task.ext.prefix ?: "${meta.id}"
      def is_compressed = fasta.getExtension() == "gz" ? true : false
      def fasta_name = is_compressed ? fasta.getBaseName() : fasta
--
 +    def exclude_taxon = taxid ? "-negative_taxids ${taxid}" : ''
+ 
      """
      if [ "${is_compressed}" == "true" ]; then
-         gzip -c -d ${fasta} > ${fasta_name}
-@@ -34,6 +35,7 @@
+@@ -39,6 +41,7 @@
          -num_threads ${task.cpus} \\
          -db \$DB \\
          -query ${fasta_name} \\

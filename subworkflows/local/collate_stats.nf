@@ -9,7 +9,7 @@ include { BLOBTOOLKIT_WINDOWSTATS } from '../../modules/local/blobtoolkit/window
 
 workflow COLLATE_STATS {
     take: 
-    busco_table // channel: [ val(meta), path(full_table) ]
+    busco       // channel: [ val(meta), path(full_table) ]
     bed         // channel: [ val(meta), path(bed) ]
     freq        // channel: [ val(meta), path(freq) ]
     mononuc     // channel: [ val(meta), path(mononuc) ]
@@ -20,11 +20,7 @@ workflow COLLATE_STATS {
 
 
     // Count BUSCO genes in a region
-    busco_table
-    | groupTuple()
-    | set { ch_busco }
-
-    BLOBTOOLKIT_COUNTBUSCOS ( ch_busco, bed )
+    BLOBTOOLKIT_COUNTBUSCOS ( busco, bed )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_COUNTBUSCOS.out.versions.first() )
 
 

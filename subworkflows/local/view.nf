@@ -22,16 +22,17 @@ workflow VIEW {
 
 
     //
-    // Generate static plots in png format
+    // Generate static plots in png/svg format
     //
     plots = [ "blob", "cumulative", "snail" ]
 
-    BLOBTK_IMAGES ( blobdir, plots )
+    BLOBTK_IMAGES ( blobdir, plots, params.image_format )
     ch_versions = ch_versions.mix( BLOBTK_IMAGES.out.versions )
 
+    ch_images = BLOBTK_IMAGES.out.png.mix(BLOBTK_IMAGES.out.svg)
 
     emit:
     summary  = BLOBTOOLKIT_SUMMARY.out.json  // channel: [ val(meta), path(json) ]
-    images   = BLOBTK_IMAGES.out.png         // channel: [ val(meta), path(png) ]
+    images   = ch_images                     // channel: [ val(meta), path(png/svg) ]
     versions = ch_versions                   // channel: [ versions.yml ]
 }

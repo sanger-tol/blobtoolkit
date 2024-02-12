@@ -5,7 +5,7 @@ process BLOBTOOLKIT_EXTRACTBUSCOS {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         exit 1, "BLOBTOOLKIT_EXTRACTBUSCOS module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
-    container "docker.io/genomehubs/blobtoolkit:4.3.2"
+    container "docker.io/genomehubs/blobtoolkit:4.3.3"
 
     input:
     tuple val(meta), path(fasta)
@@ -21,7 +21,7 @@ process BLOBTOOLKIT_EXTRACTBUSCOS {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def seq_args = seq.collect { "--busco " + it } .join(' ')
+    def seq_args = (seq instanceof List ? seq : [seq]).collect { "--busco " + it } .join(' ')
     """
     btk pipeline extract-busco-genes \\
         $seq_args \\
