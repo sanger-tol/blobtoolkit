@@ -3,7 +3,8 @@ name: sanger-tol LSF full size tests
 on:
   push:
     branches:
-      - large_tower_env
+      - main
+      - dev
   workflow_dispatch:
 jobs:
   run-tower:
