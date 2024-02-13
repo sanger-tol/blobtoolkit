@@ -1,9 +1,6 @@
 name: sanger-tol LSF tests
 
 on:
-  push:
-    branches:
-      - large_tower_env
   workflow_dispatch:
 jobs:
   run-tower:
