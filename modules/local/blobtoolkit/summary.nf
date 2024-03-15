@@ -23,7 +23,7 @@ process BLOBTOOLKIT_SUMMARY {
     """
     blobtools filter \\
         ${args} \\
-        --summary ${prefix}.summary.json ${blobdir}
+        --summary ${blobdir}/${prefix}.summary.json ${blobdir}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
