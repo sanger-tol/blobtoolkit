@@ -79,8 +79,8 @@ def create_data_channels(LinkedHashMap row) {
     // add path(s) of the read file(s) to the meta map
     def data_meta = []
 
-    if ( !params.align && (row.datafile.endsWith(".fastq") || row.datafile.endsWith(".fastq.gz")) ) {
-        exit 1, "ERROR: Please check input samplesheet and pipeline parameters -> Data file is in FastQ format but --align is not set!\n${row.datafile}"
+    if ( !params.align && !row.datafile.endsWith(".bam") && !row.datafile.endsWith(".cram") ) {
+        exit 1, "ERROR: Please check input samplesheet and pipeline parameters -> Data file is in FastA/FastQ format but --align is not set!\n${row.datafile}"
     }
 
     if ( !file(row.datafile).exists() ) {
