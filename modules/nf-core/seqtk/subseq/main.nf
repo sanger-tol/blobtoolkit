@@ -12,7 +12,7 @@ process SEQTK_SUBSEQ {
     path filter_list
 
     output:
-    tuple val(meta), path("*.gz"),  emit: sequences
+    tuple val(meta), path("*.${ext}"),  emit: sequences
     path "versions.yml",            emit: versions
 
     when:
@@ -21,7 +21,7 @@ process SEQTK_SUBSEQ {
     script:
     def args   = task.ext.args   ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def ext = "fa"
+    ext = "fa"
     if ("$sequences" ==~ /.+\.fq|.+\.fq.gz|.+\.fastq|.+\.fastq.gz/) {
         ext = "fq"
     }
@@ -30,8 +30,7 @@ process SEQTK_SUBSEQ {
         subseq \\
         $args \\
         $sequences \\
-        $filter_list | \\
-        gzip --no-name > ${sequences}${prefix}.${ext}.gz
+        $filter_list > ${sequences}${prefix}.${ext}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -41,12 +40,12 @@ process SEQTK_SUBSEQ {
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def ext = "fa"
+    ext = "fa"
     if ("$sequences" ==~ /.+\.fq|.+\.fq.gz|.+\.fastq|.+\.fastq.gz/) {
         ext = "fq"
     }
     """
-    echo "" | gzip > ${sequences}${prefix}.${ext}.gz
+    touch ${sequences}${prefix}.${ext}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

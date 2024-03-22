@@ -5,7 +5,6 @@
 
 include { NOHIT_LIST                   } from '../../modules/local/nohit_list'
 include { SEQTK_SUBSEQ                 } from '../../modules/nf-core/seqtk/subseq/main'
-include { GUNZIP                       } from '../../modules/nf-core/gunzip/main'
 include { BLOBTOOLKIT_CHUNK            } from '../../modules/local/blobtoolkit/chunk'
 include { BLAST_BLASTN as BLASTN_TAXON } from '../../modules/nf-core/blast/blastn/main'
 include { BLAST_BLASTN                 } from '../../modules/nf-core/blast/blastn/main'
@@ -38,11 +37,8 @@ workflow RUN_BLASTN {
     
     
     //  Split long contigs into chunks 
-    // uncompress fasta
-    GUNZIP ( SEQTK_SUBSEQ.out.sequences )
-
     // create chunks
-    BLOBTOOLKIT_CHUNK ( GUNZIP.out.gunzip, [[],[]] )
+    BLOBTOOLKIT_CHUNK ( SEQTK_SUBSEQ.out.sequences, [[],[]] )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_CHUNK.out.versions.first() )
 
 
