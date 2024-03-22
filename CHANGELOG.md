@@ -14,6 +14,7 @@ The pipeline has now been validated on dozens of genomes, up to 11 Gbp.
 - Files in the output blobdir are now compressed.
 - All modules handling blobdirs can now be cached.
 - Large genomes supported, up to at least 11 Gbp.
+- Allow all variations of FASTA and FASTQ extensions for input.
 - More fields included in the trace files.
 
 ### Software dependencies
