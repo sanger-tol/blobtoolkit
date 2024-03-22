@@ -55,7 +55,6 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 // MODULE: Loaded from modules/local/
 //
 include { BLOBTOOLKIT_CONFIG     } from '../modules/local/blobtoolkit/config'
-include { BLOBTOOLKIT_UPDATEMETA } from '../modules/local/blobtoolkit/updatemeta'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -70,6 +69,7 @@ include { RUN_BLASTN         } from '../subworkflows/local/run_blastn'
 include { COLLATE_STATS      } from '../subworkflows/local/collate_stats'
 include { BLOBTOOLS          } from '../subworkflows/local/blobtools'
 include { VIEW               } from '../subworkflows/local/view'
+include { FINALISE_BLOBDIR   } from '../subworkflows/local/finalise_blobdir'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -208,9 +208,14 @@ workflow BLOBTOOLKIT {
     )
 
     //
-    // MODULE: Update meta json file
+    // SUBWORKFLOW: Finalise and publish the blobdir
     //
-    BLOBTOOLKIT_UPDATEMETA ( BLOBTOOLS.out.blobdir, CUSTOM_DUMPSOFTWAREVERSIONS.out.yml )
+    FINALISE_BLOBDIR (
+        BLOBTOOLS.out.blobdir,
+        CUSTOM_DUMPSOFTWAREVERSIONS.out.yml,
+        VIEW.out.summary
+    )
+    // Don't update ch_versions because it's already been consumed by now
 
 
     //
