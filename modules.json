@@ -56,7 +56,8 @@
                     "minimap2/align": {
                         "branch": "master",
                         "git_sha": "2c2d1cf80866dbd6dd0ea5d61ddd59533a72d41e",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/minimap2/align/minimap2-align.diff"
                     },
                     "multiqc": {
                         "branch": "master",
