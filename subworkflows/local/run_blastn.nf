@@ -29,20 +29,17 @@ workflow RUN_BLASTN {
     NOHIT_LIST ( blast_table, fasta )
     ch_versions = ch_versions.mix ( NOHIT_LIST.out.versions.first() )
  
-    // Subset of sequences with no hits (meta is not propagated in this step)
+    // Subset of sequences with no hits
     SEQTK_SUBSEQ (
-        fasta.map { meta, genome -> genome },
+        fasta,
         NOHIT_LIST.out.nohitlist.map { meta, nohit -> nohit }
     )
     ch_versions = ch_versions.mix ( SEQTK_SUBSEQ.out.versions.first() )
     
     
     //  Split long contigs into chunks 
-    // add meta to fasta subset channel: [ val(meta), path(compressed_fasta) ]
-    ch_gz = fasta.combine(SEQTK_SUBSEQ.out.sequences).map { meta, genome, seq ->  [ meta, seq ] }
-
     // uncompress fasta
-    GUNZIP ( ch_gz )
+    GUNZIP ( SEQTK_SUBSEQ.out.sequences )
 
     // create chunks
     BLOBTOOLKIT_CHUNK ( GUNZIP.out.gunzip, [[],[]] )
