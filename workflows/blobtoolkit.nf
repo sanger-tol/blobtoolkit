@@ -105,7 +105,7 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Check samplesheet and create channels for downstream analysis
     //
-    INPUT_CHECK ( ch_input, ch_fasta, ch_yaml )
+    INPUT_CHECK ( ch_input, PREPARE_GENOME.out.genome, ch_yaml )
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
 
     // 
@@ -130,9 +130,9 @@ workflow BLOBTOOLKIT {
     //
     if (params.taxa_file) { 
         ch_taxa = Channel.from(params.taxa_file)
-        ch_taxon_taxa = ch_fasta.combine(ch_taxon).combine(ch_taxa).map { meta, fasta, taxon, taxa -> [ meta, taxon, taxa ] }
+        ch_taxon_taxa = PREPARE_GENOME.out.genome.combine(ch_taxon).combine(ch_taxa).map { meta, fasta, taxon, taxa -> [ meta, taxon, taxa ] }
     } else { 
-        ch_taxon_taxa = ch_fasta.combine(ch_taxon).map { meta, fasta, taxon -> [ meta, taxon, [] ] }
+        ch_taxon_taxa = PREPARE_GENOME.out.genome.combine(ch_taxon).map { meta, fasta, taxon -> [ meta, taxon, [] ] }
     }
 
     BUSCO_DIAMOND ( 
