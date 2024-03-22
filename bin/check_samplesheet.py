@@ -31,6 +31,10 @@ class RowChecker:
         ".fq.gz",
         ".fastq",
         ".fastq.gz",
+        ".fa",
+        ".fa.gz",
+        ".fasta",
+        ".fasta.gz",
     )
 
     VALID_DATATYPES = (

@@ -24,6 +24,7 @@ workflow MINIMAP2_ALIGNMENT {
     input
     | branch {
         meta, reads ->
+            fasta:   reads.toString().endsWith(".fasta") || reads.toString().endsWith(".fasta.gz") || reads.toString().endsWith(".fa") || reads.toString().endsWith(".fa.gz")
             fastq:   reads.toString().endsWith(".fastq") || reads.toString().endsWith(".fastq.gz") || reads.toString().endsWith(".fq") || reads.toString().endsWith(".fq.gz")
             bamcram: true
     }
@@ -35,6 +36,7 @@ workflow MINIMAP2_ALIGNMENT {
 
     // Branch input by sequencing type
     SAMTOOLS_FASTA.out.interleaved
+    | mix ( ch_reads_by_type.fasta )
     | mix ( ch_reads_by_type.fastq )
     | branch {
         meta, reads ->
