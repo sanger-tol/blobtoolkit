@@ -112,11 +112,11 @@ workflow BLOBTOOLKIT {
     // SUBWORKFLOW: Optional read alignment
     //
     if ( params.align ) {
-        MINIMAP2_ALIGNMENT ( INPUT_CHECK.out.aln, PREPARE_GENOME.out.genome )
+        MINIMAP2_ALIGNMENT ( INPUT_CHECK.out.reads, PREPARE_GENOME.out.genome )
         ch_versions = ch_versions.mix ( MINIMAP2_ALIGNMENT.out.versions )
         ch_aligned = MINIMAP2_ALIGNMENT.out.aln
     } else {
-        ch_aligned = INPUT_CHECK.out.aln
+        ch_aligned = INPUT_CHECK.out.reads
     }
 
     //
