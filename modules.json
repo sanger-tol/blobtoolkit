@@ -20,8 +20,7 @@
                     "cat/cat": {
                         "branch": "master",
                         "git_sha": "81f27e75847087865299cc46605deb3b09b4e0a2",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/cat/cat/cat-cat.diff"
+                        "installed_by": ["modules"]
                     },
                     "custom/dumpsoftwareversions": {
                         "branch": "master",
