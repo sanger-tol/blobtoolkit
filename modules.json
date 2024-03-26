@@ -19,13 +19,12 @@
                     },
                     "cat/cat": {
                         "branch": "master",
-                        "git_sha": "81f27e75847087865299cc46605deb3b09b4e0a2",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/cat/cat/cat-cat.diff"
+                        "git_sha": "9437e6053dccf4aafa022bfd6e7e9de67e625af8",
+                        "installed_by": ["modules"]
                     },
                     "custom/dumpsoftwareversions": {
                         "branch": "master",
-                        "git_sha": "bba7e362e4afead70653f84d8700588ea28d0f9e",
+                        "git_sha": "de45447d060b8c8b98575bc637a4a575fd0638e1",
                         "installed_by": ["modules"]
                     },
                     "diamond/blastp": {
@@ -41,7 +40,8 @@
                     "fastawindows": {
                         "branch": "master",
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/fastawindows/fastawindows.diff"
                     },
                     "goat/taxonsearch": {
                         "branch": "master",
@@ -50,48 +50,55 @@
                     },
                     "gunzip": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "3a5fef109d113b4997c9822198664ca5f2716208",
                         "installed_by": ["modules"]
                     },
                     "minimap2/align": {
                         "branch": "master",
-                        "git_sha": "a64788f5ad388f1d2ac5bd5f1f3f8fc81476148c",
-                        "installed_by": ["modules"]
+                        "git_sha": "2c2d1cf80866dbd6dd0ea5d61ddd59533a72d41e",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/minimap2/align/minimap2-align.diff"
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "4ab13872435962dadc239979554d13709e20bf29",
+                        "git_sha": "b7ebe95761cd389603f9cc0e0dc384c0f663815a",
                         "installed_by": ["modules"]
                     },
                     "samtools/fasta": {
                         "branch": "master",
-                        "git_sha": "9b1071e19265cf9c0d06958a011cf7a9cfe37213",
+                        "git_sha": "f4596fe0bdc096cf53ec4497e83defdb3a94ff62",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/samtools/fasta/samtools-fasta.diff"
                     },
+                    "samtools/flagstat": {
+                        "branch": "master",
+                        "git_sha": "f4596fe0bdc096cf53ec4497e83defdb3a94ff62",
+                        "installed_by": ["modules"]
+                    },
                     "samtools/index": {
                         "branch": "master",
-                        "git_sha": "a64788f5ad388f1d2ac5bd5f1f3f8fc81476148c",
+                        "git_sha": "f4596fe0bdc096cf53ec4497e83defdb3a94ff62",
                         "installed_by": ["modules"]
                     },
                     "samtools/view": {
                         "branch": "master",
-                        "git_sha": "a64788f5ad388f1d2ac5bd5f1f3f8fc81476148c",
+                        "git_sha": "0bd7d2333a88483aa0476acea172e9f5f6dd83bb",
                         "installed_by": ["modules"]
                     },
                     "seqtk/subseq": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["modules"]
+                        "git_sha": "7f88aae93c69586c0789322b77743ee0ef469502",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/seqtk/subseq/seqtk-subseq.diff"
                     },
                     "windowmasker/mkcounts": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "32cac29d4a92220965dace68a1fb0bb2e3547cac",
                         "installed_by": ["modules"]
                     },
                     "windowmasker/ustat": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "32cac29d4a92220965dace68a1fb0bb2e3547cac",
                         "installed_by": ["modules"]
                     }
                 }

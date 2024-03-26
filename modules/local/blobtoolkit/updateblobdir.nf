@@ -5,10 +5,10 @@ process BLOBTOOLKIT_UPDATEBLOBDIR {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         exit 1, "BLOBTOOLKIT_BLOBDIR module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
-    container "docker.io/genomehubs/blobtoolkit:4.3.3"
+    container "docker.io/genomehubs/blobtoolkit:4.3.9"
 
     input:
-    tuple val(meta), path(input)
+    tuple val(meta), path(input, stageAs: "input_blobdir")
     tuple val(meta1), path(blastx, stageAs: "blastx.txt")
     tuple val(meta2), path(blastn, stageAs: "blastn.txt")
     path(taxdump)
@@ -26,6 +26,9 @@ process BLOBTOOLKIT_UPDATEBLOBDIR {
     def hits_blastx = blastx ? "--hits ${blastx}" : ""
     def hits_blastn = blastn ? "--hits ${blastn}" : ""
     """
+    # In-place modifications are not great in Nextflow, so work on a copy of ${input}
+    mkdir ${prefix}
+    cp --preserve=timestamp ${input}/* ${prefix}/
     blobtools replace \\
         --taxdump ${taxdump} \\
         --taxrule bestdistorder=buscoregions \\
@@ -33,7 +36,7 @@ process BLOBTOOLKIT_UPDATEBLOBDIR {
         ${hits_blastn} \\
         --threads ${task.cpus} \\
         $args \\
-        ${input}
+        ${prefix}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

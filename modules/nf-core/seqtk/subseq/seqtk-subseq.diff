@@ -1,0 +1,48 @@
+Changes in module 'nf-core/seqtk/subseq'
+--- modules/nf-core/seqtk/subseq/main.nf
++++ modules/nf-core/seqtk/subseq/main.nf
+@@ -12,7 +12,7 @@
+     path filter_list
+ 
+     output:
+-    tuple val(meta), path("*.gz"),  emit: sequences
++    tuple val(meta), path("*.${ext}"),  emit: sequences
+     path "versions.yml",            emit: versions
+ 
+     when:
+@@ -21,7 +21,7 @@
+     script:
+     def args   = task.ext.args   ?: ''
+     def prefix = task.ext.prefix ?: "${meta.id}"
+-    def ext = "fa"
++    ext = "fa"
+     if ("$sequences" ==~ /.+\.fq|.+\.fq.gz|.+\.fastq|.+\.fastq.gz/) {
+         ext = "fq"
+     }
+@@ -30,8 +30,7 @@
+         subseq \\
+         $args \\
+         $sequences \\
+-        $filter_list | \\
+-        gzip --no-name > ${sequences}${prefix}.${ext}.gz
++        $filter_list > ${sequences}${prefix}.${ext}
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+@@ -41,12 +40,12 @@
+ 
+     stub:
+     def prefix = task.ext.prefix ?: "${meta.id}"
+-    def ext = "fa"
++    ext = "fa"
+     if ("$sequences" ==~ /.+\.fq|.+\.fq.gz|.+\.fastq|.+\.fastq.gz/) {
+         ext = "fq"
+     }
+     """
+-    echo "" | gzip > ${sequences}${prefix}.${ext}.gz
++    touch ${sequences}${prefix}.${ext}
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+
+************************************************************

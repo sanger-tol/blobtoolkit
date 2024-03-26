@@ -1,0 +1,12 @@
+Changes in module 'nf-core/fastawindows'
+--- modules/nf-core/fastawindows/main.nf
++++ modules/nf-core/fastawindows/main.nf
+@@ -1,6 +1,5 @@
+ process FASTAWINDOWS {
+     tag "$meta.id"
+-    label 'process_low'
+ 
+     conda "${moduleDir}/environment.yml"
+     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+
+************************************************************

@@ -12,9 +12,10 @@ def parse_args(args=None):
     Description = "Combine BED files to create window stats input file."
 
     parser = argparse.ArgumentParser(description=Description)
-    parser.add_argument("--meta", help="Input JSON file.", required=True)
+    parser.add_argument("--meta_in", help="Input JSON file.", required=True)
+    parser.add_argument("--meta_out", help="Output JSON file.", required=True)
     parser.add_argument("--software", help="Input YAML file.", required=True)
-    parser.add_argument("--version", action="version", version="%(prog)s 1.0.0")
+    parser.add_argument("--version", action="version", version="%(prog)s 1.1.0")
     return parser.parse_args(args)
 
 
@@ -41,8 +42,8 @@ def update_meta(meta, software):
 def main(args=None):
     args = parse_args(args)
 
-    data = update_meta(args.meta, args.software)
-    with open(args.meta, "w") as fh:
+    data = update_meta(args.meta_in, args.software)
+    with open(args.meta_out, "w") as fh:
         json.dump(data, fh)
 
 
