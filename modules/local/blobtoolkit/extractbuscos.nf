@@ -9,7 +9,7 @@ process BLOBTOOLKIT_EXTRACTBUSCOS {
 
     input:
     tuple val(meta), path(fasta)
-    tuple val(metaseq), path(seq, stageAs: "lineage??/*")
+    path seq, stageAs: "lineage??/*"
 
     output:
     tuple val(meta), path("*_buscogenes.fasta"), emit: genes

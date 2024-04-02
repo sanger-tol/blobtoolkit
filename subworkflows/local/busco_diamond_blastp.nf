@@ -43,22 +43,36 @@ workflow BUSCO_DIAMOND {
 
 
     //
-    // Run BUSCO search
+    // Prepare the BUSCO linages
     //
+    // 0. Initialise sone variables
+    basal_lineages = [ "eukaryota_odb10", "bacteria_odb10", "archaea_odb10" ]
+    def lineage_position = 0
+    // 1. Parse the GOAT_TAXONSEARCH output
     GOAT_TAXONSEARCH.out.taxonsearch
     | map { meta, csv -> csv.splitCsv(header:true, sep:'\t', strip:true) }
     | map { row -> row.odb10_lineage.findAll { it != "" } }
-    | set { ch_ancestral_lineages }
-
-
-    // Add the basal lineages to the list (excluding duplicates)
-    basal_lineages = [ "eukaryota_odb10", "bacteria_odb10", "archaea_odb10" ]
-    ch_ancestral_lineages
+    // 2. Add the (missing) basal lineages
     | map { lineages -> (lineages + basal_lineages).unique() }
     | flatten ()
-    | set { ch_lineages }
+    // 3. Add a (0-based) index to record the original order (i.e. by age)
+    | map { lineage_name -> [lineage_name, lineage_position++] }
+    // 4. Move the lineage information to `meta` to be able to distinguish the BUSCO jobs and group their outputs later
+    | combine ( fasta )
+    | map { lineage_name, lineage_index, meta, genome -> [meta + [lineage_name: lineage_name, lineage_index: lineage_index], genome] }
+    | set { ch_fasta_with_lineage }
 
-    BUSCO ( fasta, "genome", ch_lineages, busco_db.collect().ifEmpty([]), [] )
+
+    //
+    // Run BUSCO search
+    //
+    BUSCO (
+        ch_fasta_with_lineage,
+        "genome",
+        ch_fasta_with_lineage.map { it[0].lineage_name },
+        busco_db.collect().ifEmpty([]),
+        [],
+    )
     ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
 
 
@@ -67,7 +81,7 @@ workflow BUSCO_DIAMOND {
     //
     RESTRUCTUREBUSCODIR(
         BUSCO.out.seq_dir
-        | map { meta, seq -> [meta, seq.parent.baseName.minus("run_")] }
+        | map { meta, seq -> [meta, meta.lineage_name] }
         | join ( BUSCO.out.batch_summary )
         | join ( BUSCO.out.short_summaries_txt )
         | join ( BUSCO.out.short_summaries_json )
@@ -80,8 +94,9 @@ workflow BUSCO_DIAMOND {
     // Select input for BLOBTOOLKIT_EXTRACTBUSCOS
     //
     BUSCO.out.seq_dir
-    | filter { meta, seq -> basal_lineages.contains(seq.parent.baseName.minus("run_")) }
-    | groupTuple()
+    | filter { meta, seq -> basal_lineages.contains(meta.lineage_name) }
+    | map { meta, seq -> seq }
+    | collect
     | set { ch_basal_buscos }
 
 
@@ -101,20 +116,14 @@ workflow BUSCO_DIAMOND {
     ch_versions = ch_versions.mix ( DIAMOND_BLASTP.out.versions.first() )
 
 
-    // Index the lineages in the taxonomic order
-    def lineage_position = 0
-    ch_lineages
-    | map { lineage -> [lineage, lineage_position++] }
-    | set { ch_ordered_lineages }
-
-
-    // Order BUSCO results according to ch_ordered_lineages
+    // Order BUSCO results according to the lineage index
     BUSCO.out.full_table
-    | map { meta, table -> [table.parent.baseName.minus("run_"), meta, table] }
-    | join ( ch_ordered_lineages )
-    | map { lineage, meta, table, index -> [meta, table, index] }
+    // 1. Restore the original meta map, and pull the index as an extra tuple element
+    | map { meta, table -> [meta.findAll { it.key != "lineage_name" && it.key != "lineage_index" }, [table, meta.lineage_index]] }
+    // 2. Turn to a single-element channel that has the (one and only) meta map, and all the pairs (table, lineage index) concatenated as a list
     | groupTuple()
-    | map { meta, tables, positions -> [ meta, tables.withIndex().sort { a, b -> positions[a[1]] <=> positions[b[1]] } . collect { table, i -> table } ] }
+    // 3. Sort the pairs and discard the index
+    | map { meta, table_positions -> [ meta, table_positions.sort { a, b -> a[1] <=> b[1] } . collect { table, lineage_index -> table } ] }
     | set { ch_indexed_buscos }
 
 
