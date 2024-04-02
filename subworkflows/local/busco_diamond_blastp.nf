@@ -6,6 +6,7 @@ include { GOAT_TAXONSEARCH          } from '../../modules/nf-core/goat/taxonsear
 include { BUSCO                     } from '../../modules/nf-core/busco/main'
 include { BLOBTOOLKIT_EXTRACTBUSCOS } from '../../modules/local/blobtoolkit/extractbuscos'
 include { DIAMOND_BLASTP            } from '../../modules/nf-core/diamond/blastp/main'
+include { RESTRUCTUREBUSCODIR       } from '../../modules/local/restructurebuscodir'
 
 
 workflow BUSCO_DIAMOND {
@@ -59,6 +60,20 @@ workflow BUSCO_DIAMOND {
 
     BUSCO ( fasta, "genome", ch_lineages, busco_db.collect().ifEmpty([]), [] )
     ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
+
+
+    //
+    // Tidy up the BUSCO output directories before publication
+    //
+    RESTRUCTUREBUSCODIR(
+        BUSCO.out.seq_dir
+        | map { meta, seq -> [meta, seq.parent.baseName.minus("run_")] }
+        | join ( BUSCO.out.batch_summary )
+        | join ( BUSCO.out.short_summaries_txt )
+        | join ( BUSCO.out.short_summaries_json )
+        | join ( BUSCO.out.busco_dir )
+    )
+    ch_versions = ch_versions.mix ( RESTRUCTUREBUSCODIR.out.versions.first() )
 
 
     //
