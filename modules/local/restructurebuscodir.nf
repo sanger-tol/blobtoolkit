@@ -24,12 +24,12 @@ process RESTRUCTUREBUSCODIR {
     mkdir ${lineage}
 
     cp --dereference ${batch_summary}        ${lineage}/short_summary.tsv
-    cp --dereference ${short_summaries_txt}  ${lineage}/short_summary.txt
-    cp --dereference ${short_summaries_json} ${lineage}/short_summary.json
+    [ -n "${short_summaries_txt}"  ] && cp --dereference ${short_summaries_txt}  ${lineage}/short_summary.txt
+    [ -n "${short_summaries_json}" ] && cp --dereference ${short_summaries_json} ${lineage}/short_summary.json
 
     # Should we compress these ?
-    cp ${busco_dir}/*/run_*/full_table.tsv         ${lineage}/
-    cp ${busco_dir}/*/run_*/missing_busco_list.tsv ${lineage}/
+    [ -e ${busco_dir}/*/run_*/full_table.tsv         ] && cp ${busco_dir}/*/run_*/full_table.tsv         ${lineage}/
+    [ -e ${busco_dir}/*/run_*/missing_busco_list.tsv ] && cp ${busco_dir}/*/run_*/missing_busco_list.tsv ${lineage}/
 
     tar czf ${lineage}/single_copy_busco_sequences.tar.gz -C ${busco_dir}/*/run_*/busco_sequences single_copy_busco_sequences
     tar czf ${lineage}/multi_copy_busco_sequences.tar.gz  -C ${busco_dir}/*/run_*/busco_sequences multi_copy_busco_sequences

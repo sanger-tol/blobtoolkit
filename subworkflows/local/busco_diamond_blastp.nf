@@ -83,9 +83,10 @@ workflow BUSCO_DIAMOND {
         BUSCO.out.seq_dir
         | map { meta, seq -> [meta, meta.lineage_name] }
         | join ( BUSCO.out.batch_summary )
-        | join ( BUSCO.out.short_summaries_txt )
-        | join ( BUSCO.out.short_summaries_json )
+        | join ( BUSCO.out.short_summaries_txt, remainder: true )
+        | join ( BUSCO.out.short_summaries_json, remainder: true )
         | join ( BUSCO.out.busco_dir )
+        | map { meta, lineage, batch_summary, short_summaries_txt, short_summaries_json, busco_dir -> [meta, lineage, batch_summary, short_summaries_txt ?: [], short_summaries_json ?: [], busco_dir] }
     )
     ch_versions = ch_versions.mix ( RESTRUCTUREBUSCODIR.out.versions.first() )
 
