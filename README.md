@@ -11,7 +11,8 @@
 
 ## Introduction
 
-**sanger-tol/blobtoolkit** is a bioinformatics pipeline that can be used to identify and analyse non-target DNA for eukaryotic genomes. It takes a samplesheet and aligned CRAM files as input, calculates genome statistics, coverage and completeness information, combines them in a TSV file by window size to create a BlobDir dataset and static plots.
+**sanger-tol/blobtoolkit** is a bioinformatics pipeline that can be used to identify and analyse non-target DNA for eukaryotic genomes.
+It takes a samplesheet of BAM/CRAM/FASTQ/FASTA files as input, calculates genome statistics, coverage and completeness information, combines them in a TSV file by window size to create a BlobDir dataset and static plots.
 
 1. Calculate genome statistics in windows ([`fastawindows`](https://github.com/tolkit/fasta_windows))
 2. Calculate Coverage ([`blobtk/depth`](https://github.com/blobtoolkit/blobtk))

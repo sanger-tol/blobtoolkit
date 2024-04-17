@@ -229,8 +229,8 @@ List of tools for any given dataset can be fetched from the API, for example htt
 
 | Dependency        | Snakemake | Nextflow |
 | ----------------- | --------- | -------- |
-| blobtoolkit       | 4.3.2     | 4.3.2    |
-| blast             | 2.12.0    | 2.14.1   |
+| blobtoolkit       | 4.3.2     | 4.3.9    |
+| blast             | 2.12.0    | 2.15.0   |
 | blobtk            | 0.5.0     | 0.5.1    |
 | busco             | 5.3.2     | 5.5.0    |
 | diamond           | 2.0.15    | 2.1.8    |
@@ -240,8 +240,8 @@ List of tools for any given dataset can be fetched from the API, for example htt
 | ncbi-datasets-cli | 14.1.0    |          |
 | nextflow          |           | 23.10.0  |
 | python            | 3.9.13    | 3.12.0   |
-| samtools          | 1.15.1    | 1.18     |
-| seqtk             | 1.3       |          |
+| samtools          | 1.15.1    | 1.19.2   |
+| seqtk             | 1.3       | 1.4      |
 | snakemake         | 7.19.1    |          |
 | windowmasker      | 2.12.0    | 2.14.0   |
 
