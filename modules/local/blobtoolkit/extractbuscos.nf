@@ -5,11 +5,11 @@ process BLOBTOOLKIT_EXTRACTBUSCOS {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         exit 1, "BLOBTOOLKIT_EXTRACTBUSCOS module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
-    container "docker.io/genomehubs/blobtoolkit:4.3.3"
+    container "docker.io/genomehubs/blobtoolkit:4.3.9"
 
     input:
     tuple val(meta), path(fasta)
-    tuple val(metaseq), path(seq, stageAs: "lineage??/*")
+    path seq, stageAs: "lineage??/*"
 
     output:
     tuple val(meta), path("*_buscogenes.fasta"), emit: genes

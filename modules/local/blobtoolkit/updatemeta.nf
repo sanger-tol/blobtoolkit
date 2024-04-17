@@ -12,8 +12,8 @@ process BLOBTOOLKIT_UPDATEMETA {
     path versions
 
     output:
-    tuple val(meta), path(prefix), emit: blobdir
-    path "versions.yml"          , emit: versions
+    tuple val(meta), path("*.json"), emit: json
+    path "versions.yml"            , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -24,8 +24,9 @@ process BLOBTOOLKIT_UPDATEMETA {
     """
     update_versions.py \\
         ${args} \\
-        --meta ${input}/meta.json \\
+        --meta_in ${input}/meta.json \\
         --software ${versions} \\
+        --meta_out ${prefix}.meta.json
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

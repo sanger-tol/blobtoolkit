@@ -20,12 +20,18 @@ workflow PREPARE_GENOME {
     // MODULE: Decompress FASTA file if needed
     //
     if ( params.fasta.endsWith('.gz') ) {
-        ch_genome   = GUNZIP ( fasta ).gunzip
+        ch_unzipped = GUNZIP ( fasta ).gunzip
         ch_versions = ch_versions.mix ( GUNZIP.out.versions )
     } else {
-        ch_genome   = fasta
+        ch_unzipped = fasta
     }
 
+    //
+    // LOGIC: Extract the genome size for decision making downstream
+    //
+    ch_unzipped
+    | map { meta, fa -> [ meta + [genome_size: fa.size()], fa] }
+    | set { ch_genome }
 
     //
     // MODULES: Mask the genome if needed
