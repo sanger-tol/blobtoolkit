@@ -31,7 +31,7 @@ workflow RUN_BLASTN {
     // Subset of sequences with no hits
     SEQTK_SUBSEQ (
         fasta,
-        NOHIT_LIST.out.nohitlist.map { meta, nohit -> nohit }
+        NOHIT_LIST.out.nohitlist.map { meta, nohit -> nohit } . filter { it.size() > 0 }
     )
     ch_versions = ch_versions.mix ( SEQTK_SUBSEQ.out.versions.first() )
     
