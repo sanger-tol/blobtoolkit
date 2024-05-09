@@ -1,7 +1,14 @@
 Changes in module 'nf-core/blast/blastn'
 --- modules/nf-core/blast/blastn/main.nf
 +++ modules/nf-core/blast/blastn/main.nf
-@@ -10,6 +10,7 @@
+@@ -1,6 +1,5 @@
+ process BLAST_BLASTN {
+     tag "$meta.id"
+-    label 'process_medium'
+ 
+     conda "${moduleDir}/environment.yml"
+     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+@@ -10,6 +9,7 @@
      input:
      tuple val(meta) , path(fasta)
      tuple val(meta2), path(db)
@@ -9,7 +16,7 @@ Changes in module 'nf-core/blast/blastn'
  
      output:
      tuple val(meta), path('*.txt'), emit: txt
-@@ -23,6 +24,7 @@
+@@ -23,6 +23,7 @@
      def prefix = task.ext.prefix ?: "${meta.id}"
      def is_compressed = fasta.getExtension() == "gz" ? true : false
      def fasta_name = is_compressed ? fasta.getBaseName() : fasta
@@ -17,7 +24,7 @@ Changes in module 'nf-core/blast/blastn'
  
      """
      if [ "${is_compressed}" == "true" ]; then
-@@ -39,6 +41,7 @@
+@@ -39,6 +40,7 @@
          -num_threads ${task.cpus} \\
          -db \$DB \\
          -query ${fasta_name} \\
