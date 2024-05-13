@@ -45,11 +45,6 @@
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/fastawindows/fastawindows.diff"
                     },
-                    "goat/taxonsearch": {
-                        "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["modules"]
-                    },
                     "gunzip": {
                         "branch": "master",
                         "git_sha": "3a5fef109d113b4997c9822198664ca5f2716208",
