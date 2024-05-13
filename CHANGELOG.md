@@ -14,13 +14,14 @@ The pipeline has now been validated for draft (unpublished) assemblies.
 
 ### Parameters
 
-| Old parameter   | New parameter |
-| --------------- | ------------- |
-| --taxa_file     |               |
-| --blastp_outext |               |
-| --blastp_cols   |               |
-| --blastx_outext |               |
-| --blastx_cols   |               |
+| Old parameter   | New parameter    |
+| --------------- | ---------------- |
+| --taxa_file     |                  |
+| --blastp_outext |                  |
+| --blastp_cols   |                  |
+| --blastx_outext |                  |
+| --blastx_cols   |                  |
+|                 | --busco_lineages |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
