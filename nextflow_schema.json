@@ -43,6 +43,12 @@
                     "description": "Custom config file for draft assembly",
                     "fa_icon": "fas fa-file-alt"
                 },
+                "busco_lineages": {
+                    "type": "string",
+                    "pattern": "([^,]+_odb10,)*[^,]+_odb10",
+                    "description": "Name of the ODB10 lineages to run BUSCO on. By default, the pipeline will automatically selecy the correct lineage based on the taxonomy.",
+                    "fa_icon": "fas fa-bone"
+                },
                 "image_format": {
                     "type": "string",
                     "enum": ["png", "svg"],

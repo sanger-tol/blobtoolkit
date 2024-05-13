@@ -9,6 +9,7 @@ process NCBI_GET_ODB_TAXON {
 
     input:
     tuple val(meta), val(taxon_query)
+    val busco_lin
     path lineage_tax_ids
 
     output:
@@ -21,8 +22,9 @@ process NCBI_GET_ODB_TAXON {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def busco_param = busco_lin ? "--busco '${busco_lin}'" : ""
     """
-    get_odb_taxon.py "$taxon_query" $lineage_tax_ids ${prefix}.csv
+    get_odb_taxon.py "$taxon_query" $lineage_tax_ids $busco_param ${prefix}.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -13,6 +13,7 @@ workflow BUSCO_DIAMOND {
     take:
     fasta        // channel: [ val(meta), path(fasta) ]
     taxon        // channel: val(taxon)
+    busco_lin    // channel: val([busco_lin])
     busco_db     // channel: path(busco_db)
     lineage_tax_ids        // channel: /path/to/lineage_tax_ids
     blastp       // channel: path(blastp_db)
@@ -27,6 +28,7 @@ workflow BUSCO_DIAMOND {
     //
     NCBI_GET_ODB_TAXON (
         fasta.combine(taxon).map { meta, fasta, taxon -> [ meta, taxon ] },
+        busco_lin,
         lineage_tax_ids,
     )
     ch_versions = ch_versions.mix ( NCBI_GET_ODB_TAXON.out.versions.first() )
