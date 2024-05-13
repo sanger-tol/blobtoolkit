@@ -10,6 +10,15 @@ General tidy up of the configuration and the pipeline
 ### Enhancements & fixes
 
 - Increased the resources for blastn
+- Removed the `--taxa_file` option. The taxon now has to be provided through `--taxon`, which accepts both names and integers.
+
+### Parameters
+
+| Old parameter | New parameter |
+| ------------- | ------------- |
+| --taxa_file   |               |
+
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
 ## [[0.4.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.4.0)] – Buneary – [2024-04-17]
 

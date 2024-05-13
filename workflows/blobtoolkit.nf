@@ -17,7 +17,7 @@ WorkflowBlobtoolkit.initialise(params, log)
 
 // Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxa_file, params.taxdump, params.busco, params.blastp, params.blastx ]
+def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxdump, params.busco, params.blastp, params.blastx ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
@@ -128,16 +128,9 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
     //
-    if (params.taxa_file) { 
-        ch_taxa = Channel.from(params.taxa_file)
-        ch_taxon_taxa = PREPARE_GENOME.out.genome.combine(ch_taxon).combine(ch_taxa).map { meta, fasta, taxon, taxa -> [ meta, taxon, taxa ] }
-    } else { 
-        ch_taxon_taxa = PREPARE_GENOME.out.genome.combine(ch_taxon).map { meta, fasta, taxon -> [ meta, taxon, [] ] }
-    }
-
     BUSCO_DIAMOND ( 
         PREPARE_GENOME.out.genome, 
-        ch_taxon_taxa, 
+        ch_taxon,
         ch_busco_db, 
         ch_blastp, 
         params.blastp_outext, 

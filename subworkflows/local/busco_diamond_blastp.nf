@@ -12,7 +12,7 @@ include { RESTRUCTUREBUSCODIR       } from '../../modules/local/restructurebusco
 workflow BUSCO_DIAMOND {
     take:
     fasta        // channel: [ val(meta), path(fasta) ]
-    taxon_taxa   // channel: [ val(meta, val(taxon), path(taxa) ]
+    taxon        // channel: val(taxon)
     busco_db     // channel: path(busco_db)
     blastp       // channel: path(blastp_db)
     outext       // channel: val(out_format)
@@ -24,9 +24,11 @@ workflow BUSCO_DIAMOND {
 
 
     //
-    // Fetch BUSCO lineages for taxon (or taxa)
+    // Fetch BUSCO lineages for taxon
     //
-    GOAT_TAXONSEARCH ( taxon_taxa )
+    GOAT_TAXONSEARCH (
+        fasta.combine(taxon).map { meta, fasta, taxon -> [ meta, taxon, [] ] }
+    )
     ch_versions = ch_versions.mix ( GOAT_TAXONSEARCH.out.versions.first() )
     
 

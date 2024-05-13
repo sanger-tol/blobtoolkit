@@ -102,13 +102,6 @@
             "description": "Define the location and parameters to work with databases.",
             "required": ["blastp", "blastx", "blastn", "taxdump"],
             "properties": {
-                "taxa_file": {
-                    "type": "string",
-                    "format": "file-path",
-                    "description": "Path to file containing the BUSCO lineages for the genome species",
-                    "help_text": "If this file is not included, the relevant BUSCO lineages are automatically calculated using the taxon parameter.",
-                    "fa_icon": "fas fa-file-alt"
-                },
                 "busco": {
                     "type": "string",
                     "format": "directory-path",
