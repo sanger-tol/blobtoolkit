@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 The pipeline has now been validated for draft (unpublished) assemblies.
 
+- The pipeline now queries the NCBI database instead of GoaT to establish the
+  taxonomic classification of the species and the relevant Busco lineages.
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency | Old version | New version |
+| ---------- | ----------- | ----------- |
+| goat       | 0.2.5       |             |
+
 ## [[0.5.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.5.1)] – Snorlax (patch 1) – [2024-08-22]
 
 ### Enhancements & fixes

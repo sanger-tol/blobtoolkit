@@ -17,7 +17,7 @@ WorkflowBlobtoolkit.initialise(params, log)
 
 // Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxdump, params.busco, params.blastp, params.blastx ]
+def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxdump, params.busco, params.blastp, params.blastx, params.lineage_tax_ids ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
@@ -29,6 +29,8 @@ if (params.blastx) { ch_blastx = Channel.value([ [ 'id': file(params.blastx).bas
 if (params.blastn) { ch_blastn = Channel.value([ [ 'id': file(params.blastn).baseName ], params.blastn ]) } else { exit 1, 'BLASTn database not specified!' }
 if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
 if (params.fetchngs_samplesheet && !params.align) { exit 1, '--align not specified, even though the input samplesheet is a nf-core/fetchngs one - i.e has fastq files!' }
+
+if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.lineage_tax_ids) } else { exit 1, 'Mapping BUSCO lineage <-> taxon_ids not specified' }
 
 // Create channel for optional parameters
 if (params.busco) { ch_busco_db = Channel.fromPath(params.busco).first() } else { ch_busco_db = Channel.value([]) }
@@ -123,12 +125,13 @@ workflow BLOBTOOLKIT {
     ch_versions = ch_versions.mix ( COVERAGE_STATS.out.versions )
 
     //
-    // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
+    // SUBWORKFLOW: Run BUSCO using lineages fetched from NCBI, then run diamond_blastp
     //
     BUSCO_DIAMOND (
         PREPARE_GENOME.out.genome,
         ch_taxon,
         ch_busco_db,
+        ch_lineage_tax_ids,
         ch_blastp,
     )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )

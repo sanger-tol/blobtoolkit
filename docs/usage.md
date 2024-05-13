@@ -235,7 +235,6 @@ List of tools for any given dataset can be fetched from the API, for example htt
 | busco             | 5.3.2     | 5.5.0    |
 | diamond           | 2.0.15    | 2.1.8    |
 | fasta_windows     |           | 0.2.4    |
-| goat              |           | 0.2.5    |
 | minimap2          | 2.24      | 2.24     |
 | ncbi-datasets-cli | 14.1.0    |          |
 | nextflow          |           | 23.10.0  |

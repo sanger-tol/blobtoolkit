@@ -1,8 +1,8 @@
 //
-// Run BUSCO for a genome from GOAT and runs diamond_blastp
+// Run BUSCO for a genome and runs diamond_blastp
 //
 
-include { GOAT_TAXONSEARCH          } from '../../modules/nf-core/goat/taxonsearch/main'
+include { NCBI_GET_ODB_TAXON        } from '../../modules/local/get_odb_taxon'
 include { BUSCO                     } from '../../modules/nf-core/busco/main'
 include { BLOBTOOLKIT_EXTRACTBUSCOS } from '../../modules/local/blobtoolkit/extractbuscos'
 include { DIAMOND_BLASTP            } from '../../modules/nf-core/diamond/blastp/main'
@@ -14,6 +14,7 @@ workflow BUSCO_DIAMOND {
     fasta        // channel: [ val(meta), path(fasta) ]
     taxon        // channel: val(taxon)
     busco_db     // channel: path(busco_db)
+    lineage_tax_ids        // channel: /path/to/lineage_tax_ids
     blastp       // channel: path(blastp_db)
 
 
@@ -24,22 +25,21 @@ workflow BUSCO_DIAMOND {
     //
     // Fetch BUSCO lineages for taxon
     //
-    GOAT_TAXONSEARCH (
-        fasta.combine(taxon).map { meta, fasta, taxon -> [ meta, taxon, [] ] }
+    NCBI_GET_ODB_TAXON (
+        fasta.combine(taxon).map { meta, fasta, taxon -> [ meta, taxon ] },
+        lineage_tax_ids,
     )
-    ch_versions = ch_versions.mix ( GOAT_TAXONSEARCH.out.versions.first() )
+    ch_versions = ch_versions.mix ( NCBI_GET_ODB_TAXON.out.versions.first() )
 
 
     //
     // Get NCBI species ID
     //
-    GOAT_TAXONSEARCH.out.taxonsearch
-    | map { meta, csv -> csv.splitCsv(header:true, sep:'\t', strip:true) }
-    | map { row -> [ row.taxon_rank, row.taxon_id ] }
-    | transpose()
-    | filter { rank,id -> rank =~ /species/ }
-    | map { rank, id -> id}
-    | first
+    NCBI_GET_ODB_TAXON.out.csv
+    | map { meta, csv -> csv }
+    | splitCsv(header: ['key', 'value'])
+    | filter { it.key == "taxon_id" }
+    | map { it.value }
     | set { ch_taxid }
 
 
@@ -49,10 +49,13 @@ workflow BUSCO_DIAMOND {
     // 0. Initialise sone variables
     basal_lineages = [ "eukaryota_odb10", "bacteria_odb10", "archaea_odb10" ]
     def lineage_position = 0
-    // 1. Parse the GOAT_TAXONSEARCH output
-    GOAT_TAXONSEARCH.out.taxonsearch
-    | map { meta, csv -> csv.splitCsv(header:true, sep:'\t', strip:true) }
-    | map { row -> row.odb10_lineage.findAll { it != "" } }
+    // 1. Parse the NCBI_GET_ODB_TAXON output
+    NCBI_GET_ODB_TAXON.out.csv
+    | map { meta, csv -> csv }
+    | splitCsv(header: ['key', 'value'])
+    | filter { it.key == "busco_lineage" }
+    | map { it.value }
+    | collect
     // 2. Add the (missing) basal lineages
     | map { lineages -> (lineages + basal_lineages).unique() }
     | flatten ()
