@@ -3,6 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[0.5.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.5.0)] – Snorlax – []
+
+General tidy up of the configuration and the pipeline
+
+### Enhancements & fixes
+
+- Increased the resources for blastn
+
 ## [[0.4.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.4.0)] – Buneary – [2024-04-17]
 
 The pipeline has now been validated on dozens of genomes, up to 11 Gbp.
