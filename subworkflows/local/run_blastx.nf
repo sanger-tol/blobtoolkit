@@ -31,7 +31,7 @@ workflow RUN_BLASTX {
     //
     DIAMOND_BLASTX ( BLOBTOOLKIT_CHUNK.out.chunks, blastx, outext, cols)
     ch_versions = ch_versions.mix ( DIAMOND_BLASTX.out.versions.first() )
-    
+
 
     //
     // Unchunk chunked blastx results

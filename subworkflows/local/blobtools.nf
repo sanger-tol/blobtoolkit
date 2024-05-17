@@ -28,14 +28,14 @@ workflow BLOBTOOLS {
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_METADATA.out.versions.first() )
 
 
-    //  
+    //
     // Create Blobtools dataset files
     //
     BLOBTOOLKIT_CREATEBLOBDIR ( windowstats, busco, blastp, BLOBTOOLKIT_METADATA.out.yaml, taxdump )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_CREATEBLOBDIR.out.versions.first() )
 
 
-    //  
+    //
     // Update Blobtools dataset files
     //
     BLOBTOOLKIT_UPDATEBLOBDIR ( BLOBTOOLKIT_CREATEBLOBDIR.out.blobdir, blastx, blastn, taxdump )

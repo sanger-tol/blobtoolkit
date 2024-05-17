@@ -8,7 +8,7 @@ include { BLOBTOOLKIT_WINDOWSTATS } from '../../modules/local/blobtoolkit/window
 
 
 workflow COLLATE_STATS {
-    take: 
+    take:
     busco       // channel: [ val(meta), path(full_table) ]
     bed         // channel: [ val(meta), path(bed) ]
     freq        // channel: [ val(meta), path(freq) ]

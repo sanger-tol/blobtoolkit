@@ -1,4 +1,4 @@
-// 
+//
 // Optional alignment subworkflow using Minimap2
 //
 
@@ -52,7 +52,7 @@ workflow MINIMAP2_ALIGNMENT {
     // Align with Minimap2
     MINIMAP2_HIC ( ch_input.hic, fasta, true, false, false )
     ch_versions = ch_versions.mix(MINIMAP2_HIC.out.versions.first())
-    
+
     MINIMAP2_ILMN ( ch_input.illumina, fasta, true, false, false )
     ch_versions = ch_versions.mix(MINIMAP2_ILMN.out.versions.first())
 

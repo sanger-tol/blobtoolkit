@@ -30,7 +30,7 @@ workflow BUSCO_DIAMOND {
         fasta.combine(taxon).map { meta, fasta, taxon -> [ meta, taxon, [] ] }
     )
     ch_versions = ch_versions.mix ( GOAT_TAXONSEARCH.out.versions.first() )
-    
+
 
     //
     // Get NCBI species ID
@@ -110,7 +110,7 @@ workflow BUSCO_DIAMOND {
 
     //
     // Align BUSCO genes against the BLASTp database
-    //    
+    //
     BLOBTOOLKIT_EXTRACTBUSCOS.out.genes
     | filter { it[1].size() > 140 }
     | set { ch_busco_genes }
@@ -143,7 +143,7 @@ workflow BUSCO_DIAMOND {
 
 
     emit:
-    first_table = ch_first_table          // channel: [ val(meta), path(full_table) ] 
+    first_table = ch_first_table          // channel: [ val(meta), path(full_table) ]
     all_tables  = ch_indexed_buscos       // channel: [ val(meta), path(full_tables) ]
     blastp_txt  = DIAMOND_BLASTP.out.txt  // channel: [ val(meta), path(txt) ]
     taxon_id    = ch_taxid                // channel: taxon_id

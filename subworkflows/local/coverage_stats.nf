@@ -10,8 +10,8 @@ include { CREATE_BED     } from '../../modules/local/create_bed'
 
 
 workflow COVERAGE_STATS {
-    take: 
-    input    // channel: [ val(meta), path(aln) ] 
+    take:
+    input    // channel: [ val(meta), path(aln) ]
     fasta    // channel: [ val(meta), path(fasta) ]
 
 
@@ -57,7 +57,7 @@ workflow COVERAGE_STATS {
     CREATE_BED ( FASTAWINDOWS.out.mononuc )
     ch_versions = ch_versions.mix ( CREATE_BED.out.versions.first() )
 
-    
+
     // Calculate coverage
     BLOBTK_DEPTH ( ch_bam_csi )
     ch_versions = ch_versions.mix ( BLOBTK_DEPTH.out.versions.first() )
