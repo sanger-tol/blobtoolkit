@@ -22,7 +22,7 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-if (params.fasta && params.accession) { ch_fasta = Channel.value([ [ 'id': params.accession ], params.fasta ]) } else { exit 1, 'Genome fasta file and accession must be specified!' }
+if (params.fasta) { ch_fasta = Channel.value([ [ 'id': params.accession ?: file(params.fasta).baseName ], file(params.fasta) ]) } else { exit 1, 'Genome fasta file must be specified!' }
 if (params.taxon) { ch_taxon = Channel.of(params.taxon) } else { exit 1, 'NCBI Taxon ID not specified!' }
 if (params.blastp) { ch_blastp = Channel.value([ [ 'id': file(params.blastp).baseName ], params.blastp ]) } else { exit 1, 'Diamond BLASTp database must be specified!' }
 if (params.blastx) { ch_blastx = Channel.value([ [ 'id': file(params.blastx).baseName ], params.blastx ]) } else { exit 1, 'Diamond BLASTx database must be specified!' }
@@ -32,7 +32,9 @@ if (params.fetchngs_samplesheet && !params.align) { exit 1, '--align not specifi
 
 // Create channel for optional parameters
 if (params.busco) { ch_busco_db = Channel.fromPath(params.busco) } else { ch_busco_db = Channel.empty() }
-if (params.yaml && params.accession) { ch_yaml = Channel.of([ [ 'id': params.accession ], params.yaml ]) } else { ch_yaml = Channel.empty() }
+if (params.yaml) { ch_yaml = Channel.fromPath(params.yaml) } else { ch_yaml = Channel.empty() }
+if (params.yaml && params.accession) { exit 1, '--yaml cannot be provided at the same time as --accession !' }
+if (!params.yaml && !params.accession) { exit 1, '--yaml and --accession are both mising. Pick one !' }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
