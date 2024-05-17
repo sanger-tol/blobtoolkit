@@ -11,8 +11,6 @@ workflow RUN_BLASTX {
     fasta      // channel: [ val(meta), path(fasta) ]
     table      // channel: [ val(meta), path(busco_table) ]
     blastx     // channel: [ val(meta), path(blastx_db) ]
-    outext     // channel: val(out_format)
-    cols       // channel: val(column_names)
 
 
     main:
@@ -29,6 +27,9 @@ workflow RUN_BLASTX {
     //
     // Run diamond_blastx
     //
+    // Hardocded to match the format expected by blobtools
+    def outext = 'txt'
+    def cols   = 'qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore'
     DIAMOND_BLASTX ( BLOBTOOLKIT_CHUNK.out.chunks, blastx, outext, cols)
     ch_versions = ch_versions.mix ( DIAMOND_BLASTX.out.versions.first() )
 

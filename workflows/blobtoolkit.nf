@@ -108,7 +108,7 @@ workflow BLOBTOOLKIT {
     INPUT_CHECK ( ch_input, PREPARE_GENOME.out.genome, ch_yaml )
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
 
-    // 
+    //
     // SUBWORKFLOW: Optional read alignment
     //
     if ( params.align ) {
@@ -120,7 +120,7 @@ workflow BLOBTOOLKIT {
     }
 
     //
-    // SUBWORKFLOW: Calculate genome coverage and statistics 
+    // SUBWORKFLOW: Calculate genome coverage and statistics
     //
     COVERAGE_STATS ( ch_aligned, PREPARE_GENOME.out.genome )
     ch_versions = ch_versions.mix ( COVERAGE_STATS.out.versions )
@@ -128,25 +128,21 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
     //
-    BUSCO_DIAMOND ( 
-        PREPARE_GENOME.out.genome, 
+    BUSCO_DIAMOND (
+        PREPARE_GENOME.out.genome,
         ch_taxon,
-        ch_busco_db, 
-        ch_blastp, 
-        params.blastp_outext, 
-        params.blastp_cols 
+        ch_busco_db,
+        ch_blastp,
     )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
-    
+
     //
     // SUBWORKFLOW: Diamond blastx search of assembly contigs against the UniProt reference proteomes
     //
-    RUN_BLASTX ( 
+    RUN_BLASTX (
         PREPARE_GENOME.out.genome,
         BUSCO_DIAMOND.out.first_table,
         ch_blastx,
-        params.blastx_outext,
-        params.blastx_cols
     )
     ch_versions = ch_versions.mix ( RUN_BLASTX.out.versions )
 
@@ -154,29 +150,29 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Run blastn search on sequences that had no blastx hits
     //
-    RUN_BLASTN ( 
-        RUN_BLASTX.out.blastx_out, 
-        PREPARE_GENOME.out.genome, 
-        ch_blastn, 
+    RUN_BLASTN (
+        RUN_BLASTX.out.blastx_out,
+        PREPARE_GENOME.out.genome,
+        ch_blastn,
         BUSCO_DIAMOND.out.taxon_id
     )
-    
+
     //
     // SUBWORKFLOW: Collate genome statistics by various window sizes
     //
-    COLLATE_STATS ( 
+    COLLATE_STATS (
         BUSCO_DIAMOND.out.all_tables,
-        COVERAGE_STATS.out.bed, 
-        COVERAGE_STATS.out.freq, 
-        COVERAGE_STATS.out.mononuc, 
-        COVERAGE_STATS.out.cov 
+        COVERAGE_STATS.out.bed,
+        COVERAGE_STATS.out.freq,
+        COVERAGE_STATS.out.mononuc,
+        COVERAGE_STATS.out.cov
     )
     ch_versions = ch_versions.mix ( COLLATE_STATS.out.versions )
 
     //
     // SUBWORKFLOW: Create BlobTools dataset
     //
-    BLOBTOOLS ( 
+    BLOBTOOLS (
         INPUT_CHECK.out.config,
         COLLATE_STATS.out.window_tsv,
         BUSCO_DIAMOND.out.all_tables,
@@ -186,7 +182,7 @@ workflow BLOBTOOLKIT {
         ch_taxdump
     )
     ch_versions = ch_versions.mix ( BLOBTOOLS.out.versions )
-    
+
     //
     // SUBWORKFLOW: Generate summary and static images
     //

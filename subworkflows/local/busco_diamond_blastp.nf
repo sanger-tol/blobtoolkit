@@ -15,8 +15,6 @@ workflow BUSCO_DIAMOND {
     taxon        // channel: val(taxon)
     busco_db     // channel: path(busco_db)
     blastp       // channel: path(blastp_db)
-    outext       // channel: val(out_format)
-    cols         // channel: val(column_names)
 
 
     main:
@@ -115,6 +113,9 @@ workflow BUSCO_DIAMOND {
     | filter { it[1].size() > 140 }
     | set { ch_busco_genes }
 
+    // Hardocded to match the format expected by blobtools
+    def outext = 'txt'
+    def cols   = 'qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore'
     DIAMOND_BLASTP ( ch_busco_genes, blastp, outext, cols )
     ch_versions = ch_versions.mix ( DIAMOND_BLASTP.out.versions.first() )
 

@@ -10,13 +10,17 @@ General tidy up of the configuration and the pipeline
 ### Enhancements & fixes
 
 - Increased the resources for blastn
-- Removed the `--taxa_file` option. The taxon now has to be provided through `--taxon`, which accepts both names and integers.
+- Removed some options that were not used or not needed
 
 ### Parameters
 
-| Old parameter | New parameter |
-| ------------- | ------------- |
-| --taxa_file   |               |
+| Old parameter   | New parameter |
+| --------------- | ------------- |
+| --taxa_file     |               |
+| --blastp_outext |               |
+| --blastp_cols   |               |
+| --blastx_outext |               |
+| --blastx_cols   |               |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
