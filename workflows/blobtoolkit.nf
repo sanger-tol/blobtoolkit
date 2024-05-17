@@ -24,9 +24,9 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.fasta && params.accession) { ch_fasta = Channel.value([ [ 'id': params.accession ], params.fasta ]) } else { exit 1, 'Genome fasta file and accession must be specified!' }
 if (params.taxon) { ch_taxon = Channel.of(params.taxon) } else { exit 1, 'NCBI Taxon ID not specified!' }
-if (params.blastp && params.accession) { ch_blastp = Channel.value([ [ 'id': params.accession ], params.blastp ]) } else { exit 1, 'Diamond BLASTp database and accession must be specified!' }
-if (params.blastx && params.accession) { ch_blastx = Channel.value([ [ 'id': params.accession ], params.blastx ]) } else { exit 1, 'Diamond BLASTx database and accession must be specified!' }
-if (params.blastn && params.accession) { ch_blastn = Channel.value([ [ 'id': params.accession ], params.blastn ]) } else { exit 1, 'BLASTn database not specified!' }
+if (params.blastp) { ch_blastp = Channel.value([ [ 'id': file(params.blastp).baseName ], params.blastp ]) } else { exit 1, 'Diamond BLASTp database must be specified!' }
+if (params.blastx) { ch_blastx = Channel.value([ [ 'id': file(params.blastx).baseName ], params.blastx ]) } else { exit 1, 'Diamond BLASTx database must be specified!' }
+if (params.blastn) { ch_blastn = Channel.value([ [ 'id': file(params.blastn).baseName ], params.blastn ]) } else { exit 1, 'BLASTn database not specified!' }
 if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
 if (params.fetchngs_samplesheet && !params.align) { exit 1, '--align not specified, even though the input samplesheet is a nf-core/fetchngs one - i.e has fastq files!' }
 
