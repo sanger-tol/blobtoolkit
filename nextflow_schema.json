@@ -37,12 +37,6 @@
                     "description": "Turn on the conversion from a nf-core/fetchngs samplesheet.",
                     "fa_icon": "fas fa-toggle-off"
                 },
-                "yaml": {
-                    "type": "string",
-                    "format": "file-path",
-                    "description": "Custom config file for draft assembly",
-                    "fa_icon": "fas fa-file-alt"
-                },
                 "busco_lineages": {
                     "type": "string",
                     "pattern": "([^,]+_odb10,)*[^,]+_odb10",

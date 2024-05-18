@@ -35,9 +35,6 @@ if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.linea
 // Create channel for optional parameters
 if (params.busco_lineages) { ch_busco_lin = Channel.value(params.busco_lineages) } else { ch_busco_lin = Channel.value([]) }
 if (params.busco) { ch_busco_db = Channel.fromPath(params.busco).first() } else { ch_busco_db = Channel.value([]) }
-if (params.yaml) { ch_yaml = Channel.fromPath(params.yaml) } else { ch_yaml = Channel.empty() }
-if (params.yaml && params.accession) { exit 1, '--yaml cannot be provided at the same time as --accession !' }
-if (!params.yaml && !params.accession) { exit 1, '--yaml and --accession are both mising. Pick one !' }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -105,7 +102,7 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Check samplesheet and create channels for downstream analysis
     //
-    INPUT_CHECK ( ch_input, PREPARE_GENOME.out.genome, ch_yaml )
+    INPUT_CHECK ( ch_input, PREPARE_GENOME.out.genome )
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
 
     //
