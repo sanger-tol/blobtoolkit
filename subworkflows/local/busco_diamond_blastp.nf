@@ -11,24 +11,14 @@ include { RESTRUCTUREBUSCODIR       } from '../../modules/local/restructurebusco
 workflow BUSCO_DIAMOND {
     take:
     fasta        // channel: [ val(meta), path(fasta) ]
-    csv          // channel: [ val(meta), path(csv) ]
+    busco_lin    // channel: val([busco_lineages])
     busco_db     // channel: path(busco_db)
     blastp       // channel: path(blastp_db)
+    taxon_id     // channel: val(taxon_id)
 
 
     main:
     ch_versions = Channel.empty()
-
-
-    //
-    // Get NCBI species ID
-    //
-    csv
-    | map { meta, csv -> csv }
-    | splitCsv(header: ['key', 'value'])
-    | filter { it.key == "taxon_id" }
-    | map { it.value }
-    | set { ch_taxid }
 
 
     //
@@ -37,13 +27,8 @@ workflow BUSCO_DIAMOND {
     // 0. Initialise sone variables
     basal_lineages = [ "eukaryota_odb10", "bacteria_odb10", "archaea_odb10" ]
     def lineage_position = 0
-    // 1. Parse the NCBI_GET_ODB_TAXON output
-    csv
-    | map { meta, csv -> csv }
-    | splitCsv(header: ['key', 'value'])
-    | filter { it.key == "busco_lineage" }
-    | map { it.value }
-    | collect
+    // 1. Start from the taxon's lineages
+    busco_lin
     // 2. Add the (missing) basal lineages
     | map { lineages -> (lineages + basal_lineages).unique() }
     | flatten ()
@@ -108,7 +93,7 @@ workflow BUSCO_DIAMOND {
     // Hardcoded to match the format expected by blobtools
     def outext = 'txt'
     def cols   = 'qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore'
-    DIAMOND_BLASTP ( ch_busco_genes, blastp, outext, cols, ch_taxid )
+    DIAMOND_BLASTP ( ch_busco_genes, blastp, outext, cols, taxon_id )
     ch_versions = ch_versions.mix ( DIAMOND_BLASTP.out.versions.first() )
 
 
@@ -139,7 +124,6 @@ workflow BUSCO_DIAMOND {
     first_table = ch_first_table          // channel: [ val(meta), path(full_table) ]
     all_tables  = ch_indexed_buscos       // channel: [ val(meta), path(full_tables) ]
     blastp_txt  = DIAMOND_BLASTP.out.txt  // channel: [ val(meta), path(txt) ]
-    taxon_id    = ch_taxid                // channel: taxon_id
     multiqc                               // channel: [ meta, summary ]
     versions    = ch_versions             // channel: [ versions.yml ]
 }
