@@ -102,7 +102,13 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Check samplesheet and create channels for downstream analysis
     //
-    INPUT_CHECK ( ch_input, PREPARE_GENOME.out.genome )
+    INPUT_CHECK (
+        ch_input,
+        PREPARE_GENOME.out.genome,
+        ch_taxon,
+        ch_busco_lin,
+        ch_lineage_tax_ids,
+    )
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
 
     //
@@ -127,10 +133,8 @@ workflow BLOBTOOLKIT {
     //
     BUSCO_DIAMOND (
         PREPARE_GENOME.out.genome,
-        ch_taxon,
-        ch_busco_lin,
+        INPUT_CHECK.out.csv_params,
         ch_busco_db,
-        ch_lineage_tax_ids,
         ch_blastp,
     )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
