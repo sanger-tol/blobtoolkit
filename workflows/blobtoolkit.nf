@@ -133,7 +133,7 @@ workflow BLOBTOOLKIT {
     //
     BUSCO_DIAMOND (
         PREPARE_GENOME.out.genome,
-        INPUT_CHECK.out.csv_params,
+        INPUT_CHECK.out.busco_lineages,
         ch_busco_db,
         ch_blastp,
     )
@@ -157,7 +157,7 @@ workflow BLOBTOOLKIT {
         RUN_BLASTX.out.blastx_out,
         PREPARE_GENOME.out.genome,
         ch_blastn,
-        BUSCO_DIAMOND.out.taxon_id
+        INPUT_CHECK.out.taxon_id
     )
 
     //
