@@ -7,11 +7,15 @@ include { SAMTOOLS_FLAGSTAT         } from '../../modules/nf-core/samtools/flags
 include { SAMPLESHEET_CHECK         } from '../../modules/local/samplesheet_check'
 include { FETCHNGSSAMPLESHEET_CHECK } from '../../modules/local/fetchngssamplesheet_check'
 include { BLOBTOOLKIT_CONFIG        } from '../../modules/local/blobtoolkit/config'
+include { GENERATE_CONFIG           } from '../../modules/local/generate_config'
 
 workflow INPUT_CHECK {
     take:
     samplesheet // file: /path/to/samplesheet.csv
     fasta       // channel: [ meta, path(fasta) ]
+    taxon       // channel: val(taxon)
+    busco_lin   // channel: val([busco_lin])
+    lineage_tax_ids        // channel: /path/to/lineage_tax_ids
 
     main:
     ch_versions = Channel.empty()
@@ -57,6 +61,15 @@ workflow INPUT_CHECK {
     | set { reads }
 
 
+    GENERATE_CONFIG (
+        fasta,
+        taxon,
+        busco_lin,
+        lineage_tax_ids,
+    )
+    ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions.first())
+
+
     if ( params.accession ) {
         read_files
         | map { meta, data -> meta.id.split("_")[0..-2].join("_") }
@@ -68,15 +81,15 @@ workflow INPUT_CHECK {
         BLOBTOOLKIT_CONFIG ( grouped_reads, fasta )
         ch_versions = ch_versions.mix ( BLOBTOOLKIT_CONFIG.out.versions.first() )
         ch_config = BLOBTOOLKIT_CONFIG.out.yaml
+
     } else {
-        fasta
-        | map { meta, fa -> [meta, file("${projectDir}/assets/minimal.yaml")] }
-        | set { ch_config }
+        ch_config = GENERATE_CONFIG.out.yaml
     }
 
     emit:
     reads                                   // channel: [ val(meta), path(datafile) ]
     config = ch_config                      // channel: [ val(meta), path(yaml) ]
+    csv_params = GENERATE_CONFIG.out.csv    // channel: [ val(meta), path(csv) ]
     versions = ch_versions                  // channel: [ versions.yml ]
 }
 

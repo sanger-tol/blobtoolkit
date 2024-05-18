@@ -2,7 +2,6 @@
 // Run BUSCO for a genome and runs diamond_blastp
 //
 
-include { NCBI_GET_ODB_TAXON        } from '../../modules/local/get_odb_taxon'
 include { BUSCO                     } from '../../modules/nf-core/busco/main'
 include { BLOBTOOLKIT_EXTRACTBUSCOS } from '../../modules/local/blobtoolkit/extractbuscos'
 include { DIAMOND_BLASTP            } from '../../modules/nf-core/diamond/blastp/main'
@@ -12,10 +11,8 @@ include { RESTRUCTUREBUSCODIR       } from '../../modules/local/restructurebusco
 workflow BUSCO_DIAMOND {
     take:
     fasta        // channel: [ val(meta), path(fasta) ]
-    taxon        // channel: val(taxon)
-    busco_lin    // channel: val([busco_lin])
+    csv          // channel: [ val(meta), path(csv) ]
     busco_db     // channel: path(busco_db)
-    lineage_tax_ids        // channel: /path/to/lineage_tax_ids
     blastp       // channel: path(blastp_db)
 
 
@@ -24,20 +21,9 @@ workflow BUSCO_DIAMOND {
 
 
     //
-    // Fetch BUSCO lineages for taxon
-    //
-    NCBI_GET_ODB_TAXON (
-        fasta.combine(taxon).map { meta, fasta, taxon -> [ meta, taxon ] },
-        busco_lin,
-        lineage_tax_ids,
-    )
-    ch_versions = ch_versions.mix ( NCBI_GET_ODB_TAXON.out.versions.first() )
-
-
-    //
     // Get NCBI species ID
     //
-    NCBI_GET_ODB_TAXON.out.csv
+    csv
     | map { meta, csv -> csv }
     | splitCsv(header: ['key', 'value'])
     | filter { it.key == "taxon_id" }
@@ -52,7 +38,7 @@ workflow BUSCO_DIAMOND {
     basal_lineages = [ "eukaryota_odb10", "bacteria_odb10", "archaea_odb10" ]
     def lineage_position = 0
     // 1. Parse the NCBI_GET_ODB_TAXON output
-    NCBI_GET_ODB_TAXON.out.csv
+    csv
     | map { meta, csv -> csv }
     | splitCsv(header: ['key', 'value'])
     | filter { it.key == "busco_lineage" }
