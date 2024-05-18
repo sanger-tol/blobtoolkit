@@ -12,7 +12,6 @@ workflow INPUT_CHECK {
     take:
     samplesheet // file: /path/to/samplesheet.csv
     fasta       // channel: [ meta, path(fasta) ]
-    yaml        // channel: [ meta, path(config ]
 
     main:
     ch_versions = Channel.empty()
@@ -58,7 +57,7 @@ workflow INPUT_CHECK {
     | set { reads }
 
 
-    if ( !params.yaml ) {
+    if ( params.accession ) {
         read_files
         | map { meta, data -> meta.id.split("_")[0..-2].join("_") }
         | combine ( fasta )
@@ -70,7 +69,9 @@ workflow INPUT_CHECK {
         ch_versions = ch_versions.mix ( BLOBTOOLKIT_CONFIG.out.versions.first() )
         ch_config = BLOBTOOLKIT_CONFIG.out.yaml
     } else {
-        ch_config   = yaml
+        fasta
+        | map { meta, fa -> [meta, file("${projectDir}/assets/minimal.yaml")] }
+        | set { ch_config }
     }
 
     emit:

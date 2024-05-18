@@ -16,6 +16,7 @@ The pipeline has now been validated for draft (unpublished) assemblies.
 
 | Old parameter   | New parameter    |
 | --------------- | ---------------- |
+| --yaml          |                  |
 | --taxa_file     |                  |
 | --blastp_outext |                  |
 | --blastp_cols   |                  |
