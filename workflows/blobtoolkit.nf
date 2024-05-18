@@ -133,9 +133,10 @@ workflow BLOBTOOLKIT {
     //
     BUSCO_DIAMOND (
         PREPARE_GENOME.out.genome,
-        INPUT_CHECK.out.csv_params,
+        INPUT_CHECK.out.busco_lineages,
         ch_busco_db,
         ch_blastp,
+        INPUT_CHECK.out.taxon_id,
     )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
 
@@ -146,7 +147,7 @@ workflow BLOBTOOLKIT {
         PREPARE_GENOME.out.genome,
         BUSCO_DIAMOND.out.first_table,
         ch_blastx,
-        BUSCO_DIAMOND.out.taxon_id,
+        INPUT_CHECK.out.taxon_id,
     )
     ch_versions = ch_versions.mix ( RUN_BLASTX.out.versions )
 
@@ -158,7 +159,7 @@ workflow BLOBTOOLKIT {
         RUN_BLASTX.out.blastx_out,
         PREPARE_GENOME.out.genome,
         ch_blastn,
-        BUSCO_DIAMOND.out.taxon_id,
+        INPUT_CHECK.out.taxon_id,
     )
 
     //

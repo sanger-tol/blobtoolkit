@@ -70,6 +70,37 @@ workflow INPUT_CHECK {
     ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions.first())
 
 
+    //
+    // Parse the CSV file
+    //
+    GENERATE_CONFIG.out.csv
+    | map { meta, csv -> csv }
+    | splitCsv(header: ['key', 'value'])
+    | branch {
+        taxon_id: it.key == "taxon_id"
+                    return it.value
+        busco_lineage: it.key == "busco_lineage"
+                    return it.value
+    }
+    | set { ch_parsed_csv }
+
+
+    //
+    // Get the taxon ID
+    //
+    ch_parsed_csv.taxon_id
+    | first
+    | set { ch_taxon_id }
+
+
+    //
+    // Get the BUSCO linages
+    //
+    ch_parsed_csv.busco_lineage
+    | collect
+    | set { ch_busco_lineages }
+
+
     if ( params.accession ) {
         read_files
         | map { meta, data -> meta.id.split("_")[0..-2].join("_") }
@@ -89,7 +120,8 @@ workflow INPUT_CHECK {
     emit:
     reads                                   // channel: [ val(meta), path(datafile) ]
     config = ch_config                      // channel: [ val(meta), path(yaml) ]
-    csv_params = GENERATE_CONFIG.out.csv    // channel: [ val(meta), path(csv) ]
+    taxon_id = ch_taxon_id                  // channel: val(taxon_id)
+    busco_lineages = ch_busco_lineages      // channel: val([busco_lin])
     versions = ch_versions                  // channel: [ versions.yml ]
 }
 
