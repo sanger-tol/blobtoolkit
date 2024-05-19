@@ -31,7 +31,7 @@ if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI T
 if (params.fetchngs_samplesheet && !params.align) { exit 1, '--align not specified, even though the input samplesheet is a nf-core/fetchngs one - i.e has fastq files!' }
 
 // Create channel for optional parameters
-if (params.busco) { ch_busco_db = Channel.fromPath(params.busco) } else { ch_busco_db = Channel.empty() }
+if (params.busco) { ch_busco_db = Channel.fromPath(params.busco).first() } else { ch_busco_db = Channel.value([]) }
 if (params.yaml) { ch_yaml = Channel.fromPath(params.yaml) } else { ch_yaml = Channel.empty() }
 if (params.yaml && params.accession) { exit 1, '--yaml cannot be provided at the same time as --accession !' }
 if (!params.yaml && !params.accession) { exit 1, '--yaml and --accession are both mising. Pick one !' }

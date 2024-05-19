@@ -70,7 +70,7 @@ workflow BUSCO_DIAMOND {
         ch_fasta_with_lineage,
         "genome",
         ch_fasta_with_lineage.map { it[0].lineage_name },
-        busco_db.collect().ifEmpty([]),
+        busco_db,
         [],
     )
     ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
