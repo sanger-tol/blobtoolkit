@@ -54,11 +54,6 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 */
 
 //
-// MODULE: Loaded from modules/local/
-//
-include { BLOBTOOLKIT_CONFIG     } from '../modules/local/blobtoolkit/config'
-
-//
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { PREPARE_GENOME     } from '../subworkflows/local/prepare_genome'
