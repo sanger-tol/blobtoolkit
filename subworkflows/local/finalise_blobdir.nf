@@ -18,7 +18,14 @@ workflow FINALISE_BLOBDIR {
     //
     // MODULE: Update meta json file
     //
-    BLOBTOOLKIT_UPDATEMETA ( blobdir, software )
+    BLOBTOOLKIT_UPDATEMETA (
+        blobdir,
+        software,
+        params.blastp,
+        params.blastx,
+        params.blastn,
+        params.taxdump,
+    )
 
     //
     // MODULE: Compress all the json files
