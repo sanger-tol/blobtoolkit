@@ -9,6 +9,7 @@ import typing
 import yaml
 
 NCBI_TAXONOMY_API = "https://api.ncbi.nlm.nih.gov/datasets/v1/taxonomy/taxon/%s"
+NCBI_DATASETS_API = "https://api.ncbi.nlm.nih.gov/datasets/v2alpha/genome/accession/%s/dataset_report"
 
 RANKS = [
     "genus",
@@ -32,8 +33,11 @@ def parse_args(args=None):
     parser.add_argument("LINEAGE_TAX_IDS", help="Mapping between BUSCO lineages and taxon IDs.")
     parser.add_argument("YML_OUT", help="Output YML file.")
     parser.add_argument("CSV_OUT", help="Output CSV file.")
+    parser.add_argument(
+        "--accession", dest="ACCESSION", help="Accession number of the assembly (optional).", default=None
+    )
     parser.add_argument("--busco", dest="REQUESTED_BUSCOS", help="Requested BUSCO lineages.", default=None)
-    parser.add_argument("--version", action="version", version="%(prog)s 1.1")
+    parser.add_argument("--version", action="version", version="%(prog)s 1.2")
     return parser.parse_args(args)
 
 
@@ -93,16 +97,37 @@ def get_odb(taxon_info: TaxonInfo, lineage_tax_ids: str, requested_buscos: typin
     return odb_arr
 
 
+def get_assembly_info(accession: str) -> typing.Dict[str, typing.Union[str, int]]:
+    response = requests.get(NCBI_DATASETS_API % accession).json()
+    if response["total_count"] != 1:
+        print(f"Assembly not found: {accession}", file=sys.stderr)
+        sys.exit(1)
+    assembly_report = response["reports"][0]
+    assembly_info = assembly_report["assembly_info"]
+    return {
+        "accession": accession,
+        "alias": assembly_info["assembly_name"],
+        "bioproject": assembly_info["bioproject_accession"],
+        "biosample": assembly_info["biosample"]["accession"],
+        "level": assembly_info["assembly_level"].lower(),
+        "prefix": assembly_report["wgs_info"]["wgs_project_accession"],
+        "scaffold-count": assembly_report["assembly_stats"]["number_of_component_sequences"]
+        + assembly_report["assembly_stats"]["number_of_organelles"],
+        "span": int(assembly_report["assembly_stats"]["total_sequence_length"])
+        + sum(int(oi["total_seq_length"]) for oi in assembly_report["organelle_info"]),
+    }
+
+
 def print_yaml(
-    file_out, fasta: str, taxon_info: TaxonInfo, classification: typing.Dict[str, str], odb_arr: typing.List[str]
+    file_out,
+    assembly_info: typing.Dict[str, typing.Union[str, int]],
+    taxon_info: TaxonInfo,
+    classification: typing.Dict[str, str],
+    odb_arr: typing.List[str],
 ):
 
     data = {
-        "assembly": {
-            # Other attributes can't be filled in for draft assemblies
-            "file": fasta,
-            "level": "scaffold",
-        },
+        "assembly": assembly_info,
         "busco": {
             "basal_lineages": BUSCO_BASAL_LINEAGES,
             # "download_dir": <completely skipped because missing from final meta.json>
@@ -167,11 +192,18 @@ def print_csv(file_out, taxon_info: TaxonInfo, odb_arr: typing.List[str]):
 def main(args=None):
     args = parse_args(args)
 
+    assembly_info: typing.Dict[str, typing.Union[str, int]]
+    if args.ACCESSION:
+        assembly_info = get_assembly_info(args.ACCESSION)
+    else:
+        assembly_info = {"level": "scaffold"}
+    assembly_info["file"] = args.FASTA
+
     taxon_info = make_taxon_info(args.TAXON_QUERY)
     classification = get_classification(taxon_info)
     odb_arr = get_odb(taxon_info, args.LINEAGE_TAX_IDS, args.REQUESTED_BUSCOS)
 
-    print_yaml(args.YML_OUT, args.FASTA, taxon_info, classification, odb_arr)
+    print_yaml(args.YML_OUT, assembly_info, taxon_info, classification, odb_arr)
     print_csv(args.CSV_OUT, taxon_info, odb_arr)
 
 
