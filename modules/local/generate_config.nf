@@ -23,8 +23,9 @@ process GENERATE_CONFIG {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def busco_param = busco_lin ? "--busco '${busco_lin}'" : ""
+    def accession_params = params.accession ? "--accession ${params.accession}" : ""
     """
-    generate_config.py $fasta "$taxon_query" $lineage_tax_ids $busco_param ${prefix}.yaml ${prefix}.csv
+    generate_config.py $fasta "$taxon_query" $lineage_tax_ids $busco_param $accession_params ${prefix}.yaml ${prefix}.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
