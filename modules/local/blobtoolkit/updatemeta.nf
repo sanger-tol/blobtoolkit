@@ -10,6 +10,11 @@ process BLOBTOOLKIT_UPDATEMETA {
     input:
     tuple val(meta), path(input)
     path versions
+    // The following are passed as "val" because we just want to know the full paths. No staging necessary
+    val blastp
+    val blastx
+    val blastn
+    val taxdump
 
     output:
     tuple val(meta), path("*.json"), emit: json
@@ -26,6 +31,10 @@ process BLOBTOOLKIT_UPDATEMETA {
         ${args} \\
         --meta_in ${input}/meta.json \\
         --software ${versions} \\
+        --blastp ${blastp} \\
+        --blastx ${blastx} \\
+        --blastn ${blastn} \\
+        --taxdump ${taxdump} \\
         --meta_out ${prefix}.meta.json
 
     cat <<-END_VERSIONS > versions.yml

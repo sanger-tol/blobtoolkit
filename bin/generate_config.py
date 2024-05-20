@@ -105,8 +105,10 @@ def print_yaml(
         },
         "busco": {
             "basal_lineages": BUSCO_BASAL_LINEAGES,
+            # "download_dir": <completely skipped because missing from final meta.json>
             "lineages": odb_arr + [lin for lin in BUSCO_BASAL_LINEAGES if lin not in odb_arr],
         },
+        # TODO: reads
         "revision": 1,
         "settings": {
             # Only settings.stats_windows is mandatory, everything else is superfluous
@@ -116,21 +118,25 @@ def print_yaml(
             "blast_overlap": 0,
             "stats_chunk": 1000,
             "stats_windows": [0.1, 0.01, 100000, 1000000],
+            # "taxdump": <added by update_versions.py at the end>,
             "tmp": "/tmp",
         },
         "similarity": {
             # Only the presence similarity.diamond_blastx seems mandatory, everything else is superfluous
             "blastn": {
                 "name": "nt",
+                # "path": <added by update_versions.py at the end>,
             },
             "defaults": {"evalue": 1e-10, "import_evalue": 1e-25, "max_target_seqs": 10, "taxrule": "buscogenes"},
             "diamond_blastp": {
                 "import_max_target_seqs": 100000,
                 "name": "reference_proteomes",
+                # "path": <added by update_versions.py at the end>,
                 "taxrule": "blastp=buscogenes",
             },
             "diamond_blastx": {
                 "name": "reference_proteomes",
+                # "path": <added by update_versions.py at the end>,
             },
         },
         "taxon": {
