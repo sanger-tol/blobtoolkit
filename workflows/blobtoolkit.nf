@@ -22,7 +22,7 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-if (params.fasta) { ch_fasta = Channel.value([ [ 'id': params.accession ?: file(params.fasta).baseName ], file(params.fasta) ]) } else { exit 1, 'Genome fasta file must be specified!' }
+if (params.fasta) { ch_fasta = Channel.value([ [ 'id': params.accession ?: file(params.fasta.replace(".gz", "")).baseName ], file(params.fasta) ]) } else { exit 1, 'Genome fasta file must be specified!' }
 if (params.taxon) { ch_taxon = Channel.value(params.taxon) } else { exit 1, 'NCBI Taxon ID not specified!' }
 if (params.blastp) { ch_blastp = Channel.value([ [ 'id': file(params.blastp).baseName ], params.blastp ]) } else { exit 1, 'Diamond BLASTp database must be specified!' }
 if (params.blastx) { ch_blastx = Channel.value([ [ 'id': file(params.blastx).baseName ], params.blastx ]) } else { exit 1, 'Diamond BLASTx database must be specified!' }
