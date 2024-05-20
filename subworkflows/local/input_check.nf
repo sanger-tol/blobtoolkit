@@ -6,7 +6,6 @@ include { CAT_CAT                   } from '../../modules/nf-core/cat/cat/main'
 include { SAMTOOLS_FLAGSTAT         } from '../../modules/nf-core/samtools/flagstat/main'
 include { SAMPLESHEET_CHECK         } from '../../modules/local/samplesheet_check'
 include { FETCHNGSSAMPLESHEET_CHECK } from '../../modules/local/fetchngssamplesheet_check'
-include { BLOBTOOLKIT_CONFIG        } from '../../modules/local/blobtoolkit/config'
 include { GENERATE_CONFIG           } from '../../modules/local/generate_config'
 
 workflow INPUT_CHECK {
@@ -101,25 +100,9 @@ workflow INPUT_CHECK {
     | set { ch_busco_lineages }
 
 
-    if ( params.accession ) {
-        read_files
-        | map { meta, data -> meta.id.split("_")[0..-2].join("_") }
-        | combine ( fasta )
-        | map { sample, meta, fasta -> [ meta, sample ] }
-        | groupTuple()
-        | set { grouped_reads }
-
-        BLOBTOOLKIT_CONFIG ( grouped_reads, fasta )
-        ch_versions = ch_versions.mix ( BLOBTOOLKIT_CONFIG.out.versions.first() )
-        ch_config = BLOBTOOLKIT_CONFIG.out.yaml
-
-    } else {
-        ch_config = GENERATE_CONFIG.out.yaml
-    }
-
     emit:
     reads                                   // channel: [ val(meta), path(datafile) ]
-    config = ch_config                      // channel: [ val(meta), path(yaml) ]
+    config = GENERATE_CONFIG.out.yaml       // channel: [ val(meta), path(yaml) ]
     taxon_id = ch_taxon_id                  // channel: val(taxon_id)
     busco_lineages = ch_busco_lineages      // channel: val([busco_lin])
     versions = ch_versions                  // channel: [ versions.yml ]
