@@ -108,7 +108,7 @@ def print_yaml(
             # "download_dir": <completely skipped because missing from final meta.json>
             "lineages": odb_arr + [lin for lin in BUSCO_BASAL_LINEAGES if lin not in odb_arr],
         },
-        # TODO: reads
+        # "reads": {}, <added by update_versions.py at the end>
         "revision": 1,
         "settings": {
             # Only settings.stats_windows is mandatory, everything else is superfluous
