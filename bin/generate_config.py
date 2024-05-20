@@ -20,12 +20,7 @@ RANKS = [
     "superkingdom",
 ]
 
-STATS_WINDOWS = [
-    0.1,
-    0.01,
-    100000,
-    1000000,
-]
+BUSCO_BASAL_LINEAGES = ["eukaryota_odb10", "bacteria_odb10", "archaea_odb10"]
 
 
 def parse_args(args=None):
@@ -38,7 +33,7 @@ def parse_args(args=None):
     parser.add_argument("YML_OUT", help="Output YML file.")
     parser.add_argument("CSV_OUT", help="Output CSV file.")
     parser.add_argument("--busco", dest="REQUESTED_BUSCOS", help="Requested BUSCO lineages.", default=None)
-    parser.add_argument("--version", action="version", version="%(prog)s 1.0")
+    parser.add_argument("--version", action="version", version="%(prog)s 1.1")
     return parser.parse_args(args)
 
 
@@ -104,15 +99,38 @@ def print_yaml(
 
     data = {
         "assembly": {
+            # Other attributes can't be filled in for draft assemblies
             "file": fasta,
             "level": "scaffold",
         },
+        "busco": {
+            "basal_lineages": BUSCO_BASAL_LINEAGES,
+            "lineages": odb_arr + [lin for lin in BUSCO_BASAL_LINEAGES if lin not in odb_arr],
+        },
+        "revision": 1,
         "settings": {
-            "stats_windows": STATS_WINDOWS,
+            # Only settings.stats_windows is mandatory, everything else is superfluous
+            "blast_chunk": 100000,
+            "blast_max_chunks": 10,
+            "blast_min_length": 1000,
+            "blast_overlap": 0,
+            "stats_chunk": 1000,
+            "stats_windows": [0.1, 0.01, 100000, 1000000],
+            "tmp": "/tmp",
         },
         "similarity": {
+            # Only the presence similarity.diamond_blastx seems mandatory, everything else is superfluous
+            "blastn": {
+                "name": "nt",
+            },
+            "defaults": {"evalue": 1e-10, "import_evalue": 1e-25, "max_target_seqs": 10, "taxrule": "buscogenes"},
+            "diamond_blastp": {
+                "import_max_target_seqs": 100000,
+                "name": "reference_proteomes",
+                "taxrule": "blastp=buscogenes",
+            },
             "diamond_blastx": {
-                "foo": 0,
+                "name": "reference_proteomes",
             },
         },
         "taxon": {
@@ -120,6 +138,7 @@ def print_yaml(
             "name": taxon_info.organism_name,
             **classification,
         },
+        "version": 2,
     }
     out_dir = os.path.dirname(file_out)
     make_dir(out_dir)
