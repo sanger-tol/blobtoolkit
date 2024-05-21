@@ -113,7 +113,7 @@ workflow BUSCO_DIAMOND {
     | filter { it[1].size() > 140 }
     | set { ch_busco_genes }
 
-    // Hardocded to match the format expected by blobtools
+    // Hardcoded to match the format expected by blobtools
     def outext = 'txt'
     def cols   = 'qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore'
     DIAMOND_BLASTP ( ch_busco_genes, blastp, outext, cols )
