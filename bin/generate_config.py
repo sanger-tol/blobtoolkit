@@ -8,7 +8,7 @@ import requests
 import typing
 import yaml
 
-NCBI_TAXONOMY_API = "https://api.ncbi.nlm.nih.gov/datasets/v1/taxonomy/taxon/%s"
+NCBI_TAXONOMY_API = "https://api.ncbi.nlm.nih.gov/datasets/v2alpha/taxonomy/taxon/%s"
 NCBI_DATASETS_API = "https://api.ncbi.nlm.nih.gov/datasets/v2alpha/genome/accession/%s/dataset_report"
 
 RANKS = [
@@ -37,7 +37,7 @@ def parse_args(args=None):
         "--accession", dest="ACCESSION", help="Accession number of the assembly (optional).", default=None
     )
     parser.add_argument("--busco", dest="REQUESTED_BUSCOS", help="Requested BUSCO lineages.", default=None)
-    parser.add_argument("--version", action="version", version="%(prog)s 1.2")
+    parser.add_argument("--version", action="version", version="%(prog)s 1.3")
     return parser.parse_args(args)
 
 
