@@ -4,6 +4,7 @@ import argparse
 import dataclasses
 import os
 import sys
+import sqlite3
 import requests
 import typing
 import yaml
@@ -35,7 +36,8 @@ def parse_args(args=None):
     parser.add_argument("--csv_out", help="Output CSV file.")
     parser.add_argument("--accession", help="Accession number of the assembly (optional).", default=None)
     parser.add_argument("--busco", help="Requested BUSCO lineages.", default=None)
-    parser.add_argument("--version", action="version", version="%(prog)s 1.3")
+    parser.add_argument("--blastn", help="Path to the NCBI Taxonomy database")
+    parser.add_argument("--version", action="version", version="%(prog)s 1.4")
     return parser.parse_args(args)
 
 
@@ -115,6 +117,15 @@ def get_assembly_info(accession: str) -> typing.Dict[str, typing.Union[str, int]
     }
 
 
+def adjust_taxon_id(blastn: str, taxon_info: TaxonInfo) -> int:
+    con = sqlite3.connect(os.path.join(blastn, "taxonomy4blast.sqlite3"))
+    cur = con.cursor()
+    for taxon_id in [taxon_info.taxon_id] + list(reversed(taxon_info.lineage)):
+        res = cur.execute("SELECT * FROM TaxidInfo WHERE taxid = ?", (taxon_id,))
+        if res.fetchone():
+            return taxon_id
+
+
 def print_yaml(
     file_out,
     assembly_info: typing.Dict[str, typing.Union[str, int]],
@@ -174,12 +185,12 @@ def print_yaml(
         yaml.dump(data, fout)
 
 
-def print_csv(file_out, taxon_info: TaxonInfo, odb_arr: typing.List[str]):
+def print_csv(file_out, taxon_id: int, odb_arr: typing.List[str]):
     out_dir = os.path.dirname(file_out)
     make_dir(out_dir)
 
     with open(file_out, "w") as fout:
-        print("taxon_id", taxon_info.taxon_id, sep=",", file=fout)
+        print("taxon_id", taxon_id, sep=",", file=fout)
         for odb_val in odb_arr:
             print("busco_lineage", odb_val, sep=",", file=fout)
 
@@ -197,9 +208,10 @@ def main(args=None):
     taxon_info = make_taxon_info(args.taxon_query)
     classification = get_classification(taxon_info)
     odb_arr = get_odb(taxon_info, args.lineage_tax_ids, args.busco)
+    taxon_id = adjust_taxon_id(args.blastn, taxon_info)
 
     print_yaml(args.yml_out, assembly_info, taxon_info, classification, odb_arr)
-    print_csv(args.csv_out, taxon_info, odb_arr)
+    print_csv(args.csv_out, taxon_id, odb_arr)
 
 
 if __name__ == "__main__":

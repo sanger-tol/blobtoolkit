@@ -15,6 +15,7 @@ workflow INPUT_CHECK {
     taxon       // channel: val(taxon)
     busco_lin   // channel: val([busco_lin])
     lineage_tax_ids        // channel: /path/to/lineage_tax_ids
+    blastn       // channel: [ val(meta), path(blastn_db) ]
 
     main:
     ch_versions = Channel.empty()
@@ -65,6 +66,7 @@ workflow INPUT_CHECK {
         taxon,
         busco_lin,
         lineage_tax_ids,
+        blastn,
     )
     ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions.first())
 

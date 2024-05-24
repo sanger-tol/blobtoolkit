@@ -108,6 +108,7 @@ workflow BLOBTOOLKIT {
         ch_taxon,
         ch_busco_lin,
         ch_lineage_tax_ids,
+        ch_blastn,
     )
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
 
