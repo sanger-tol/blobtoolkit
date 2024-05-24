@@ -10,6 +10,7 @@ process GENERATE_CONFIG {
     val taxon_query
     val busco_lin
     path lineage_tax_ids
+    tuple val(meta2), val(blastn)
 
     output:
     tuple val(meta), path("*.yaml"), emit: yaml
@@ -31,6 +32,7 @@ process GENERATE_CONFIG {
         --lineage_tax_ids $lineage_tax_ids \\
         $busco_param \\
         $accession_params \\
+        --blastn $blastn \\
         --yml_out ${prefix}.yaml \\
         --csv_out ${prefix}.csv
 
