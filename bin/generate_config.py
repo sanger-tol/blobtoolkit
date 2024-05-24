@@ -28,15 +28,13 @@ def parse_args(args=None):
     Description = "Produce the various configuration files needed within the pipeline"
 
     parser = argparse.ArgumentParser(description=Description)
-    parser.add_argument("FASTA", help="Path to the Fasta file of the assembly.")
-    parser.add_argument("TAXON_QUERY", help="Query string/integer for this taxon.")
-    parser.add_argument("LINEAGE_TAX_IDS", help="Mapping between BUSCO lineages and taxon IDs.")
-    parser.add_argument("YML_OUT", help="Output YML file.")
-    parser.add_argument("CSV_OUT", help="Output CSV file.")
-    parser.add_argument(
-        "--accession", dest="ACCESSION", help="Accession number of the assembly (optional).", default=None
-    )
-    parser.add_argument("--busco", dest="REQUESTED_BUSCOS", help="Requested BUSCO lineages.", default=None)
+    parser.add_argument("--fasta", help="Path to the Fasta file of the assembly.")
+    parser.add_argument("--taxon_query", help="Query string/integer for this taxon.")
+    parser.add_argument("--lineage_tax_ids", help="Mapping between BUSCO lineages and taxon IDs.")
+    parser.add_argument("--yml_out", help="Output YML file.")
+    parser.add_argument("--csv_out", help="Output CSV file.")
+    parser.add_argument("--accession", help="Accession number of the assembly (optional).", default=None)
+    parser.add_argument("--busco", help="Requested BUSCO lineages.", default=None)
     parser.add_argument("--version", action="version", version="%(prog)s 1.3")
     return parser.parse_args(args)
 
@@ -71,7 +69,6 @@ def get_classification(taxon_info: TaxonInfo) -> typing.Dict[str, str]:
 
 
 def get_odb(taxon_info: TaxonInfo, lineage_tax_ids: str, requested_buscos: typing.Optional[str]) -> typing.List[str]:
-
     # Read the mapping between the BUSCO lineages and their taxon_id
     with open(lineage_tax_ids) as file_in:
         lineage_tax_ids_dict: typing.Dict[int, str] = {}
@@ -125,7 +122,6 @@ def print_yaml(
     classification: typing.Dict[str, str],
     odb_arr: typing.List[str],
 ):
-
     data = {
         "assembly": assembly_info,
         "busco": {
@@ -179,7 +175,6 @@ def print_yaml(
 
 
 def print_csv(file_out, taxon_info: TaxonInfo, odb_arr: typing.List[str]):
-
     out_dir = os.path.dirname(file_out)
     make_dir(out_dir)
 
@@ -193,18 +188,18 @@ def main(args=None):
     args = parse_args(args)
 
     assembly_info: typing.Dict[str, typing.Union[str, int]]
-    if args.ACCESSION:
-        assembly_info = get_assembly_info(args.ACCESSION)
+    if args.accession:
+        assembly_info = get_assembly_info(args.accession)
     else:
         assembly_info = {"level": "scaffold"}
-    assembly_info["file"] = args.FASTA
+    assembly_info["file"] = args.fasta
 
-    taxon_info = make_taxon_info(args.TAXON_QUERY)
+    taxon_info = make_taxon_info(args.taxon_query)
     classification = get_classification(taxon_info)
-    odb_arr = get_odb(taxon_info, args.LINEAGE_TAX_IDS, args.REQUESTED_BUSCOS)
+    odb_arr = get_odb(taxon_info, args.lineage_tax_ids, args.busco)
 
-    print_yaml(args.YML_OUT, assembly_info, taxon_info, classification, odb_arr)
-    print_csv(args.CSV_OUT, taxon_info, odb_arr)
+    print_yaml(args.yml_out, assembly_info, taxon_info, classification, odb_arr)
+    print_csv(args.csv_out, taxon_info, odb_arr)
 
 
 if __name__ == "__main__":
