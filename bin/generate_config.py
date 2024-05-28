@@ -29,14 +29,14 @@ def parse_args(args=None):
     Description = "Produce the various configuration files needed within the pipeline"
 
     parser = argparse.ArgumentParser(description=Description)
-    parser.add_argument("--fasta", help="Path to the Fasta file of the assembly.")
-    parser.add_argument("--taxon_query", help="Query string/integer for this taxon.")
-    parser.add_argument("--lineage_tax_ids", help="Mapping between BUSCO lineages and taxon IDs.")
-    parser.add_argument("--yml_out", help="Output YML file.")
-    parser.add_argument("--csv_out", help="Output CSV file.")
+    parser.add_argument("--fasta", required=True, help="Path to the Fasta file of the assembly.")
+    parser.add_argument("--taxon_query", required=True, help="Query string/integer for this taxon.")
+    parser.add_argument("--lineage_tax_ids", required=True, help="Mapping between BUSCO lineages and taxon IDs.")
+    parser.add_argument("--yml_out", required=True, help="Output YML file.")
+    parser.add_argument("--csv_out", required=True, help="Output CSV file.")
     parser.add_argument("--accession", help="Accession number of the assembly (optional).", default=None)
-    parser.add_argument("--busco", help="Requested BUSCO lineages.", default=None)
-    parser.add_argument("--blastn", help="Path to the NCBI Taxonomy database")
+    parser.add_argument("--busco", required=True, help="Requested BUSCO lineages.", default=None)
+    parser.add_argument("--blastn", required=True, help="Path to the NCBI Taxonomy database")
     parser.add_argument("--version", action="version", version="%(prog)s 1.4")
     return parser.parse_args(args)
 
