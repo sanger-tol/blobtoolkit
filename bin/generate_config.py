@@ -35,7 +35,7 @@ def parse_args(args=None):
     parser.add_argument("--yml_out", required=True, help="Output YML file.")
     parser.add_argument("--csv_out", required=True, help="Output CSV file.")
     parser.add_argument("--accession", help="Accession number of the assembly (optional).", default=None)
-    parser.add_argument("--busco", required=True, help="Requested BUSCO lineages.", default=None)
+    parser.add_argument("--busco", help="Requested BUSCO lineages.", default=None)
     parser.add_argument("--blastn", required=True, help="Path to the NCBI Taxonomy database")
     parser.add_argument("--version", action="version", version="%(prog)s 1.4")
     return parser.parse_args(args)
