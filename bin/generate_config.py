@@ -103,18 +103,21 @@ def get_assembly_info(accession: str) -> typing.Dict[str, typing.Union[str, int]
         sys.exit(1)
     assembly_report = response["reports"][0]
     assembly_info = assembly_report["assembly_info"]
-    return {
+    d = {
         "accession": accession,
         "alias": assembly_info["assembly_name"],
         "bioproject": assembly_info["bioproject_accession"],
-        "biosample": assembly_info["biosample"]["accession"],
         "level": assembly_info["assembly_level"].lower(),
-        "prefix": assembly_report["wgs_info"]["wgs_project_accession"],
         "scaffold-count": assembly_report["assembly_stats"]["number_of_component_sequences"]
         + assembly_report["assembly_stats"]["number_of_organelles"],
         "span": int(assembly_report["assembly_stats"]["total_sequence_length"])
         + sum(int(oi["total_seq_length"]) for oi in assembly_report["organelle_info"]),
     }
+    if "biosample" in assembly_info:
+        d["biosample"] = assembly_info["biosample"]["accession"]
+    if "wgs_info" in assembly_report:
+        d["prefix"] = assembly_report["wgs_info"]["wgs_project_accession"]
+    return d
 
 
 def adjust_taxon_id(blastn: str, taxon_info: TaxonInfo) -> int:
