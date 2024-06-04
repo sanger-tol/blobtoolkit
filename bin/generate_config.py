@@ -10,7 +10,7 @@ import typing
 import yaml
 
 NCBI_TAXONOMY_API = "https://api.ncbi.nlm.nih.gov/datasets/v2alpha/taxonomy/taxon/%s"
-NCBI_DATASETS_API = "https://api.ncbi.nlm.nih.gov/datasets/v2alpha/genome/accession/%s/dataset_report"
+NCBI_DATASETS_API = "https://api.ncbi.nlm.nih.gov/datasets/v2alpha/genome/accession/%s/dataset_report?filters.assembly_version=all_assemblies"
 
 RANKS = [
     "genus",
