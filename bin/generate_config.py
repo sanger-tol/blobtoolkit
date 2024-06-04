@@ -109,9 +109,9 @@ def get_assembly_info(accession: str) -> typing.Dict[str, typing.Union[str, int]
         "bioproject": assembly_info["bioproject_accession"],
         "level": assembly_info["assembly_level"].lower(),
         "scaffold-count": assembly_report["assembly_stats"]["number_of_component_sequences"]
-        + assembly_report["assembly_stats"]["number_of_organelles"],
+        + assembly_report["assembly_stats"].get("number_of_organelles", 0),
         "span": int(assembly_report["assembly_stats"]["total_sequence_length"])
-        + sum(int(oi["total_seq_length"]) for oi in assembly_report["organelle_info"]),
+        + sum(int(oi["total_seq_length"]) for oi in assembly_report.get("organelle_info", [])),
     }
     if "biosample" in assembly_info:
         d["biosample"] = assembly_info["biosample"]["accession"]
