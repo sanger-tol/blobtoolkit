@@ -67,6 +67,10 @@ def get_classification(taxon_info: TaxonInfo) -> typing.Dict[str, str]:
         anc_taxon_info = make_taxon_info(anc_taxon_id)
         if anc_taxon_info.rank:
             ancestors[anc_taxon_info.rank.lower()] = anc_taxon_info.organism_name
+    # https://ncbiinsights.ncbi.nlm.nih.gov/2024/06/04/changes-ncbi-taxonomy-classifications/
+    # "superkingdom" will be called "domain"
+    if "superkingdom" not in ancestors:
+        ancestors["superkingdom"] = ancestors["domain"]
     return {r: ancestors[r] for r in RANKS if r in ancestors}
 
 
