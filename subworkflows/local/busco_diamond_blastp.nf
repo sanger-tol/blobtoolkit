@@ -39,6 +39,7 @@ workflow BUSCO_DIAMOND {
     | transpose()
     | filter { rank,id -> rank =~ /species/ }
     | map { rank, id -> id}
+    | first
     | set { ch_taxid }
 
 
@@ -116,7 +117,7 @@ workflow BUSCO_DIAMOND {
     // Hardcoded to match the format expected by blobtools
     def outext = 'txt'
     def cols   = 'qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore'
-    DIAMOND_BLASTP ( ch_busco_genes, blastp, outext, cols )
+    DIAMOND_BLASTP ( ch_busco_genes, blastp, outext, cols, ch_taxid )
     ch_versions = ch_versions.mix ( DIAMOND_BLASTP.out.versions.first() )
 
 

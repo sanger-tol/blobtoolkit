@@ -12,6 +12,7 @@ process DIAMOND_BLASTP {
     tuple val(meta2), path(db)
     val out_ext
     val blast_columns
+    val taxid
 
     output:
     tuple val(meta), path('*.blast'), optional: true, emit: blast
@@ -32,6 +33,7 @@ process DIAMOND_BLASTP {
     def is_compressed = fasta.getExtension() == "gz" ? true : false
     def fasta_name = is_compressed ? fasta.getBaseName() : fasta
     def columns = blast_columns ? "${blast_columns}" : ''
+    def exclude_taxon = taxid ? "--taxon-exclude ${taxid}" : ''
     switch ( out_ext ) {
         case "blast": outfmt = 0; break
         case "xml": outfmt = 5; break
@@ -59,6 +61,7 @@ process DIAMOND_BLASTP {
         --db \$DB \\
         --query ${fasta_name} \\
         --outfmt ${outfmt} ${columns} \\
+        ${exclude_taxon} \\
         ${args} \\
         --out ${prefix}.${out_ext}
 
