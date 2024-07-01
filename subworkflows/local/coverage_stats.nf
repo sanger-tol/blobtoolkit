@@ -6,6 +6,7 @@ include { SAMTOOLS_VIEW  } from '../../modules/nf-core/samtools/view/main'
 include { SAMTOOLS_INDEX } from '../../modules/nf-core/samtools/index/main'
 include { BLOBTK_DEPTH   } from '../../modules/local/blobtk/depth'
 include { FASTAWINDOWS   } from '../../modules/nf-core/fastawindows/main'
+include { PIGZ_COMPRESS  } from '../../modules/nf-core/pigz/compress/main'
 include { CREATE_BED     } from '../../modules/local/create_bed'
 
 
@@ -51,6 +52,17 @@ workflow COVERAGE_STATS {
     // Calculate genome statistics
     FASTAWINDOWS ( fasta )
     ch_versions = ch_versions.mix ( FASTAWINDOWS.out.versions.first() )
+
+
+    // Compress the TSV files
+    PIGZ_COMPRESS (
+        FASTAWINDOWS.out.mononuc
+        | mix ( FASTAWINDOWS.out.dinuc )
+        | mix ( FASTAWINDOWS.out.trinuc )
+        | mix ( FASTAWINDOWS.out.tetranuc )
+        | mix ( FASTAWINDOWS.out.freq )
+    )
+    ch_versions = ch_versions.mix ( PIGZ_COMPRESS.out.versions.first() )
 
 
     // Create genome windows file in BED format
