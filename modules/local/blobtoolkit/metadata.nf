@@ -9,6 +9,7 @@ process BLOBTOOLKIT_METADATA {
 
     input:
     tuple val(meta), path(yaml)
+    tuple val(meta2), path(tsvs)
 
     output:
     tuple val(meta), path("*.metadata.yaml"), emit: yaml

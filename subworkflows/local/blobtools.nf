@@ -9,6 +9,7 @@ include { BLOBTOOLKIT_UPDATEBLOBDIR } from '../../modules/local/blobtoolkit/upda
 workflow BLOBTOOLS {
     take:
     config      // channel: [ val(meta), path(config) ]
+    tsvs        // channel: [ val(meta), [path(tsv)] ]
     windowstats // channel: [ val(meta), path(window_stats_tsvs) ]
     busco       // channel: [ val(meta), path(full_table) ]
     blastp      // channel: [ val(meta), path(txt) ]
@@ -24,7 +25,7 @@ workflow BLOBTOOLS {
     //
     // Create metadata summary file
     //
-    BLOBTOOLKIT_METADATA ( config )
+    BLOBTOOLKIT_METADATA ( config, tsvs )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_METADATA.out.versions.first() )
 
 
