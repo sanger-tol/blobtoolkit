@@ -14,6 +14,7 @@ process GENERATE_CONFIG {
 
     output:
     tuple val(meta), path("*.yaml"), emit: yaml
+    tuple val(meta), path("*.tsv") , emit: tsv
     tuple val(meta), path("*.csv") , emit: csv
     path "versions.yml"            , emit: versions
 
@@ -33,8 +34,7 @@ process GENERATE_CONFIG {
         $busco_param \\
         $accession_params \\
         --blastn $blastn \\
-        --yml_out ${prefix}.yaml \\
-        --csv_out ${prefix}.csv
+        --output_prefix ${prefix}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

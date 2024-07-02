@@ -13,6 +13,7 @@ NCBI_TAXONOMY_API = "https://api.ncbi.nlm.nih.gov/datasets/v2alpha/taxonomy/taxo
 GOAT_LOOKUP_API = "https://goat.genomehubs.org/api/v2/lookup?searchTerm=%s&result=taxon&size=10&taxonomy=ncbi"
 GOAT_RECORD_API = "https://goat.genomehubs.org/api/v2/record?recordId=%s&result=taxon&size=10&taxonomy=ncbi"
 NCBI_DATASETS_API = "https://api.ncbi.nlm.nih.gov/datasets/v2alpha/genome/accession/%s/dataset_report?filters.assembly_version=all_assemblies"
+NCBI_SEQUENCE_API = "https://api.ncbi.nlm.nih.gov/datasets/v2alpha/genome/accession/%s/sequence_reports"
 
 RANKS = [
     "genus",
@@ -34,8 +35,7 @@ def parse_args(args=None):
     parser.add_argument("--fasta", required=True, help="Path to the Fasta file of the assembly.")
     parser.add_argument("--taxon_query", required=True, help="Query string/integer for this taxon.")
     parser.add_argument("--lineage_tax_ids", required=True, help="Mapping between BUSCO lineages and taxon IDs.")
-    parser.add_argument("--yml_out", required=True, help="Output YML file.")
-    parser.add_argument("--csv_out", required=True, help="Output CSV file.")
+    parser.add_argument("--output_prefix", required=True, help="Prefix to name the output files.")
     parser.add_argument("--accession", help="Accession number of the assembly (optional).", default=None)
     parser.add_argument("--busco", help="Requested BUSCO lineages.", default=None)
     parser.add_argument("--blastn", required=True, help="Path to the NCBI Taxonomy database")
@@ -165,6 +165,21 @@ def get_assembly_info(accession: str) -> typing.Dict[str, typing.Union[str, int]
     return d
 
 
+def get_sequence_report(accession: str):
+    response = requests.get(NCBI_SEQUENCE_API % accession).json()
+    if not response["reports"]:
+        print(f"Assembly not found: {accession}", file=sys.stderr)
+        sys.exit(1)
+    sequence_report = response["reports"]
+    for rec in sequence_report:
+        if rec["role"] == "assembled-molecule":
+            rec["assembly_level"] = rec["assigned_molecule_location_type"]
+        else:
+            rec["assembly_level"] = "na"
+            rec["chr_name"] = "na"
+    return sequence_report
+
+
 def adjust_taxon_id(blastn: str, taxon_info: TaxonInfo) -> int:
     con = sqlite3.connect(os.path.join(blastn, "taxonomy4blast.sqlite3"))
     cur = con.cursor()
@@ -226,6 +241,7 @@ def print_yaml(
         },
         "version": 2,
     }
+
     out_dir = os.path.dirname(file_out)
     make_dir(out_dir)
 
@@ -243,14 +259,42 @@ def print_csv(file_out, taxon_id: int, odb_arr: typing.List[str]):
             print("busco_lineage", odb_val, sep=",", file=fout)
 
 
+def print_tsvs(output_prefix, sequence_report):
+    categories_tsv = f"{output_prefix}.categories.tsv"
+    synonyms_tsv = f"{output_prefix}.synonyms.tsv"
+    with open(categories_tsv, "w") as fhc:
+        with open(synonyms_tsv, "w") as fhs:
+            print("identifier", "assembly_role", "assembly_level", "assembly_unit", sep="\t", file=fhc)
+            print("identifier", "name", "assigned_name", "refseq_accession", sep="\t", file=fhs)
+            for rec in sequence_report:
+                print(
+                    rec["genbank_accession"],
+                    rec["role"],
+                    rec["assembly_level"],
+                    rec["assembly_unit"],
+                    sep="\t",
+                    file=fhc,
+                )
+                print(
+                    rec["genbank_accession"],
+                    rec["sequence_name"],
+                    rec["chr_name"],
+                    rec.get("refseq_accession", "na"),
+                    sep="\t",
+                    file=fhs,
+                )
+
+
 def main(args=None):
     args = parse_args(args)
 
     assembly_info: typing.Dict[str, typing.Union[str, int]]
     if args.accession:
         assembly_info = get_assembly_info(args.accession)
+        sequence_report = get_sequence_report(args.accession)
     else:
         assembly_info = {"level": "scaffold"}
+        sequence_report = None
     assembly_info["file"] = args.fasta
 
     taxon_info = fetch_taxon_info(args.taxon_query)
@@ -258,8 +302,11 @@ def main(args=None):
     odb_arr = get_odb(taxon_info, args.lineage_tax_ids, args.busco)
     taxon_id = adjust_taxon_id(args.blastn, taxon_info)
 
-    print_yaml(args.yml_out, assembly_info, taxon_info, classification, odb_arr)
-    print_csv(args.csv_out, taxon_id, odb_arr)
+    if sequence_report:
+        print_tsvs(args.output_prefix, sequence_report)
+
+    print_yaml(f"{args.output_prefix}.yaml", assembly_info, taxon_info, classification, odb_arr)
+    print_csv(f"{args.output_prefix}.csv", taxon_id, odb_arr)
 
 
 if __name__ == "__main__":

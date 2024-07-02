@@ -106,6 +106,7 @@ workflow INPUT_CHECK {
     emit:
     reads                                   // channel: [ val(meta), path(datafile) ]
     config = GENERATE_CONFIG.out.yaml       // channel: [ val(meta), path(yaml) ]
+    tsv = GENERATE_CONFIG.out.tsv           // channel: [ val(meta), path(tsv) ]
     taxon_id = ch_taxon_id                  // channel: val(taxon_id)
     busco_lineages = ch_busco_lineages      // channel: val([busco_lin])
     versions = ch_versions                  // channel: [ versions.yml ]
