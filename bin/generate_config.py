@@ -10,6 +10,8 @@ import typing
 import yaml
 
 NCBI_TAXONOMY_API = "https://api.ncbi.nlm.nih.gov/datasets/v2alpha/taxonomy/taxon/%s"
+GOAT_LOOKUP_API = "https://goat.genomehubs.org/api/v2/lookup?searchTerm=%s&result=taxon&size=10&taxonomy=ncbi"
+GOAT_RECORD_API = "https://goat.genomehubs.org/api/v2/record?recordId=%s&result=taxon&size=10&taxonomy=ncbi"
 NCBI_DATASETS_API = "https://api.ncbi.nlm.nih.gov/datasets/v2alpha/genome/accession/%s/dataset_report?filters.assembly_version=all_assemblies"
 
 RANKS = [
@@ -51,20 +53,57 @@ class TaxonInfo:
     taxon_id: int
     organism_name: str
     rank: typing.Optional[str]
-    lineage: typing.List[int]
+    lineage: typing.List["TaxonInfo"]
 
 
-def make_taxon_info(taxon_name: typing.Union[str, int]) -> TaxonInfo:
+def make_taxon_info_from_goat(body: dict[str, str]) -> TaxonInfo:
+    rank = body["taxon_rank"]
+    if rank == "no rank":
+        rank = None
+    if "lineage" in body:
+        lineage = [make_taxon_info_from_goat(b) for b in body["lineage"]]
+    else:
+        lineage = []
+    return TaxonInfo(int(body["taxon_id"]), body["scientific_name"], rank, lineage)
+
+
+def fetch_taxon_info_from_goat(taxon_name: typing.Union[str, int]) -> TaxonInfo:
+    if isinstance(taxon_name, int):
+        taxon_id = taxon_name
+        record_id = "taxon-%d" % taxon_name
+    else:
+        # Resolve the taxon_id of the species
+        response = requests.get(GOAT_LOOKUP_API % taxon_name).json()
+        taxon_id = int(response["results"][0]["result"]["taxon_id"])
+        record_id = response["results"][0]["id"]
+
+    # Using API, get the taxon_ids of the species and all parents
+    response = requests.get(GOAT_RECORD_API % record_id).json()
+    body = response["records"][0]["record"]
+    return make_taxon_info_from_goat(body)
+
+
+def fetch_taxon_info_from_ncbi(taxon_name: typing.Union[str, int], with_lineage=True) -> typing.Optional[TaxonInfo]:
     # Using API, get the taxon_ids of the species and all parents
     response = requests.get(NCBI_TAXONOMY_API % taxon_name).json()
-    body = response["taxonomy_nodes"][0]["taxonomy"]
-    return TaxonInfo(body["tax_id"], body["organism_name"], body.get("rank"), body["lineage"])
+    if "taxonomy" in response["taxonomy_nodes"][0]:
+        body = response["taxonomy_nodes"][0]["taxonomy"]
+        if with_lineage:
+            lineage = [
+                fetch_taxon_info_from_ncbi(t, with_lineage=False) for t in reversed(body["lineage"][2:])
+            ]  # skip root and cellular_organisms
+        else:
+            lineage = []
+        return TaxonInfo(body["tax_id"], body["organism_name"], body.get("rank"), lineage)
+
+
+def fetch_taxon_info(taxon_name: typing.Union[str, int]) -> TaxonInfo:
+    return fetch_taxon_info_from_ncbi(taxon_name) or fetch_taxon_info_from_goat(taxon_name)
 
 
 def get_classification(taxon_info: TaxonInfo) -> typing.Dict[str, str]:
     ancestors: typing.Dict[str, str] = {}
-    for anc_taxon_id in taxon_info.lineage[1:]:  # skip the root taxon_id=1
-        anc_taxon_info = make_taxon_info(anc_taxon_id)
+    for anc_taxon_info in taxon_info.lineage:
         if anc_taxon_info.rank:
             ancestors[anc_taxon_info.rank.lower()] = anc_taxon_info.organism_name
     # https://ncbiinsights.ncbi.nlm.nih.gov/2024/06/04/changes-ncbi-taxonomy-classifications/
@@ -92,9 +131,9 @@ def get_odb(taxon_info: TaxonInfo, lineage_tax_ids: str, requested_buscos: typin
     else:
         # Do the intersection to find the ancestors that have a BUSCO lineage
         odb_arr = [
-            lineage_tax_ids_dict[taxon_id]
-            for taxon_id in reversed(taxon_info.lineage)
-            if taxon_id in lineage_tax_ids_dict
+            lineage_tax_ids_dict[anc_taxon_info.taxon_id]
+            for anc_taxon_info in taxon_info.lineage
+            if anc_taxon_info.taxon_id in lineage_tax_ids_dict
         ]
 
     return odb_arr
@@ -129,7 +168,7 @@ def get_assembly_info(accession: str) -> typing.Dict[str, typing.Union[str, int]
 def adjust_taxon_id(blastn: str, taxon_info: TaxonInfo) -> int:
     con = sqlite3.connect(os.path.join(blastn, "taxonomy4blast.sqlite3"))
     cur = con.cursor()
-    for taxon_id in [taxon_info.taxon_id] + list(reversed(taxon_info.lineage)):
+    for taxon_id in [taxon_info.taxon_id] + [anc_taxon_info.taxon_id for anc_taxon_info in taxon_info.lineage]:
         res = cur.execute("SELECT * FROM TaxidInfo WHERE taxid = ?", (taxon_id,))
         if res.fetchone():
             return taxon_id
@@ -214,7 +253,7 @@ def main(args=None):
         assembly_info = {"level": "scaffold"}
     assembly_info["file"] = args.fasta
 
-    taxon_info = make_taxon_info(args.taxon_query)
+    taxon_info = fetch_taxon_info(args.taxon_query)
     classification = get_classification(taxon_info)
     odb_arr = get_odb(taxon_info, args.lineage_tax_ids, args.busco)
     taxon_id = adjust_taxon_id(args.blastn, taxon_info)

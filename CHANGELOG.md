@@ -9,6 +9,8 @@ The pipeline has now been validated for draft (unpublished) assemblies.
 
 - The pipeline now queries the NCBI database instead of GoaT to establish the
   taxonomic classification of the species and the relevant Busco lineages.
+  In case the taxon_id is not found, the pipeline falls back to GoaT, which
+  is aware of upcoming taxon_ids in ENA.
 - New `--busco_lineages` parameter to choose specific Busco lineages instead of
   automatically selecting based on the taxonomy.
 - All parameters are now passed the regular Nextflow way. There is no support

@@ -130,7 +130,7 @@ workflow BLOBTOOLKIT {
     ch_versions = ch_versions.mix ( COVERAGE_STATS.out.versions )
 
     //
-    // SUBWORKFLOW: Run BUSCO using lineages fetched from NCBI, then run diamond_blastp
+    // SUBWORKFLOW: Run BUSCO using lineages fetched from GoaT, then run diamond_blastp
     //
     BUSCO_DIAMOND (
         PREPARE_GENOME.out.genome,

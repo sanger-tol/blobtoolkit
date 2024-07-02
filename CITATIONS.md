@@ -26,6 +26,10 @@
 
 - [Fasta_windows](https://github.com/tolkit/fasta_windows)
 
+- [GoaT](https://goat.genomehubs.org)
+
+  > Challis, Richard, et al. “Genomes on a Tree (GoaT): A versatile, scalable search engine for genomic and sequencing project metadata across the eukaryotic tree of life.” Wellcome Open Research, vol. 8, no. 24, 2023, https://doi.org/10.12688/wellcomeopenres.18658.1.
+
 - [Minimap2](https://github.com/lh3/minimap2)
 
   > Li, Heng. "Minimap2: pairwise alignment for nucleotide sequences." Bioinformatics, vol. 34, no. 18, Sep. 2018, pp. 3094-100, https://doi.org/10.1093/bioinformatics/bty191.
