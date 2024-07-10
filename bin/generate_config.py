@@ -103,15 +103,17 @@ def get_assembly_info(accession: str) -> typing.Dict[str, typing.Union[str, int]
         sys.exit(1)
     assembly_report = response["reports"][0]
     assembly_info = assembly_report["assembly_info"]
+    scaffold_count = assembly_report["assembly_stats"]["number_of_component_sequences"]
+    scaffold_count += assembly_report["assembly_stats"].get("number_of_organelles", 0)
+    span = int(assembly_report["assembly_stats"]["total_sequence_length"])
+    span += sum(int(oi["total_seq_length"]) for oi in assembly_report.get("organelle_info", []))
     d = {
         "accession": accession,
         "alias": assembly_info["assembly_name"],
         "bioproject": assembly_info["bioproject_accession"],
         "level": assembly_info["assembly_level"].lower(),
-        "scaffold-count": assembly_report["assembly_stats"]["number_of_component_sequences"]
-        + assembly_report["assembly_stats"].get("number_of_organelles", 0),
-        "span": int(assembly_report["assembly_stats"]["total_sequence_length"])
-        + sum(int(oi["total_seq_length"]) for oi in assembly_report.get("organelle_info", [])),
+        "scaffold-count": scaffold_count,
+        "span": span,
     }
     if "biosample" in assembly_info:
         d["biosample"] = assembly_info["biosample"]["accession"]
