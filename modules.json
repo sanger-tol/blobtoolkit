@@ -30,12 +30,14 @@
                     "diamond/blastp": {
                         "branch": "master",
                         "git_sha": "b29f6beb86d1d24d680277fb1a3f4de7b8b8a92c",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/diamond/blastp/diamond-blastp.diff"
                     },
                     "diamond/blastx": {
                         "branch": "master",
                         "git_sha": "b29f6beb86d1d24d680277fb1a3f4de7b8b8a92c",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/diamond/blastx/diamond-blastx.diff"
                     },
                     "fastawindows": {
                         "branch": "master",
