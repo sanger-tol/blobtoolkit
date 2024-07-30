@@ -13,6 +13,7 @@ General tidy up of the configuration and the pipeline
 - Removed some options that were not used or not needed
 - All relevant outputs are now copied to the output directory
 - Fixed some blast parameters to match the behaviour of the Snakemake pipeline
+- Fixed parsing of samplesheets from fetchngs to capture correct data type
 
 ### Parameters
 
