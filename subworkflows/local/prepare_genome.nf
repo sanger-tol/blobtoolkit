@@ -48,7 +48,7 @@ workflow PREPARE_GENOME {
         ch_fasta = ch_genome
     }
 
-    
+
     emit:
     genome   = ch_fasta            // channel: [ meta, path(genome) ]
     versions = ch_versions         // channel: [ versions.yml ]

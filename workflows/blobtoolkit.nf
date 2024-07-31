@@ -17,22 +17,24 @@ WorkflowBlobtoolkit.initialise(params, log)
 
 // Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxa_file, params.taxdump, params.busco, params.blastp, params.blastx ]
+def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxdump, params.busco, params.blastp, params.blastx ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-if (params.fasta && params.accession) { ch_fasta = Channel.of([ [ 'id': params.accession ], params.fasta ]).first() } else { exit 1, 'Genome fasta file and accession must be specified!' }
-if (params.taxon) { ch_taxon = Channel.of(params.taxon) } else { exit 1, 'NCBI Taxon ID not specified!' }
-if (params.blastp && params.accession) { ch_blastp = Channel.of([ [ 'id': params.accession ], params.blastp ]).first() } else { exit 1, 'Diamond BLASTp database and accession must be specified!' }
-if (params.blastx && params.accession) { ch_blastx = Channel.of([ [ 'id': params.accession ], params.blastx ]).first() } else { exit 1, 'Diamond BLASTx database and accession must be specified!' }
-if (params.blastn && params.accession) { ch_blastn = Channel.of([ [ 'id': params.accession ], params.blastn ]).first() } else { exit 1, 'BLASTn database not specified!' }
+if (params.fasta) { ch_fasta = Channel.value([ [ 'id': params.accession ?: file(params.fasta.replace(".gz", "")).baseName ], file(params.fasta) ]) } else { exit 1, 'Genome fasta file must be specified!' }
+if (params.taxon) { ch_taxon = Channel.value(params.taxon) } else { exit 1, 'NCBI Taxon ID not specified!' }
+if (params.blastp) { ch_blastp = Channel.value([ [ 'id': file(params.blastp).baseName ], params.blastp ]) } else { exit 1, 'Diamond BLASTp database must be specified!' }
+if (params.blastx) { ch_blastx = Channel.value([ [ 'id': file(params.blastx).baseName ], params.blastx ]) } else { exit 1, 'Diamond BLASTx database must be specified!' }
+if (params.blastn) { ch_blastn = Channel.value([ [ 'id': file(params.blastn).baseName ], params.blastn ]) } else { exit 1, 'BLASTn database not specified!' }
 if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
 if (params.fetchngs_samplesheet && !params.align) { exit 1, '--align not specified, even though the input samplesheet is a nf-core/fetchngs one - i.e has fastq files!' }
 
 // Create channel for optional parameters
-if (params.busco) { ch_busco_db = Channel.fromPath(params.busco) } else { ch_busco_db = Channel.empty() }
-if (params.yaml && params.accession) { ch_yaml = Channel.of([ [ 'id': params.accession ], params.yaml ]) } else { ch_yaml = Channel.empty() }
+if (params.busco) { ch_busco_db = Channel.fromPath(params.busco).first() } else { ch_busco_db = Channel.value([]) }
+if (params.yaml) { ch_yaml = Channel.fromPath(params.yaml) } else { ch_yaml = Channel.empty() }
+if (params.yaml && params.accession) { exit 1, '--yaml cannot be provided at the same time as --accession !' }
+if (!params.yaml && !params.accession) { exit 1, '--yaml and --accession are both mising. Pick one !' }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,11 +52,6 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
     IMPORT LOCAL MODULES/SUBWORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-
-//
-// MODULE: Loaded from modules/local/
-//
-include { BLOBTOOLKIT_CONFIG     } from '../modules/local/blobtoolkit/config'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -108,7 +105,7 @@ workflow BLOBTOOLKIT {
     INPUT_CHECK ( ch_input, PREPARE_GENOME.out.genome, ch_yaml )
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
 
-    // 
+    //
     // SUBWORKFLOW: Optional read alignment
     //
     if ( params.align ) {
@@ -120,7 +117,7 @@ workflow BLOBTOOLKIT {
     }
 
     //
-    // SUBWORKFLOW: Calculate genome coverage and statistics 
+    // SUBWORKFLOW: Calculate genome coverage and statistics
     //
     COVERAGE_STATS ( ch_aligned, PREPARE_GENOME.out.genome )
     ch_versions = ch_versions.mix ( COVERAGE_STATS.out.versions )
@@ -128,32 +125,22 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
     //
-    if (params.taxa_file) { 
-        ch_taxa = Channel.from(params.taxa_file)
-        ch_taxon_taxa = PREPARE_GENOME.out.genome.combine(ch_taxon).combine(ch_taxa).map { meta, fasta, taxon, taxa -> [ meta, taxon, taxa ] }
-    } else { 
-        ch_taxon_taxa = PREPARE_GENOME.out.genome.combine(ch_taxon).map { meta, fasta, taxon -> [ meta, taxon, [] ] }
-    }
-
-    BUSCO_DIAMOND ( 
-        PREPARE_GENOME.out.genome, 
-        ch_taxon_taxa, 
-        ch_busco_db, 
-        ch_blastp, 
-        params.blastp_outext, 
-        params.blastp_cols 
+    BUSCO_DIAMOND (
+        PREPARE_GENOME.out.genome,
+        ch_taxon,
+        ch_busco_db,
+        ch_blastp,
     )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
-    
+
     //
     // SUBWORKFLOW: Diamond blastx search of assembly contigs against the UniProt reference proteomes
     //
-    RUN_BLASTX ( 
+    RUN_BLASTX (
         PREPARE_GENOME.out.genome,
         BUSCO_DIAMOND.out.first_table,
         ch_blastx,
-        params.blastx_outext,
-        params.blastx_cols
+        BUSCO_DIAMOND.out.taxon_id,
     )
     ch_versions = ch_versions.mix ( RUN_BLASTX.out.versions )
 
@@ -161,29 +148,29 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Run blastn search on sequences that had no blastx hits
     //
-    RUN_BLASTN ( 
-        RUN_BLASTX.out.blastx_out, 
-        PREPARE_GENOME.out.genome, 
-        ch_blastn, 
-        BUSCO_DIAMOND.out.taxon_id
+    RUN_BLASTN (
+        RUN_BLASTX.out.blastx_out,
+        PREPARE_GENOME.out.genome,
+        ch_blastn,
+        BUSCO_DIAMOND.out.taxon_id,
     )
-    
+
     //
     // SUBWORKFLOW: Collate genome statistics by various window sizes
     //
-    COLLATE_STATS ( 
+    COLLATE_STATS (
         BUSCO_DIAMOND.out.all_tables,
-        COVERAGE_STATS.out.bed, 
-        COVERAGE_STATS.out.freq, 
-        COVERAGE_STATS.out.mononuc, 
-        COVERAGE_STATS.out.cov 
+        COVERAGE_STATS.out.bed,
+        COVERAGE_STATS.out.freq,
+        COVERAGE_STATS.out.mononuc,
+        COVERAGE_STATS.out.cov
     )
     ch_versions = ch_versions.mix ( COLLATE_STATS.out.versions )
 
     //
     // SUBWORKFLOW: Create BlobTools dataset
     //
-    BLOBTOOLS ( 
+    BLOBTOOLS (
         INPUT_CHECK.out.config,
         COLLATE_STATS.out.window_tsv,
         BUSCO_DIAMOND.out.all_tables,
@@ -193,7 +180,7 @@ workflow BLOBTOOLKIT {
         ch_taxdump
     )
     ch_versions = ch_versions.mix ( BLOBTOOLS.out.versions )
-    
+
     //
     // SUBWORKFLOW: Generate summary and static images
     //

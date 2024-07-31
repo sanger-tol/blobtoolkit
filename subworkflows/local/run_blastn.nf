@@ -12,8 +12,8 @@ include { BLOBTOOLKIT_UNCHUNK          } from '../../modules/local/blobtoolkit/u
 
 
 workflow RUN_BLASTN {
-    take: 
-    blast_table  // channel: [ val(meta), path(blast_table) ] 
+    take:
+    blast_table  // channel: [ val(meta), path(blast_table) ]
     fasta        // channel: [ val(meta), path(fasta) ]
     blastn       // channel: [ val(meta), path(blastn_db) ]
     taxon_id     // channel: val(taxon_id)
@@ -27,16 +27,16 @@ workflow RUN_BLASTN {
     // Get list of sequence ids with no hits in diamond blastx search
     NOHIT_LIST ( blast_table, fasta )
     ch_versions = ch_versions.mix ( NOHIT_LIST.out.versions.first() )
- 
+
     // Subset of sequences with no hits
     SEQTK_SUBSEQ (
         fasta,
-        NOHIT_LIST.out.nohitlist.map { meta, nohit -> nohit }
+        NOHIT_LIST.out.nohitlist.map { meta, nohit -> nohit } . filter { it.size() > 0 }
     )
     ch_versions = ch_versions.mix ( SEQTK_SUBSEQ.out.versions.first() )
-    
-    
-    //  Split long contigs into chunks 
+
+
+    //  Split long contigs into chunks
     // create chunks
     BLOBTOOLKIT_CHUNK ( SEQTK_SUBSEQ.out.sequences, [[],[]] )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_CHUNK.out.versions.first() )

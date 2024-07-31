@@ -12,11 +12,9 @@ include { RESTRUCTUREBUSCODIR       } from '../../modules/local/restructurebusco
 workflow BUSCO_DIAMOND {
     take:
     fasta        // channel: [ val(meta), path(fasta) ]
-    taxon_taxa   // channel: [ val(meta, val(taxon), path(taxa) ]
+    taxon        // channel: val(taxon)
     busco_db     // channel: path(busco_db)
     blastp       // channel: path(blastp_db)
-    outext       // channel: val(out_format)
-    cols         // channel: val(column_names)
 
 
     main:
@@ -24,11 +22,13 @@ workflow BUSCO_DIAMOND {
 
 
     //
-    // Fetch BUSCO lineages for taxon (or taxa)
+    // Fetch BUSCO lineages for taxon
     //
-    GOAT_TAXONSEARCH ( taxon_taxa )
+    GOAT_TAXONSEARCH (
+        fasta.combine(taxon).map { meta, fasta, taxon -> [ meta, taxon, [] ] }
+    )
     ch_versions = ch_versions.mix ( GOAT_TAXONSEARCH.out.versions.first() )
-    
+
 
     //
     // Get NCBI species ID
@@ -39,6 +39,7 @@ workflow BUSCO_DIAMOND {
     | transpose()
     | filter { rank,id -> rank =~ /species/ }
     | map { rank, id -> id}
+    | first
     | set { ch_taxid }
 
 
@@ -70,7 +71,7 @@ workflow BUSCO_DIAMOND {
         ch_fasta_with_lineage,
         "genome",
         ch_fasta_with_lineage.map { it[0].lineage_name },
-        busco_db.collect().ifEmpty([]),
+        busco_db,
         [],
     )
     ch_versions = ch_versions.mix ( BUSCO.out.versions.first() )
@@ -108,12 +109,15 @@ workflow BUSCO_DIAMOND {
 
     //
     // Align BUSCO genes against the BLASTp database
-    //    
+    //
     BLOBTOOLKIT_EXTRACTBUSCOS.out.genes
     | filter { it[1].size() > 140 }
     | set { ch_busco_genes }
 
-    DIAMOND_BLASTP ( ch_busco_genes, blastp, outext, cols )
+    // Hardcoded to match the format expected by blobtools
+    def outext = 'txt'
+    def cols   = 'qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore'
+    DIAMOND_BLASTP ( ch_busco_genes, blastp, outext, cols, ch_taxid )
     ch_versions = ch_versions.mix ( DIAMOND_BLASTP.out.versions.first() )
 
 
@@ -141,7 +145,7 @@ workflow BUSCO_DIAMOND {
 
 
     emit:
-    first_table = ch_first_table          // channel: [ val(meta), path(full_table) ] 
+    first_table = ch_first_table          // channel: [ val(meta), path(full_table) ]
     all_tables  = ch_indexed_buscos       // channel: [ val(meta), path(full_tables) ]
     blastp_txt  = DIAMOND_BLASTP.out.txt  // channel: [ val(meta), path(txt) ]
     taxon_id    = ch_taxid                // channel: taxon_id

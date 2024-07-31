@@ -20,7 +20,7 @@ workflow INPUT_CHECK {
     if ( params.fetchngs_samplesheet ) {
         FETCHNGSSAMPLESHEET_CHECK ( samplesheet )
             .csv
-            .splitCsv ( header:true, sep:',' )
+            .splitCsv ( header:true, sep:',', quote:'"' )
             .branch { row ->
                 paired: row.fastq_2
                     [[id: row.run_accession, row:row], [row.fastq_1, row.fastq_2]]
