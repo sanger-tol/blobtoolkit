@@ -15,13 +15,16 @@ The pipeline has now been validated for draft (unpublished) assemblies.
   automatically selecting based on the taxonomy.
 - All parameters are now passed the regular Nextflow way. There is no support
   for the original Yaml configuration files of the Snakemake version.
+- New option `--skip_taxon_filtering` to skip the taxon filtering in blast searches.
+  Mostly relevant for draft assemblies.
 
 ### Parameters
 
-| Old parameter | New parameter    |
-| ------------- | ---------------- |
-| --yaml        |                  |
-|               | --busco_lineages |
+| Old parameter | New parameter          |
+| ------------- | ---------------------- |
+| --yaml        |                        |
+|               | --busco_lineages       |
+|               | --skip_taxon_filtering |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 

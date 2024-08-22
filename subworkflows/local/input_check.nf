@@ -87,9 +87,10 @@ workflow INPUT_CHECK {
 
 
     //
-    // Get the taxon ID
+    // Get the taxon ID if we do taxon filtering in blast* searches
     //
     ch_parsed_csv.taxon_id
+    | map { params.skip_taxon_filtering ? '' : it }
     | first
     | set { ch_taxon_id }
 
