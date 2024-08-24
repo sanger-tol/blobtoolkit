@@ -16,7 +16,7 @@ It takes a samplesheet of BAM/CRAM/FASTQ/FASTA files as input, calculates genome
 
 1. Calculate genome statistics in windows ([`fastawindows`](https://github.com/tolkit/fasta_windows))
 2. Calculate Coverage ([`blobtk/depth`](https://github.com/blobtoolkit/blobtk))
-3. Fetch associated BUSCO lineages ([`goat/taxonsearch`](https://github.com/genomehubs/goat-cli))
+3. Determine the appropriate BUSCO lineages from the taxonomy.
 4. Run BUSCO ([`busco`](https://busco.ezlab.org/))
 5. Extract BUSCO genes ([`blobtoolkit/extractbuscos`](https://github.com/blobtoolkit/blobtoolkit))
 6. Run Diamond BLASTp against extracted BUSCO genes ([`diamond/blastp`](https://github.com/bbuchfink/diamond))

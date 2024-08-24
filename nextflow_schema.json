@@ -32,16 +32,21 @@
                     "description": "Turn on optional genome masking if needed.",
                     "fa_icon": "fas fa-toggle-off"
                 },
+                "skip_taxon_filtering": {
+                    "type": "boolean",
+                    "description": "Skip filtering out hits from the same species in blast* searches.",
+                    "fa_icon": "fas fa-toggle-off"
+                },
                 "fetchngs_samplesheet": {
                     "type": "boolean",
                     "description": "Turn on the conversion from a nf-core/fetchngs samplesheet.",
                     "fa_icon": "fas fa-toggle-off"
                 },
-                "yaml": {
+                "busco_lineages": {
                     "type": "string",
-                    "format": "file-path",
-                    "description": "Custom config file for draft assembly",
-                    "fa_icon": "fas fa-file-alt"
+                    "pattern": "([^,]+_odb10,)*[^,]+_odb10",
+                    "description": "Name of the ODB10 lineages to run BUSCO on. By default, the pipeline will automatically selecy the correct lineage based on the taxonomy.",
+                    "fa_icon": "fas fa-bone"
                 },
                 "image_format": {
                     "type": "string",
@@ -100,13 +105,20 @@
             "type": "object",
             "fa_icon": "fas fa-database",
             "description": "Define the location and parameters to work with databases.",
-            "required": ["blastp", "blastx", "blastn", "taxdump"],
+            "required": ["blastp", "blastx", "blastn", "lineage_tax_ids", "taxdump"],
             "properties": {
                 "busco": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "Local directory where clade-specific BUSCO lineage datasets are stored",
                     "fa_icon": "fas fa-folder-open"
+                },
+                "lineage_tax_ids": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Local file that holds a mapping between BUSCO lineages and taxon IDs.",
+                    "help_text": "Initialised from https://busco-data.ezlab.org/v5/data/placement_files/mapping_taxids-busco_dataset_name.*.2019-12-16.txt.tar.gz",
+                    "fa_icon": "fas fa-file-code"
                 },
                 "blastp": {
                     "type": "string",
