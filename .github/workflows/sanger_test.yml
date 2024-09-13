@@ -23,6 +23,7 @@ jobs:
           parameters: |
             {
               "outdir": "${{ secrets.TOWER_WORKDIR_PARENT }}/results/${{ github.repository }}/results-${{ env.REVISION }}",
+              "use_work_dir_as_temp": true,
             }
           profiles: test,sanger,singularity,cleanup
       - uses: actions/upload-artifact@v3

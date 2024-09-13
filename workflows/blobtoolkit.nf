@@ -17,7 +17,7 @@ WorkflowBlobtoolkit.initialise(params, log)
 
 // Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxdump, params.busco, params.blastp, params.blastx ]
+def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxdump, params.busco, params.blastp, params.blastx, params.lineage_tax_ids ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
@@ -30,11 +30,11 @@ if (params.blastn) { ch_blastn = Channel.value([ [ 'id': file(params.blastn).bas
 if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
 if (params.fetchngs_samplesheet && !params.align) { exit 1, '--align not specified, even though the input samplesheet is a nf-core/fetchngs one - i.e has fastq files!' }
 
+if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.lineage_tax_ids).first() } else { exit 1, 'Mapping BUSCO lineage <-> taxon_ids not specified' }
+
 // Create channel for optional parameters
+if (params.busco_lineages) { ch_busco_lin = Channel.value(params.busco_lineages) } else { ch_busco_lin = Channel.value([]) }
 if (params.busco) { ch_busco_db = Channel.fromPath(params.busco).first() } else { ch_busco_db = Channel.value([]) }
-if (params.yaml) { ch_yaml = Channel.fromPath(params.yaml) } else { ch_yaml = Channel.empty() }
-if (params.yaml && params.accession) { exit 1, '--yaml cannot be provided at the same time as --accession !' }
-if (!params.yaml && !params.accession) { exit 1, '--yaml and --accession are both mising. Pick one !' }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -102,7 +102,14 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Check samplesheet and create channels for downstream analysis
     //
-    INPUT_CHECK ( ch_input, PREPARE_GENOME.out.genome, ch_yaml )
+    INPUT_CHECK (
+        ch_input,
+        PREPARE_GENOME.out.genome,
+        ch_taxon,
+        ch_busco_lin,
+        ch_lineage_tax_ids,
+        ch_blastn,
+    )
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
 
     //
@@ -123,13 +130,14 @@ workflow BLOBTOOLKIT {
     ch_versions = ch_versions.mix ( COVERAGE_STATS.out.versions )
 
     //
-    // SUBWORKFLOW: Run BUSCO using lineages fetched from GOAT, then run diamond_blastp
+    // SUBWORKFLOW: Run BUSCO using lineages fetched from GoaT, then run diamond_blastp
     //
     BUSCO_DIAMOND (
         PREPARE_GENOME.out.genome,
-        ch_taxon,
+        INPUT_CHECK.out.busco_lineages,
         ch_busco_db,
         ch_blastp,
+        INPUT_CHECK.out.taxon_id,
     )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
 
@@ -140,7 +148,7 @@ workflow BLOBTOOLKIT {
         PREPARE_GENOME.out.genome,
         BUSCO_DIAMOND.out.first_table,
         ch_blastx,
-        BUSCO_DIAMOND.out.taxon_id,
+        INPUT_CHECK.out.taxon_id,
     )
     ch_versions = ch_versions.mix ( RUN_BLASTX.out.versions )
 
@@ -152,7 +160,7 @@ workflow BLOBTOOLKIT {
         RUN_BLASTX.out.blastx_out,
         PREPARE_GENOME.out.genome,
         ch_blastn,
-        BUSCO_DIAMOND.out.taxon_id,
+        INPUT_CHECK.out.taxon_id,
     )
 
     //
@@ -199,6 +207,7 @@ workflow BLOBTOOLKIT {
     //
     FINALISE_BLOBDIR (
         BLOBTOOLS.out.blobdir,
+        INPUT_CHECK.out.reads.collect(flat: false).ifEmpty([]),
         CUSTOM_DUMPSOFTWAREVERSIONS.out.yml,
         VIEW.out.summary
     )

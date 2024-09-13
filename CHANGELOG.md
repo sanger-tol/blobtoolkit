@@ -3,6 +3,41 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[0.6.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.6.0)] – Bellsprout – [2024-09-13]
+
+The pipeline has now been validated for draft (unpublished) assemblies.
+
+- The pipeline now queries the NCBI database instead of GoaT to establish the
+  taxonomic classification of the species and the relevant Busco lineages.
+  In case the taxon_id is not found, the pipeline falls back to GoaT, which
+  is aware of upcoming taxon_ids in ENA.
+- New `--busco_lineages` parameter to choose specific Busco lineages instead of
+  automatically selecting based on the taxonomy.
+- All parameters are now passed the regular Nextflow way. There is no support
+  for the original Yaml configuration files of the Snakemake version.
+- New option `--skip_taxon_filtering` to skip the taxon filtering in blast searches.
+  Mostly relevant for draft assemblies.
+- Introduced the `--use_work_dir_as_temp` parameter to avoid leaving files in `/tmp`.
+
+### Parameters
+
+| Old parameter | New parameter          |
+| ------------- | ---------------------- |
+| --yaml        |                        |
+|               | --busco_lineages       |
+|               | --skip_taxon_filtering |
+|               | --use_work_dir_as_temp |
+
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency | Old version | New version |
+| ---------- | ----------- | ----------- |
+| goat       | 0.2.5       |             |
+
 ## [[0.5.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.5.1)] – Snorlax (patch 1) – [2024-08-22]
 
 ### Enhancements & fixes

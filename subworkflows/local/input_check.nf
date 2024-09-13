@@ -6,13 +6,16 @@ include { CAT_CAT                   } from '../../modules/nf-core/cat/cat/main'
 include { SAMTOOLS_FLAGSTAT         } from '../../modules/nf-core/samtools/flagstat/main'
 include { SAMPLESHEET_CHECK         } from '../../modules/local/samplesheet_check'
 include { FETCHNGSSAMPLESHEET_CHECK } from '../../modules/local/fetchngssamplesheet_check'
-include { BLOBTOOLKIT_CONFIG        } from '../../modules/local/blobtoolkit/config'
+include { GENERATE_CONFIG           } from '../../modules/local/generate_config'
 
 workflow INPUT_CHECK {
     take:
     samplesheet // file: /path/to/samplesheet.csv
     fasta       // channel: [ meta, path(fasta) ]
-    yaml        // channel: [ meta, path(config ]
+    taxon       // channel: val(taxon)
+    busco_lin   // channel: val([busco_lin])
+    lineage_tax_ids        // channel: /path/to/lineage_tax_ids
+    blastn       // channel: [ val(meta), path(blastn_db) ]
 
     main:
     ch_versions = Channel.empty()
@@ -58,24 +61,53 @@ workflow INPUT_CHECK {
     | set { reads }
 
 
-    if ( !params.yaml ) {
-        read_files
-        | map { meta, data -> meta.id.split("_")[0..-2].join("_") }
-        | combine ( fasta )
-        | map { sample, meta, fasta -> [ meta, sample ] }
-        | groupTuple()
-        | set { grouped_reads }
+    GENERATE_CONFIG (
+        fasta,
+        taxon,
+        busco_lin,
+        lineage_tax_ids,
+        blastn,
+    )
+    ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions.first())
 
-        BLOBTOOLKIT_CONFIG ( grouped_reads, fasta )
-        ch_versions = ch_versions.mix ( BLOBTOOLKIT_CONFIG.out.versions.first() )
-        ch_config = BLOBTOOLKIT_CONFIG.out.yaml
-    } else {
-        ch_config   = yaml
+
+    //
+    // Parse the CSV file
+    //
+    GENERATE_CONFIG.out.csv
+    | map { meta, csv -> csv }
+    | splitCsv(header: ['key', 'value'])
+    | branch {
+        taxon_id: it.key == "taxon_id"
+                    return it.value
+        busco_lineage: it.key == "busco_lineage"
+                    return it.value
     }
+    | set { ch_parsed_csv }
+
+
+    //
+    // Get the taxon ID if we do taxon filtering in blast* searches
+    //
+    ch_parsed_csv.taxon_id
+    | map { params.skip_taxon_filtering ? '' : it }
+    | first
+    | set { ch_taxon_id }
+
+
+    //
+    // Get the BUSCO linages
+    //
+    ch_parsed_csv.busco_lineage
+    | collect
+    | set { ch_busco_lineages }
+
 
     emit:
     reads                                   // channel: [ val(meta), path(datafile) ]
-    config = ch_config                      // channel: [ val(meta), path(yaml) ]
+    config = GENERATE_CONFIG.out.yaml       // channel: [ val(meta), path(yaml) ]
+    taxon_id = ch_taxon_id                  // channel: val(taxon_id)
+    busco_lineages = ch_busco_lineages      // channel: val([busco_lin])
     versions = ch_versions                  // channel: [ versions.yml ]
 }
 
