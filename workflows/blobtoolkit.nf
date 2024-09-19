@@ -180,7 +180,8 @@ workflow BLOBTOOLKIT {
     //
     BLOBTOOLS (
         INPUT_CHECK.out.config,
-        INPUT_CHECK.out.tsv,
+        INPUT_CHECK.out.synonyms_tsv.ifEmpty([[],[]]),
+        INPUT_CHECK.out.categories_tsv.ifEmpty([[],[]]),
         COLLATE_STATS.out.window_tsv,
         BUSCO_DIAMOND.out.all_tables,
         BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]),

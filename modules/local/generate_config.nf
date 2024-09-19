@@ -13,10 +13,11 @@ process GENERATE_CONFIG {
     tuple val(meta2), path(blastn)
 
     output:
-    tuple val(meta), path("*.yaml"), emit: yaml
-    tuple val(meta), path("*.tsv") , emit: tsv
-    tuple val(meta), path("*.csv") , emit: csv
-    path "versions.yml"            , emit: versions
+    tuple val(meta), path("*.yaml")          , emit: yaml
+    tuple val(meta), path("*.csv")           , emit: csv
+    tuple val(meta), path("*.synonyms.tsv")  , emit: synonyms_tsv,   optional: true
+    tuple val(meta), path("*.categories.tsv"), emit: categories_tsv, optional: true
+    path "versions.yml"                      , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

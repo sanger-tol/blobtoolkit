@@ -8,7 +8,8 @@ include { BLOBTOOLKIT_UPDATEBLOBDIR } from '../../modules/local/blobtoolkit/upda
 workflow BLOBTOOLS {
     take:
     config      // channel: [ val(meta), path(config) ]
-    tsvs        // channel: [ val(meta), [path(tsv)] ]
+    syn_tsv     // channel: [ val(meta), [path(tsv)] ]
+    cat_tsv     // channel: [ val(meta), [path(tsv)] ]
     windowstats // channel: [ val(meta), path(window_stats_tsvs) ]
     busco       // channel: [ val(meta), path(full_table) ]
     blastp      // channel: [ val(meta), path(txt) ]
@@ -31,7 +32,7 @@ workflow BLOBTOOLS {
     //
     // Update Blobtools dataset files
     //
-    BLOBTOOLKIT_UPDATEBLOBDIR ( BLOBTOOLKIT_CREATEBLOBDIR.out.blobdir, blastx, blastn, taxdump )
+    BLOBTOOLKIT_UPDATEBLOBDIR ( BLOBTOOLKIT_CREATEBLOBDIR.out.blobdir, syn_tsv, cat_tsv, blastx, blastn, taxdump )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_UPDATEBLOBDIR.out.versions.first() )
 
 
