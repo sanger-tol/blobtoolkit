@@ -8,7 +8,6 @@ include { COMPRESSBLOBDIR        } from '../../modules/local/compressblobdir'
 workflow FINALISE_BLOBDIR {
     take:
     blobdir     // channel: [ val(meta), path(blobdir) ]
-    reads       // channel: [ [meta, reads] ]
     software    // channel: [ val(meta), path(software_yml) ]
     summary     // channel: [ val(meta), path(summary_json) ]
 
@@ -21,7 +20,6 @@ workflow FINALISE_BLOBDIR {
     //
     BLOBTOOLKIT_UPDATEMETA (
         blobdir,
-        reads,
         software,
         params.blastp,
         params.blastx,

@@ -11,6 +11,7 @@ process GENERATE_CONFIG {
     val busco_lin
     path lineage_tax_ids
     tuple val(meta2), path(blastn)
+    val reads
 
     output:
     tuple val(meta), path("*.yaml")          , emit: yaml
@@ -27,6 +28,7 @@ process GENERATE_CONFIG {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def busco_param = busco_lin ? "--busco '${busco_lin}'" : ""
     def accession_params = params.accession ? "--accession ${params.accession}" : ""
+    def input_reads = reads.collect{"--read_id ${it[0].id} --read_type ${it[0].datatype} --read_path ${it[1]}"}.join(' ')
     """
     generate_config.py \\
         --fasta $fasta \\
@@ -35,6 +37,7 @@ process GENERATE_CONFIG {
         $busco_param \\
         $accession_params \\
         --blastn $blastn \\
+        $input_reads \\
         --output_prefix ${prefix}
 
     cat <<-END_VERSIONS > versions.yml

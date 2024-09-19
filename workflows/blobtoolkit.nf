@@ -209,7 +209,6 @@ workflow BLOBTOOLKIT {
     //
     FINALISE_BLOBDIR (
         BLOBTOOLS.out.blobdir,
-        INPUT_CHECK.out.reads.collect(flat: false).ifEmpty([]),
         CUSTOM_DUMPSOFTWAREVERSIONS.out.yml,
         VIEW.out.summary
     )

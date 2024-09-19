@@ -40,6 +40,9 @@ def parse_args(args=None):
     parser.add_argument("--busco", help="Requested BUSCO lineages.", default=None)
     parser.add_argument("--blastn", required=True, help="Path to the NCBI Taxonomy database")
     parser.add_argument("--version", action="version", version="%(prog)s 1.4")
+    parser.add_argument("--read_id", action="append", help="ID of a read set")
+    parser.add_argument("--read_type", action="append", help="Type of a read set")
+    parser.add_argument("--read_path", action="append", help="Path of a read set")
     return parser.parse_args(args)
 
 
@@ -189,11 +192,23 @@ def adjust_taxon_id(blastn: str, taxon_info: TaxonInfo) -> int:
             return taxon_id
 
 
+def datatype_to_platform(s):
+    if s == "ont":
+        return "OXFORD_NANOPORE"
+    elif s.startswith("pacbio"):
+        return "PACBIO_SMRT"
+    elif s in ["hic", "illumina"]:
+        return "ILLUMINA"
+    else:
+        return "OTHER"
+
+
 def print_yaml(
     file_out,
     assembly_info: typing.Dict[str, typing.Union[str, int]],
     taxon_info: TaxonInfo,
     classification: typing.Dict[str, str],
+    reads,
 ):
     data = {
         "assembly": assembly_info,
@@ -235,6 +250,9 @@ def print_yaml(
         },
         "version": 2,
     }
+
+    for id, datatype, path in zip(args.read_id, args.read_type, args.read_path):
+        data["reads"][id] = {"file": path, "plaform": datatype_to_platform(datatype)}
 
     out_dir = os.path.dirname(file_out)
     make_dir(out_dir)
@@ -299,7 +317,9 @@ def main(args=None):
     if sequence_report:
         print_tsvs(args.output_prefix, sequence_report)
 
-    print_yaml(f"{args.output_prefix}.yaml", assembly_info, taxon_info, classification)
+    reads = zip(args.read_id, args.read_type, args.read_path)
+
+    print_yaml(f"{args.output_prefix}.yaml", assembly_info, taxon_info, classification, reads)
     print_csv(f"{args.output_prefix}.csv", taxon_id, odb_arr)
 
 
