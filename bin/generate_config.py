@@ -194,16 +194,10 @@ def print_yaml(
     assembly_info: typing.Dict[str, typing.Union[str, int]],
     taxon_info: TaxonInfo,
     classification: typing.Dict[str, str],
-    odb_arr: typing.List[str],
 ):
     data = {
         "assembly": assembly_info,
-        "busco": {
-            "basal_lineages": BUSCO_BASAL_LINEAGES,
-            # "download_dir": <completely skipped because missing from final meta.json>
-            "lineages": odb_arr + [lin for lin in BUSCO_BASAL_LINEAGES if lin not in odb_arr],
-        },
-        # "reads": {}, <added by update_versions.py at the end>
+        "reads": {},
         "revision": 1,
         "settings": {
             # Only settings.stats_windows is mandatory, everything else is superfluous
@@ -305,7 +299,7 @@ def main(args=None):
     if sequence_report:
         print_tsvs(args.output_prefix, sequence_report)
 
-    print_yaml(f"{args.output_prefix}.yaml", assembly_info, taxon_info, classification, odb_arr)
+    print_yaml(f"{args.output_prefix}.yaml", assembly_info, taxon_info, classification)
     print_csv(f"{args.output_prefix}.csv", taxon_id, odb_arr)
 
 
