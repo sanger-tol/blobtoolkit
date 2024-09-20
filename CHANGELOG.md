@@ -3,6 +3,15 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[1.0.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/1.0.0)] – Psyduck – [2024-XX-YY]
+
+The pipeline is now considered to be a complete and suitable replacement for the Snakemake version.
+
+- Fetch information about the chromosomes of the assemblies. Used to power
+  "grid plots".
+- Fill in accurate read information in the blobDir. Users are now reqiured
+  to indicate whether the reads are paired or single.
+
 ## [[0.6.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.6.0)] – Bellsprout – [2024-09-13]
 
 The pipeline has now been validated for draft (unpublished) assemblies.
