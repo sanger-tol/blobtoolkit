@@ -42,6 +42,7 @@ def parse_args(args=None):
     parser.add_argument("--version", action="version", version="%(prog)s 1.4")
     parser.add_argument("--read_id", action="append", help="ID of a read set")
     parser.add_argument("--read_type", action="append", help="Type of a read set")
+    parser.add_argument("--read_layout", action="append", help="Layout of a read set")
     parser.add_argument("--read_path", action="append", help="Path of a read set")
     return parser.parse_args(args)
 
@@ -212,7 +213,10 @@ def print_yaml(
 ):
     data = {
         "assembly": assembly_info,
-        "reads": {},
+        "reads": {
+            "paired": [],
+            "single": [],
+        },
         "revision": 1,
         "settings": {
             # Only settings.stats_windows is mandatory, everything else is superfluous
@@ -251,8 +255,14 @@ def print_yaml(
         "version": 2,
     }
 
-    for id, datatype, path in zip(args.read_id, args.read_type, args.read_path):
-        data["reads"][id] = {"file": path, "plaform": datatype_to_platform(datatype)}
+    for id, datatype, layout, path in reads:
+        data["reads"][layout.lower()].append(
+            {
+                "prefix": id,
+                "file": path,
+                "plaform": datatype_to_platform(datatype),
+            }
+        )
 
     out_dir = os.path.dirname(file_out)
     make_dir(out_dir)
@@ -317,7 +327,7 @@ def main(args=None):
     if sequence_report:
         print_tsvs(args.output_prefix, sequence_report)
 
-    reads = zip(args.read_id, args.read_type, args.read_path)
+    reads = zip(args.read_id, args.read_type, args.read_layout, args.read_path)
 
     print_yaml(f"{args.output_prefix}.yaml", assembly_info, taxon_info, classification, reads)
     print_csv(f"{args.output_prefix}.csv", taxon_id, odb_arr)

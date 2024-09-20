@@ -45,11 +45,17 @@ class RowChecker:
         "ont",
     )
 
+    VALID_LAYOUTS = (
+        "SINGLE",
+        "PAIRED",
+    )
+
     def __init__(
         self,
         sample_col="sample",
         type_col="datatype",
         file_col="datafile",
+        layout_col="library_layout",
         **kwargs,
     ):
         """
@@ -62,11 +68,14 @@ class RowChecker:
                 the read data (default "datatype").
             file_col (str): The name of the column that contains the file path for
                 the read data (default "datafile").
+            layout_col(str): The name of the column that contains the layout of the
+                library (i.e. "PAIRED" or "SINGLE").
         """
         super().__init__(**kwargs)
         self._sample_col = sample_col
         self._type_col = type_col
         self._file_col = file_col
+        self._layout_col = layout_col
         self._seen = set()
         self.modified = []
 
@@ -82,6 +91,7 @@ class RowChecker:
         self._validate_sample(row)
         self._validate_type(row)
         self._validate_file(row)
+        self._validate_layout(row)
         self._seen.add((row[self._sample_col], row[self._file_col]))
         self.modified.append(row)
 
@@ -94,7 +104,7 @@ class RowChecker:
 
     def _validate_type(self, row):
         """Assert that the data type matches expected values."""
-        if not any(row[self._type_col] for datatype in self.VALID_DATATYPES):
+        if row[self._type_col] not in self.VALID_DATATYPES:
             raise AssertionError(
                 f"The datatype is unrecognized: {row[self._type_col]}\n"
                 f"It should be one of: {', '.join(self.VALID_DATATYPES)}"
@@ -112,6 +122,14 @@ class RowChecker:
             raise AssertionError(
                 f"The data file has an unrecognized extension: {filename}\n"
                 f"It should be one of: {', '.join(self.VALID_FORMATS)}"
+            )
+
+    def _validate_layout(self, row):
+        """Assert that the library layout matches expected values."""
+        if not row[self._layout_col] in self.VALID_LAYOUTS:
+            raise AssertionError(
+                f"The library layout is unrecognized: {row[self._layout_col]}\n"
+                f"It should be one of: {', '.join(self.VALID_LAYOUTS)}"
             )
 
     def validate_unique_samples(self):
@@ -178,7 +196,7 @@ def check_samplesheet(file_in, file_out):
         This function checks that the samplesheet follows the following structure,
         see also the `blobtoolkit samplesheet`_::
 
-        sample,datatype,datafile
+        sample,datatype,datafile,library_layout
         sample1,hic,/path/to/file1.cram
         sample1,pacbio,/path/to/file2.cram
         sample1,ont,/path/to/file3.cram
@@ -187,7 +205,7 @@ def check_samplesheet(file_in, file_out):
         https://raw.githubusercontent.com/sanger-tol/blobtoolkit/main/assets/test/samplesheet.csv
 
     """
-    required_columns = {"sample", "datatype", "datafile"}
+    required_columns = {"sample", "datatype", "datafile", "library_layout"}
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))

@@ -1,3 +1,3 @@
-sample,datatype,datafile
-gfLaeSulp1,hic,/lustre/scratch123/tol/resources/nextflow/test-data/Laetiporus_sulphureus/analysis/gfLaeSulp1.1/read_mapping/hic/GCA_927399515.1.unmasked.hic.gfLaeSulp1.cram
-gfLaeSulp1,pacbio,/lustre/scratch123/tol/resources/nextflow/test-data/Laetiporus_sulphureus/analysis/gfLaeSulp1.1/read_mapping/pacbio/GCA_927399515.1.unmasked.pacbio.gfLaeSulp1.cram
+sample,datatype,datafile,library_layout
+gfLaeSulp1,hic,/lustre/scratch123/tol/resources/nextflow/test-data/Laetiporus_sulphureus/analysis/gfLaeSulp1.1/read_mapping/hic/GCA_927399515.1.unmasked.hic.gfLaeSulp1.cram,PAIRED
+gfLaeSulp1,pacbio,/lustre/scratch123/tol/resources/nextflow/test-data/Laetiporus_sulphureus/analysis/gfLaeSulp1.1/read_mapping/pacbio/GCA_927399515.1.unmasked.pacbio.gfLaeSulp1.cram,SINGLE

@@ -23,17 +23,6 @@ def parse_args(args=None):
     return parser.parse_args(args)
 
 
-def datatype_to_platform(s):
-    if s == "ont":
-        return "OXFORD_NANOPORE"
-    elif s.startswith("pacbio"):
-        return "PACBIO_SMRT"
-    elif s in ["hic", "illumina"]:
-        return "ILLUMINA"
-    else:
-        return "OTHER"
-
-
 def update_meta(args):
     with open(args.meta_in) as fh:
         infile = json.load(fh)

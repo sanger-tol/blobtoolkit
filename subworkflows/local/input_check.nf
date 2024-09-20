@@ -120,7 +120,7 @@ def create_data_channels(LinkedHashMap row) {
     def meta = [:]
     meta.id         = row.sample
     meta.datatype   = row.datatype
-
+    meta.layout     = row.library_layout
 
     // add path(s) of the read file(s) to the meta map
     def data_meta = []
@@ -143,6 +143,7 @@ def create_data_channels_from_fetchngs(LinkedHashMap row) {
     // create meta map
     def meta = [:]
     meta.id         = row.run_accession
+    meta.layout     = row.library_layout
 
     // Same as https://github.com/blobtoolkit/blobtoolkit/blob/4.3.3/src/blobtoolkit-pipeline/src/lib/functions.py#L30-L39
     // with the addition of "hic"

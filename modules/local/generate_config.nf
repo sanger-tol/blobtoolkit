@@ -28,7 +28,7 @@ process GENERATE_CONFIG {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def busco_param = busco_lin ? "--busco '${busco_lin}'" : ""
     def accession_params = params.accession ? "--accession ${params.accession}" : ""
-    def input_reads = reads.collect{"--read_id ${it[0].id} --read_type ${it[0].datatype} --read_path ${it[1]}"}.join(' ')
+    def input_reads = reads.collect{"--read_id ${it[0].id} --read_type ${it[0].datatype} --read_layout ${it[0].layout} --read_path ${it[1]}"}.join(' ')
     """
     generate_config.py \\
         --fasta $fasta \\
