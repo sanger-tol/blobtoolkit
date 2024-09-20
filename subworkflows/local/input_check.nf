@@ -68,6 +68,10 @@ workflow INPUT_CHECK {
         lineage_tax_ids,
         blastn,
         reads.collect(flat: false).ifEmpty([]),
+        params.blastp,
+        params.blastx,
+        params.blastn,
+        params.taxdump,
     )
     ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions.first())
 

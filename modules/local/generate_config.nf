@@ -12,6 +12,11 @@ process GENERATE_CONFIG {
     path lineage_tax_ids
     tuple val(meta2), path(blastn)
     val reads
+    // The following are passed as "val" because we just want to know the full paths. No staging necessary
+    val blastp_path
+    val blastx_path
+    val blastn_path
+    val taxdump_path
 
     output:
     tuple val(meta), path("*.yaml")          , emit: yaml
@@ -36,8 +41,12 @@ process GENERATE_CONFIG {
         --lineage_tax_ids $lineage_tax_ids \\
         $busco_param \\
         $accession_params \\
-        --blastn $blastn \\
+        --nt $blastn \\
         $input_reads \\
+        --blastp ${blastp_path} \\
+        --blastx ${blastx_path} \\
+        --blastn ${blastn_path} \\
+        --taxdump ${taxdump_path} \\
         --output_prefix ${prefix}
 
     cat <<-END_VERSIONS > versions.yml

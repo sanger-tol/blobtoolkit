@@ -16,16 +16,9 @@ workflow FINALISE_BLOBDIR {
     ch_versions = Channel.empty()
 
     //
-    // MODULE: Update meta json file
+    // MODULE: Update the software listed in the meta json file
     //
-    BLOBTOOLKIT_UPDATEMETA (
-        blobdir,
-        software,
-        params.blastp,
-        params.blastx,
-        params.blastn,
-        params.taxdump,
-    )
+    BLOBTOOLKIT_UPDATEMETA ( blobdir, software )
 
     //
     // MODULE: Compress all the json files
