@@ -15,7 +15,7 @@ def parse_args(args=None):
     parser.add_argument("--meta_in", help="Input JSON file.", required=True)
     parser.add_argument("--meta_out", help="Output JSON file.", required=True)
     parser.add_argument("--software", help="Input YAML file.", required=True)
-    parser.add_argument("--version", action="version", version="%(prog)s 1.2.0")
+    parser.add_argument("--version", action="version", version="%(prog)s 1.3.0")
     return parser.parse_args(args)
 
 

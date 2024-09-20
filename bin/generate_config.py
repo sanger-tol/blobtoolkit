@@ -39,7 +39,6 @@ def parse_args(args=None):
     parser.add_argument("--accession", help="Accession number of the assembly (optional).", default=None)
     parser.add_argument("--busco", help="Requested BUSCO lineages.", default=None)
     parser.add_argument("--nt", required=True, help="Path to the NT database")
-    parser.add_argument("--version", action="version", version="%(prog)s 1.4")
     parser.add_argument("--read_id", action="append", help="ID of a read set")
     parser.add_argument("--read_type", action="append", help="Type of a read set")
     parser.add_argument("--read_layout", action="append", help="Layout of a read set")
@@ -48,6 +47,7 @@ def parse_args(args=None):
     parser.add_argument("--blastx", help="Path to the blastx database", required=True)
     parser.add_argument("--blastn", help="Path to the blastn database", required=True)
     parser.add_argument("--taxdump", help="Path to the taxonomy database", required=True)
+    parser.add_argument("--version", action="version", version="%(prog)s 2.0")
     return parser.parse_args(args)
 
 
