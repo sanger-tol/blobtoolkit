@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[1.0.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/1.0.0)] – Psyduck – [2024-XX-YY]
+## [[0.7.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.7.0)] – Psyduck – [2024-XX-YY]
 
 The pipeline is now considered to be a complete and suitable replacement for the Snakemake version.
 
