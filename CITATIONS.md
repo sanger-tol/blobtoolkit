@@ -15,7 +15,7 @@
 - [BLAST+](https://blast.ncbi.nlm.nih.gov/doc/blast-help/downloadblastdata.html)
 
   > Camacho, Chritiam, et al. “BLAST+: architecture and applications.” BMC Bioinformatics, vol. 10, no. 412, Dec. 2009, https://doi.org/10.1186/1471-2105-10-421
-  
+
 - [BlobToolKit](https://github.com/blobtoolkit/blobtoolkit)
 
   > Challis, Richard, et al. “BlobToolKit – Interactive Quality Assessment of Genome Assemblies.” G3 Genes|Genomes|Genetics, vol. 10, no. 4, Apr. 2020, pp. 1361–74, https://doi.org/10.1534/g3.119.400908.
@@ -30,7 +30,7 @@
 
 - [Fasta_windows](https://github.com/tolkit/fasta_windows)
 
-  > Brown, Max, et al. "Fasta_windows v0.2.3". GitHub, 2021. https://github.com/tolkit/fasta_windows 
+  > Brown, Max, et al. "Fasta_windows v0.2.3". GitHub, 2021. https://github.com/tolkit/fasta_windows
 
 - [Minimap2](https://github.com/lh3/minimap2)
 
@@ -46,7 +46,7 @@
 
 - [SeqTK](https://github.com/lh3/seqtk)
 
-  > Li, Heng. "SeqTK v1.4" GitHub, 2023, https://github.com/lh3/seqtk 
+  > Li, Heng. "SeqTK v1.4" GitHub, 2023, https://github.com/lh3/seqtk
 
 ## Software packaging/containerisation tools
 
