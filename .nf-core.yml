@@ -12,6 +12,9 @@ lint:
     - LICENCE
     - lib/NfcoreTemplate.groovy
     - CODE_OF_CONDUCT.md
+    - assets/sendmail_template.txt
+    - assets/email_template.html
+    - assets/email_template.txt
     - assets/nf-core-blobtoolkit_logo_light.png
     - docs/images/nf-core-blobtoolkit_logo_light.png
     - docs/images/nf-core-blobtoolkit_logo_dark.png
@@ -19,6 +22,8 @@ lint:
     - .github/PULL_REQUEST_TEMPLATE.md
     - .github/workflows/linting.yml
     - .github/workflows/branch.yml
+    - .github/CONTRIBUTING.md
+    - .github/workflows/linting_comment.yml
   multiqc_config:
     - report_comment
   nextflow_config:
