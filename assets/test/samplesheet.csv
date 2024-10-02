@@ -1,5 +1,5 @@
-sample,datatype,datafile
-mMelMel3,hic,/lustre/scratch123/tol/resources/nextflow/test-data/Meles_meles/analysis/mMelMel3.2_paternal_haplotype/read_mapping/hic/GCA_922984935.2.subset.unmasked.hic.mMelMel3.cram
-mMelMel1,illumina,/lustre/scratch123/tol/resources/nextflow/test-data/Meles_meles/analysis/mMelMel3.2_paternal_haplotype/read_mapping/illumina/GCA_922984935.2.subset.unmasked.illumina.mMelMel1.cram
-mMelMel2,illumina,/lustre/scratch123/tol/resources/nextflow/test-data/Meles_meles/analysis/mMelMel3.2_paternal_haplotype/read_mapping/illumina/GCA_922984935.2.subset.unmasked.illumina.mMelMel2.cram
-mMelMel3,ont,/lustre/scratch123/tol/resources/nextflow/test-data/Meles_meles/analysis/mMelMel3.2_paternal_haplotype/read_mapping/ont/GCA_922984935.2.subset.unmasked.ont.mMelMel3.cram
+sample,datatype,datafile,library_layout
+mMelMel3,hic,/lustre/scratch123/tol/resources/nextflow/test-data/Meles_meles/analysis/mMelMel3.2_paternal_haplotype/read_mapping/hic/GCA_922984935.2.subset.unmasked.hic.mMelMel3.cram,PAIRED
+mMelMel1,illumina,/lustre/scratch123/tol/resources/nextflow/test-data/Meles_meles/analysis/mMelMel3.2_paternal_haplotype/read_mapping/illumina/GCA_922984935.2.subset.unmasked.illumina.mMelMel1.cram,PAIRED
+mMelMel2,illumina,/lustre/scratch123/tol/resources/nextflow/test-data/Meles_meles/analysis/mMelMel3.2_paternal_haplotype/read_mapping/illumina/GCA_922984935.2.subset.unmasked.illumina.mMelMel2.cram,PAIRED
+mMelMel3,ont,/lustre/scratch123/tol/resources/nextflow/test-data/Meles_meles/analysis/mMelMel3.2_paternal_haplotype/read_mapping/ont/GCA_922984935.2.subset.unmasked.ont.mMelMel3.cram,SINGLE
