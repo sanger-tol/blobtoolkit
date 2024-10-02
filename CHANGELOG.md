@@ -10,7 +10,7 @@ The pipeline is now considered to be a complete and suitable replacement for the
 - Fetch information about the chromosomes of the assemblies. Used to power
   "grid plots".
 - Fill in accurate read information in the blobDir. Users are now reqiured
-  to indicate whether the reads are paired or single.
+  to indicate in the samplesheet whether the reads are paired or single.
 
 ## [[0.6.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.6.0)] – Bellsprout – [2024-09-13]
 
