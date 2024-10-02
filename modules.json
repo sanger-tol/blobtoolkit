@@ -66,12 +66,6 @@
                         "git_sha": "0eab94fc1e48703c1b0a8704bd665f554905c39d",
                         "installed_by": ["modules"]
                     },
-                    "samtools/fasta": {
-                        "branch": "master",
-                        "git_sha": "f4596fe0bdc096cf53ec4497e83defdb3a94ff62",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/samtools/fasta/samtools-fasta.diff"
-                    },
                     "samtools/flagstat": {
                         "branch": "master",
                         "git_sha": "f4596fe0bdc096cf53ec4497e83defdb3a94ff62",

@@ -67,6 +67,11 @@ workflow INPUT_CHECK {
         busco_lin,
         lineage_tax_ids,
         blastn,
+        reads.collect(flat: false).ifEmpty([]),
+        params.blastp,
+        params.blastx,
+        params.blastn,
+        params.taxdump,
     )
     ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions.first())
 
@@ -106,6 +111,8 @@ workflow INPUT_CHECK {
     emit:
     reads                                   // channel: [ val(meta), path(datafile) ]
     config = GENERATE_CONFIG.out.yaml       // channel: [ val(meta), path(yaml) ]
+    synonyms_tsv = GENERATE_CONFIG.out.synonyms_tsv     // channel: [ val(meta), path(tsv) ]
+    categories_tsv = GENERATE_CONFIG.out.categories_tsv // channel: [ val(meta), path(tsv) ]
     taxon_id = ch_taxon_id                  // channel: val(taxon_id)
     busco_lineages = ch_busco_lineages      // channel: val([busco_lin])
     versions = ch_versions                  // channel: [ versions.yml ]
@@ -117,7 +124,7 @@ def create_data_channels(LinkedHashMap row) {
     def meta = [:]
     meta.id         = row.sample
     meta.datatype   = row.datatype
-
+    meta.layout     = row.library_layout
 
     // add path(s) of the read file(s) to the meta map
     def data_meta = []
@@ -140,6 +147,7 @@ def create_data_channels_from_fetchngs(LinkedHashMap row) {
     // create meta map
     def meta = [:]
     meta.id         = row.run_accession
+    meta.layout     = row.library_layout
 
     // Same as https://github.com/blobtoolkit/blobtoolkit/blob/4.3.3/src/blobtoolkit-pipeline/src/lib/functions.py#L30-L39
     // with the addition of "hic"

@@ -10,7 +10,7 @@
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 4 columns, and a header row as shown in the examples below.
 
 ```bash
 --input '[path to samplesheet file]'
@@ -21,30 +21,31 @@ You will need to create a samplesheet with information about the samples you wou
 The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
 
 ```console
-sample,datatype,datafile
-sample1,hic,hic.cram
-sample2,illumina,illumina.cram
-sample2,illumina,illumina.cram
+sample,datatype,datafile,library_layout
+sample1,hic,hic.cram,PAIRED
+sample2,illumina,illumina.cram,PAIRED
+sample2,illumina,illumina.cram,PAIRED
 ```
 
 ### Full samplesheet
 
-The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
+The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 4 columns to match those defined in the table below.
 
 A final samplesheet file may look something like the one below.
 
 ```console
-sample,datatype,datafile
-sample1,hic,hic.cram
-sample2,illumina,illumina.cram
-sample3,ont,ont.cram
+sample,datatype,datafile,library_layout
+sample1,hic,hic.cram,PAIRED
+sample2,illumina,illumina.cram,PAIRED
+sample3,ont,ont.cram,SINGLE
 ```
 
-| Column     | Description                                                                                                                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`   | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (\_). |
-| `datatype` | Type of sequencing data. Must be one of `hic`, `illumina`, `pacbio`, `pacbio_clr` or `ont`.                                                                                           |
-| `datafile` | Full path to read data file.                                                                                                                                                          |
+| Column           | Description                                                                                                                                                                           |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`         | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (\_). |
+| `datatype`       | Type of sequencing data. Must be one of `hic`, `illumina`, `pacbio`, `pacbio_clr` or `ont`.                                                                                           |
+| `datafile`       | Full path to read data file.                                                                                                                                                          |
+| `library_layout` | Layout of the library. Must be one of `SINGLE`, `PAIRED`.                                                                                                                             |
 
 An [example samplesheet](assets/test/samplesheet.csv) has been provided with the pipeline.
 
@@ -99,6 +100,10 @@ wget "ftp://ftp.ncbi.nlm.nih.gov/blast/db/v5/nt.???.tar.gz" -P $NT/ &&
 for file in $NT/*.tar.gz; do
     tar xf $file -C $NT && rm $file;
 done
+
+wget "https://ftp.ncbi.nlm.nih.gov/blast/db/v5/taxdb.tar.gz" &&
+tar xf taxdb.tar.gz -C $NT &&
+rm taxdb.tar.gz
 ```
 
 ### 3. UniProt reference proteomes database
@@ -228,7 +233,7 @@ List of tools for any given dataset can be fetched from the API, for example htt
 | Dependency        | Snakemake | Nextflow |
 | ----------------- | --------- | -------- |
 | blobtoolkit       | 4.3.2     | 4.3.9    |
-| blast             | 2.12.0    | 2.15.0   |
+| blast             | 2.12.0    | 2.14.1   |
 | blobtk            | 0.5.0     | 0.5.1    |
 | busco             | 5.3.2     | 5.5.0    |
 | diamond           | 2.0.15    | 2.1.8    |
@@ -269,9 +274,8 @@ If you wish to repeatedly use the same parameters for multiple runs, rather than
 
 Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
 
-:::warning
-Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
-:::
+> [!WARNING]
+> Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
 
 The above pipeline run specified with a params file in yaml format:
 
@@ -308,15 +312,11 @@ This version number will be logged in reports when you run the pipeline, so that
 
 To further assist in reproducbility, you can use share and re-use [parameter files](#running-the-pipeline) to repeat pipeline runs with the same settings without having to write out a command with every single parameter.
 
-:::tip
 If you wish to share such profile (such as upload as supplementary material for academic publications), make sure to NOT include cluster specific paths to files, nor institutional specific profiles.
-:::
 
 ## Core Nextflow arguments
 
-:::note
-These options are part of Nextflow and use a _single_ hyphen (pipeline parameters use a double-hyphen).
-:::
+> These options are part of Nextflow and use a _single_ hyphen (pipeline parameters use a double-hyphen).
 
 ### `-profile`
 
@@ -324,9 +324,7 @@ Use this parameter to choose a configuration profile. Profiles can give configur
 
 Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Podman, Shifter, Charliecloud, Apptainer, Conda) - see below.
 
-:::info
-We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
-:::
+> We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
 
 The pipeline also dynamically loads configurations from [https://github.com/nf-core/configs](https://github.com/nf-core/configs) when it runs, making multiple config profiles for various institutional clusters available at run time. For more information and to see if your system is available in these configs please see the [nf-core/configs documentation](https://github.com/nf-core/configs#documentation).
 

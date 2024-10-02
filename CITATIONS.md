@@ -12,6 +12,10 @@
 
 ## Pipeline tools
 
+- [BLAST+](https://blast.ncbi.nlm.nih.gov/doc/blast-help/downloadblastdata.html)
+
+  > Camacho, Chritiam, et al. “BLAST+: architecture and applications.” BMC Bioinformatics, vol. 10, no. 412, Dec. 2009, https://doi.org/10.1186/1471-2105-10-421
+
 - [BlobToolKit](https://github.com/blobtoolkit/blobtoolkit)
 
   > Challis, Richard, et al. “BlobToolKit – Interactive Quality Assessment of Genome Assemblies.” G3 Genes|Genomes|Genetics, vol. 10, no. 4, Apr. 2020, pp. 1361–74, https://doi.org/10.1534/g3.119.400908.
@@ -26,9 +30,7 @@
 
 - [Fasta_windows](https://github.com/tolkit/fasta_windows)
 
-- [GoaT](https://goat.genomehubs.org)
-
-  > Challis, Richard, et al. “Genomes on a Tree (GoaT): A versatile, scalable search engine for genomic and sequencing project metadata across the eukaryotic tree of life.” Wellcome Open Research, vol. 8, no. 24, 2023, https://doi.org/10.12688/wellcomeopenres.18658.1.
+  > Brown, Max, et al. "Fasta_windows v0.2.3". GitHub, 2021. https://github.com/tolkit/fasta_windows
 
 - [Minimap2](https://github.com/lh3/minimap2)
 
@@ -41,6 +43,10 @@
 - [Samtools](https://www.htslib.org)
 
   > Danecek, Petr, et al. “Twelve Years of SAMtools and BCFtools.” GigaScience, vol. 10, no. 2, Jan. 2021, https://doi.org/10.1093/gigascience/giab008.
+
+- [SeqTK](https://github.com/lh3/seqtk)
+
+  > Li, Heng. "SeqTK v1.4" GitHub, 2023, https://github.com/lh3/seqtk
 
 ## Software packaging/containerisation tools
 

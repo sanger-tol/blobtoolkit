@@ -1,4 +1,4 @@
-sample,datatype,datafile
-mMelMel1,illumina,/lustre/scratch123/tol/resources/nextflow/test-data/Meles_meles/genomic_data/mMelMel1/illumina/31231_3#1_subset.cram
-mMelMel2,illumina,/lustre/scratch123/tol/resources/nextflow/test-data/Meles_meles/genomic_data/mMelMel2/illumina/31231_4#1_subset.cram
-mMelMel3,hic,/lustre/scratch123/tol/resources/nextflow/test-data/Meles_meles/genomic_data/mMelMel3/hic-arima2/35528_2#1_subset.cram
+sample,datatype,datafile,library_layout
+mMelMel1,illumina,/lustre/scratch123/tol/resources/nextflow/test-data/Meles_meles/genomic_data/mMelMel1/illumina/31231_3#1_subset.cram,PAIRED
+mMelMel2,illumina,/lustre/scratch123/tol/resources/nextflow/test-data/Meles_meles/genomic_data/mMelMel2/illumina/31231_4#1_subset.cram,PAIRED
+mMelMel3,hic,/lustre/scratch123/tol/resources/nextflow/test-data/Meles_meles/genomic_data/mMelMel3/hic-arima2/35528_2#1_subset.cram,PAIRED

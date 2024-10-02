@@ -26,15 +26,18 @@ process MINIMAP2_ALIGN {
     def args  = task.ext.args ?: ''
     def args2 = task.ext.args2 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def bam_input = reads.getExtension() in ["bam", "cram"] ? "samtools fasta ${reads} | " : ""
+    if (bam_input && !reference) error "Fasta/q format is required for self-alignments"
+    def minimap_input = bam_input ? "-" : reads
     def bam_output = bam_format ? "-a | samtools sort -@ ${task.cpus} -o ${prefix}.bam ${args2}" : "-o ${prefix}.paf"
     def cigar_paf = cigar_paf_format && !bam_format ? "-c" : ''
     def set_cigar_bam = cigar_bam && bam_format ? "-L" : ''
     """
-    minimap2 \\
+    ${bam_input} minimap2 \\
         $args \\
         -t $task.cpus \\
-        ${reference ?: reads} \\
-        $reads \\
+        ${reference ?: minimap_input} \\
+        $minimap_input \\
         $cigar_paf \\
         $set_cigar_bam \\
         $bam_output

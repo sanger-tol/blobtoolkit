@@ -23,6 +23,11 @@
                 "type": "string",
                 "pattern": "^\\S+\\.(bam|cram|fa|fa.gz|fasta|fasta.gz|fq|fq.gz|fastq|fastq.gz)$",
                 "errorMessage": "Data file for reads cannot contain spaces and must be BAM/CRAM/FASTQ/FASTA"
+            },
+            "library_layout": {
+                "type": "string",
+                "pattern": "^(SINGLE|PAIRED)$",
+                "errorMessage": "The only valid layouts are SINGLE and PAIRED"
             }
         },
         "required": ["datafile", "datatype", "sample"]

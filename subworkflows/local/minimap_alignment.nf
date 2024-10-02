@@ -2,7 +2,6 @@
 // Optional alignment subworkflow using Minimap2
 //
 
-include { SAMTOOLS_FASTA                  } from '../../modules/nf-core/samtools/fasta/main'
 include { MINIMAP2_ALIGN as MINIMAP2_HIC  } from '../../modules/nf-core/minimap2/align/main'
 include { MINIMAP2_ALIGN as MINIMAP2_ILMN } from '../../modules/nf-core/minimap2/align/main'
 include { MINIMAP2_ALIGN as MINIMAP2_CCS  } from '../../modules/nf-core/minimap2/align/main'
@@ -20,24 +19,8 @@ workflow MINIMAP2_ALIGNMENT {
     ch_versions = Channel.empty()
 
 
-    // Convert BAM/CRAM reads to FASTA
-    input
-    | branch {
-        meta, reads ->
-            fasta:   reads.toString().endsWith(".fasta") || reads.toString().endsWith(".fasta.gz") || reads.toString().endsWith(".fa") || reads.toString().endsWith(".fa.gz")
-            fastq:   reads.toString().endsWith(".fastq") || reads.toString().endsWith(".fastq.gz") || reads.toString().endsWith(".fq") || reads.toString().endsWith(".fq.gz")
-            bamcram: true
-    }
-    | set { ch_reads_by_type }
-
-    SAMTOOLS_FASTA ( ch_reads_by_type.bamcram, true )
-    ch_versions = ch_versions.mix(SAMTOOLS_FASTA.out.versions.first())
-
-
     // Branch input by sequencing type
-    SAMTOOLS_FASTA.out.interleaved
-    | mix ( ch_reads_by_type.fasta )
-    | mix ( ch_reads_by_type.fastq )
+    input
     | branch {
         meta, reads ->
             hic: meta.datatype == "hic"
