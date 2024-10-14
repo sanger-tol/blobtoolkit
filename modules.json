@@ -87,6 +87,11 @@
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/seqtk/subseq/seqtk-subseq.diff"
                     },
+                    "untar": {
+                        "branch": "master",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "installed_by": ["modules"]
+                    },
                     "windowmasker/mkcounts": {
                         "branch": "master",
                         "git_sha": "32cac29d4a92220965dace68a1fb0bb2e3547cac",

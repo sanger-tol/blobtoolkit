@@ -2,6 +2,7 @@
 // Check input samplesheet and get aligned read channels
 //
 
+include { UNTAR                     } from '../../modules/nf-core/untar/main'
 include { CAT_CAT                   } from '../../modules/nf-core/cat/cat/main'
 include { SAMTOOLS_FLAGSTAT         } from '../../modules/nf-core/samtools/flagstat/main'
 include { SAMPLESHEET_CHECK         } from '../../modules/local/samplesheet_check'
@@ -15,11 +16,59 @@ workflow INPUT_CHECK {
     taxon       // channel: val(taxon)
     busco_lin   // channel: val([busco_lin])
     lineage_tax_ids        // channel: /path/to/lineage_tax_ids
-    blastn       // channel: [ val(meta), path(blastn_db) ]
+    blastn                  // channel: [ path(blastn_db) ]
+    blastp                  // channel: [ path(blastp_db) ]
+    blastx                  // channel: [ path(blastx_db) ]
+    busco_db                // channel: [ path(busco_db) ]
+    taxdump                 // channel: [ path(taxdump) ]
 
     main:
     ch_versions = Channel.empty()
 
+    //
+    // SUBWORKFLOW: Decompress databases if needed
+    //
+
+    // Join into single databases channel
+    databases = blastn.concat(blastp, blastx, busco_db, taxdump)
+
+    // Check which need to be decompressed
+    ch_dbs_for_untar = databases
+        .branch { db_meta, db_path ->
+            untar: db_path.name.endsWith( ".tar.gz" )
+            skip: true
+        }
+
+    // Untar the databases
+    UNTAR ( ch_dbs_for_untar.untar )
+    ch_versions = ch_versions.mix( UNTAR.out.versions.first() )
+
+    // Join and format dbs
+    // NOTE: The conditional for blastp/x is needed because nf-core/untar doesn't seem to detect their type correctly
+    ch_databases = UNTAR.out.untar.concat( ch_dbs_for_untar.skip )
+        .map { meta, db -> [ meta + [id: db.baseName], db] }
+        .map { db_meta, db_path ->
+            if (db_meta.type in ["blastp", "blastx"]) {
+                def actual_file = db_path.isDirectory() ? file(db_path.toString() + "/${db_path.name}") : db_path
+                [db_meta, file(actual_file.toString())]
+            } else {
+                [db_meta, db_path]
+            }
+        }
+        .branch { db_meta, db_path ->
+            blastn: db_meta.type == "blastn"
+            blastp: db_meta.type == "blastp"
+            blastx: db_meta.type == "blastx"
+            busco: db_meta.type == "busco"
+            taxdump: db_meta.type == "taxdump"
+        }
+
+    ch_databases.blastp.view()
+
+
+    //
+    // SUBWORKFLOW: Process samplesheet
+    //
     if ( params.fetchngs_samplesheet ) {
         FETCHNGSSAMPLESHEET_CHECK ( samplesheet )
             .csv
@@ -66,12 +115,11 @@ workflow INPUT_CHECK {
         taxon,
         busco_lin,
         lineage_tax_ids,
-        blastn,
         reads.collect(flat: false).ifEmpty([]),
-        params.blastp,
-        params.blastx,
-        params.blastn,
-        params.taxdump,
+        ch_databases.blastp,
+        ch_databases.blastx,
+        ch_databases.blastn,
+        ch_databases.taxdump,
     )
     ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions.first())
 
@@ -115,6 +163,11 @@ workflow INPUT_CHECK {
     categories_tsv = GENERATE_CONFIG.out.categories_tsv // channel: [ val(meta), path(tsv) ]
     taxon_id = ch_taxon_id                  // channel: val(taxon_id)
     busco_lineages = ch_busco_lineages      // channel: val([busco_lin])
+    blastn = ch_databases.blastn            // channel: [ val(meta), path(blastn_db) ]
+    blastp = ch_databases.blastp            // channel: [ val(meta), path(blastp_db) ]
+    blastx = ch_databases.blastx            // channel: [ val(meta), path(blastx_db) ]
+    busco_db = ch_databases.busco.map { _, db_path -> db_path }           // channel: [ path(busco_db) ]
+    taxdump = ch_databases.taxdump.map { _, db_path -> db_path }          // channel: [ path(taxdump) ]
     versions = ch_versions                  // channel: [ versions.yml ]
 }
 
