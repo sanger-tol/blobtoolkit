@@ -11,6 +11,8 @@ The pipeline is now considered to be a complete and suitable replacement for the
   "grid plots".
 - Fill in accurate read information in the blobDir. Users are now reqiured
   to indicate in the samplesheet whether the reads are paired or single.
+- Updated the Blastn settings to allow 7 days runtime at most, since that
+  covers 99.7% of the jobs.
 
 ### Software dependencies
 
