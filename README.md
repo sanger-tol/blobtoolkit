@@ -20,8 +20,8 @@ It takes a samplesheet of BAM/CRAM/FASTQ/FASTA files as input, calculates genome
 4. Run BUSCO ([`busco`](https://busco.ezlab.org/))
 5. Extract BUSCO genes ([`blobtoolkit/extractbuscos`](https://github.com/blobtoolkit/blobtoolkit))
 6. Run Diamond BLASTp against extracted BUSCO genes ([`diamond/blastp`](https://github.com/bbuchfink/diamond))
-7. Run BLASTx against sequences with no hit ([`blast/blastn`](https://www.ncbi.nlm.nih.gov/books/NBK131777/))
-8. Run BLASTn against sequences still with not hit ([`blast/blastx`](https://www.ncbi.nlm.nih.gov/books/NBK131777/))
+7. Run BLASTx against sequences with no hit ([`diamond/blastx`](https://github.com/bbuchfink/diamond))
+8. Run BLASTn against sequences still with not hit ([`blast/blastn`](https://www.ncbi.nlm.nih.gov/books/NBK131777/))
 9. Count BUSCO genes ([`blobtoolkit/countbuscos`](https://github.com/blobtoolkit/blobtoolkit))
 10. Generate combined sequence stats across various window sizes ([`blobtoolkit/windowstats`](https://github.com/blobtoolkit/blobtoolkit))
 11. Imports analysis results into a BlobDir dataset ([`blobtoolkit/blobdir`](https://github.com/blobtoolkit/blobtoolkit))
@@ -37,13 +37,17 @@ First, prepare a samplesheet with your input data that looks as follows:
 `samplesheet.csv`:
 
 ```csv
-sample,datatype,datafile
-mMelMel3,hic,GCA_922984935.2.hic.mMelMel3.cram
-mMelMel1,illumina,GCA_922984935.2.illumina.mMelMel1.cram
-mMelMel3,ont,GCA_922984935.2.ont.mMelMel3.cram
+sample,datatype,datafile,library_layout
+mMelMel3,hic,GCA_922984935.2.hic.mMelMel3.cram,PAIRED
+mMelMel1,illumina,GCA_922984935.2.illumina.mMelMel1.cram,PAIRED
+mMelMel3,ont,GCA_922984935.2.ont.mMelMel3.cram,SINGLE
 ```
 
-Each row represents an aligned file. Rows with the same sample identifier are considered technical replicates. The datatype refers to the sequencing technology used to generate the underlying raw data and follows a controlled vocabulary (`ont`, `hic`, `pacbio`, `pacbio_clr`, `illumina`). The aligned read files can be generated using the [sanger-tol/readmapping](https://github.com/sanger-tol/readmapping) pipeline.
+Each row represents an aligned file.
+Rows with the same sample identifier are considered technical replicates.
+The datatype refers to the sequencing technology used to generate the underlying raw data and follows a controlled vocabulary (`ont`, `hic`, `pacbio`, `pacbio_clr`, `illumina`).
+The library layout indicates whether the reads are paired or single.
+The aligned read files can be generated using the [sanger-tol/readmapping](https://github.com/sanger-tol/readmapping) pipeline.
 
 Now, you can run the pipeline using:
 
@@ -77,9 +81,8 @@ sanger-tol/blobtoolkit was written in Nextflow by [Alexander Ramos Diaz](https:/
 
 We thank the following people for their assistance in the development of this pipeline:
 
-<!-- If applicable, make list of people who have also contributed -->
-
 - [Guoying Qi](https://github.com/gq1)
+- [Bethan Yates](https://github.com/BethYates)
 
 ## Contributions and Support
 
@@ -88,8 +91,6 @@ If you would like to contribute to this pipeline, please see the [contributing g
 ## Citations
 
 If you use sanger-tol/blobtoolkit for your analysis, please cite it using the following doi: [10.5281/zenodo.7949058](https://doi.org/10.5281/zenodo.7949058)
-
-<!-- Add bibliography of tools and data used in your pipeline -->
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 

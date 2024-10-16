@@ -19,7 +19,7 @@ workflow RUN_BLASTX {
 
 
     //
-    // Create metadata summary file
+    // Split the sequences
     //
     BLOBTOOLKIT_CHUNK ( fasta, table )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_CHUNK.out.versions.first() )
