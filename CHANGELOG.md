@@ -11,6 +11,16 @@ The pipeline is now considered to be a complete and suitable replacement for the
   "grid plots".
 - Fill in accurate read information in the blobDir. Users are now reqiured
   to indicate in the samplesheet whether the reads are paired or single.
+- Updated the Blastn settings to allow 7 days runtime at most, since that
+  covers 99.7% of the jobs.
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency  | Old version | New version |
+| ----------- | ----------- | ----------- |
+| blobtoolkit | 4.3.9       | 4.3.13      |
 
 ## [[0.6.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.6.0)] – Bellsprout – [2024-09-13]
 
