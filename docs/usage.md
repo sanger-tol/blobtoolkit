@@ -134,7 +134,7 @@ The UniProt `Refseq_Proteomes_YYYY_MM.tar.gz` file is very large (close to 200 G
 The command below looks complex because it needs to get around the problem of using wildcards with wget and curl.
 
 ```bash
-EBI_URL=https://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes
+EBI_URL=ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/
 mkdir extract
 curl -L $EBI_URL/$(curl -vs $EBI_URL 2>&1 | awk '/tar.gz/ {print $9}') | \
   tar -xzf - -C extract
