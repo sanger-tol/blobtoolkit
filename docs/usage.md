@@ -86,7 +86,7 @@ Create the database directory, retrieve and decompress the NCBI taxonomy:
 DATE=2024_10
 TAXDUMP=/path/to/databases/taxdump_${DATE}
 mkdir -p "$TAXDUMP"
-curl -L https://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz | tar -xzf - -C "$TAXDUMP"
+curl -L ftp://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz | tar -xzf - -C "$TAXDUMP"
 ```
 
 #### 2. NCBI nucleotide BLAST database
