@@ -80,19 +80,13 @@ It is a good idea to put a date suffix for each database location so you know at
 
 #### 1. NCBI taxdump database
 
-Create the database directory and move into the directory:
+Create the database directory, retrieve and decompress the NCBI taxonomy:
 
 ```bash
-DATE=2023_03
+DATE=2024_10
 TAXDUMP=/path/to/databases/taxdump_${DATE}
-mkdir -p $TAXDUMP
-cd $TAXDUMP
-```
-
-Retrieve and decompress the NCBI taxdump:
-
-```bash
-curl -L ftp://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz | tar xzf -
+mkdir -p "$TAXDUMP"
+curl -L ftp://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz | tar -xzf - -C "$TAXDUMP"
 ```
 
 #### 2. NCBI nucleotide BLAST database
@@ -100,13 +94,15 @@ curl -L ftp://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz | tar
 Create the database directory and move into the directory:
 
 ```bash
-DATE=2023_03
+DATE=2024_10
 NT=/path/to/databases/nt_${DATE}
 mkdir -p $NT
 cd $NT
 ```
 
-Retrieve the NCBI blast nt database (version 5) files and tar gunzip them. We are using the `&&` syntax to ensure that each command completes without error before the next one is run:
+Retrieve the NCBI blast nt database (version 5) files and tar gunzip them.
+`wget` and the use of the FTP protocol are necessary to resolve the wildcard `nt.???.tar.gz`.
+We are using the `&&` syntax to ensure that each command completes without error before the next one is run:
 
 ```bash
 wget "ftp://ftp.ncbi.nlm.nih.gov/blast/db/v5/nt.???.tar.gz" -P $NT/ &&
@@ -121,36 +117,41 @@ rm taxdb.tar.gz
 
 #### 3. UniProt reference proteomes database
 
-You need [diamond blast](https://github.com/bbuchfink/diamond) installed for this step. The easiest way is probably using [conda](https://anaconda.org/bioconda/diamond). Make sure you have the latest version of Diamond (>2.x.x) otherwise the `--taxonnames` argument may not work.
+You need [diamond blast](https://github.com/bbuchfink/diamond) installed for this step.
+The easiest way is probably to install their [pre-compiled release](https://github.com/bbuchfink/diamond/releases).
+Make sure you have the latest version of Diamond (>2.x.x) otherwise the `--taxonnames` argument may not work.
 
 Create the database directory and move into the directory:
 
 ```bash
-DATE=2023_03
+DATE=2024_10
 UNIPROT=/path/to/databases/uniprot_${DATE}
 mkdir -p $UNIPROT
 cd $UNIPROT
 ```
 
-The UniProt `Refseq_Proteomes_YYYY_MM.tar.gz` file is very large (>160 GB) and will take a long time to download. The command below looks complex because it needs to get around the problem of using wildcards with wget and curl.
+The UniProt `Refseq_Proteomes_YYYY_MM.tar.gz` file is very large (close to 200 GB) and will take a long time to download.
+The command below looks complex because it needs to get around the problem of using wildcards with wget and curl.
 
 ```bash
-wget -q -O $UNIPROT/reference_proteomes.tar.gz \
-  ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/$(curl \
-    -vs ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/ 2>&1 | \
-    awk '/tar.gz/ {print $9}')
-tar xf reference_proteomes.tar.gz
+EBI_URL=ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/
+mkdir extract
+curl -L $EBI_URL/$(curl -vs $EBI_URL 2>&1 | awk '/tar.gz/ {print $9}') | \
+  tar -xzf - -C extract
 
 # Create a single fasta file with all the fasta files from each subdirectory:
-touch reference_proteomes.fasta.gz
-find . -mindepth 2 | grep "fasta.gz" | grep -v 'DNA' | grep -v 'additional' | xargs cat >> reference_proteomes.fasta.gz
+find extract -type f -name '*.fasta.gz' ! -name '*_DNA.fasta.gz' ! -name '*_additional.fasta.gz' -exec cat '{}' '+' > reference_proteomes.fasta.gz
 
 # create the accession-to-taxid map for all reference proteome sequences:
-printf "accession\taccession.version\ttaxid\tgi\n" > reference_proteomes.taxid_map
-zcat */*/*.idmapping.gz | grep "NCBI_TaxID" | awk '{print $1 "\t" $1 "\t" $3 "\t" 0}' >> reference_proteomes.taxid_map
+find extract -type f -name '*.idmapping.gz' -exec zcat {} + | \
+  awk 'BEGIN {OFS="\t"; print "accession", "accession.version", "taxid", "gi"} $2=="NCBI_TaxID" {print $1, $1, $3, 0}' > reference_proteomes.taxid_map
 
 # create the taxon aware diamond blast database
 diamond makedb -p 16 --in reference_proteomes.fasta.gz --taxonmap reference_proteomes.taxid_map --taxonnodes $TAXDUMP/nodes.dmp --taxonnames $TAXDUMP/names.dmp -d reference_proteomes.dmnd
+
+# clean up
+mv extract/{README,STATS} .
+rm -r extract
 ```
 
 #### 4. BUSCO databases
@@ -158,7 +159,7 @@ diamond makedb -p 16 --in reference_proteomes.fasta.gz --taxonmap reference_prot
 Create the database directory and move into the directory:
 
 ```bash
-DATE=2023_03
+DATE=2024_10
 BUSCO=/path/to/databases/busco_${DATE}
 mkdir -p $BUSCO
 cd $BUSCO
