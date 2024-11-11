@@ -3,7 +3,7 @@ process GENERATE_CONFIG {
     label 'process_single'
 
     conda "conda-forge::requests=2.28.1 conda-forge::pyyaml=6.0"
-    container "docker.io/genomehubs/blobtoolkit:4.3.9"
+    container "docker.io/genomehubs/blobtoolkit:4.3.13"
 
     input:
     tuple val(meta), val(fasta)
