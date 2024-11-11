@@ -63,8 +63,6 @@ workflow INPUT_CHECK {
             taxdump: db_meta.type == "taxdump"
         }
 
-    ch_databases.blastp.view()
-
 
     //
     // SUBWORKFLOW: Process samplesheet
