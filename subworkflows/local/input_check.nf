@@ -44,13 +44,12 @@ workflow INPUT_CHECK {
     ch_versions = ch_versions.mix( UNTAR.out.versions.first() )
 
     // Join and format dbs
-    // NOTE: The conditional for blastp/x is needed because nf-core/untar doesn't seem to detect their type correctly
+    // NOTE: The conditional for blastp/x is needed because nf-core/untar puts the database in a directory
     ch_databases = UNTAR.out.untar.concat( ch_dbs_for_untar.skip )
         .map { meta, db -> [ meta + [id: db.baseName], db] }
         .map { db_meta, db_path ->
             if (db_meta.type in ["blastp", "blastx"]) {
-                def actual_file = db_path.isDirectory() ? file(db_path.toString() + "/${db_path.name}") : db_path
-                [db_meta, file(actual_file.toString())]
+                [db_meta, file(db_path.toString() + "/${db_path.name}", checkIfExists: true)]
             } else {
                 [db_meta, db_path]
             }
