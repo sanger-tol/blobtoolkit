@@ -200,6 +200,7 @@ find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
 ```
 
 Finally re-compress and cleanup the files:
+
 ```bash
 tar -cvzf $BUSCO_TAR $BUSCO
 rm -r $BUSCO
