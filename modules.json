@@ -13,13 +13,13 @@
                         ],
                         "patch": "modules/nf-core/blast/blastn/blast-blastn.diff"
                     },
-                    "busco": {
+                    "busco/busco": {
                         "branch": "master",
-                        "git_sha": "e3126f437c336c826f242842fe51769cfce0ec2d",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": [
                             "modules"
                         ],
-                        "patch": "modules/nf-core/busco/busco.diff"
+                        "patch": "modules/nf-core/busco/busco/busco-busco.diff"
                     },
                     "cat/cat": {
                         "branch": "master",
