@@ -78,7 +78,8 @@ The BlobToolKit pipeline can be run in many different ways. The default way requ
 
 It is a good idea to put a date suffix for each database location so you know at a glance whether you are using the latest version. We are using the `YYYY_MM` format as we do not expect the databases to be updated more frequently than once a month. However, feel free to use `DATE=YYYY_MM_DD` or a different format if you prefer.
 
-Note that all input databases may be optionall passed directly to the pipeline compressed as `.tar.gz`, and the pipeline will handle decompression.
+Note that all input databases may be optionally passed directly to the pipeline compressed as `.tar.gz`, and the pipeline will handle decompression.
+The instructions below show how to build each input database in _two_ forms: decompressed _and_ compressed. You may not need to do both. Select the one that is most appropriate for how you want to use the pipeline.
 
 #### 1. NCBI taxdump database
 
