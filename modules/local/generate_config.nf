@@ -11,9 +11,9 @@ process GENERATE_CONFIG {
     val busco_lin
     path lineage_tax_ids
     val reads
-    tuple val(meta2), path(blastp)
-    tuple val(meta3), path(blastx)
-    tuple val(meta4), path(blastn)
+    tuple val(meta2), path(blastp, stageAs: 'blastp/*')
+    tuple val(meta3), path(blastx, stageAs: 'blastx/*')
+    tuple val(meta4), path(blastn, stageAs: 'blastn/*')
     tuple val(meta5), path(taxdump)
 
     output:
