@@ -10,13 +10,11 @@ process GENERATE_CONFIG {
     val taxon_query
     val busco_lin
     path lineage_tax_ids
-    tuple val(meta2), path(blastn)
     val reads
-    // The following are passed as "val" because we just want to know the full paths. No staging necessary
-    val blastp_path
-    val blastx_path
-    val blastn_path
-    val taxdump_path
+    tuple val(meta2), path(blastp)
+    tuple val(meta3), path(blastx)
+    tuple val(meta4), path(blastn)
+    tuple val(meta5), path(taxdump)
 
     output:
     tuple val(meta), path("*.yaml")          , emit: yaml
@@ -43,10 +41,10 @@ process GENERATE_CONFIG {
         $accession_params \\
         --nt $blastn \\
         $input_reads \\
-        --blastp ${blastp_path} \\
-        --blastx ${blastx_path} \\
-        --blastn ${blastn_path} \\
-        --taxdump ${taxdump_path} \\
+        --blastp ${blastp} \\
+        --blastx ${blastx} \\
+        --blastn ${blastn} \\
+        --taxdump ${taxdump} \\
         --output_prefix ${prefix}
 
     cat <<-END_VERSIONS > versions.yml

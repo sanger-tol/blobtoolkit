@@ -24,17 +24,21 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.fasta) { ch_fasta = Channel.value([ [ 'id': params.accession ?: file(params.fasta.replace(".gz", "")).baseName ], file(params.fasta) ]) } else { exit 1, 'Genome fasta file must be specified!' }
 if (params.taxon) { ch_taxon = Channel.value(params.taxon) } else { exit 1, 'NCBI Taxon ID not specified!' }
-if (params.blastp) { ch_blastp = Channel.value([ [ 'id': file(params.blastp).baseName ], params.blastp ]) } else { exit 1, 'Diamond BLASTp database must be specified!' }
-if (params.blastx) { ch_blastx = Channel.value([ [ 'id': file(params.blastx).baseName ], params.blastx ]) } else { exit 1, 'Diamond BLASTx database must be specified!' }
-if (params.blastn) { ch_blastn = Channel.value([ [ 'id': file(params.blastn).baseName ], params.blastn ]) } else { exit 1, 'BLASTn database not specified!' }
-if (params.taxdump) { ch_taxdump = file(params.taxdump) } else { exit 1, 'NCBI Taxonomy database not specified!' }
+if (params.blastp) { ch_blastp = Channel.fromPath(params.blastp).map { tuple(["type": "blastp"], it) } } else { exit 1, 'Diamond BLASTp database must be specified!' }
+if (params.blastx) { ch_blastx = Channel.fromPath(params.blastx).map { tuple(["type": "blastx"], it) } } else { exit 1, 'Diamond BLASTx database must be specified!' }
+if (params.blastn) { ch_blastn = Channel.fromPath(params.blastn).map { tuple(["type": "blastn"], it) } } else { exit 1, 'BLASTn database not specified!' }
+if (params.taxdump) { ch_taxdump = Channel.fromPath(params.taxdump).map { tuple(["type": "taxdump"], it) } } else { exit 1, 'NCBI Taxonomy database not specified!' }
 if (params.fetchngs_samplesheet && !params.align) { exit 1, '--align not specified, even though the input samplesheet is a nf-core/fetchngs one - i.e has fastq files!' }
 
 if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.lineage_tax_ids).first() } else { exit 1, 'Mapping BUSCO lineage <-> taxon_ids not specified' }
 
 // Create channel for optional parameters
 if (params.busco_lineages) { ch_busco_lin = Channel.value(params.busco_lineages) } else { ch_busco_lin = Channel.value([]) }
-if (params.busco) { ch_busco_db = Channel.fromPath(params.busco).first() } else { ch_busco_db = Channel.value([]) }
+if (params.busco) {
+    ch_busco_db = Channel.fromPath(params.busco).first().map { tuple([ "type": "busco"], it ) }
+} else {
+    ch_busco_db = Channel.value([])
+}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,6 +113,10 @@ workflow BLOBTOOLKIT {
         ch_busco_lin,
         ch_lineage_tax_ids,
         ch_blastn,
+        ch_blastx,
+        ch_blastp,
+        ch_busco_db,
+        ch_taxdump,
     )
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
 
@@ -135,8 +143,8 @@ workflow BLOBTOOLKIT {
     BUSCO_DIAMOND (
         PREPARE_GENOME.out.genome,
         INPUT_CHECK.out.busco_lineages,
-        ch_busco_db,
-        ch_blastp,
+        INPUT_CHECK.out.busco_db,
+        INPUT_CHECK.out.blastp,
         INPUT_CHECK.out.taxon_id,
     )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
@@ -147,7 +155,7 @@ workflow BLOBTOOLKIT {
     RUN_BLASTX (
         PREPARE_GENOME.out.genome,
         BUSCO_DIAMOND.out.first_table,
-        ch_blastx,
+        INPUT_CHECK.out.blastx,
         INPUT_CHECK.out.taxon_id,
     )
     ch_versions = ch_versions.mix ( RUN_BLASTX.out.versions )
@@ -159,7 +167,7 @@ workflow BLOBTOOLKIT {
     RUN_BLASTN (
         RUN_BLASTX.out.blastx_out,
         PREPARE_GENOME.out.genome,
-        ch_blastn,
+        INPUT_CHECK.out.blastn,
         INPUT_CHECK.out.taxon_id,
     )
 
@@ -187,7 +195,7 @@ workflow BLOBTOOLKIT {
         BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]),
         RUN_BLASTX.out.blastx_out.ifEmpty([[],[]]),
         RUN_BLASTN.out.blastn_out.ifEmpty([[],[]]),
-        ch_taxdump
+        INPUT_CHECK.out.taxdump
     )
     ch_versions = ch_versions.mix ( BLOBTOOLS.out.versions )
 

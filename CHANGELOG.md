@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[0.7.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.7.0)] – Psyduck – [2024-10-02]
+## [[0.7.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.7.0)] – Psyduck – [2024-11-20]
 
 The pipeline is now considered to be a complete and suitable replacement for the Snakemake version.
 
@@ -13,6 +13,7 @@ The pipeline is now considered to be a complete and suitable replacement for the
   to indicate in the samplesheet whether the reads are paired or single.
 - Updated the Blastn settings to allow 7 days runtime at most, since that
   covers 99.7% of the jobs.
+- Allow database inputs to be optionally compressed (`.tar.gz`)
 
 ### Software dependencies
 

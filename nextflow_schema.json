@@ -52,7 +52,8 @@
                     "type": "string",
                     "enum": ["png", "svg"],
                     "description": "Select the format of the output images.",
-                    "fa_icon": "fas fa-image"
+                    "fa_icon": "fas fa-image",
+                    "default": "png"
                 },
                 "outdir": {
                     "type": "string",
@@ -109,40 +110,40 @@
             "properties": {
                 "busco": {
                     "type": "string",
-                    "format": "directory-path",
+                    "format": "path",
                     "description": "Local directory where clade-specific BUSCO lineage datasets are stored",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "lineage_tax_ids": {
                     "type": "string",
-                    "format": "file-path",
+                    "format": "path",
                     "description": "Local file that holds a mapping between BUSCO lineages and taxon IDs.",
                     "help_text": "Initialised from https://busco-data.ezlab.org/v5/data/placement_files/mapping_taxids-busco_dataset_name.*.2019-12-16.txt.tar.gz",
                     "fa_icon": "fas fa-file-code"
                 },
                 "blastp": {
                     "type": "string",
-                    "format": "file-path",
-                    "pattern": "^\\S+\\.dmnd$",
+                    "format": "path",
+                    "pattern": "^\\S+\\.dmnd.*$",
                     "description": "Path to the Diamond species-specific buscogenes database",
                     "fa_icon": "fas fa-file-archive"
                 },
                 "blastx": {
                     "type": "string",
-                    "format": "file-path",
-                    "pattern": "^\\S+\\.dmnd$",
+                    "format": "path",
+                    "pattern": "^\\S+\\.dmnd.*$",
                     "description": "Path to the Diamond species-specific buscoregions database",
                     "fa_icon": "fas fa-file-archive"
                 },
                 "blastn": {
                     "type": "string",
-                    "format": "directory-path",
+                    "format": "path",
                     "description": "Path to the nucleotide BLAST database",
                     "fa_icon": "fas fa-file-archive"
                 },
                 "taxdump": {
                     "type": "string",
-                    "format": "directory-path",
+                    "format": "path",
                     "description": "Path to the new NCBI tax dump database",
                     "fa_icon": "fas fa-folder-open"
                 }

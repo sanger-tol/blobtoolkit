@@ -78,6 +78,9 @@ The BlobToolKit pipeline can be run in many different ways. The default way requ
 
 It is a good idea to put a date suffix for each database location so you know at a glance whether you are using the latest version. We are using the `YYYY_MM` format as we do not expect the databases to be updated more frequently than once a month. However, feel free to use `DATE=YYYY_MM_DD` or a different format if you prefer.
 
+Note that all input databases may be optionally passed directly to the pipeline compressed as `.tar.gz`, and the pipeline will handle decompression.
+The instructions below show how to build each input database in _two_ forms: decompressed _and_ compressed. You may not need to do both. Select the one that is most appropriate for how you want to use the pipeline.
+
 #### 1. NCBI taxdump database
 
 Create the database directory, retrieve and decompress the NCBI taxonomy:
@@ -85,8 +88,10 @@ Create the database directory, retrieve and decompress the NCBI taxonomy:
 ```bash
 DATE=2024_10
 TAXDUMP=/path/to/databases/taxdump_${DATE}
+TAXDUMP_TAR=/path/to/databases/taxdump_${DATE}.tar.gz
 mkdir -p "$TAXDUMP"
-curl -L ftp://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz | tar -xzf - -C "$TAXDUMP"
+curl -L ftp://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz -o $TAXDUMP_TAR
+tar -xzf $TAXDUMP_TAR -C "$TAXDUMP"
 ```
 
 #### 2. NCBI nucleotide BLAST database
@@ -96,6 +101,7 @@ Create the database directory and move into the directory:
 ```bash
 DATE=2024_10
 NT=/path/to/databases/nt_${DATE}
+NT_TAR=/path/to/databases/nt_${DATE}.tar.gz
 mkdir -p $NT
 cd $NT
 ```
@@ -113,6 +119,11 @@ done
 wget "https://ftp.ncbi.nlm.nih.gov/blast/db/v5/taxdb.tar.gz" &&
 tar xf taxdb.tar.gz -C $NT &&
 rm taxdb.tar.gz
+
+# Compress and cleanup
+cd ..
+tar -cvzf $NT_TAR $NT
+rm -r $NT
 ```
 
 #### 3. UniProt reference proteomes database
@@ -126,6 +137,7 @@ Create the database directory and move into the directory:
 ```bash
 DATE=2024_10
 UNIPROT=/path/to/databases/uniprot_${DATE}
+UNIPROT_TAR=/path/to/databases/uniprot_${DATE}.tar.gz
 mkdir -p $UNIPROT
 cd $UNIPROT
 ```
@@ -152,6 +164,12 @@ diamond makedb -p 16 --in reference_proteomes.fasta.gz --taxonmap reference_prot
 # clean up
 mv extract/{README,STATS} .
 rm -r extract
+rm -r $TAXDUMP
+
+# Compress final database and cleanup
+cd ..
+tar -cvzf $UNIPROT_TAR $UNIPROT
+rm -r $UNIPROT
 ```
 
 #### 4. BUSCO databases
@@ -161,6 +179,7 @@ Create the database directory and move into the directory:
 ```bash
 DATE=2024_10
 BUSCO=/path/to/databases/busco_${DATE}
+BUSCO_TAR=/path/to/databases/busco_${DATE}.tar.gz
 mkdir -p $BUSCO
 cd $BUSCO
 ```
@@ -179,6 +198,13 @@ If you have [GNU parallel](https://www.gnu.org/software/parallel/) installed, yo
 
 ```bash
 find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
+```
+
+Finally re-compress and cleanup the files:
+
+```bash
+tar -cvzf $BUSCO_TAR $BUSCO
+rm -r $BUSCO
 ```
 
 ## Changes from Snakemake to Nextflow

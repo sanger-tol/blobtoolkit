@@ -35,19 +35,9 @@ jobs:
         with:
           version: "${{ matrix.NXF_VER }}"
 
-      - name: Download the NCBI taxdump database
-        run: |
-          mkdir ncbi_taxdump
-          curl -L https://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz | tar -C ncbi_taxdump -xzf -
-
-      - name: Download the BUSCO lineage database
-        run: |
-          mkdir busco_database
-          curl -L https://tolit.cog.sanger.ac.uk/test-data/resources/busco/blobtoolkit.GCA_922984935.2.2023-08-03.lineages.tar.gz | tar -C busco_database -xzf -
-
       - name: Run pipeline with test data
         # You can customise CI pipeline run tests as required
         # For example: adding multiple test runs with different parameters
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --taxdump $PWD/ncbi_taxdump --busco $PWD/busco_database --outdir ./results
+          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results
