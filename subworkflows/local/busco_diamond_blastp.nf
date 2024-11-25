@@ -2,7 +2,7 @@
 // Run BUSCO for a genome and runs diamond_blastp
 //
 
-include { BUSCO                     } from '../../modules/nf-core/busco/main'
+include { BUSCO_BUSCO as BUSCO      } from '../../modules/nf-core/busco/busco/main'
 include { BLOBTOOLKIT_EXTRACTBUSCOS } from '../../modules/local/blobtoolkit/extractbuscos'
 include { DIAMOND_BLASTP            } from '../../modules/nf-core/diamond/blastp/main'
 include { RESTRUCTUREBUSCODIR       } from '../../modules/local/restructurebuscodir'

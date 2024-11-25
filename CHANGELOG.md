@@ -19,9 +19,13 @@ The pipeline is now considered to be a complete and suitable replacement for the
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
 
-| Dependency  | Old version | New version |
-| ----------- | ----------- | ----------- |
-| blobtoolkit | 4.3.9       | 4.3.13      |
+| Dependency  | Old version       | New version     |
+| ----------- | ----------------- | --------------- |
+| blast       | 2.14.1 and 2.15.0 | only 2.15.0     |
+| blobtoolkit | 4.3.9             | 4.4.0           |
+| busco       | 5.5.0             | 5.7.1           |
+| multiqc     | 1.20 and 1.21     | 1.20 and 1.25.1 |
+| samtools    | 1.18 and 1.19.2   | 1.20 and 1.21   |
 
 ## [[0.6.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.6.0)] – Bellsprout – [2024-09-13]
 
@@ -112,7 +116,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | blobtoolkit | 4.3.3         | 4.3.9             |
 | blast       | 2.14.0        | 2.15.0 and 2.14.1 |
 | multiqc     | 1.17 and 1.18 | 1.20 and 1.21     |
-| samtools    | 1.18          | 1.19.2            |
+| samtools    | 1.18          | 1.18 and 1.19.2   |
 | seqtk       | 1.3           | 1.4               |
 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.

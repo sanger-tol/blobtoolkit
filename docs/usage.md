@@ -272,7 +272,7 @@ List of tools for any given dataset can be fetched from the API, for example htt
 
 | Dependency        | Snakemake | Nextflow |
 | ----------------- | --------- | -------- |
-| blobtoolkit       | 4.3.2     | 4.3.13   |
+| blobtoolkit       | 4.3.2     | 4.4.0    |
 | blast             | 2.12.0    | 2.14.1   |
 | blobtk            | 0.5.0     | 0.5.1    |
 | busco             | 5.3.2     | 5.5.0    |

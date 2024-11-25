@@ -25,7 +25,22 @@ Changes in module 'nf-core/blast/blastn'
  
      """
      if [ "${is_compressed}" == "true" ]; then
-@@ -39,8 +41,15 @@
+@@ -35,12 +37,30 @@
+     fi
+     echo Using \$DB
+ 
++    if [ -n "${taxid}" ]; then
++        # Symlink the tax* files (needed for -taxid options to work)
++        for file in taxdb.btd taxdb.bti taxonomy4blast.sqlite3; do
++            if [ ! -f ${db}/\$file ]; then
++                echo "Error: \$file not found in ${db}"
++                exit 1
++            fi
++            ln -s ${db}/\$file .
++        done
++    fi
++
+     blastn \\
          -num_threads ${task.cpus} \\
          -db \$DB \\
          -query ${fasta_name} \\
