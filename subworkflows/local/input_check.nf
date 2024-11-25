@@ -48,7 +48,7 @@ workflow INPUT_CHECK {
     ch_databases = UNTAR.out.untar.concat( ch_dbs_for_untar.skip )
         .map { meta, db -> [ meta + [id: db.baseName], db] }
         .map { db_meta, db_path ->
-            if (db_meta.type in ["blastp", "blastx"]) {
+            if (db_meta.type in ["blastp", "blastx"] && db_path.isDirectory()) {
                 [db_meta, file(db_path.toString() + "/${db_path.name}", checkIfExists: true)]
             } else {
                 [db_meta, db_path]
