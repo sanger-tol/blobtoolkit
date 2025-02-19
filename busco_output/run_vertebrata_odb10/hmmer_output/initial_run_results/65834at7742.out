@@ -1,0 +1,15 @@
+#                                                                                                              --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name                                          accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#                                  ------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+65834at7742_9646_0:0045d3|OV277441.1:4350746-4399255|+ -            449 65834at7742          -           1340  1.4e-214  704.8   2.4   1   2  1.6e-135  2.7e-134  438.8   0.1     7   247    31   286    28   288 0.95 -
+65834at7742_9646_0:0045d3|OV277441.1:4350746-4399255|+ -            449 65834at7742          -           1340  1.4e-214  704.8   2.4   2   2   7.8e-84   1.3e-82  267.5   0.3   283   416   286   420   285   433 0.95 -
+#
+# Program:         hmmsearch
+# Version:         3.1b2 (February 2015)
+# Pipeline mode:   SEARCH
+# Query file:      /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/vertebrata_odb10/hmms/65834at7742.hmm
+# Target file:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9/GCA_922984935.2-vertebrata_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_vertebrata_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas
+# Option settings: hmmsearch --domtblout /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9/GCA_922984935.2-vertebrata_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_vertebrata_odb10/hmmer_output/initial_run_results/65834at7742.out --cpu 1 /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/vertebrata_odb10/hmms/65834at7742.hmm /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9/GCA_922984935.2-vertebrata_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_vertebrata_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas 
+# Current dir:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9
+# Date:            Wed Jan 29 16:40:05 2025
+# [ok]

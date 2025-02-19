@@ -1,0 +1,31 @@
+# BUSCO version is: 5.7.1 
+# The lineage dataset is: carnivora_odb10 (Creation date: 2023-08-03, number of genomes: 12, number of BUSCOs: 15)
+# Summarized benchmarking in BUSCO notation for file /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.BXjOGuYMKc/input_seqs/GCA_922984935.2.subset.phiXspike.fasta
+# BUSCO was run in mode: euk_genome_met
+# Gene predictor used: metaeuk
+
+	***** Results: *****
+
+	C:66.7%[S:60.0%,D:6.7%],F:0.0%,M:33.3%,n:15	   
+	10	Complete BUSCOs (C)			   
+	9	Complete and single-copy BUSCOs (S)	   
+	1	Complete and duplicated BUSCOs (D)	   
+	0	Fragmented BUSCOs (F)			   
+	5	Missing BUSCOs (M)			   
+	15	Total BUSCO groups searched		   
+
+Assembly Statistics:
+	2	Number of scaffolds
+	2	Number of contigs
+	8005306	Total length
+	0.000%	Percent gaps
+	7 MB	Scaffold N50
+	7 MB	Contigs N50
+
+
+Dependencies and versions:
+	hmmsearch: 3.1
+	bbtools: 39.01
+	metaeuk: 6.a5d39d9
+	python: sys.version_info(major=3, minor=7, micro=12, releaselevel='final', serial=0)
+	busco: 5.7.1

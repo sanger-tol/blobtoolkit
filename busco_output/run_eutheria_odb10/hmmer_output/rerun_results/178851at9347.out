@@ -1,0 +1,14 @@
+#                                                                                                               --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name                                           accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#                                   ------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+178851at9347_9733_0:0005f0|OV277441.1:5405572-5405852|- -             93 178851at9347         -            140   4.3e-25   77.0   0.0   1   1   1.9e-25   1.3e-24   75.4   0.0    45   121     1    92     1    93 0.87 -
+#
+# Program:         hmmsearch
+# Version:         3.1b2 (February 2015)
+# Pipeline mode:   SEARCH
+# Query file:      /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.tQSpETCjAn/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/eutheria_odb10/hmms/178851at9347.hmm
+# Target file:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.tQSpETCjAn/GCA_922984935.2-eutheria_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_eutheria_odb10/metaeuk_output/rerun_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas
+# Option settings: hmmsearch --domtblout /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.tQSpETCjAn/GCA_922984935.2-eutheria_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_eutheria_odb10/hmmer_output/rerun_results/178851at9347.out --cpu 1 /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.tQSpETCjAn/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/eutheria_odb10/hmms/178851at9347.hmm /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.tQSpETCjAn/GCA_922984935.2-eutheria_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_eutheria_odb10/metaeuk_output/rerun_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas 
+# Current dir:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.tQSpETCjAn
+# Date:            Wed Jan 29 16:39:33 2025
+# [ok]

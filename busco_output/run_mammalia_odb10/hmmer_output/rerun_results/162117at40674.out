@@ -1,0 +1,17 @@
+#                                                                                                              --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name                                          accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#                                  ------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+162117at40674_9668_0:0045ae|OV277441.1:696549-701667|+ -            524 162117at40674        -            315  9.6e-115  370.5  28.2   1   4   4.8e-33   1.4e-32  100.5   0.3    52   114   176   239   171   253 0.92 -
+162117at40674_9668_0:0045ae|OV277441.1:696549-701667|+ -            524 162117at40674        -            315  9.6e-115  370.5  28.2   2   4   2.2e-25   6.6e-25   75.3   2.4   115   173   296   354   251   358 0.89 -
+162117at40674_9668_0:0045ae|OV277441.1:696549-701667|+ -            524 162117at40674        -            315  9.6e-115  370.5  28.2   3   4   2.9e-35   8.6e-35  107.8   0.1   197   258   358   419   352   445 0.81 -
+162117at40674_9668_0:0045ae|OV277441.1:696549-701667|+ -            524 162117at40674        -            315  9.6e-115  370.5  28.2   4   4   2.1e-32   6.4e-32   98.4   9.4   249   315   446   516   440   516 0.92 -
+#
+# Program:         hmmsearch
+# Version:         3.1b2 (February 2015)
+# Pipeline mode:   SEARCH
+# Query file:      /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/mammalia_odb10/hmms/162117at40674.hmm
+# Target file:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri/GCA_922984935.2-mammalia_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_mammalia_odb10/metaeuk_output/rerun_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas
+# Option settings: hmmsearch --domtblout /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri/GCA_922984935.2-mammalia_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_mammalia_odb10/hmmer_output/rerun_results/162117at40674.out --cpu 1 /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/mammalia_odb10/hmms/162117at40674.hmm /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri/GCA_922984935.2-mammalia_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_mammalia_odb10/metaeuk_output/rerun_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas 
+# Current dir:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri
+# Date:            Wed Jan 29 16:38:46 2025
+# [ok]

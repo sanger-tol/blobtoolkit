@@ -1,0 +1,20 @@
+#                                                                                                                --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name                                            accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#                                    ------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+46980at314145_42254_0:003039|OV277441.1:154459-155220|-  -            254 46980at314145        -            454  1.8e-139  455.3  64.2   1   4   1.6e-40   6.8e-40  127.0  10.4   276   383     3   110     1   110 0.99 -
+46980at314145_42254_0:003039|OV277441.1:154459-155220|-  -            254 46980at314145        -            454  1.8e-139  455.3  64.2   2   4   2.4e-38     1e-37  119.9   7.8   256   353    67   164    66   165 0.93 -
+46980at314145_42254_0:003039|OV277441.1:154459-155220|-  -            254 46980at314145        -            454  1.8e-139  455.3  64.2   3   4   9.1e-39     4e-38  121.2   7.0   256   349    95   188    95   189 0.95 -
+46980at314145_42254_0:003039|OV277441.1:154459-155220|-  -            254 46980at314145        -            454  1.8e-139  455.3  64.2   4   4   2.2e-40   9.4e-40  126.6  14.9   256   359   151   254   151   254 0.99 -
+46980at314145_143302_0:002f5c|OV277441.1:206219-207172|+ -            318 46980at314145        -            454  2.4e-120  392.3  51.0   1   2   4.4e-50   1.9e-49  158.5  16.1   277   388     1   112     1   118 0.98 -
+46980at314145_143302_0:002f5c|OV277441.1:206219-207172|+ -            318 46980at314145        -            454  2.4e-120  392.3  51.0   2   2   8.5e-74   3.7e-73  236.7  27.0   178   374   121   317   120   318 0.99 -
+46980at314145_42254_0:003039|OV277441.1:105098-105850|+  -            251 46980at314145        -            454  9.9e-101  327.6  35.5   1   1  3.6e-101  1.5e-100  326.9  35.5   137   387     1   251     1   251 1.00 -
+#
+# Program:         hmmsearch
+# Version:         3.1b2 (February 2015)
+# Pipeline mode:   SEARCH
+# Query file:      /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/laurasiatheria_odb10/hmms/46980at314145.hmm
+# Target file:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT/GCA_922984935.2-laurasiatheria_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_laurasiatheria_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas
+# Option settings: hmmsearch --domtblout /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT/GCA_922984935.2-laurasiatheria_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_laurasiatheria_odb10/hmmer_output/initial_run_results/46980at314145.out --cpu 1 /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/laurasiatheria_odb10/hmms/46980at314145.hmm /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT/GCA_922984935.2-laurasiatheria_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_laurasiatheria_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas 
+# Current dir:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT
+# Date:            Wed Jan 29 16:39:17 2025
+# [ok]

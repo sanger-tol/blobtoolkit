@@ -1,0 +1,18 @@
+# BUSCO version is: 5.7.1 
+# The lineage dataset is: mammalia_odb10 (Creation date: 2023-08-03, number of genomes: 24, number of BUSCOs: 15)
+# Busco id	Status	Sequence	Gene Start	Gene End	Strand	Score	Length	OrthoDB url	Description
+17037at40674	Complete	OV277441.1	2721895	2672715	-	2019.5	1055	https://www.orthodb.org/v10?query=17037at40674	DENN domain-containing protein 3
+24336at40674	Complete	OV277441.1	294245	348691	+	1738.7	888	https://www.orthodb.org/v10?query=24336at40674	rho GTPase-activating protein 39 isoform X1
+40114at40674	Fragmented	OV277441.1	362818	368009	+	970.0	604	https://www.orthodb.org/v10?query=40114at40674	ATP-dependent DNA helicase Q4 isoform X1
+55770at40674	Missing
+75402at40674	Complete	OV277441.1	1077036	1154532	+	896.0	636	https://www.orthodb.org/v10?query=75402at40674	zinc finger CCCH domain-containing protein 3
+77185at40674	Complete	OV277441.1	521641	483408	-	913.9	478	https://www.orthodb.org/v10?query=77185at40674	AarF domain containing kinase 5
+92479at40674	Complete	OV277441.1	1206280	1197207	-	811.2	481	https://www.orthodb.org/v10?query=92479at40674	rhophilin-1
+104496at40674	Complete	OV277441.1	381533	372718	-	719.9	419	https://www.orthodb.org/v10?query=104496at40674	protein phosphatase 1 regulatory subunit 16A
+115648at40674	Missing
+162117at40674	Fragmented	OV277441.1	696764	701814	+	371.2	238	https://www.orthodb.org/v10?query=162117at40674	sharpin
+174449at40674	Missing
+188032at40674	Missing
+189092at40674	Fragmented	OV277441.1	1588397	1582483	-	146.9	98	https://www.orthodb.org/v10?query=189092at40674	protein THEM6
+195995at40674	Missing
+204770at40674	Complete	OV277441.1	3182044	3179523	-	183.7	99	https://www.orthodb.org/v10?query=204770at40674	chromatin accessibility complex protein 1

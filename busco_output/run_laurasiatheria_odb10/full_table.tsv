@@ -1,0 +1,18 @@
+# BUSCO version is: 5.7.1 
+# The lineage dataset is: laurasiatheria_odb10 (Creation date: 2023-08-03, number of genomes: 52, number of BUSCOs: 15)
+# Busco id	Status	Sequence	Gene Start	Gene End	Strand	Score	Length	OrthoDB url	Description
+7731at314145	Complete	OV277441.1	730905	743886	+	1765.8	1016	https://www.orthodb.org/v10?query=7731at314145	5-oxoprolinase
+9809at314145	Complete	OV277441.1	2852288	3041707	+	1420.6	824	https://www.orthodb.org/v10?query=9809at314145	focal adhesion kinase 1 isoform X1
+13368at314145	Complete	OV277441.1	362818	368009	+	1293.4	793	https://www.orthodb.org/v10?query=13368at314145	ATP-dependent DNA helicase Q4
+14779at314145	Missing
+37428at314145	Complete	OV277441.1	1206280	1197207	-	777.4	466	https://www.orthodb.org/v10?query=37428at314145	rhophilin-1
+42479at314145	Complete	OV277441.1	462852	467097	+	745.9	495	https://www.orthodb.org/v10?query=42479at314145	zinc transporter ZIP4
+46980at314145	Fragmented	OV277441.1	155220	154459	-	455.3	127	https://www.orthodb.org/v10?query=46980at314145	Zinc finger protein 358
+54204at314145	Missing
+63368at314145	Complete	OV277441.1	766054	748373	-	819.5	506	https://www.orthodb.org/v10?query=63368at314145	speriolin
+70090at314145	Complete	OV277441.1	696764	701814	+	476.0	303	https://www.orthodb.org/v10?query=70090at314145	sharpin
+77859at314145	Missing
+88312at314145	Complete	OV277441.1	705160	702932	-	627.8	278	https://www.orthodb.org/v10?query=88312at314145	cytochrome c1, heme protein, mitochondrial
+95440at314145	Complete	OV277441.1	215957	215193	-	389.4	198	https://www.orthodb.org/v10?query=95440at314145	COMM domain-containing protein 5
+98967at314145	Missing
+105615at314145	Missing

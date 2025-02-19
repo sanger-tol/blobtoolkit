@@ -1,0 +1,17 @@
+#                                                                                                 --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name                             accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#                     ------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+12001at33554_5|OV277441.1:562773-582322|- -            612 12001at33554         -            412  4.4e-212  693.7  51.0   1   4  2.2e-107  2.4e-106  345.4  13.3     6   231    39   306    34   320 0.88 -
+12001at33554_5|OV277441.1:562773-582322|- -            612 12001at33554         -            412  4.4e-212  693.7  51.0   2   4   1.9e-12   2.1e-11   32.7   5.5   201   240   320   359   305   368 0.86 -
+12001at33554_5|OV277441.1:562773-582322|- -            612 12001at33554         -            412  4.4e-212  693.7  51.0   3   4   4.1e-55   4.5e-54  173.3   8.4   237   336   388   492   369   502 0.91 -
+12001at33554_5|OV277441.1:562773-582322|- -            612 12001at33554         -            412  4.4e-212  693.7  51.0   4   4   5.8e-48   6.3e-47  149.7   1.4   335   412   534   612   517   612 0.95 -
+#
+# Program:         hmmsearch
+# Version:         3.1b2 (February 2015)
+# Pipeline mode:   SEARCH
+# Query file:      /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.BXjOGuYMKc/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/carnivora_odb10/hmms/12001at33554.hmm
+# Target file:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.BXjOGuYMKc/GCA_922984935.2-carnivora_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_carnivora_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas
+# Option settings: hmmsearch --domtblout /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.BXjOGuYMKc/GCA_922984935.2-carnivora_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_carnivora_odb10/hmmer_output/initial_run_results/12001at33554.out --cpu 1 /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.BXjOGuYMKc/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/carnivora_odb10/hmms/12001at33554.hmm /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.BXjOGuYMKc/GCA_922984935.2-carnivora_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_carnivora_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas 
+# Current dir:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.BXjOGuYMKc
+# Date:            Wed Jan 29 16:40:46 2025
+# [ok]

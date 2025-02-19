@@ -1,0 +1,21 @@
+#                                                                                                             --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name                                         accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#                                 ------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+40114at40674_9668_0:0045cb|OV277441.1:362818-368009|+ -           1123 40114at40674         -            866         0 1102.8  47.7   1   8   8.3e-13   9.9e-12   33.1   0.3    64    94    30    60    22    71 0.90 -
+40114at40674_9668_0:0045cb|OV277441.1:362818-368009|+ -           1123 40114at40674         -            866         0 1102.8  47.7   2   8   3.4e-32   4.1e-31   97.2   1.0   117   189   179   252   173   257 0.94 -
+40114at40674_9668_0:0045cb|OV277441.1:362818-368009|+ -           1123 40114at40674         -            866         0 1102.8  47.7   3   8   8.6e-57     1e-55  178.6   0.8   190   283   359   452   347   457 0.95 -
+40114at40674_9668_0:0045cb|OV277441.1:362818-368009|+ -           1123 40114at40674         -            866         0 1102.8  47.7   4   8     2e-33   2.4e-32  101.3   1.0   310   364   531   592   527   599 0.88 -
+40114at40674_9668_0:0045cb|OV277441.1:362818-368009|+ -           1123 40114at40674         -            866         0 1102.8  47.7   5   8  1.9e-124  2.3e-123  402.5  10.5   363   574   617   847   614   852 0.91 -
+40114at40674_9668_0:0045cb|OV277441.1:362818-368009|+ -           1123 40114at40674         -            866         0 1102.8  47.7   6   8   6.8e-10   8.2e-09   23.4   0.0   573   597   881   905   877   907 0.91 -
+40114at40674_9668_0:0045cb|OV277441.1:362818-368009|+ -           1123 40114at40674         -            866         0 1102.8  47.7   7   8   1.1e-50   1.3e-49  158.4   0.0   639   751   907  1025   905  1029 0.94 -
+40114at40674_9668_0:0045cb|OV277441.1:362818-368009|+ -           1123 40114at40674         -            866         0 1102.8  47.7   8   8     3e-42   3.7e-41  130.5   0.1   788   866  1042  1120  1034  1120 0.97 -
+#
+# Program:         hmmsearch
+# Version:         3.1b2 (February 2015)
+# Pipeline mode:   SEARCH
+# Query file:      /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/mammalia_odb10/hmms/40114at40674.hmm
+# Target file:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri/GCA_922984935.2-mammalia_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_mammalia_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas
+# Option settings: hmmsearch --domtblout /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri/GCA_922984935.2-mammalia_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_mammalia_odb10/hmmer_output/initial_run_results/40114at40674.out --cpu 1 /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/mammalia_odb10/hmms/40114at40674.hmm /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri/GCA_922984935.2-mammalia_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_mammalia_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas 
+# Current dir:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri
+# Date:            Wed Jan 29 16:38:32 2025
+# [ok]

@@ -1,0 +1,15 @@
+#                                                                                                              --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name                                          accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#                                  ------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+161369at9347_29073_0:004b6d|OV277441.1:717718-719798|- -            272 161369at9347         -            202    1e-125  407.0  11.0   1   2     1e-49   1.7e-48  154.9   0.3    14    86    47   119    40   133 0.92 -
+161369at9347_29073_0:004b6d|OV277441.1:717718-719798|- -            272 161369at9347         -            202    1e-125  407.0  11.0   2   2   1.5e-80   2.5e-79  255.6   5.4    81   202   151   272   141   272 0.99 -
+#
+# Program:         hmmsearch
+# Version:         3.1b2 (February 2015)
+# Pipeline mode:   SEARCH
+# Query file:      /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.tQSpETCjAn/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/eutheria_odb10/hmms/161369at9347.hmm
+# Target file:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.tQSpETCjAn/GCA_922984935.2-eutheria_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_eutheria_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas
+# Option settings: hmmsearch --domtblout /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.tQSpETCjAn/GCA_922984935.2-eutheria_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_eutheria_odb10/hmmer_output/initial_run_results/161369at9347.out --cpu 1 /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.tQSpETCjAn/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/eutheria_odb10/hmms/161369at9347.hmm /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.tQSpETCjAn/GCA_922984935.2-eutheria_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_eutheria_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas 
+# Current dir:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.tQSpETCjAn
+# Date:            Wed Jan 29 16:39:17 2025
+# [ok]

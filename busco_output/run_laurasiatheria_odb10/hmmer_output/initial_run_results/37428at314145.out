@@ -1,0 +1,18 @@
+#                                                                                                                 --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name                                             accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#                                     ------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+37428at314145_34882_0:001933|OV277441.1:1197207-1206280|- -            890 37428at314145        -            495  3.7e-237  777.4  31.4   1   5    1e-145  1.3e-144  472.1   6.4     1   256    38   330    38   336 0.93 -
+37428at314145_34882_0:001933|OV277441.1:1197207-1206280|- -            890 37428at314145        -            495  3.7e-237  777.4  31.4   2   5     1e-06   1.3e-05   13.6   0.2   257   277   479   499   474   502 0.88 -
+37428at314145_34882_0:001933|OV277441.1:1197207-1206280|- -            890 37428at314145        -            495  3.7e-237  777.4  31.4   3   5   1.2e-36   1.6e-35  112.3   2.0   275   341   566   632   562   633 0.98 -
+37428at314145_34882_0:001933|OV277441.1:1197207-1206280|- -            890 37428at314145        -            495  3.7e-237  777.4  31.4   4   5   8.5e-54   1.1e-52  168.9   0.5   368   465   633   732   632   740 0.96 -
+37428at314145_34882_0:001933|OV277441.1:1197207-1206280|- -            890 37428at314145        -            495  3.7e-237  777.4  31.4   5   5   3.8e-09   4.9e-08   21.6   0.1   463   495   840   879   824   879 0.81 -
+#
+# Program:         hmmsearch
+# Version:         3.1b2 (February 2015)
+# Pipeline mode:   SEARCH
+# Query file:      /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/laurasiatheria_odb10/hmms/37428at314145.hmm
+# Target file:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT/GCA_922984935.2-laurasiatheria_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_laurasiatheria_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas
+# Option settings: hmmsearch --domtblout /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT/GCA_922984935.2-laurasiatheria_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_laurasiatheria_odb10/hmmer_output/initial_run_results/37428at314145.out --cpu 1 /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/laurasiatheria_odb10/hmms/37428at314145.hmm /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT/GCA_922984935.2-laurasiatheria_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_laurasiatheria_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas 
+# Current dir:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT
+# Date:            Wed Jan 29 16:39:17 2025
+# [ok]

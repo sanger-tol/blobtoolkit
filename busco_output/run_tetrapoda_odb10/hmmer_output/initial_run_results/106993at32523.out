@@ -1,0 +1,18 @@
+#                                                                                                                --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name                                            accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#                                    ------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+106993at32523_9668_0:0045c3|OV277441.1:1077036-1154532|+ -            823 106993at32523        -            632  7.2e-196  642.3  61.7   1   5   9.8e-37   1.1e-35  113.2   1.2     1   112     1   138     1   145 0.81 -
+106993at32523_9668_0:0045c3|OV277441.1:1077036-1154532|+ -            823 106993at32523        -            632  7.2e-196  642.3  61.7   2   5   1.1e-11   1.2e-10   30.4   0.1   108   158   183   235   175   241 0.87 -
+106993at32523_9668_0:0045c3|OV277441.1:1077036-1154532|+ -            823 106993at32523        -            632  7.2e-196  642.3  61.7   3   5    1e-126  1.1e-125  410.5  25.2   149   504   290   690   241   691 0.82 -
+106993at32523_9668_0:0045c3|OV277441.1:1077036-1154532|+ -            823 106993at32523        -            632  7.2e-196  642.3  61.7   4   5   4.9e-16   5.3e-15   44.8   2.5   503   530   723   750   718   759 0.92 -
+106993at32523_9668_0:0045c3|OV277441.1:1077036-1154532|+ -            823 106993at32523        -            632  7.2e-196  642.3  61.7   5   5   6.2e-19   6.8e-18   54.4   7.4   570   610   762   802   751   807 0.90 -
+#
+# Program:         hmmsearch
+# Version:         3.1b2 (February 2015)
+# Pipeline mode:   SEARCH
+# Query file:      /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.uE6Wbh1yNV/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/tetrapoda_odb10/hmms/106993at32523.hmm
+# Target file:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.uE6Wbh1yNV/GCA_922984935.2-tetrapoda_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_tetrapoda_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas
+# Option settings: hmmsearch --domtblout /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.uE6Wbh1yNV/GCA_922984935.2-tetrapoda_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_tetrapoda_odb10/hmmer_output/initial_run_results/106993at32523.out --cpu 1 /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.uE6Wbh1yNV/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/tetrapoda_odb10/hmms/106993at32523.hmm /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.uE6Wbh1yNV/GCA_922984935.2-tetrapoda_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_tetrapoda_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas 
+# Current dir:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.uE6Wbh1yNV
+# Date:            Wed Jan 29 16:40:48 2025
+# [ok]

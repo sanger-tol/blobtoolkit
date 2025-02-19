@@ -1,0 +1,13 @@
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+#
+# Program:         hmmsearch
+# Version:         3.1b2 (February 2015)
+# Pipeline mode:   SEARCH
+# Query file:      /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.wY2UcozmOg/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/metazoa_odb10/hmms/445031at33208.hmm
+# Target file:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.wY2UcozmOg/GCA_922984935.2-metazoa_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_metazoa_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas
+# Option settings: hmmsearch --domtblout /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.wY2UcozmOg/GCA_922984935.2-metazoa_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_metazoa_odb10/hmmer_output/initial_run_results/445031at33208.out --cpu 1 /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.wY2UcozmOg/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/metazoa_odb10/hmms/445031at33208.hmm /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.wY2UcozmOg/GCA_922984935.2-metazoa_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_metazoa_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas 
+# Current dir:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.wY2UcozmOg
+# Date:            Wed Jan 29 16:40:05 2025
+# [ok]

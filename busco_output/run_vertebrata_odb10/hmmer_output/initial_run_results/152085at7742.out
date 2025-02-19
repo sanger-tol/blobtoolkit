@@ -1,0 +1,18 @@
+#                                                                                                               --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name                                           accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#                                   ------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+152085at7742_9668_0:0045c3|OV277441.1:1077036-1154532|+ -            823 152085at7742         -            607  1.1e-132  434.1  57.7   1   5   8.2e-22   1.4e-20   63.9   0.0     1    93     1   108     1   137 0.73 -
+152085at7742_9668_0:0045c3|OV277441.1:1077036-1154532|+ -            823 152085at7742         -            607  1.1e-132  434.1  57.7   2   5    0.0006      0.01    4.9   0.0    85   140   193   249   172   259 0.73 -
+152085at7742_9668_0:0045c3|OV277441.1:1077036-1154532|+ -            823 152085at7742         -            607  1.1e-132  434.1  57.7   3   5     4e-83   6.8e-82  266.4  32.9   131   453   292   690   282   691 0.74 -
+152085at7742_9668_0:0045c3|OV277441.1:1077036-1154532|+ -            823 152085at7742         -            607  1.1e-132  434.1  57.7   4   5   5.6e-17   9.6e-16   47.9   3.1   453   479   724   750   722   758 0.92 -
+152085at7742_9668_0:0045c3|OV277441.1:1077036-1154532|+ -            823 152085at7742         -            607  1.1e-132  434.1  57.7   5   5   2.9e-18     5e-17   52.1   6.5   513   567   758   811   751   821 0.78 -
+#
+# Program:         hmmsearch
+# Version:         3.1b2 (February 2015)
+# Pipeline mode:   SEARCH
+# Query file:      /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/vertebrata_odb10/hmms/152085at7742.hmm
+# Target file:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9/GCA_922984935.2-vertebrata_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_vertebrata_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas
+# Option settings: hmmsearch --domtblout /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9/GCA_922984935.2-vertebrata_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_vertebrata_odb10/hmmer_output/initial_run_results/152085at7742.out --cpu 1 /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/vertebrata_odb10/hmms/152085at7742.hmm /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9/GCA_922984935.2-vertebrata_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_vertebrata_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas 
+# Current dir:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9
+# Date:            Wed Jan 29 16:40:05 2025
+# [ok]

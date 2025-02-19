@@ -1,0 +1,17 @@
+#                                                                                                              --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name                                          accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#                                  ------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+42479at314145_9691_0:0047a8|OV277441.1:462852-467097|+ -            755 42479at314145        -            539  1.6e-227  745.9  37.4   1   4     8e-91     1e-89  291.0   0.9     6   189    32   239    28   246 0.90 -
+42479at314145_9691_0:0047a8|OV277441.1:462852-467097|+ -            755 42479at314145        -            539  1.6e-227  745.9  37.4   2   4    0.0077       0.1    0.7   0.2   189   201   268   280   265   288 0.84 -
+42479at314145_9691_0:0047a8|OV277441.1:462852-467097|+ -            755 42479at314145        -            539  1.6e-227  745.9  37.4   3   4   3.6e-59   4.7e-58  186.6   6.4   198   309   307   423   300   429 0.93 -
+42479at314145_9691_0:0047a8|OV277441.1:462852-467097|+ -            755 42479at314145        -            539  1.6e-227  745.9  37.4   4   4   1.6e-87     2e-86  280.2  10.0   347   539   569   753   565   753 0.96 -
+#
+# Program:         hmmsearch
+# Version:         3.1b2 (February 2015)
+# Pipeline mode:   SEARCH
+# Query file:      /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/laurasiatheria_odb10/hmms/42479at314145.hmm
+# Target file:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT/GCA_922984935.2-laurasiatheria_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_laurasiatheria_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas
+# Option settings: hmmsearch --domtblout /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT/GCA_922984935.2-laurasiatheria_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_laurasiatheria_odb10/hmmer_output/initial_run_results/42479at314145.out --cpu 1 /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/laurasiatheria_odb10/hmms/42479at314145.hmm /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT/GCA_922984935.2-laurasiatheria_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_laurasiatheria_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas 
+# Current dir:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.Zwa1bNzYBT
+# Date:            Wed Jan 29 16:39:17 2025
+# [ok]

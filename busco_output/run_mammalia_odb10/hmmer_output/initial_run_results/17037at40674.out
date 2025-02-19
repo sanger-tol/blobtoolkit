@@ -1,0 +1,15 @@
+#                                                                                                                --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name                                            accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#                                    ------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+17037at40674_29088_0:002177|OV277441.1:2672715-2721895|- -           1212 17037at40674         -           1110         0 2019.5   6.6   1   2  2.4e-273  2.9e-272  895.6   0.8    10   453    38   515    12   521 0.93 -
+17037at40674_29088_0:002177|OV277441.1:2672715-2721895|- -           1212 17037at40674         -           1110         0 2019.5   6.6   2   2         0         0 1127.3   0.6   498  1110   521  1210   516  1210 0.93 -
+#
+# Program:         hmmsearch
+# Version:         3.1b2 (February 2015)
+# Pipeline mode:   SEARCH
+# Query file:      /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/mammalia_odb10/hmms/17037at40674.hmm
+# Target file:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri/GCA_922984935.2-mammalia_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_mammalia_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas
+# Option settings: hmmsearch --domtblout /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri/GCA_922984935.2-mammalia_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_mammalia_odb10/hmmer_output/initial_run_results/17037at40674.out --cpu 1 /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/mammalia_odb10/hmms/17037at40674.hmm /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri/GCA_922984935.2-mammalia_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_mammalia_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas 
+# Current dir:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.MjndZRxkri
+# Date:            Wed Jan 29 16:38:32 2025
+# [ok]

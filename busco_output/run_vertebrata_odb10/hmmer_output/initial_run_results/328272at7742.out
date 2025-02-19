@@ -1,0 +1,19 @@
+#                                                                                                              --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name                                          accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#                                  ------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+328272at7742_29073_0:004b6d|OV277441.1:717718-719798|- -            272 328272at7742         -            181   1.8e-67  216.7  14.4   1   2   1.1e-41   9.6e-41  129.6   0.0    37   110    45   119    28   130 0.89 -
+328272at7742_29073_0:004b6d|OV277441.1:717718-719798|- -            272 328272at7742         -            181   1.8e-67  216.7  14.4   2   2   1.7e-27   1.4e-26   83.5  11.6   106   176   152   243   148   262 0.89 -
+120131at7742_32536_0:000011|OV277441.1:713095-718416|- -            914 328272at7742         -            181   5.3e-64  205.4  17.4   1   4   1.3e-40   1.1e-39  126.1   0.1    39   110     8    80     1    91 0.92 -
+120131at7742_32536_0:000011|OV277441.1:713095-718416|- -            914 328272at7742         -            181   5.3e-64  205.4  17.4   2   4   4.6e-29   3.9e-28   88.6   3.6   106   176   113   204   109   209 0.88 -
+120131at7742_32536_0:000011|OV277441.1:713095-718416|- -            914 328272at7742         -            181   5.3e-64  205.4  17.4   3   4     0.063      0.54    0.1   0.1   160   180   202   222   200   223 0.90 -
+120131at7742_32536_0:000011|OV277441.1:713095-718416|- -            914 328272at7742         -            181   5.3e-64  205.4  17.4   4   4      0.63       5.4   -3.1   0.6   132   161   654   684   649   688 0.80 -
+#
+# Program:         hmmsearch
+# Version:         3.1b2 (February 2015)
+# Pipeline mode:   SEARCH
+# Query file:      /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/vertebrata_odb10/hmms/328272at7742.hmm
+# Target file:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9/GCA_922984935.2-vertebrata_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_vertebrata_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas
+# Option settings: hmmsearch --domtblout /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9/GCA_922984935.2-vertebrata_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_vertebrata_odb10/hmmer_output/initial_run_results/328272at7742.out --cpu 1 /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9/blobtoolkit.GCA_922984935.2.2023-08-03/lineages/vertebrata_odb10/hmms/328272at7742.hmm /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9/GCA_922984935.2-vertebrata_odb10-busco/GCA_922984935.2.subset.phiXspike.fasta/run_vertebrata_odb10/metaeuk_output/initial_results/GCA_922984935.2.subset.phiXspike.fasta.modified.fas 
+# Current dir:     /var/folders/8l/k3tystcs0wq_kgx6py_rcv640000gq/T/nxf.61LHJsNYh9
+# Date:            Wed Jan 29 16:40:05 2025
+# [ok]

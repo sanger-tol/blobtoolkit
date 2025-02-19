@@ -1,0 +1,19 @@
+# BUSCO version is: 5.7.1 
+# The lineage dataset is: carnivora_odb10 (Creation date: 2023-08-03, number of genomes: 12, number of BUSCOs: 15)
+# Busco id	Status	Sequence	Gene Start	Gene End	Strand	Score	Length	OrthoDB url	Description
+1295at33554	Complete	OV277441.1	475481	483022	+	2268.3	1125	https://www.orthodb.org/v10?query=1295at33554	cleavage and polyadenylation specificity factor subunit 1
+1892at33554	Complete	OV277441.1	2426297	2493432	+	1801.3	1028	https://www.orthodb.org/v10?query=1892at33554	maestro heat-like repeat family member 5
+5655at33554	Missing
+5955at33554	Missing
+11864at33554	Complete	OV277441.1	522548	525504	+	662.1	397	https://www.orthodb.org/v10?query=11864at33554	F-box/LRR-repeat protein 6 isoform X1
+12001at33554	Complete	OV277441.1	582322	562773	-	693.7	406	https://www.orthodb.org/v10?query=12001at33554	heat shock factor protein 1
+13091at33554	Complete	OV277441.1	1068754	1065698	-	451.6	314	https://www.orthodb.org/v10?query=13091at33554	gasdermin-D
+14624at33554	Missing
+16346at33554	Complete	OV277441.1	1021366	1025358	+	405.1	213	https://www.orthodb.org/v10?query=16346at33554	Tissue specific transplantation antigen P35B
+19220at33554	Missing
+20774at33554	Complete	OV277441.1	166783	164737	-	465.3	210	https://www.orthodb.org/v10?query=20774at33554	Ribosomal protein L8
+25207at33554	Complete	OV277441.1	1588397	1582483	-	215.3	117	https://www.orthodb.org/v10?query=25207at33554	protein THEM6
+26386at33554	Missing
+26681at33554	Duplicated	OV277441.1	1486277	1480716	-	187.5	115	https://www.orthodb.org/v10?query=26681at33554	glycosyl-phosphatidylinositol-anchored molecule-like protein
+26681at33554	Duplicated	OV277441.1	1447198	1452533	+	187.0	115	https://www.orthodb.org/v10?query=26681at33554	glycosyl-phosphatidylinositol-anchored molecule-like protein
+27402at33554	Complete	OV277441.1	1295700	1297183	+	260.8	116	https://www.orthodb.org/v10?query=27402at33554	Lymphocyte antigen 6 family member H
