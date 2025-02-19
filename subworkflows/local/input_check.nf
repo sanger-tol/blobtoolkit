@@ -132,8 +132,6 @@ workflow INPUT_CHECK {
         ch_parsed_busco = Channel.empty()
     }
 
-    // View the parsed channel
-    ch_parsed_busco.view()
 
     GENERATE_CONFIG (
         fasta,
@@ -145,6 +143,7 @@ workflow INPUT_CHECK {
         ch_databases.blastx,
         ch_databases.blastn,
         ch_databases.taxdump,
+        ch_parsed_busco.map { meta, path -> [meta, path] }.groupTuple()
     )
     ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions.first())
 

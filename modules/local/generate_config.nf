@@ -15,6 +15,7 @@ process GENERATE_CONFIG {
     tuple val(meta3), path(blastx, stageAs: 'blastx/*')
     tuple val(meta4), path(blastn, stageAs: 'blastn/*')
     tuple val(meta5), path(taxdump)
+    tuple val(busco_meta), path(busco_output)
 
     output:
     tuple val(meta), path("*.yaml")          , emit: yaml
@@ -32,6 +33,7 @@ process GENERATE_CONFIG {
     def busco_param = busco_lin ? "--busco '${busco_lin}'" : ""
     def accession_params = params.accession ? "--accession ${params.accession}" : ""
     def input_reads = reads.collect{"--read_id ${it[0].id} --read_type ${it[0].datatype} --read_layout ${it[0].layout} --read_path ${it[1]}"}.join(' ')
+    def busco_output_param = "--busco_output ${busco_output}"
     """
     generate_config.py \\
         --fasta $fasta \\
@@ -45,6 +47,7 @@ process GENERATE_CONFIG {
         --blastx ${blastx} \\
         --blastn ${blastn} \\
         --taxdump ${taxdump} \\
+        $busco_output_param \\
         --output_prefix ${prefix}
 
     cat <<-END_VERSIONS > versions.yml
