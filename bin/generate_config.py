@@ -47,7 +47,7 @@ def parse_args(args=None):
     parser.add_argument("--blastx", help="Path to the blastx database", required=True)
     parser.add_argument("--blastn", help="Path to the blastn database", required=True)
     parser.add_argument("--taxdump", help="Path to the taxonomy database", required=True)
-    parser.add_argument("--busco_output", action="append", help="Path to BUSCO output directory", required=True)
+    parser.add_argument("--busco_output", action="append", help="Path to BUSCO output directory", required=False)
     parser.add_argument("--version", action="version", version="%(prog)s 2.0")
     return parser.parse_args(args)
 
@@ -337,7 +337,7 @@ def main(args=None):
     taxon_info = fetch_taxon_info(args.taxon_query)
     classification = get_classification(taxon_info)
 
-    precomputed_busco = [os.path.basename(path).replace("run_", "") for path in args.busco_output]
+    precomputed_busco = [os.path.basename(path).replace("run_", "") for path in (args.busco_output or [])]
     odb_arr = get_odb(taxon_info, args.lineage_tax_ids, args.busco, precomputed_busco)
     taxon_id = adjust_taxon_id(args.nt, taxon_info)
 

@@ -143,7 +143,7 @@ workflow INPUT_CHECK {
         ch_databases.blastx,
         ch_databases.blastn,
         ch_databases.taxdump,
-        ch_parsed_busco.map { meta, path -> [meta, path] }.groupTuple()
+        ch_parsed_busco.toList()
     )
     ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions.first())
 
@@ -178,6 +178,16 @@ workflow INPUT_CHECK {
     ch_parsed_csv.busco_lineage
     | collect
     | set { ch_busco_lineages }
+    ch_busco_lineages.view()
+    ch_parsed_busco.view()
+
+    // Remove any invalid lineages from busco_outputs
+    ch_busco_lineages_list = ch_busco_lineages.flatten()
+    ch_parsed_busco_filtered = ch_parsed_busco
+        .filter { meta, path ->
+            ch_busco_lineages.contains(meta.lineage)
+        }
+    ch_parsed_busco_filtered = ch_parsed_busco_filtered.ifEmpty { Channel.empty() }
 
     emit:
     reads                                                        // channel: [ val(meta), path(datafile) ]
@@ -189,7 +199,7 @@ workflow INPUT_CHECK {
     blastn = ch_databases.blastn                                 // channel: [ val(meta), path(blastn_db) ]
     blastp = ch_databases.blastp                                 // channel: [ val(meta), path(blastp_db) ]
     blastx = ch_databases.blastx                                 // channel: [ val(meta), path(blastx_db) ]
-    busco_output = Channel.empty()                     // channel: [ val(meta), path(busco_output) ]
+    busco_output = ch_parsed_busco_filtered                      // channel: [ val(meta), path(busco_output) ]
     busco_db = ch_databases.busco.map { _, db_path -> db_path }  // channel: [ path(busco_db) ]
     taxdump = ch_databases.taxdump.map { _, db_path -> db_path } // channel: [ path(taxdump) ]
     versions = ch_versions                                       // channel: [ versions.yml ]
