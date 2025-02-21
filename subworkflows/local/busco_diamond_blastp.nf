@@ -70,7 +70,7 @@ workflow BUSCO_DIAMOND {
                 meta,
                 [
                     batch_summary: file("${busco_dir}/short_summary.txt"),
-                    short_summaries_txt: file("${busco_dir}/short_summary.txt"),
+                    short_summaries_txt: [],
                     short_summaries_json: file("${busco_dir}/short_summary.json"),
                     full_table: file("${busco_dir}/full_table.tsv"),
                     missing_busco_list: file("${busco_dir}/missing_busco_list.tsv"),
@@ -81,6 +81,7 @@ workflow BUSCO_DIAMOND {
                 ]
             ]
         }
+
     ch_formatted_precomputed.view()
 
     //
@@ -127,77 +128,82 @@ workflow BUSCO_DIAMOND {
     // Tidy up the BUSCO output directories before publication
     //
     RESTRUCTUREBUSCODIR(
-        ch_formatted_precomputed
+        ch_all_busco_outputs
             .map { meta, outputs ->
                 [
                     meta,
                     meta.lineage_name,
                     outputs.batch_summary,
-                    outputs.short_summaries_txt,
-                    outputs.short_summaries_json,
-                    outputs.busco_dir
+                    outputs.short_summaries_txt ?: [],
+                    outputs.short_summaries_json ?: [],
+                    outputs.full_table ?: [],
+                    outputs.missing_busco_list ?: [],
+                    outputs.seq_dir ? "${outputs.seq_dir}/single_copy_busco_sequences" : [],
+                    outputs.seq_dir ? "${outputs.seq_dir}/multi_copy_busco_sequences" : [],
+                    outputs.seq_dir ? "${outputs.seq_dir}/fragmented_busco_sequences" : [],
+                    outputs.busco_dir ? "${outputs.busco_dir}/hmmer_output" : []
                 ]
             }
     )
-    ch_versions = ch_versions.mix(RESTRUCTUREBUSCODIR.out.versions.first())
 
+    //
+    // Select input for BLOBTOOLKIT_EXTRACTBUSCOS
+    //
+    ch_all_busco_outputs
+        .filter { meta, outputs -> basal_lineages.contains(meta.lineage_name) }
+        .map { meta, outputs -> [meta, outputs.seq_dir] }
+        .collect { it[1] }
+        .set { ch_basal_buscos }
 
-    // //
-    // // Select input for BLOBTOOLKIT_EXTRACTBUSCOS
-    // //
-    // ch_formatted_precomputed.seq_dir
-    // | filter { meta, seq -> basal_lineages.contains(meta.lineage_name) }
-    // | map { meta, seq -> seq }
-    // | collect
-    // | set { ch_basal_buscos }
+    // Extract BUSCO genes from the basal lineages
+    BLOBTOOLKIT_EXTRACTBUSCOS ( fasta, ch_basal_buscos )
+    ch_versions = ch_versions.mix ( BLOBTOOLKIT_EXTRACTBUSCOS.out.versions.first() )
 
+    //
+    // Align BUSCO genes against the BLASTp database
+    //
+    BLOBTOOLKIT_EXTRACTBUSCOS.out.genes
+        .filter { it[1].size() > 140 }
+        .set { ch_busco_genes }
 
-    // // Extract BUSCO genes from the basal lineages
-    // BLOBTOOLKIT_EXTRACTBUSCOS ( fasta, ch_basal_buscos )
-    // ch_versions = ch_versions.mix ( BLOBTOOLKIT_EXTRACTBUSCOS.out.versions.first() )
+    // Hardcoded to match the format expected by blobtools
+    def outext = 'txt'
+    def cols   = 'qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore'
+    DIAMOND_BLASTP ( ch_busco_genes, blastp, outext, cols, taxon_id )
+    ch_versions = ch_versions.mix ( DIAMOND_BLASTP.out.versions.first() )
 
+    // Order BUSCO results according to the lineage index
+    ch_all_busco_outputs
+        .map { meta, outputs ->
+            [
+                meta.findAll { it.key != "lineage_name" && it.key != "lineage_index" },
+                [outputs.full_table, meta.lineage_index]
+            ]
+        }
+        .groupTuple()
+        .map { meta, table_positions ->
+            [
+                meta,
+                table_positions.sort { a, b -> a[1] <=> b[1] }.collect { table, lineage_index -> table }
+            ]
+        }
+        .set { ch_indexed_buscos }
 
-    // //
-    // // Align BUSCO genes against the BLASTp database
-    // //
-    // BLOBTOOLKIT_EXTRACTBUSCOS.out.genes
-    // | filter { it[1].size() > 140 }
-    // | set { ch_busco_genes }
+    // Select BUSCO results for taxonomically closest database
+    ch_indexed_buscos
+        .map { meta, tables -> [meta, tables[0]] }
+        .set { ch_first_table }
 
-    // // Hardcoded to match the format expected by blobtools
-    // def outext = 'txt'
-    // def cols   = 'qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore'
-    // DIAMOND_BLASTP ( ch_busco_genes, blastp, outext, cols, taxon_id )
-    // ch_versions = ch_versions.mix ( DIAMOND_BLASTP.out.versions.first() )
-
-
-    // // Order BUSCO results according to the lineage index
-    // ch_formatted_precomputed.full_table
-    // // 1. Restore the original meta map, and pull the index as an extra tuple element
-    // | map { meta, table -> [meta.findAll { it.key != "lineage_name" && it.key != "lineage_index" }, [table, meta.lineage_index]] }
-    // // 2. Turn to a single-element channel that has the (one and only) meta map, and all the pairs (table, lineage index) concatenated as a list
-    // | groupTuple()
-    // // 3. Sort the pairs and discard the index
-    // | map { meta, table_positions -> [ meta, table_positions.sort { a, b -> a[1] <=> b[1] } . collect { table, lineage_index -> table } ] }
-    // | set { ch_indexed_buscos }
-
-
-    // // Select BUSCO results for taxonomically closest database
-    // ch_indexed_buscos
-    // | map { meta, tables -> [meta, tables[0]] }
-    // | set { ch_first_table }
-
-
-    // // BUSCO results for MULTIQC
-    // ch_formatted_precomputed.short_summaries_txt
-    // | ifEmpty ( [ [], [] ] )
-    // | set { multiqc }
-
+    // BUSCO results for MULTIQC
+    ch_all_busco_outputs
+        .map { meta, outputs -> outputs.batch_summary }
+        .ifEmpty ( [ [], [] ] )
+        .set { multiqc }
 
     emit:
-    // first_table = ch_first_table          // channel: [ val(meta), path(full_table) ]
-    // all_tables  = ch_indexed_buscos       // channel: [ val(meta), path(full_tables) ]
-    // blastp_txt  = DIAMOND_BLASTP.out.txt  // channel: [ val(meta), path(txt) ]
-    // multiqc                               // channel: [ meta, summary ]
+    first_table = ch_first_table          // channel: [ val(meta), path(full_table) ]
+    all_tables  = ch_indexed_buscos       // channel: [ val(meta), path(full_tables) ]
+    blastp_txt  = DIAMOND_BLASTP.out.txt  // channel: [ val(meta), path(txt) ]
+    multiqc                               // channel: [ meta, summary ]
     versions    = ch_versions             // channel: [ versions.yml ]
 }

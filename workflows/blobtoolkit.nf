@@ -156,104 +156,104 @@ workflow BLOBTOOLKIT {
     )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
 
-    // //
-    // // SUBWORKFLOW: Diamond blastx search of assembly contigs against the UniProt reference proteomes
-    // //
-    // RUN_BLASTX (
-    //     PREPARE_GENOME.out.genome,
-    //     BUSCO_DIAMOND.out.first_table,
-    //     INPUT_CHECK.out.blastx,
-    //     INPUT_CHECK.out.taxon_id,
-    // )
-    // ch_versions = ch_versions.mix ( RUN_BLASTX.out.versions )
+    //
+    // SUBWORKFLOW: Diamond blastx search of assembly contigs against the UniProt reference proteomes
+    //
+    RUN_BLASTX (
+        PREPARE_GENOME.out.genome,
+        BUSCO_DIAMOND.out.first_table,
+        INPUT_CHECK.out.blastx,
+        INPUT_CHECK.out.taxon_id,
+    )
+    ch_versions = ch_versions.mix ( RUN_BLASTX.out.versions )
 
 
-    // //
-    // // SUBWORKFLOW: Run blastn search on sequences that had no blastx hits
-    // //
-    // RUN_BLASTN (
-    //     RUN_BLASTX.out.blastx_out,
-    //     PREPARE_GENOME.out.genome,
-    //     INPUT_CHECK.out.blastn,
-    //     INPUT_CHECK.out.taxon_id,
-    // )
+    //
+    // SUBWORKFLOW: Run blastn search on sequences that had no blastx hits
+    //
+    RUN_BLASTN (
+        RUN_BLASTX.out.blastx_out,
+        PREPARE_GENOME.out.genome,
+        INPUT_CHECK.out.blastn,
+        INPUT_CHECK.out.taxon_id,
+    )
 
-    // //
-    // // SUBWORKFLOW: Collate genome statistics by various window sizes
-    // //
-    // COLLATE_STATS (
-    //     BUSCO_DIAMOND.out.all_tables,
-    //     COVERAGE_STATS.out.bed,
-    //     COVERAGE_STATS.out.freq,
-    //     COVERAGE_STATS.out.mononuc,
-    //     COVERAGE_STATS.out.cov
-    // )
-    // ch_versions = ch_versions.mix ( COLLATE_STATS.out.versions )
+    //
+    // SUBWORKFLOW: Collate genome statistics by various window sizes
+    //
+    COLLATE_STATS (
+        BUSCO_DIAMOND.out.all_tables,
+        COVERAGE_STATS.out.bed,
+        COVERAGE_STATS.out.freq,
+        COVERAGE_STATS.out.mononuc,
+        COVERAGE_STATS.out.cov
+    )
+    ch_versions = ch_versions.mix ( COLLATE_STATS.out.versions )
 
-    // //
-    // // SUBWORKFLOW: Create BlobTools dataset
-    // //
-    // BLOBTOOLS (
-    //     INPUT_CHECK.out.config,
-    //     INPUT_CHECK.out.synonyms_tsv.ifEmpty([[],[]]),
-    //     INPUT_CHECK.out.categories_tsv.ifEmpty([[],[]]),
-    //     COLLATE_STATS.out.window_tsv,
-    //     BUSCO_DIAMOND.out.all_tables,
-    //     BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]),
-    //     RUN_BLASTX.out.blastx_out.ifEmpty([[],[]]),
-    //     RUN_BLASTN.out.blastn_out.ifEmpty([[],[]]),
-    //     INPUT_CHECK.out.taxdump
-    // )
-    // ch_versions = ch_versions.mix ( BLOBTOOLS.out.versions )
+    //
+    // SUBWORKFLOW: Create BlobTools dataset
+    //
+    BLOBTOOLS (
+        INPUT_CHECK.out.config,
+        INPUT_CHECK.out.synonyms_tsv.ifEmpty([[],[]]),
+        INPUT_CHECK.out.categories_tsv.ifEmpty([[],[]]),
+        COLLATE_STATS.out.window_tsv,
+        BUSCO_DIAMOND.out.all_tables,
+        BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]),
+        RUN_BLASTX.out.blastx_out.ifEmpty([[],[]]),
+        RUN_BLASTN.out.blastn_out.ifEmpty([[],[]]),
+        INPUT_CHECK.out.taxdump
+    )
+    ch_versions = ch_versions.mix ( BLOBTOOLS.out.versions )
 
-    // //
-    // // SUBWORKFLOW: Generate summary and static images
-    // //
-    // VIEW ( BLOBTOOLS.out.blobdir )
-    // ch_versions = ch_versions.mix(VIEW.out.versions)
+    //
+    // SUBWORKFLOW: Generate summary and static images
+    //
+    VIEW ( BLOBTOOLS.out.blobdir )
+    ch_versions = ch_versions.mix(VIEW.out.versions)
 
-    // //
-    // // MODULE: Combine different versions.yml
-    // //
-    // CUSTOM_DUMPSOFTWAREVERSIONS (
-    //     ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    // )
+    //
+    // MODULE: Combine different versions.yml
+    //
+    CUSTOM_DUMPSOFTWAREVERSIONS (
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    )
 
-    // //
-    // // SUBWORKFLOW: Finalise and publish the blobdir
-    // //
-    // FINALISE_BLOBDIR (
-    //     BLOBTOOLS.out.blobdir,
-    //     CUSTOM_DUMPSOFTWAREVERSIONS.out.yml,
-    //     VIEW.out.summary
-    // )
-    // // Don't update ch_versions because it's already been consumed by now
+    //
+    // SUBWORKFLOW: Finalise and publish the blobdir
+    //
+    FINALISE_BLOBDIR (
+        BLOBTOOLS.out.blobdir,
+        CUSTOM_DUMPSOFTWAREVERSIONS.out.yml,
+        VIEW.out.summary
+    )
+    // Don't update ch_versions because it's already been consumed by now
 
 
-    // //
-    // // MODULE: MultiQC
-    // //
-    // workflow_summary    = WorkflowBlobtoolkit.paramsSummaryMultiqc(workflow, summary_params)
-    // ch_workflow_summary = Channel.value(workflow_summary)
+    //
+    // MODULE: MultiQC
+    //
+    workflow_summary    = WorkflowBlobtoolkit.paramsSummaryMultiqc(workflow, summary_params)
+    ch_workflow_summary = Channel.value(workflow_summary)
 
-    // methods_description    = WorkflowBlobtoolkit.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
-    // ch_methods_description = Channel.value(methods_description)
+    methods_description    = WorkflowBlobtoolkit.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
+    ch_methods_description = Channel.value(methods_description)
 
-    // ch_multiqc_files = Channel.empty()
-    // ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    // ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-    // ch_multiqc_files = ch_multiqc_files.mix(BUSCO_DIAMOND.out.multiqc.collect{it[1]}.ifEmpty([]))
-    // ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    ch_multiqc_files = Channel.empty()
+    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
+    ch_multiqc_files = ch_multiqc_files.mix(BUSCO_DIAMOND.out.multiqc.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
 
-    // MULTIQC (
-    //     ch_multiqc_files.collect(),
-    //     ch_multiqc_config.toList(),
-    //     ch_multiqc_custom_config.toList(),
-    //     ch_multiqc_logo.toList(),
-    //     [],
-    //     []
-    // )
-    // multiqc_report = MULTIQC.out.report.toList()
+    MULTIQC (
+        ch_multiqc_files.collect(),
+        ch_multiqc_config.toList(),
+        ch_multiqc_custom_config.toList(),
+        ch_multiqc_logo.toList(),
+        [],
+        []
+    )
+    multiqc_report = MULTIQC.out.report.toList()
 }
 
 /*
