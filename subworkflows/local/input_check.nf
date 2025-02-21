@@ -178,8 +178,6 @@ workflow INPUT_CHECK {
     ch_parsed_csv.busco_lineage
     | collect
     | set { ch_busco_lineages }
-    ch_busco_lineages.view()
-    ch_parsed_busco.view()
 
     // Remove any invalid lineages from busco_outputs
     ch_busco_lineages_list = ch_busco_lineages.flatten()

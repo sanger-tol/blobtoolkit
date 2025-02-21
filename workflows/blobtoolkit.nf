@@ -126,34 +126,35 @@ workflow BLOBTOOLKIT {
     )
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
 
-    // //
-    // // SUBWORKFLOW: Optional read alignment
-    // //
-    // if ( params.align ) {
-    //     MINIMAP2_ALIGNMENT ( INPUT_CHECK.out.reads, PREPARE_GENOME.out.genome )
-    //     ch_versions = ch_versions.mix ( MINIMAP2_ALIGNMENT.out.versions )
-    //     ch_aligned = MINIMAP2_ALIGNMENT.out.aln
-    // } else {
-    //     ch_aligned = INPUT_CHECK.out.reads
-    // }
+    //
+    // SUBWORKFLOW: Optional read alignment
+    //
+    if ( params.align ) {
+        MINIMAP2_ALIGNMENT ( INPUT_CHECK.out.reads, PREPARE_GENOME.out.genome )
+        ch_versions = ch_versions.mix ( MINIMAP2_ALIGNMENT.out.versions )
+        ch_aligned = MINIMAP2_ALIGNMENT.out.aln
+    } else {
+        ch_aligned = INPUT_CHECK.out.reads
+    }
 
-    // //
-    // // SUBWORKFLOW: Calculate genome coverage and statistics
-    // //
-    // COVERAGE_STATS ( ch_aligned, PREPARE_GENOME.out.genome )
-    // ch_versions = ch_versions.mix ( COVERAGE_STATS.out.versions )
+    //
+    // SUBWORKFLOW: Calculate genome coverage and statistics
+    //
+    COVERAGE_STATS ( ch_aligned, PREPARE_GENOME.out.genome )
+    ch_versions = ch_versions.mix ( COVERAGE_STATS.out.versions )
 
-    // //
-    // // SUBWORKFLOW: Run BUSCO using lineages fetched from GoaT, then run diamond_blastp
-    // //
-    // BUSCO_DIAMOND (
-    //     PREPARE_GENOME.out.genome,
-    //     INPUT_CHECK.out.busco_lineages,
-    //     INPUT_CHECK.out.busco_db,
-    //     INPUT_CHECK.out.blastp,
-    //     INPUT_CHECK.out.taxon_id,
-    // )
-    // ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
+    //
+    // SUBWORKFLOW: Run BUSCO using lineages fetched from GoaT, then run diamond_blastp
+    //
+    BUSCO_DIAMOND (
+        PREPARE_GENOME.out.genome,
+        INPUT_CHECK.out.busco_lineages,
+        INPUT_CHECK.out.busco_db,
+        INPUT_CHECK.out.blastp,
+        INPUT_CHECK.out.taxon_id,
+        INPUT_CHECK.out.busco_output,
+    )
+    ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
 
     // //
     // // SUBWORKFLOW: Diamond blastx search of assembly contigs against the UniProt reference proteomes
