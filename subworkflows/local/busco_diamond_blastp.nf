@@ -40,18 +40,23 @@ workflow BUSCO_DIAMOND {
     | map { lineage_name, lineage_index, meta, genome -> [meta + [lineage_name: lineage_name, lineage_index: lineage_index], genome] }
     | set { ch_fasta_with_lineage }
 
+
     //
     // Format pre-computed outputs
     //
-    ch_busco_output = busco_output.ifEmpty([])
-        .map { meta, dir -> [meta.lineage, [meta, dir]] }
+    if (params.busco_output){
+        ch_busco_output = busco_output
+            .map { meta, dir -> [meta.lineage, [meta, dir]] }
+    }else{
+        ch_busco_output = Channel.empty()
+    }
 
     ch_combined = ch_fasta_with_lineage
         .map { meta, fasta -> [meta.lineage_name, [meta, fasta]] }
         .join(ch_busco_output, by: 0, remainder: true)
         .map { lineage, fasta_data, busco_data ->
             def (meta, fasta) = fasta_data
-            def busco_dir = busco_data ? busco_data[1] : null
+            def (busco_meta, busco_dir) = busco_data ?: [null, null]
             [meta + [busco_dir: busco_dir], fasta]
         }
 
@@ -61,28 +66,32 @@ workflow BUSCO_DIAMOND {
         to_compute: true
     }
 
-    // Format precomputed BUSCO outputs
-    ch_formatted_precomputed = ch_busco_to_run.precomputed
-        .map { meta, fasta ->
-            def busco_dir = file(meta.busco_dir)
-            def lineage = meta.lineage_name
-            [
-                meta,
-                [
-                    batch_summary: file("${busco_dir}/short_summary.txt"),
-                    short_summaries_txt: [],
-                    short_summaries_json: file("${busco_dir}/short_summary.json"),
-                    full_table: file("${busco_dir}/full_table.tsv"),
-                    missing_busco_list: file("${busco_dir}/missing_busco_list.tsv"),
-                    single_copy_proteins: file("${busco_dir}/single_copy_proteins.faa"),
-                    seq_dir: file("${busco_dir}/busco_sequences"),
-                    translated_dir: file("${busco_dir}/translated_proteins"),
-                    busco_dir: busco_dir
-                ]
-            ]
-        }
 
-    ch_formatted_precomputed.view()
+    // Format precomputed BUSCO outputs
+    if (ch_busco_to_run.precomputed) {
+        ch_formatted_precomputed = ch_busco_to_run.precomputed
+            .map { meta, fasta ->
+                def busco_dir = file(meta.busco_dir)
+                def lineage = meta.lineage_name
+                [
+                    meta,
+                    [
+                        batch_summary: file("${busco_dir}/short_summary.txt"),
+                        short_summaries_txt: [],
+                        short_summaries_json: file("${busco_dir}/short_summary.json"),
+                        full_table: file("${busco_dir}/full_table.tsv"),
+                        missing_busco_list: file("${busco_dir}/missing_busco_list.tsv"),
+                        single_copy_proteins: file("${busco_dir}/single_copy_proteins.faa"),
+                        seq_dir: file("${busco_dir}/busco_sequences"),
+                        translated_dir: file("${busco_dir}/translated_proteins"),
+                        busco_dir: busco_dir
+                    ]
+                ]
+            }
+
+    } else {
+        ch_formatted_precomputed = Channel.empty()
+    }
 
     //
     // Run BUSCO search

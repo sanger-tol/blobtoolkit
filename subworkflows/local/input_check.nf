@@ -185,7 +185,7 @@ workflow INPUT_CHECK {
         .filter { meta, path ->
             ch_busco_lineages.contains(meta.lineage)
         }
-    ch_parsed_busco_filtered = ch_parsed_busco_filtered.ifEmpty { Channel.empty() }
+    ch_parsed_busco_filtered = ch_parsed_busco_filtered.ifEmpty { Channel.value([]) }
 
     emit:
     reads                                                        // channel: [ val(meta), path(datafile) ]
