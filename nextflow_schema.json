@@ -106,7 +106,7 @@
             "type": "object",
             "fa_icon": "fas fa-database",
             "description": "Define the location and parameters to work with databases.",
-            "required": ["blastp", "blastx", "blastn", "lineage_tax_ids", "taxdump"],
+            "required": ["blastp", "blastx", "blastn", "lineage_tax_ids", "taxdump", "busco"],
             "properties": {
                 "busco": {
                     "type": "string",
