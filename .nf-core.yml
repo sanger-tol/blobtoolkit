@@ -36,6 +36,12 @@ lint:
   nextflow_config:
     - manifest.name
     - manifest.homePage
+    - params.max_cpus
+    - params.max_memory
+    - params.max_time
+    - params.show_hidden_params
+    - params.schema_ignore_params
+    - params.validationSchemaIgnoreParams
   template_strings: False
   merge_markers: False
 repository_type: pipeline
