@@ -13,6 +13,7 @@ lint:
     - lib/NfcoreTemplate.groovy
     - lib/Utils.groovy
     - lib/WorkflowMain.groovy
+    - lib/WorkflowBlobtoolkit.groovy
   files_unchanged:
     - LICENCE
     - lib/NfcoreTemplate.groovy
@@ -41,7 +42,11 @@ lint:
     - params.max_time
     - params.show_hidden_params
     - params.schema_ignore_params
-    - params.validationSchemaIgnoreParams
+    - validation.validationSchemaIgnoreParams
+    - validation.validationShowHiddenParam
+    - validation.validationFailUnrecognisedParams
+    - validation.validationLenientMode
+    - validation.validate_params
   template_strings: False
   merge_markers: False
 repository_type: pipeline
