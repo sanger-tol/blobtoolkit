@@ -22,7 +22,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | Dependency  | Old version       | New version     |
 | ----------- | ----------------- | --------------- |
 | blast       | 2.14.1 and 2.15.0 | only 2.15.0     |
-| blobtoolkit | 4.3.9             | 4.4.0           |
+| blobtoolkit | 4.3.9             | 4.4.4           |
 | busco       | 5.5.0             | 5.7.1           |
 | multiqc     | 1.20 and 1.21     | 1.20 and 1.25.1 |
 | samtools    | 1.18 and 1.19.2   | 1.20 and 1.21   |
