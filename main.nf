@@ -28,7 +28,7 @@ if (params.help) {
 }
 
 // Validate input parameters
-if (validation.validate_params) {
+if (params.validate_params) {
     validateParameters()
 }
 
