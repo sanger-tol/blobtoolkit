@@ -107,16 +107,18 @@ workflow INPUT_CHECK {
     | set { reads }
 
 
+    taxdump
+    | concat(blastn, blastp, blastx)
+    | set { db_paths }
+
     GENERATE_CONFIG (
         fasta,
         taxon,
         busco_lin,
+        ch_databases.blastn,
         lineage_tax_ids,
         reads.collect(flat: false).ifEmpty([]),
-        ch_databases.blastp,
-        ch_databases.blastx,
-        ch_databases.blastn,
-        ch_databases.taxdump,
+        db_paths.collect(flat: false),
     )
     ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions.first())
 
