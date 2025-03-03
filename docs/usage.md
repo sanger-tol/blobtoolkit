@@ -72,6 +72,8 @@ GCA_922984935.2_busco_output/
 └── run_vertebrata_odb10
 ```
 
+The pipeline minimally requires outputs for the 'basal' lineages (archaea, eukaryota, and bacteria) -- any of these which are not present in the pre-computed outputs will be automatically detected and run.
+
 ## Database parameters
 
 Configure access to your local databases with the `--busco`, `--blastp`, `--blastx`, `--blastn`, and `--taxdump` parameters.
