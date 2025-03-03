@@ -39,6 +39,11 @@ if (params.busco) {
 } else {
     ch_busco_db = Channel.value([])
 }
+if (params.busco_output) {
+    ch_busco_output = Channel.fromPath(params.busco_output).map { tuple([ "type": "busco_output"], it ) }
+} else {
+    ch_busco_output = Channel.value([])
+}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -115,6 +120,7 @@ workflow BLOBTOOLKIT {
         ch_blastn,
         ch_blastx,
         ch_blastp,
+        ch_busco_output,
         ch_busco_db,
         ch_taxdump,
     )
@@ -143,9 +149,10 @@ workflow BLOBTOOLKIT {
     BUSCO_DIAMOND (
         PREPARE_GENOME.out.genome,
         INPUT_CHECK.out.busco_lineages,
-        INPUT_CHECK.out.busco_db,
-        INPUT_CHECK.out.blastp,
+        INPUT_CHECK.out.busco_db.first(),
+        INPUT_CHECK.out.blastp.first(),
         INPUT_CHECK.out.taxon_id,
+        INPUT_CHECK.out.busco_output,
     )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
 
