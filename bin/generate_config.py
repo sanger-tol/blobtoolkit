@@ -122,7 +122,12 @@ def get_classification(taxon_info: TaxonInfo) -> typing.Dict[str, str]:
     return {r: ancestors[r] for r in RANKS if r in ancestors}
 
 
-def get_odb(taxon_info: TaxonInfo, lineage_tax_ids: str, requested_buscos: typing.Optional[str], pre_computed_buscos: typing.List[str]) -> typing.List[str]:
+def get_odb(
+    taxon_info: TaxonInfo,
+    lineage_tax_ids: str,
+    requested_buscos: typing.Optional[str],
+    pre_computed_buscos: typing.List[str],
+) -> typing.List[str]:
     # Read the mapping between the BUSCO lineages and their taxon_id
     with open(lineage_tax_ids) as file_in:
         lineage_tax_ids_dict: typing.Dict[int, str] = {}
