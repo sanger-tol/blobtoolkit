@@ -156,6 +156,15 @@ workflow INPUT_CHECK {
     | set { ch_busco_lineages }
 
 
+    //
+    // Get the BUSCO path if set
+    //
+    ch_databases.busco
+    | map { _, db_path -> db_path }
+    | ifEmpty( [] )
+    | first
+    | set { ch_busco_db }
+
     emit:
     reads                                   // channel: [ val(meta), path(datafile) ]
     config = GENERATE_CONFIG.out.yaml       // channel: [ val(meta), path(yaml) ]
@@ -166,7 +175,7 @@ workflow INPUT_CHECK {
     blastn = ch_databases.blastn            // channel: [ val(meta), path(blastn_db) ]
     blastp = ch_databases.blastp            // channel: [ val(meta), path(blastp_db) ]
     blastx = ch_databases.blastx            // channel: [ val(meta), path(blastx_db) ]
-    busco_db = ch_databases.busco.map { _, db_path -> db_path }           // channel: [ path(busco_db) ]
+    busco_db = ch_busco_db                  // channel: [ path(busco_db) ]
     taxdump = ch_databases.taxdump.map { _, db_path -> db_path }          // channel: [ path(taxdump) ]
     versions = ch_versions                  // channel: [ versions.yml ]
 }

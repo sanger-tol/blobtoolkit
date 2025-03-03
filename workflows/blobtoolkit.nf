@@ -35,7 +35,7 @@ if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.linea
 // Create channel for optional parameters
 if (params.busco_lineages) { ch_busco_lin = Channel.value(params.busco_lineages) } else { ch_busco_lin = Channel.value([]) }
 if (params.busco) {
-    ch_busco_db = Channel.fromPath(params.busco).first().map { tuple([ "type": "busco"], it ) }
+    ch_busco_db = Channel.fromPath(params.busco).map { tuple([ "type": "busco"], it ) }
 } else {
     ch_busco_db = Channel.empty()
 }
