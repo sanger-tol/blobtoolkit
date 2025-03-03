@@ -23,6 +23,14 @@ indent_size = unset
 [/assets/email*]
 indent_size = unset
 
+# ignore Readme
+[README.md]
+indent_style = unset
+
+# ignore python
+[*.{py}]
+indent_style = unset
+
 # To prevent errors for these test diamond databases
 [/assets/test*/*.dmnd]
 charset = unset
