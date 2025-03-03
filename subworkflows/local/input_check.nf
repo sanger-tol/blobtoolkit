@@ -109,6 +109,7 @@ workflow INPUT_CHECK {
 
     taxdump
     | concat(blastn, blastp, blastx)
+    | map {meta, file -> [meta, file.toUriString()]}
     | set { db_paths }
 
     GENERATE_CONFIG (
