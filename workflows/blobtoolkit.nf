@@ -37,7 +37,7 @@ if (params.busco_lineages) { ch_busco_lin = Channel.value(params.busco_lineages)
 if (params.busco) {
     ch_busco_db = Channel.fromPath(params.busco).first().map { tuple([ "type": "busco"], it ) }
 } else {
-    ch_busco_db = Channel.value([])
+    ch_busco_db = Channel.empty()
 }
 
 /*
