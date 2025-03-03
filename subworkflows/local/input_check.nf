@@ -172,9 +172,9 @@ workflow INPUT_CHECK {
     categories_tsv = GENERATE_CONFIG.out.categories_tsv // channel: [ val(meta), path(tsv) ]
     taxon_id = ch_taxon_id                  // channel: val(taxon_id)
     busco_lineages = ch_busco_lineages      // channel: val([busco_lin])
-    blastn = ch_databases.blastn            // channel: [ val(meta), path(blastn_db) ]
-    blastp = ch_databases.blastp            // channel: [ val(meta), path(blastp_db) ]
-    blastx = ch_databases.blastx            // channel: [ val(meta), path(blastx_db) ]
+    blastn = ch_databases.blastn.first()    // channel: [ val(meta), path(blastn_db) ]
+    blastp = ch_databases.blastp.first()    // channel: [ val(meta), path(blastp_db) ]
+    blastx = ch_databases.blastx.first()    // channel: [ val(meta), path(blastx_db) ]
     busco_db = ch_busco_db                  // channel: [ path(busco_db) ]
     taxdump = ch_databases.taxdump.map { _, db_path -> db_path }          // channel: [ path(taxdump) ]
     versions = ch_versions                  // channel: [ versions.yml ]
