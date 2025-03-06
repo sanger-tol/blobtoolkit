@@ -1,3 +1,4 @@
+bump_version: null
 lint:
   files_exist:
     - CODE_OF_CONDUCT.md
@@ -9,22 +10,40 @@ lint:
     - .github/workflows/awsfulltest.yml
     - conf/igenomes.config
   files_unchanged:
+    - LICENCE
+    - lib/NfcoreTemplate.groovy
     - CODE_OF_CONDUCT.md
+    - assets/sendmail_template.txt
+    - assets/email_template.html
+    - assets/email_template.txt
     - assets/nf-core-blobtoolkit_logo_light.png
     - docs/images/nf-core-blobtoolkit_logo_light.png
     - docs/images/nf-core-blobtoolkit_logo_dark.png
     - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - .github/workflows/linting.yml
+    - .github/workflows/branch.yml
+    - .github/CONTRIBUTING.md
+    - .github/workflows/linting_comment.yml
+  merge_markers: false
   multiqc_config:
     - report_comment
   nextflow_config:
     - manifest.name
     - manifest.homePage
-nf_core_version: 2.14.1
+  template_strings: false
+nf_core_version: 3.0.2
+org_path: null
 repository_type: pipeline
 template:
   author: priyanka-surana
   description: Quality assessment of genome assemblies
+  force: false
+  is_nfcore: false
   name: blobtoolkit
-  prefix: sanger-tol
-  skip:
+  org: sanger-tol
+  outdir: .
+  skip_features:
     - igenomes
+  version: 0.7.0
+update: null
