@@ -2,25 +2,21 @@
 // Check input samplesheet and get aligned read channels
 //
 
+include { fromSamplesheet } from 'plugin/nf-validation'
+
+
 include { UNTAR                     } from '../../modules/nf-core/untar/main'
 include { CAT_CAT                   } from '../../modules/nf-core/cat/cat/main'
 include { SAMTOOLS_FLAGSTAT         } from '../../modules/nf-core/samtools/flagstat/main'
-include { SAMPLESHEET_CHECK         } from '../../modules/local/samplesheet_check'
-include { FETCHNGSSAMPLESHEET_CHECK } from '../../modules/local/fetchngssamplesheet_check'
 include { GENERATE_CONFIG           } from '../../modules/local/generate_config'
 
 workflow INPUT_CHECK {
     take:
-    samplesheet // file: /path/to/samplesheet.csv
     fasta       // channel: [ meta, path(fasta) ]
     taxon       // channel: val(taxon)
     busco_lin   // channel: val([busco_lin])
     lineage_tax_ids        // channel: /path/to/lineage_tax_ids
-    blastn                  // channel: [ path(blastn_db) ]
-    blastp                  // channel: [ path(blastp_db) ]
-    blastx                  // channel: [ path(blastx_db) ]
-    busco_db                // channel: [ path(busco_db) ]
-    taxdump                 // channel: [ path(taxdump) ]
+    databases
 
     main:
     ch_versions = Channel.empty()
@@ -28,9 +24,6 @@ workflow INPUT_CHECK {
     //
     // SUBWORKFLOW: Decompress databases if needed
     //
-
-    // Join into single databases channel
-    databases = blastn.concat(blastp, blastx, busco_db, taxdump)
 
     // Check which need to be decompressed
     ch_dbs_for_untar = databases
@@ -67,16 +60,19 @@ workflow INPUT_CHECK {
     // SUBWORKFLOW: Process samplesheet
     //
     if ( params.fetchngs_samplesheet ) {
-        FETCHNGSSAMPLESHEET_CHECK ( samplesheet )
-            .csv
-            .splitCsv ( header:true, sep:',', quote:'"' )
+        Channel
+            .fromSamplesheet(
+                "input",
+                parameters_schema: "assets/parameters_schema_fetchngs_samplesheet.json",
+            )
+            .map {it[0]}
             .branch { row ->
                 paired: row.fastq_2
+                    // Reformat for CAT_CAT
                     [[id: row.run_accession, row:row], [row.fastq_1, row.fastq_2]]
                 not_paired: true
             }
             .set { reads_pairedness }
-        ch_versions = ch_versions.mix ( FETCHNGSSAMPLESHEET_CHECK.out.versions.first() )
 
         CAT_CAT ( reads_pairedness.paired )
         ch_versions = ch_versions.mix ( CAT_CAT.out.versions.first() )
@@ -88,12 +84,13 @@ workflow INPUT_CHECK {
         | set { read_files }
 
     } else {
-        SAMPLESHEET_CHECK ( samplesheet )
-            .csv
-            .splitCsv ( header:true, sep:',' )
-            .map { create_data_channels(it) }
+        Channel
+            .fromSamplesheet(
+                "input",
+                parameters_schema: "assets/parameters_schema_sangertol_samplesheet.json",
+            )
+            .map { check_data_channel(it) }
             .set { read_files }
-        ch_versions = ch_versions.mix ( SAMPLESHEET_CHECK.out.versions.first() )
     }
 
 
@@ -107,10 +104,12 @@ workflow INPUT_CHECK {
     | set { reads }
 
 
-    taxdump
-    | concat(blastn, blastp, blastx)
+    // Get the source paths of all the databases, except Busco which is not recorded in the blobDir meta.json
+    databases
+    | filter { meta, file -> meta.type != "busco" }
     | map {meta, file -> [meta, file.toUriString()]}
     | set { db_paths }
+
 
     GENERATE_CONFIG (
         fasta,
@@ -181,27 +180,17 @@ workflow INPUT_CHECK {
 }
 
 // Function to get list of [ meta, datafile ]
-def create_data_channels(LinkedHashMap row) {
-    // create meta map
-    def meta = [:]
-    meta.id         = row.sample
-    meta.datatype   = row.datatype
-    meta.layout     = row.library_layout
+def check_data_channel(meta, datafile) {
 
-    // add path(s) of the read file(s) to the meta map
-    def data_meta = []
-
-    if ( !params.align && !row.datafile.endsWith(".bam") && !row.datafile.endsWith(".cram") ) {
-        exit 1, "ERROR: Please check input samplesheet and pipeline parameters -> Data file is in FastA/FastQ format but --align is not set!\n${row.datafile}"
+    if ( !params.align && !datafile.endsWith(".bam") && !datafile.endsWith(".cram") ) {
+        exit 1, "ERROR: Please check input samplesheet and pipeline parameters -> Data file is in FastA/FastQ format but --align is not set!\n${datafile}"
     }
 
-    if ( !file(row.datafile).exists() ) {
-        exit 1, "ERROR: Please check input samplesheet -> Data file does not exist!\n${row.datafile}"
-    } else {
-        data_meta = [ meta, file(row.datafile) ]
+    if ( !file(datafile).exists() ) {
+        exit 1, "ERROR: Please check input samplesheet -> Data file does not exist!\n${datafile}"
     }
 
-    return data_meta
+    return [meta, datafile]
 }
 
 // Function to get list of [ meta, datafile ]
