@@ -2,7 +2,7 @@
 // Check input samplesheet and get aligned read channels
 //
 
-include { fromSamplesheet } from 'plugin/nf-validation'
+include { samplesheetToList         } from 'plugin/nf-schema'
 
 
 include { UNTAR                     } from '../../modules/nf-core/untar/main'
@@ -61,10 +61,7 @@ workflow INPUT_CHECK {
     //
     if ( params.fetchngs_samplesheet ) {
         Channel
-            .fromSamplesheet(
-                "input",
-                parameters_schema: "assets/parameters_schema_fetchngs_samplesheet.json",
-            )
+            .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_fetchngs_input.json"))
             .map {it[0]}
             .branch { row ->
                 paired: row.fastq_2
@@ -85,10 +82,7 @@ workflow INPUT_CHECK {
 
     } else {
         Channel
-            .fromSamplesheet(
-                "input",
-                parameters_schema: "assets/parameters_schema_sangertol_samplesheet.json",
-            )
+            .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
             .map { check_data_channel(it) }
             .set { read_files }
     }
