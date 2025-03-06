@@ -74,7 +74,7 @@ workflow PIPELINE_INITIALISATION {
     )
 
     if (params.fetchngs_samplesheet && !params.align) {
-        exit 1, '--align not specified, even though the input samplesheet is a nf-core/fetchngs one - i.e has fastq files!'
+        error('--align not specified, even though the input samplesheet is a nf-core/fetchngs one - i.e has fastq files!')
     }
 
     ch_fasta = Channel.value([ [ 'id': params.accession ?: file(params.fasta.replace(".gz", "")).baseName ], file(params.fasta) ])

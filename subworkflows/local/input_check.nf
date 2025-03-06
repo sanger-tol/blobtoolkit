@@ -183,11 +183,11 @@ workflow INPUT_CHECK {
 def check_data_channel(meta, datafile) {
 
     if ( !params.align && !datafile.endsWith(".bam") && !datafile.endsWith(".cram") ) {
-        exit 1, "ERROR: Please check input samplesheet and pipeline parameters -> Data file is in FastA/FastQ format but --align is not set!\n${datafile}"
+        error("ERROR: Please check input samplesheet and pipeline parameters -> Data file is in FastA/FastQ format but --align is not set!\n${datafile}")
     }
 
     if ( !file(datafile).exists() ) {
-        exit 1, "ERROR: Please check input samplesheet -> Data file does not exist!\n${datafile}"
+        error("ERROR: Please check input samplesheet -> Data file does not exist!\n${datafile}")
     }
 
     return [meta, datafile]
@@ -221,7 +221,7 @@ def create_data_channels_from_fetchngs(LinkedHashMap row) {
     def data_meta = []
 
     if ( !file(row.fastq_1).exists() ) {
-        exit 1, "ERROR: Please check input samplesheet -> Data file does not exist!\n${row.fastq_1}"
+        error("ERROR: Please check input samplesheet -> Data file does not exist!\n${row.fastq_1}")
     } else {
         data_meta = [ meta, file(row.fastq_1) ]
     }
