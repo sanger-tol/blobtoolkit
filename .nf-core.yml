@@ -31,6 +31,7 @@ lint:
     - manifest.homePage
   template_strings: False
   merge_markers: False
+nf_core_version: 2.14.1
 repository_type: pipeline
 template:
   author: priyanka-surana
