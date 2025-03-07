@@ -95,14 +95,16 @@ def fetch_taxon_info_from_goat(taxon_name: typing.Union[str, int]) -> TaxonInfo:
     return make_taxon_info_from_goat(body)
 
 
+# Using API, get the taxon_ids of the species and all parents
 def fetch_taxon_info_from_ncbi(taxon_name: typing.Union[str, int], with_lineage=True) -> typing.Optional[TaxonInfo]:
-    # Using API, get the taxon_ids of the species and all parents
+    # "/" has to be double encoded, e.g. "Gymnodinium sp. CCAP1117/9" -> "Gymnodinium%20sp.%20CCAP1117%252F9"
+    url_safe_taxon_name = urllib.parse.quote(str(taxon_name).replace("/", "%2F"))
     retry_strategy = urllib3.util.Retry(total=5, backoff_factor=0.1, status_forcelist=[429, 500, 502, 503, 504])
     adapter = requests.adapters.HTTPAdapter(max_retries=retry_strategy)
     session = requests.Session()
     session.mount("http://", adapter)
     session.mount("https://", adapter)
-    response = session.get(NCBI_TAXONOMY_API % taxon_name).json()
+    response = session.get(NCBI_TAXONOMY_API % url_safe_taxon_name).json()
     if "taxonomy" in response["taxonomy_nodes"][0]:
         body = response["taxonomy_nodes"][0]["taxonomy"]
         if with_lineage:
