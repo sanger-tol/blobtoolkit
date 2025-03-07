@@ -12,10 +12,11 @@ include { GENERATE_CONFIG           } from '../../modules/local/generate_config'
 
 workflow INPUT_CHECK {
     take:
-    fasta       // channel: [ meta, path(fasta) ]
-    taxon       // channel: val(taxon)
-    busco_lin   // channel: val([busco_lin])
-    lineage_tax_ids        // channel: /path/to/lineage_tax_ids
+    samplesheet     // channel: /path/to/samplesheet
+    fasta           // channel: [ meta, path(fasta) ]
+    taxon           // channel: val(taxon)
+    busco_lin       // channel: val([busco_lin])
+    lineage_tax_ids // channel: /path/to/lineage_tax_ids
     databases
 
     main:
@@ -61,7 +62,7 @@ workflow INPUT_CHECK {
     //
     if ( params.fetchngs_samplesheet ) {
         Channel
-            .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_fetchngs_input.json"))
+            .fromList(samplesheetToList(samplesheet, "assets/schema_fetchngs_input.json"))
             .map {it[0]}
             .branch { row ->
                 paired: row.fastq_2
@@ -82,7 +83,7 @@ workflow INPUT_CHECK {
 
     } else {
         Channel
-            .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
+            .fromList(samplesheetToList(samplesheet, "assets/schema_input.json"))
             .map { check_data_channel(it) }
             .set { read_files }
     }

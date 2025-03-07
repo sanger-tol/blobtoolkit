@@ -41,7 +41,6 @@ workflow BLOBTOOLKIT {
     take:
     ch_fasta
     ch_databases
-    ch_busco_lin
     main:
 
     ch_versions = Channel.empty()
@@ -56,10 +55,11 @@ workflow BLOBTOOLKIT {
     // SUBWORKFLOW: Check samplesheet and create channels for downstream analysis
     //
     INPUT_CHECK (
+        params.input,
         PREPARE_GENOME.out.genome,
-        Channel.value(params.taxon),        // FIXME
-        ch_busco_lin,
-        Channel.fromPath(params.lineage_tax_ids).first(),       // FIXME
+        params.taxon,
+        Channel.value(params.busco_lineages ?: []),
+        params.lineage_tax_ids,
         ch_databases,
     )
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )

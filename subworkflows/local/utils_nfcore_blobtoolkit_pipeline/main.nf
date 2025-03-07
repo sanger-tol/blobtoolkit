@@ -10,7 +10,6 @@
 
 include { UTILS_NFSCHEMA_PLUGIN     } from '../../nf-core/utils_nfschema_plugin'
 include { paramsSummaryMap          } from 'plugin/nf-schema'
-include { samplesheetToList         } from 'plugin/nf-schema'
 include { completionEmail           } from '../../nf-core/utils_nfcore_pipeline'
 include { completionSummary         } from '../../nf-core/utils_nfcore_pipeline'
 include { imNotification            } from '../../nf-core/utils_nfcore_pipeline'
@@ -31,7 +30,6 @@ workflow PIPELINE_INITIALISATION {
     monochrome_logs   // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
-    input             //  string: Path to input samplesheet
 
     main:
 
@@ -69,12 +67,6 @@ workflow PIPELINE_INITIALISATION {
 
     ch_fasta = Channel.value([ [ 'id': params.accession ?: file(params.fasta.replace(".gz", "")).baseName ], file(params.fasta) ])
 
-    if (params.busco_lineages) {
-        ch_busco_lin = Channel.value(params.busco_lineages)
-    } else {
-        ch_busco_lin = Channel.value([])
-    }
-
     Channel.empty()
         .concat( Channel.fromPath(params.blastn).map { tuple(["type": "blastn"], it) } )
         .concat( Channel.fromPath(params.blastx).map { tuple(["type": "blastx"], it) } )
@@ -87,7 +79,6 @@ workflow PIPELINE_INITIALISATION {
     versions    = ch_versions
     fasta       = ch_fasta
     databases   = ch_databases
-    busco_lin   = ch_busco_lin
 }
 
 /*

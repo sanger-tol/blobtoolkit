@@ -31,7 +31,6 @@ workflow SANGERTOL_BLOBTOOLKIT {
     take:
     fasta
     databases
-    busco_lin
 
     main:
 
@@ -41,7 +40,6 @@ workflow SANGERTOL_BLOBTOOLKIT {
     BLOBTOOLKIT (
         fasta,
         databases,
-        busco_lin,
     )
     emit:
     multiqc_report = BLOBTOOLKIT.out.multiqc_report // channel: /path/to/multiqc_report.html
@@ -64,7 +62,6 @@ workflow {
         params.monochrome_logs,
         args,
         params.outdir,
-        params.input
     )
 
     //
@@ -73,7 +70,6 @@ workflow {
     SANGERTOL_BLOBTOOLKIT (
         PIPELINE_INITIALISATION.out.fasta,
         PIPELINE_INITIALISATION.out.databases,
-        PIPELINE_INITIALISATION.out.busco_lin,
     )
     //
     // SUBWORKFLOW: Run completion tasks
