@@ -84,6 +84,13 @@
             "fastq_galaxy": {},
             "fastq_aspera": {}
         },
-        "required": ["run_accession", "instrument_platform", "instrument_model", "library_strategy", "library_layout", "fastq_1"]
+        "required": [
+            "run_accession",
+            "instrument_platform",
+            "instrument_model",
+            "library_strategy",
+            "library_layout",
+            "fastq_1"
+        ]
     }
 }
