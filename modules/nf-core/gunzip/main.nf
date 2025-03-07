@@ -24,6 +24,11 @@ process GUNZIP {
     def prefix      = task.ext.prefix ?: name
     gunzip          = prefix + ".$extension"
     """
+    set -e # Exit if a tool returns a non-zero status/exit code
+    set -u # Treat unset variables and parameters as an error
+    set -o pipefail # Returns the status of the last command to exit with a non-zero status or zero if all successfully execute
+    set -C # No clobber - prevent output redirection from overwriting files.
+
     # Not calling gunzip itself because it creates files
     # with the original group ownership rather than the
     # default one for that user / the work directory
