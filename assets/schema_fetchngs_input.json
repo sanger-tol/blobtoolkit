@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/sanger-tol/blobtoolkit/master/assets/schema_fetchngs_input.json",
+    "$id": "https://raw.githubusercontent.com/sanger-tol/blobtoolkit/main/assets/schema_fetchngs_input.json",
     "title": "sanger-tol/blobtoolkit pipeline - params.input schema for nf-core/fetchngs samplesheets",
     "description": "Schema for the file provided with params.input if it originates from a run of the nf-core/fetchngs pipeline",
     "type": "array",
