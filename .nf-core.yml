@@ -31,7 +31,7 @@ lint:
     - manifest.name
     - manifest.homePage
   template_strings: false
-nf_core_version: 3.1.2
+nf_core_version: 3.2.0
 repository_type: pipeline
 template:
   author: priyanka-surana
