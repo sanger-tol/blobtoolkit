@@ -8,7 +8,7 @@ These are the most common things requested on pull requests (PRs).
 
 Remember that PRs should be made against the dev branch, unless you're preparing a pipeline release.
 
-Learn more about contributing: [CONTRIBUTING.md](.github/CONTRIBUTING.md)
+Learn more about contributing: [CONTRIBUTING.md](https://github.com/sanger-tol/blobtoolkit/tree/main/.github/CONTRIBUTING.md)
 -->
 
 ## PR checklist

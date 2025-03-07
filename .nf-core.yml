@@ -1,4 +1,3 @@
-bump_version: null
 lint:
   files_exist:
     - CODE_OF_CONDUCT.md
@@ -31,9 +30,8 @@ lint:
   nextflow_config:
     - manifest.name
     - manifest.homePage
-  template_strings: False
-nf_core_version: 3.0.2
-org_path: sanger-tol
+  template_strings: false
+nf_core_version: 3.1.2
 repository_type: pipeline
 template:
   author: priyanka-surana
@@ -46,4 +44,3 @@ template:
   skip_features:
     - igenomes
   version: 0.7.0
-update: null
