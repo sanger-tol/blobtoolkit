@@ -65,6 +65,10 @@ workflow PIPELINE_INITIALISATION {
         error('--align not specified, even though the input samplesheet is a nf-core/fetchngs one - i.e has fastq files!')
     }
 
+    if (file(params.taxdump).isFile() && !params.taxdump.endsWith('.json') && !params.taxdump.endsWith('.tar.gz')) {
+        error('--taxdump can take either a JSON file, a tar.gz archive, or a directory')
+    }
+
     ch_fasta = Channel.value([ [ 'id': params.accession ?: file(params.fasta.replace(".gz", "")).baseName ], file(params.fasta) ])
 
     Channel.empty()

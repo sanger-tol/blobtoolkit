@@ -12,7 +12,7 @@ process BLOBTOOLKIT_CREATEBLOBDIR {
     tuple val(meta1), path(busco, stageAs: 'lineage??/*')
     tuple val(meta2), path(blastp)
     tuple val(meta3), path(yaml)
-    path(taxdump)
+    path(taxdump, stageAs: 'taxdump/taxdump.json')
 
     output:
     tuple val(meta), path(prefix), emit: blobdir
@@ -30,7 +30,7 @@ process BLOBTOOLKIT_CREATEBLOBDIR {
     blobtools replace \\
         --bedtsvdir windowstats \\
         --meta ${yaml} \\
-        --taxdump ${taxdump} \\
+        --taxdump \$(dirname ${taxdump}) \\
         --taxrule buscogenes \\
         ${busco_args} \\
         ${hits_blastp} \\
