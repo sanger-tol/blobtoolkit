@@ -76,8 +76,8 @@ workflow BUSCO_DIAMOND {
                 [
                     meta,
                     [
-                        batch_summary: file("${busco_dir}/short_summary.txt"),
-                        short_summaries_txt: [],
+                        batch_summary: [],
+                        short_summaries_txt: file("${busco_dir}/short_summary.txt"),
                         short_summaries_json: file("${busco_dir}/short_summary.json"),
                         full_table: file("${busco_dir}/full_table.tsv"),
                         missing_busco_list: file("${busco_dir}/missing_busco_list.tsv"),
@@ -142,7 +142,7 @@ workflow BUSCO_DIAMOND {
                 [
                     meta,
                     meta.lineage_name,
-                    outputs.batch_summary,
+                    outputs.batch_summary ?: [],
                     outputs.short_summaries_txt ?: [],
                     outputs.short_summaries_json ?: [],
                     outputs.full_table ?: [],
@@ -183,20 +183,23 @@ workflow BUSCO_DIAMOND {
 
     // Order BUSCO results according to the lineage index
     ch_all_busco_outputs
-        .map { meta, outputs ->
-            [
-                meta.findAll { it.key != "lineage_name" && it.key != "lineage_index" },
-                [outputs.full_table, meta.lineage_index]
-            ]
+        // 1. Extract the necessary information and create a consistent structure
+        | map { meta, outputs ->
+            def cleaned_meta = meta.findAll { it.key != "lineage_name" && it.key != "lineage_index" && it.key != "busco_dir" }
+            def full_table = outputs.full_table
+            def lineage_index = meta.lineage_index
+            [cleaned_meta, [full_table, lineage_index]]
         }
-        .groupTuple()
-        .map { meta, table_positions ->
+        // 2. Group by the cleaned meta information
+        | groupTuple(by: 0)
+        // 3. Sort the tables by lineage index and collect only the tables
+        | map { meta, table_positions ->
             [
                 meta,
-                table_positions.sort { a, b -> a[1] <=> b[1] }.collect { table, lineage_index -> table }
+                table_positions.sort { a, b -> a[1] <=> b[1] }.collect { it[0] }
             ]
         }
-        .set { ch_indexed_buscos }
+        | set { ch_indexed_buscos }
 
     // Select BUSCO results for taxonomically closest database
     ch_indexed_buscos
