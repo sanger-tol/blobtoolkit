@@ -23,7 +23,7 @@ process RESTRUCTUREBUSCODIR {
     """
     mkdir -p ${lineage}
 
-    cp --dereference ${batch_summary} ${lineage}/short_summary.tsv
+    [ -n "${batch_summary}" ] && cp --dereference ${batch_summary} ${lineage}/short_summary.tsv
     [ -n "${short_summary_txt}" ] && cp --dereference ${short_summary_txt} ${lineage}/short_summary.txt
     [ -n "${short_summary_json}" ] && cp --dereference ${short_summary_json} ${lineage}/short_summary.json
 
