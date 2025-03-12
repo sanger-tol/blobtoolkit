@@ -96,12 +96,12 @@ workflow BUSCO_DIAMOND {
     //
     // Run BUSCO search
     //
-    BUSCO_BUSCO(
-        ch_busco_to_run.to_compute,
-        'genome',
-        ch_busco_to_run.to_compute.map { it[0].lineage_name },
+    BUSCO (
+        ch_fasta_with_lineage,
+        "genome",
+        ch_fasta_with_lineage.map { it[0].lineage_name },
         busco_db,
-        []
+        [],
     )
     ch_versions = ch_versions.mix ( BUSCO_BUSCO.out.versions.first() )
 

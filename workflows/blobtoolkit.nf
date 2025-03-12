@@ -1,63 +1,5 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    PRINT PARAMS SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
-
-def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
-def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
-def summary_params = paramsSummaryMap(workflow)
-
-// Print parameter summary log to screen
-log.info logo + paramsSummaryLog(workflow) + citation
-
-WorkflowBlobtoolkit.initialise(params, log)
-
-// Add all file path parameters for the pipeline to the list below
-// Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta, params.taxdump, params.busco, params.blastp, params.blastx, params.lineage_tax_ids ]
-for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
-
-// Check mandatory parameters
-if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-if (params.fasta) { ch_fasta = Channel.value([ [ 'id': params.accession ?: file(params.fasta.replace(".gz", "")).baseName ], file(params.fasta) ]) } else { exit 1, 'Genome fasta file must be specified!' }
-if (params.taxon) { ch_taxon = Channel.value(params.taxon) } else { exit 1, 'NCBI Taxon ID not specified!' }
-if (params.blastp) { ch_blastp = Channel.fromPath(params.blastp).map { tuple(["type": "blastp"], it) } } else { exit 1, 'Diamond BLASTp database must be specified!' }
-if (params.blastx) { ch_blastx = Channel.fromPath(params.blastx).map { tuple(["type": "blastx"], it) } } else { exit 1, 'Diamond BLASTx database must be specified!' }
-if (params.blastn) { ch_blastn = Channel.fromPath(params.blastn).map { tuple(["type": "blastn"], it) } } else { exit 1, 'BLASTn database not specified!' }
-if (params.taxdump) { ch_taxdump = Channel.fromPath(params.taxdump).map { tuple(["type": "taxdump"], it) } } else { exit 1, 'NCBI Taxonomy database not specified!' }
-if (params.fetchngs_samplesheet && !params.align) { exit 1, '--align not specified, even though the input samplesheet is a nf-core/fetchngs one - i.e has fastq files!' }
-
-if (params.lineage_tax_ids) { ch_lineage_tax_ids = Channel.fromPath(params.lineage_tax_ids).first() } else { exit 1, 'Mapping BUSCO lineage <-> taxon_ids not specified' }
-
-// Create channel for optional parameters
-if (params.busco_lineages) { ch_busco_lin = Channel.value(params.busco_lineages) } else { ch_busco_lin = Channel.value([]) }
-if (params.busco) {
-    ch_busco_db = Channel.fromPath(params.busco).first().map { tuple([ "type": "busco"], it ) }
-} else {
-    ch_busco_db = Channel.value([])
-}
-if (params.busco_output) {
-    ch_busco_output = Channel.fromPath(params.busco_output).map { tuple([ "type": "busco_output"], it ) }
-} else {
-    ch_busco_output = Channel.value([])
-}
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    CONFIG FILES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
-ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
-ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT LOCAL MODULES/SUBWORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
@@ -82,12 +24,11 @@ include { FINALISE_BLOBDIR   } from '../subworkflows/local/finalise_blobdir'
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-
-//
-// MODULE: Installed directly from nf-core/modules
-//
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
+include { MULTIQC                } from '../modules/nf-core/multiqc/main'
+include { paramsSummaryMap       } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_blobtoolkit_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,13 +36,15 @@ include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// Info required for completion email and summary
-def multiqc_report = []
-
 workflow BLOBTOOLKIT {
 
-    ch_versions = Channel.empty()
+    take:
+    ch_fasta
+    ch_databases
+    main:
 
+    ch_versions = Channel.empty()
+    ch_multiqc_files = Channel.empty()
     //
     // SUBWORKFLOW: Prepare genome for downstream processing
     //
@@ -112,17 +55,12 @@ workflow BLOBTOOLKIT {
     // SUBWORKFLOW: Check samplesheet and create channels for downstream analysis
     //
     INPUT_CHECK (
-        ch_input,
+        params.input,
         PREPARE_GENOME.out.genome,
-        ch_taxon,
-        ch_busco_lin,
-        ch_lineage_tax_ids,
-        ch_blastn,
-        ch_blastx,
-        ch_blastp,
-        ch_busco_output,
-        ch_busco_db,
-        ch_taxdump,
+        params.taxon,
+        Channel.value(params.busco_lineages ?: []),
+        params.lineage_tax_ids,
+        ch_databases,
     )
     ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
 
@@ -213,18 +151,23 @@ workflow BLOBTOOLKIT {
     ch_versions = ch_versions.mix(VIEW.out.versions)
 
     //
-    // MODULE: Combine different versions.yml
+    // Collate and save software versions
     //
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
+    softwareVersionsToYAML(ch_versions)
+        .collectFile(
+            storeDir: "${params.outdir}/pipeline_info/blobtoolkit",
+            name:  'blobtoolkit_software_'  + 'mqc_'  + 'versions.yml',
+            sort: true,
+            newLine: true
+        ).set { ch_collated_versions }
+
 
     //
     // SUBWORKFLOW: Finalise and publish the blobdir
     //
     FINALISE_BLOBDIR (
         BLOBTOOLS.out.blobdir,
-        CUSTOM_DUMPSOFTWAREVERSIONS.out.yml,
+        ch_collated_versions,
         VIEW.out.summary
     )
     // Don't update ch_versions because it's already been consumed by now
@@ -233,17 +176,35 @@ workflow BLOBTOOLKIT {
     //
     // MODULE: MultiQC
     //
-    workflow_summary    = WorkflowBlobtoolkit.paramsSummaryMultiqc(workflow, summary_params)
-    ch_workflow_summary = Channel.value(workflow_summary)
+    ch_multiqc_config        = Channel.fromPath(
+        "$projectDir/assets/multiqc_config.yml", checkIfExists: true)
+    ch_multiqc_custom_config = params.multiqc_config ?
+        Channel.fromPath(params.multiqc_config, checkIfExists: true) :
+        Channel.empty()
+    ch_multiqc_logo          = params.multiqc_logo ?
+        Channel.fromPath(params.multiqc_logo, checkIfExists: true) :
+        Channel.empty()
 
-    methods_description    = WorkflowBlobtoolkit.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
-    ch_methods_description = Channel.value(methods_description)
+    summary_params      = paramsSummaryMap(
+        workflow, parameters_schema: "nextflow_schema.json")
+    ch_workflow_summary = Channel.value(paramsSummaryMultiqc(summary_params))
+    ch_multiqc_files = ch_multiqc_files.mix(
+        ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_multiqc_custom_methods_description = params.multiqc_methods_description ?
+        file(params.multiqc_methods_description, checkIfExists: true) :
+        file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
+    ch_methods_description                = Channel.value(
+        methodsDescriptionText(ch_multiqc_custom_methods_description))
 
-    ch_multiqc_files = Channel.empty()
-    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(BUSCO_DIAMOND.out.multiqc.collect{it[1]}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
+    ch_multiqc_files = ch_multiqc_files.mix(
+        ch_methods_description.collectFile(
+            name: 'methods_description_mqc.yaml',
+            sort: true
+        )
+    )
+
+    ch_multiqc_files                      = ch_multiqc_files.mix(BUSCO_DIAMOND.out.multiqc.collect{it[1]}.ifEmpty([]))
 
     MULTIQC (
         ch_multiqc_files.collect(),
@@ -253,24 +214,11 @@ workflow BLOBTOOLKIT {
         [],
         []
     )
-    multiqc_report = MULTIQC.out.report.toList()
-}
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    COMPLETION EMAIL AND SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+    emit:
+    multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
+    versions       = ch_versions                 // channel: [ path(versions.yml) ]
 
-workflow.onComplete {
-    if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
-    }
-    NfcoreTemplate.dump_parameters(workflow, params)
-    NfcoreTemplate.summary(workflow, params, log)
-    if (params.hook_url) {
-        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
-    }
 }
 
 /*

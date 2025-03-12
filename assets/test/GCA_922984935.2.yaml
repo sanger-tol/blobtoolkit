@@ -11,21 +11,21 @@ assembly:
   url: ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/922/984/935/GCA_922984935.2_mMelMel3.2_paternal_haplotype/GCA_922984935.2_mMelMel3.2_paternal_haplotype_genomic.fna.gz
 busco:
   basal_lineages:
-  - eukaryota_odb10
-  - bacteria_odb10
-  - archaea_odb10
+    - eukaryota_odb10
+    - bacteria_odb10
+    - archaea_odb10
   download_dir: ./busco
   lineages:
-  - carnivora_odb10
-  - laurasiatheria_odb10
-  - eutheria_odb10
-  - mammalia_odb10
-  - tetrapoda_odb10
-  - vertebrata_odb10
-  - metazoa_odb10
-  - eukaryota_odb10
-  - bacteria_odb10
-  - archaea_odb10
+    - carnivora_odb10
+    - laurasiatheria_odb10
+    - eutheria_odb10
+    - mammalia_odb10
+    - tetrapoda_odb10
+    - vertebrata_odb10
+    - metazoa_odb10
+    - eukaryota_odb10
+    - bacteria_odb10
+    - archaea_odb10
 fields:
   categories:
     file: ./GCA_922984935.2/assembly/GCA_922984935.2.categories.tsv
@@ -43,10 +43,10 @@ settings:
   blast_overlap: 0
   stats_chunk: 1000
   stats_windows:
-  - 0.1
-  - 0.01
-  - 100000
-  - 1000000
+    - 0.1
+    - 0.01
+    - 100000
+    - 1000000
   taxdump: ./taxdump
   tmp: /tmp
 similarity:
@@ -75,5 +75,5 @@ taxon:
   order: Carnivora
   phylum: Chordata
   superkingdom: Eukaryota
-  taxid: '9662'
+  taxid: "9662"
 version: 1
