@@ -8,7 +8,7 @@ process RESTRUCTUREBUSCODIR {
         'nf-core/ubuntu:20.04' }"
 
     input:
-    tuple val(meta), val(lineage), path(batch_summary), path(short_summaries_txt), path(short_summaries_json), path(busco_dir)
+    tuple val(meta), val(lineage), path(batch_summary), path(short_summary_txt), path(short_summary_json), path(full_table), path(missing_busco_list), path(single_copy_busco_sequences), path(multi_copy_busco_sequences), path(fragmented_busco_sequences), path(hmmer_output)
 
     output:
     tuple val(meta), path("${lineage}"), emit: clean_busco_dir
@@ -21,20 +21,19 @@ process RESTRUCTUREBUSCODIR {
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"
     """
-    mkdir ${lineage}
+    mkdir -p ${lineage}
 
-    cp --dereference ${batch_summary}        ${lineage}/short_summary.tsv
-    [ -n "${short_summaries_txt}"  ] && cp --dereference ${short_summaries_txt}  ${lineage}/short_summary.txt
-    [ -n "${short_summaries_json}" ] && cp --dereference ${short_summaries_json} ${lineage}/short_summary.json
+    [ -n "${batch_summary}" ] && cp --dereference ${batch_summary} ${lineage}/short_summary.tsv
+    [ -n "${short_summary_txt}" ] && cp --dereference ${short_summary_txt} ${lineage}/short_summary.txt
+    [ -n "${short_summary_json}" ] && cp --dereference ${short_summary_json} ${lineage}/short_summary.json
 
-    # Should we compress these ?
-    [ -e ${busco_dir}/*/run_*/full_table.tsv         ] && cp ${busco_dir}/*/run_*/full_table.tsv         ${lineage}/
-    [ -e ${busco_dir}/*/run_*/missing_busco_list.tsv ] && cp ${busco_dir}/*/run_*/missing_busco_list.tsv ${lineage}/
+    [ -e ${full_table} ] && cp ${full_table} ${lineage}/
+    [ -e ${missing_busco_list} ] && cp ${missing_busco_list} ${lineage}/
 
-    tar czf ${lineage}/single_copy_busco_sequences.tar.gz -C ${busco_dir}/*/run_*/busco_sequences single_copy_busco_sequences
-    tar czf ${lineage}/multi_copy_busco_sequences.tar.gz  -C ${busco_dir}/*/run_*/busco_sequences multi_copy_busco_sequences
-    tar czf ${lineage}/fragmented_busco_sequences.tar.gz  -C ${busco_dir}/*/run_*/busco_sequences fragmented_busco_sequences
-    tar czf ${lineage}/hmmer_output.tar.gz --exclude=.checkpoint -C ${busco_dir}/*/run_* hmmer_output
+    tar czf ${lineage}/single_copy_busco_sequences.tar.gz -C \$(dirname ${single_copy_busco_sequences}) \$(basename ${single_copy_busco_sequences})
+    tar czf ${lineage}/multi_copy_busco_sequences.tar.gz -C \$(dirname ${multi_copy_busco_sequences}) \$(basename ${multi_copy_busco_sequences})
+    tar czf ${lineage}/fragmented_busco_sequences.tar.gz -C \$(dirname ${fragmented_busco_sequences}) \$(basename ${fragmented_busco_sequences})
+    tar czf ${lineage}/hmmer_output.tar.gz --exclude=.checkpoint -C \$(dirname ${hmmer_output}) \$(basename ${hmmer_output})
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -87,9 +87,10 @@ workflow BLOBTOOLKIT {
     BUSCO_DIAMOND (
         PREPARE_GENOME.out.genome,
         INPUT_CHECK.out.busco_lineages,
-        INPUT_CHECK.out.busco_db,
-        INPUT_CHECK.out.blastp,
+        INPUT_CHECK.out.busco_db.first(),
+        INPUT_CHECK.out.blastp.first(),
         INPUT_CHECK.out.taxon_id,
+        INPUT_CHECK.out.busco_output,
     )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
 

@@ -51,6 +51,7 @@ def parse_args(args=None):
     parser.add_argument("--blastx", help="Path to the blastx database", required=True)
     parser.add_argument("--blastn", help="Path to the blastn database", required=True)
     parser.add_argument("--taxdump", help="Path to the taxonomy database", required=True)
+    parser.add_argument("--busco_output", action="append", help="Path to BUSCO output directory", required=False)
     parser.add_argument("--version", action="version", version="%(prog)s 2.0")
     return parser.parse_args(args)
 
@@ -132,7 +133,12 @@ def get_classification(taxon_info: TaxonInfo) -> typing.Dict[str, str]:
     return {r: ancestors[r] for r in RANKS if r in ancestors}
 
 
-def get_odb(taxon_info: TaxonInfo, lineage_tax_ids: str, requested_buscos: typing.Optional[str]) -> typing.List[str]:
+def get_odb(
+    taxon_info: TaxonInfo,
+    lineage_tax_ids: str,
+    requested_buscos: typing.Optional[str],
+    pre_computed_buscos: typing.List[str],
+) -> typing.List[str]:
     # Read the mapping between the BUSCO lineages and their taxon_id
     with open(lineage_tax_ids) as file_in:
         lineage_tax_ids_dict: typing.Dict[int, str] = {}
@@ -140,12 +146,20 @@ def get_odb(taxon_info: TaxonInfo, lineage_tax_ids: str, requested_buscos: typin
             arr = line.split()
             lineage_tax_ids_dict[int(arr[0])] = arr[1] + "_odb10"
 
-    if requested_buscos:
-        odb_arr = requested_buscos.split(",")
-        valid_odbs = set(lineage_tax_ids_dict.values())
+    valid_odbs = set(lineage_tax_ids_dict.values())
+
+    if pre_computed_buscos:
+        # Use pre-computed BUSCO lineages if available
+        odb_arr = pre_computed_buscos
         for odb in odb_arr:
             if odb not in valid_odbs:
-                print(f"Invalid BUSCO lineage: {odb}", file=sys.stderr)
+                print(f"Invalid pre-computed BUSCO lineage: {odb}", file=sys.stderr)
+                sys.exit(1)
+    elif requested_buscos:
+        odb_arr = requested_buscos.split(",")
+        for odb in odb_arr:
+            if odb not in valid_odbs:
+                print(f"Invalid requested BUSCO lineage: {odb}", file=sys.stderr)
                 sys.exit(1)
     else:
         # Do the intersection to find the ancestors that have a BUSCO lineage
@@ -338,7 +352,9 @@ def main(args=None):
 
     taxon_info = fetch_taxon_info(args.taxon_query)
     classification = get_classification(taxon_info)
-    odb_arr = get_odb(taxon_info, args.lineage_tax_ids, args.busco)
+
+    precomputed_busco = [os.path.basename(path).replace("run_", "") for path in (args.busco_output or [])]
+    odb_arr = get_odb(taxon_info, args.lineage_tax_ids, args.busco, precomputed_busco)
     taxon_id = adjust_taxon_id(args.nt, taxon_info)
 
     if sequence_report:

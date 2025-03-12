@@ -28,18 +28,22 @@ workflow INPUT_CHECK {
 
     // Check which need to be decompressed
     ch_dbs_for_untar = databases
-        .branch { db_meta, db_path ->
-            untar: db_path.name.endsWith( ".tar.gz" )
+        .branch {
+            untar: it.size() > 1 && it[1] && it[1].toString().endsWith(".tar.gz")
             skip: true
         }
 
     // Untar the databases
-    UNTAR ( ch_dbs_for_untar.untar )
-    ch_versions = ch_versions.mix( UNTAR.out.versions.first() )
+    UNTAR ( ch_dbs_for_untar.untar.ifEmpty([]) )
+    ch_versions = ch_versions.mix( UNTAR.out.versions.ifEmpty([]) )
 
     // Join and format dbs
-    // NOTE: The conditional for blastp/x is needed because nf-core/untar puts the database in a directory
-    ch_databases = UNTAR.out.untar.concat( ch_dbs_for_untar.skip )
+    ch_databases = Channel.empty()
+    if (UNTAR.out.untar) ch_databases = ch_databases.mix(UNTAR.out.untar)
+    if (ch_dbs_for_untar.skip) ch_databases = ch_databases.mix(ch_dbs_for_untar.skip)
+
+    ch_databases = ch_databases
+        .filter { it[1] != null }  // Filter out any remaining null values
         .map { meta, db -> [ meta + [id: db.baseName], db] }
         .map { db_meta, db_path ->
             if (db_meta.type in ["blastp", "blastx"] && db_path.isDirectory()) {
@@ -52,10 +56,10 @@ workflow INPUT_CHECK {
             blastn: db_meta.type == "blastn"
             blastp: db_meta.type == "blastp"
             blastx: db_meta.type == "blastx"
+            busco_output: db_meta.type == "busco_output"
             busco: db_meta.type == "busco"
             taxdump: db_meta.type == "taxdump"
         }
-
 
     //
     // SUBWORKFLOW: Process samplesheet
@@ -149,6 +153,13 @@ workflow INPUT_CHECK {
     | collect
     | set { ch_busco_lineages }
 
+    // Remove any invalid lineages from busco_outputs
+    ch_busco_lineages_list = ch_busco_lineages.flatten()
+    ch_parsed_busco_filtered = ch_parsed_busco
+        .filter { meta, path ->
+            ch_busco_lineages.contains(meta.lineage)
+        }
+    ch_parsed_busco_filtered = ch_parsed_busco_filtered.ifEmpty { Channel.value([]) }
 
     //
     // Get the BUSCO path if set

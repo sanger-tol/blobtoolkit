@@ -332,5 +332,10 @@
         {
             "$ref": "#/$defs/generic_options"
         }
-    ]
+    ],
+    "properties": {
+        "busco_output": {
+            "type": "string"
+        }
+    }
 }
