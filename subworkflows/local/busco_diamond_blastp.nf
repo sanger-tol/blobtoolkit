@@ -21,8 +21,6 @@ workflow BUSCO_DIAMOND {
     ch_versions = Channel.empty()
 
 
-    precomputed_busco.view()
-
     //
     // Prepare the BUSCO lineages
     //
