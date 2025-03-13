@@ -1,0 +1,99 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/sanger-tol/blobtoolkit/main/assets/schema_fetchngs_input.json",
+    "title": "sanger-tol/blobtoolkit pipeline - params.input schema for nf-core/fetchngs samplesheets",
+    "description": "Schema for the file provided with params.input if it originates from a run of the nf-core/fetchngs pipeline",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "run_accession": {
+                "type": "string",
+                "description": "Accession number",
+                "pattern": "^\\S+$",
+                "errorMessage": "Accession number of the sequencing run",
+                "meta": ["run_accession"],
+                "unique": true
+            },
+            "instrument_platform": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "enum": ["ILLUMINA", "OXFORD_NANOPORE", "PACBIO_SMRT"],
+                "errorMessage": "Sequencing platform used. Only 'ILLUMINA', 'OXFORD_NANOPORE', and 'PACBIO_SMRT', are supported",
+                "meta": ["instrument_platform"]
+            },
+            "instrument_model": {
+                "type": "string",
+                "pattern": "^.+$",
+                "errorMessage": "Model of the sequencing instrument used",
+                "meta": ["instrument_model"]
+            },
+            "library_strategy": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "The sequencing technique intended for the library",
+                "meta": ["library_strategy"]
+            },
+            "library_layout": {
+                "type": "string",
+                "pattern": "^(SINGLE|PAIRED)$",
+                "errorMessage": "The only valid layouts are SINGLE and PAIRED",
+                "meta": ["library_layout"]
+            },
+            "fastq_1": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
+                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'",
+                "meta": ["fastq_1"]
+            },
+            "fastq_2": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
+                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'",
+                "meta": ["fastq_2"]
+            },
+            "sample": {},
+            "experiment_accession": {},
+            "sample_accession": {},
+            "secondary_sample_accession": {},
+            "study_accession": {},
+            "secondary_study_accession": {},
+            "submission_accession": {},
+            "run_alias": {},
+            "experiment_alias": {},
+            "sample_alias": {},
+            "study_alias": {},
+            "library_selection": {},
+            "library_source": {},
+            "library_name": {},
+            "base_count": {},
+            "read_count": {},
+            "tax_id": {},
+            "scientific_name": {},
+            "sample_title": {},
+            "experiment_title": {},
+            "study_title": {},
+            "sample_description": {},
+            "fastq_md5": {},
+            "fastq_bytes": {},
+            "fastq_ftp": {},
+            "fastq_galaxy": {},
+            "fastq_aspera": {}
+        },
+        "required": [
+            "run_accession",
+            "instrument_platform",
+            "instrument_model",
+            "library_strategy",
+            "library_layout",
+            "fastq_1"
+        ],
+        "dependentRequired": {
+            "fastq_2": ["fastq_1"]
+        }
+    }
+}

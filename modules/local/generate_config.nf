@@ -9,13 +9,11 @@ process GENERATE_CONFIG {
     tuple val(meta), val(fasta)
     val taxon_query
     val busco_lin
+    tuple val(metabn), path(blastn)
     path lineage_tax_ids
+    // The following are passed as "val" because we need to know the original paths. Staging would prevent that
     val reads
-    tuple val(meta2), path(blastp, stageAs: 'blastp/*')
-    tuple val(meta3), path(blastx, stageAs: 'blastx/*')
-    tuple val(meta4), path(blastn, stageAs: 'blastn/*')
-    tuple val(meta5), path(taxdump)
-    val (busco_outputs)
+    val db_paths
 
     output:
     tuple val(meta), path("*.yaml")          , emit: yaml
@@ -33,7 +31,8 @@ process GENERATE_CONFIG {
     def busco_param = busco_lin ? "--busco '${busco_lin}'" : ""
     def accession_params = params.accession ? "--accession ${params.accession}" : ""
     def input_reads = reads.collect{"--read_id ${it[0].id} --read_type ${it[0].datatype} --read_layout ${it[0].layout} --read_path ${it[1]}"}.join(' ')
-    def busco_output_param = busco_outputs.collect { meta, path -> "--busco_output ${path}" }.join(' ')
+    def input_databases = db_paths.collect{"--${it[0].type} ${it[1]}"}.join(' ')
+
     """
     generate_config.py \\
         --fasta $fasta \\
@@ -43,11 +42,7 @@ process GENERATE_CONFIG {
         $accession_params \\
         --nt $blastn \\
         $input_reads \\
-        --blastp ${blastp} \\
-        --blastx ${blastx} \\
-        --blastn ${blastn} \\
-        --taxdump ${taxdump} \\
-        $busco_output_param \\
+        $input_databases \\
         --output_prefix ${prefix}
 
     cat <<-END_VERSIONS > versions.yml

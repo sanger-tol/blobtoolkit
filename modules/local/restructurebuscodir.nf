@@ -37,7 +37,7 @@ process RESTRUCTUREBUSCODIR {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        tar: \$(tar --version | awk 'NR==1 {print \$3}')
+        tar: \$(tar --version| awk 'NR==1 {print \$4}' )
     END_VERSIONS
     """
 }
