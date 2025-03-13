@@ -56,10 +56,11 @@ workflow INPUT_CHECK {
             blastn: db_meta.type == "blastn"
             blastp: db_meta.type == "blastp"
             blastx: db_meta.type == "blastx"
-            busco_output: db_meta.type == "busco_output"
+            precomputed_busco: db_meta.type == "precomputed_busco"
             busco: db_meta.type == "busco"
             taxdump: db_meta.type == "taxdump"
         }
+    ch_databases.precomputed_busco.view()
 
     //
     // SUBWORKFLOW: Process samplesheet
@@ -105,7 +106,7 @@ workflow INPUT_CHECK {
 
     // Get the source paths of all the databases, except Busco which is not recorded in the blobDir meta.json
     databases
-    | filter { meta, file -> meta.type != "busco" }
+    | filter { meta, file -> meta.type != "busco" && meta.type != "precomputed_busco" }
     | map {meta, file -> [meta, file.toUriString()]}
     | set { db_paths }
 
@@ -153,7 +154,22 @@ workflow INPUT_CHECK {
     | collect
     | set { ch_busco_lineages }
 
-    // Remove any invalid lineages from busco_outputs
+    // Format pre-computed BUSCOs (if provided)
+    // Parse the BUSCO output directories
+    if (ch_databases.precomputed_busco) {
+        ch_parsed_busco = ch_databases.precomputed_busco
+            .flatMap { meta, dir ->
+                def subdirs = file(dir).listFiles().findAll { it.isDirectory() }
+                subdirs.collect { subdir ->
+                    def lineage = subdir.name.split('_')[1..-1].join('_')
+                    [[type: 'precomputed_busco', id: subdir.name, lineage: lineage], subdir]
+                }
+            }
+    } else {
+        ch_parsed_busco = Channel.empty()
+    }
+
+    // Remove any invalid lineages from precomputed_busco
     ch_busco_lineages_list = ch_busco_lineages.flatten()
     ch_parsed_busco_filtered = ch_parsed_busco
         .filter { meta, path ->
@@ -180,6 +196,7 @@ workflow INPUT_CHECK {
     blastn = ch_databases.blastn.first()    // channel: [ val(meta), path(blastn_db) ]
     blastp = ch_databases.blastp.first()    // channel: [ val(meta), path(blastp_db) ]
     blastx = ch_databases.blastx.first()    // channel: [ val(meta), path(blastx_db) ]
+    precomputed_busco = ch_parsed_busco    // channel: [ val(meta), path(busco_run_dir) ]
     busco_db = ch_busco_db                  // channel: [ path(busco_db) ]
     taxdump = ch_databases.taxdump.map { _, db_path -> db_path }          // channel: [ path(taxdump) ]
     versions = ch_versions                  // channel: [ versions.yml ]

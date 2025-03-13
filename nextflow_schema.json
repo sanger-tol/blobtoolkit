@@ -334,7 +334,7 @@
         }
     ],
     "properties": {
-        "busco_output": {
+        "precomputed_busco": {
             "type": "string"
         }
     }

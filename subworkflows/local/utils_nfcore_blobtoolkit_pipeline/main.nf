@@ -71,6 +71,7 @@ workflow PIPELINE_INITIALISATION {
         .concat( Channel.fromPath(params.blastn).map { tuple(["type": "blastn"], it) } )
         .concat( Channel.fromPath(params.blastx).map { tuple(["type": "blastx"], it) } )
         .concat( Channel.fromPath(params.blastp).map { tuple(["type": "blastp"], it) } )
+        .concat( params.precomputed_busco ? Channel.fromPath(params.precomputed_busco).map { tuple([ "type": "precomputed_busco"], it ) } : Channel.empty() )
         .concat( params.busco ? Channel.fromPath(params.busco).map { tuple([ "type": "busco"], it ) } : Channel.empty() )
         .concat( Channel.fromPath(params.taxdump).map { tuple(["type": "taxdump"], it) } )
         .set { ch_databases }

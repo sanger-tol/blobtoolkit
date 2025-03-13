@@ -90,7 +90,7 @@ workflow BLOBTOOLKIT {
         INPUT_CHECK.out.busco_db.first(),
         INPUT_CHECK.out.blastp.first(),
         INPUT_CHECK.out.taxon_id,
-        INPUT_CHECK.out.busco_output,
+        INPUT_CHECK.out.precomputed_busco,
     )
     ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
 
@@ -204,7 +204,7 @@ workflow BLOBTOOLKIT {
         )
     )
 
-    ch_multiqc_files                      = ch_multiqc_files.mix(BUSCO_DIAMOND.out.multiqc.collect{it[1]}.ifEmpty([]))
+//    ch_multiqc_files                      = ch_multiqc_files.mix(BUSCO_DIAMOND.out.multiqc.collect{it[1]}.ifEmpty([]))
 
     MULTIQC (
         ch_multiqc_files.collect(),

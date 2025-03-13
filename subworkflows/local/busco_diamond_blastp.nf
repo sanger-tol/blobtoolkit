@@ -15,12 +15,13 @@ workflow BUSCO_DIAMOND {
     busco_db     // channel: path(busco_db)
     blastp       // channel: path(blastp_db)
     taxon_id     // channel: val(taxon_id)
-    busco_output // channel: [ val(meta), path(fasta) ] optional precomputed busco outputs
-
+    precomputed_busco // channel: [ val(meta}, path(busco_run_dir) ] optional precomputed busco outputs
 
     main:
     ch_versions = Channel.empty()
 
+
+    precomputed_busco.view()
 
     //
     // Prepare the BUSCO lineages
@@ -44,16 +45,16 @@ workflow BUSCO_DIAMOND {
     //
     // Format pre-computed outputs
     //
-    if (params.busco_output){
-        ch_busco_output = busco_output
+    if (params.precomputed_busco){
+        ch_precomputed_busco = precomputed_busco
             .map { meta, dir -> [meta.lineage, [meta, dir]] }
     }else{
-        ch_busco_output = Channel.empty()
+        ch_precomputed_busco = Channel.empty()
     }
 
     ch_combined = ch_fasta_with_lineage
         .map { meta, fasta -> [meta.lineage_name, [meta, fasta]] }
-        .join(ch_busco_output, by: 0, remainder: true)
+        .join(ch_precomputed_busco, by: 0, remainder: true)
         .map { lineage, fasta_data, busco_data ->
             def (meta, fasta) = fasta_data
             def (busco_meta, busco_dir) = busco_data ?: [null, null]
@@ -96,12 +97,12 @@ workflow BUSCO_DIAMOND {
     //
     // Run BUSCO search
     //
-    BUSCO (
-        ch_fasta_with_lineage,
-        "genome",
-        ch_fasta_with_lineage.map { it[0].lineage_name },
+    BUSCO_BUSCO(
+        ch_busco_to_run.to_compute,
+        'genome',
+        ch_busco_to_run.to_compute.map { it[0].lineage_name },
         busco_db,
-        [],
+        []
     )
     ch_versions = ch_versions.mix ( BUSCO_BUSCO.out.versions.first() )
 
