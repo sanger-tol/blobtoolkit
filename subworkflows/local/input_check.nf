@@ -34,8 +34,8 @@ workflow INPUT_CHECK {
         }
 
     // Untar the databases
-    UNTAR ( ch_dbs_for_untar.untar.ifEmpty([]) )
-    ch_versions = ch_versions.mix( UNTAR.out.versions.ifEmpty([]) )
+    UNTAR ( ch_dbs_for_untar.untar )
+    ch_versions = ch_versions.mix( UNTAR.out.versions )
 
     // Join and format dbs
     ch_databases = Channel.empty()
@@ -60,7 +60,6 @@ workflow INPUT_CHECK {
             busco: db_meta.type == "busco"
             taxdump: db_meta.type == "taxdump"
         }
-    ch_databases.precomputed_busco.view()
 
     //
     // SUBWORKFLOW: Process samplesheet
