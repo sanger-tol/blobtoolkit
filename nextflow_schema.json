@@ -45,8 +45,13 @@
                 "busco_lineages": {
                     "type": "string",
                     "pattern": "([^,]+_odb10,)*[^,]+_odb10",
-                    "description": "Name of the ODB10 lineages to run BUSCO on. By default, the pipeline will automatically selecy the correct lineage based on the taxonomy.",
+                    "description": "Name of the ODB10 lineages to run BUSCO on. By default, the pipeline will automatically select the correct lineage based on the taxonomy.",
                     "fa_icon": "fas fa-bone"
+                },
+                "precomputed_busco": {
+                    "type": "string",
+                    "description": "Directory containing precomputed BUSCO results (each named as `run_{lineage}_odbxx`), which can be supplied to skip running BUSCO in the pipeline.",
+                    "fa_icon": "fas fa-folder-open"
                 },
                 "image_format": {
                     "type": "string",
@@ -332,10 +337,5 @@
         {
             "$ref": "#/$defs/generic_options"
         }
-    ],
-    "properties": {
-        "precomputed_busco": {
-            "type": "string"
-        }
-    }
+    ]
 }
