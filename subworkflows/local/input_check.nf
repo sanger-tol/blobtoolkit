@@ -60,7 +60,6 @@ workflow INPUT_CHECK {
             busco: db_meta.type == "busco"
             taxdump: db_meta.type == "taxdump"
         }
-    ch_databases.precomputed_busco.view()
 
     //
     // SUBWORKFLOW: Process samplesheet
