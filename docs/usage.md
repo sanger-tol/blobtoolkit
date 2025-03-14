@@ -54,7 +54,7 @@ The pipeline then needs the `--fetchngs_samplesheet true` option _and_ `--align 
 
 ### Support for pre-computed `BUSCO` outputs
 
-The pipeline may be optionally run with a set of pre-computed [`BUSCO`](https://busco.ezlab.org) runs, provided using the `--busco_output` parameter. These can be provided as either a directory path, or a `.tar.gz` compressed archive. The contents should be each `run_` output directory (directly from `BUSCO`) named as `run_[odb_dabasase_name]`:
+The pipeline may be optionally run with a set of pre-computed [`BUSCO`](https://busco.ezlab.org) runs, provided using the `--precomputed_busco` parameter. These can be provided as either a directory path, or a `.tar.gz` compressed archive. The contents should be each `run_` output directory (directly from `BUSCO`) named as `run_[odb_dabasase_name]`:
 
 ```
 GCA_922984935.2_busco_output/

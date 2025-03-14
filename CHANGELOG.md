@@ -14,7 +14,7 @@ The pipeline is now considered to be a complete and suitable replacement for the
 - Updated the Blastn settings to allow 7 days runtime at most, since that
   covers 99.7% of the jobs.
 - Allow database inputs to be optionally compressed (`.tar.gz`)
-- Allow `BUSCO` run outputs to be optionally pre-computed and provided with `--busco_output`
+- Allow `BUSCO` run outputs to be optionally pre-computed and provided with `--precomputed_busco`
 
 ### Software dependencies
 
@@ -30,9 +30,9 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 
 ### Parameters
 
-| Old parameter | New parameter  |
-| ------------- | -------------- |
-|               | --busco-output |
+| Old parameter | New parameter       |
+| ------------- | ------------------- |
+|               | --precomputed_busco |
 
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
