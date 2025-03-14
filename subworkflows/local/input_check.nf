@@ -40,7 +40,6 @@ workflow INPUT_CHECK {
     // Join and format dbs
     ch_databases = ch_dbs_for_untar.skip
         .mix( UNTAR.out.untar )
-        .filter { it[1] != null }  // Filter out any remaining null values
         .map { meta, db -> [ meta + [id: db.baseName], db] }
         .map { db_meta, db_path ->
             if (db_meta.type in ["blastp", "blastx"] && db_path.isDirectory()) {
