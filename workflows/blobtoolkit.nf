@@ -51,12 +51,15 @@ workflow BLOBTOOLKIT {
     PREPARE_GENOME ( ch_fasta )
     ch_versions = ch_versions.mix ( PREPARE_GENOME.out.versions )
 
+    // Reference genome to be used (as a value channel) throughout the pipeline
+    ch_prepared_genome = PREPARE_GENOME.out.genome.first()
+
     //
     // SUBWORKFLOW: Check samplesheet and create channels for downstream analysis
     //
     INPUT_CHECK (
         params.input,
-        PREPARE_GENOME.out.genome,
+        ch_prepared_genome,
         params.taxon,
         Channel.value(params.busco_lineages ?: []),
         params.lineage_tax_ids,
@@ -68,7 +71,7 @@ workflow BLOBTOOLKIT {
     // SUBWORKFLOW: Optional read alignment
     //
     if ( params.align ) {
-        MINIMAP2_ALIGNMENT ( INPUT_CHECK.out.reads, PREPARE_GENOME.out.genome )
+        MINIMAP2_ALIGNMENT ( INPUT_CHECK.out.reads, ch_prepared_genome )
         ch_versions = ch_versions.mix ( MINIMAP2_ALIGNMENT.out.versions )
         ch_aligned = MINIMAP2_ALIGNMENT.out.aln
     } else {
@@ -78,14 +81,14 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Calculate genome coverage and statistics
     //
-    COVERAGE_STATS ( ch_aligned, PREPARE_GENOME.out.genome )
+    COVERAGE_STATS ( ch_aligned, ch_prepared_genome )
     ch_versions = ch_versions.mix ( COVERAGE_STATS.out.versions )
 
     //
     // SUBWORKFLOW: Run BUSCO using lineages fetched from GoaT, then run diamond_blastp
     //
     BUSCO_DIAMOND (
-        PREPARE_GENOME.out.genome,
+        ch_prepared_genome,
         INPUT_CHECK.out.busco_lineages,
         INPUT_CHECK.out.busco_db,
         INPUT_CHECK.out.blastp,
@@ -98,7 +101,7 @@ workflow BLOBTOOLKIT {
     // SUBWORKFLOW: Diamond blastx search of assembly contigs against the UniProt reference proteomes
     //
     RUN_BLASTX (
-        PREPARE_GENOME.out.genome,
+        ch_prepared_genome,
         BUSCO_DIAMOND.out.first_table,
         INPUT_CHECK.out.blastx,
         INPUT_CHECK.out.taxon_id,
@@ -111,7 +114,7 @@ workflow BLOBTOOLKIT {
     //
     RUN_BLASTN (
         RUN_BLASTX.out.blastx_out,
-        PREPARE_GENOME.out.genome,
+        ch_prepared_genome,
         INPUT_CHECK.out.blastn,
         INPUT_CHECK.out.taxon_id,
     )
