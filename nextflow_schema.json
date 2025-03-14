@@ -118,7 +118,6 @@
                 "busco": {
                     "type": "string",
                     "format": "path",
-                    "exists": true,
                     "description": "Local directory where clade-specific BUSCO lineage datasets are stored",
                     "fa_icon": "fas fa-folder-open"
                 },
