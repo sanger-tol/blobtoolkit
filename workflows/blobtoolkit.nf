@@ -87,8 +87,8 @@ workflow BLOBTOOLKIT {
     BUSCO_DIAMOND (
         PREPARE_GENOME.out.genome,
         INPUT_CHECK.out.busco_lineages,
-        INPUT_CHECK.out.busco_db.first(),
-        INPUT_CHECK.out.blastp.first(),
+        INPUT_CHECK.out.busco_db,
+        INPUT_CHECK.out.blastp,
         INPUT_CHECK.out.taxon_id,
         INPUT_CHECK.out.precomputed_busco,
     )
