@@ -28,8 +28,8 @@ workflow INPUT_CHECK {
 
     // Check which need to be decompressed
     ch_dbs_for_untar = databases
-        .branch {
-            untar: it.size() > 1 && it[1] && it[1].toString().endsWith(".tar.gz")
+        .branch { db_meta, db_path ->
+            untar: db_path.name.endsWith( ".tar.gz" )
             skip: true
         }
 
