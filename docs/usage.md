@@ -112,6 +112,9 @@ curl -L ftp://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz -o $T
 tar -xzf $TAXDUMP_TAR -C "$TAXDUMP"
 ```
 
+The first time the pipeline will run, it will generate a file named `resources/taxdump.json` in the results folder.
+This JSON file is a digested version of the taxonomy that can then be fed into the pipeline instead of the bare `new_taxdump` directory to make it run faster.
+
 #### 2. NCBI nucleotide BLAST database
 
 Create the database directory and move into the directory:
