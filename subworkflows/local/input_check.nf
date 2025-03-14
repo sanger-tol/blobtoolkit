@@ -155,7 +155,7 @@ workflow INPUT_CHECK {
         .flatMap { meta, dir ->
             def subdirs = file(dir).listFiles().findAll { it.isDirectory() }
             subdirs.collect { subdir ->
-                def lineage = subdir.name.split('_')[1..-1].join('_')
+                def lineage = subdir.name.startsWith('run_') ? subdir.name.substring(4) : subdir.name
                 [[type: 'precomputed_busco', id: subdir.name, lineage: lineage], subdir]
             }
         }
