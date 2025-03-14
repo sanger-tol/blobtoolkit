@@ -35,7 +35,7 @@ workflow INPUT_CHECK {
 
     // Untar the databases
     UNTAR ( ch_dbs_for_untar.untar )
-    ch_versions = ch_versions.mix( UNTAR.out.versions )
+    ch_versions = ch_versions.mix( UNTAR.out.versions.first() )
 
     // Join and format dbs
     ch_databases = ch_dbs_for_untar.skip

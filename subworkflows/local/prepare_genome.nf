@@ -28,7 +28,7 @@ workflow PREPARE_GENOME {
     // MODULE: Decompress compressed FASTA files
     //
     GUNZIP ( ch_genomes_for_gunzip.gunzip )
-    ch_versions = ch_versions.mix ( GUNZIP.out.versions )
+    ch_versions = ch_versions.mix ( GUNZIP.out.versions.first() )
 
 
     //
@@ -44,10 +44,10 @@ workflow PREPARE_GENOME {
     //
     if ( params.mask ) {
         WINDOWMASKER_MKCOUNTS ( ch_genome )
-        ch_versions = ch_versions.mix ( WINDOWMASKER_MKCOUNTS.out.versions )
+        ch_versions = ch_versions.mix ( WINDOWMASKER_MKCOUNTS.out.versions.first() )
 
         WINDOWMASKER_USTAT ( WINDOWMASKER_MKCOUNTS.out.counts, ch_genome )
-        ch_versions = ch_versions.mix ( WINDOWMASKER_USTAT.out.versions )
+        ch_versions = ch_versions.mix ( WINDOWMASKER_USTAT.out.versions.first() )
 
         ch_fasta = WINDOWMASKER_USTAT.out.intervals
     } else {
