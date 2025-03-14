@@ -50,6 +50,7 @@
                 },
                 "precomputed_busco": {
                     "type": "string",
+                    "format": "path",
                     "description": "Directory containing precomputed BUSCO results (each named as `run_{lineage}_odbxx`), which can be supplied to skip running BUSCO in the pipeline.",
                     "fa_icon": "fas fa-folder-open"
                 },
