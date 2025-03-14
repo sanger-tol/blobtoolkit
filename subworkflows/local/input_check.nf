@@ -38,11 +38,8 @@ workflow INPUT_CHECK {
     ch_versions = ch_versions.mix( UNTAR.out.versions )
 
     // Join and format dbs
-    ch_databases = Channel.empty()
-    if (UNTAR.out.untar) ch_databases = ch_databases.mix(UNTAR.out.untar)
-    if (ch_dbs_for_untar.skip) ch_databases = ch_databases.mix(ch_dbs_for_untar.skip)
-
-    ch_databases = ch_databases
+    ch_databases = ch_dbs_for_untar.skip
+        .mix( UNTAR.out.untar )
         .filter { it[1] != null }  // Filter out any remaining null values
         .map { meta, db -> [ meta + [id: db.baseName], db] }
         .map { db_meta, db_path ->
@@ -155,18 +152,14 @@ workflow INPUT_CHECK {
 
     // Format pre-computed BUSCOs (if provided)
     // Parse the BUSCO output directories
-    if (ch_databases.precomputed_busco) {
-        ch_parsed_busco = ch_databases.precomputed_busco
-            .flatMap { meta, dir ->
-                def subdirs = file(dir).listFiles().findAll { it.isDirectory() }
-                subdirs.collect { subdir ->
-                    def lineage = subdir.name.split('_')[1..-1].join('_')
-                    [[type: 'precomputed_busco', id: subdir.name, lineage: lineage], subdir]
-                }
+    ch_parsed_busco = ch_databases.precomputed_busco
+        .flatMap { meta, dir ->
+            def subdirs = file(dir).listFiles().findAll { it.isDirectory() }
+            subdirs.collect { subdir ->
+                def lineage = subdir.name.split('_')[1..-1].join('_')
+                [[type: 'precomputed_busco', id: subdir.name, lineage: lineage], subdir]
             }
-    } else {
-        ch_parsed_busco = Channel.empty()
-    }
+        }
 
     // Remove any invalid lineages from precomputed_busco
     ch_busco_lineages_list = ch_busco_lineages.flatten()
