@@ -197,9 +197,8 @@ workflow BUSCO_DIAMOND {
         .set { ch_first_table }
 
     // BUSCO results for MULTIQC
-    ch_all_busco_outputs
-        .map { meta, outputs -> outputs.batch_summary }
-        .ifEmpty ( [ [], [] ] )
+    BUSCO_BUSCO.out.short_summaries_txt
+        .map { meta, outputs -> outputs }
         .set { multiqc }
 
     emit:

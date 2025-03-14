@@ -204,7 +204,7 @@ workflow BLOBTOOLKIT {
         )
     )
 
-//    ch_multiqc_files                      = ch_multiqc_files.mix(BUSCO_DIAMOND.out.multiqc.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files                      = ch_multiqc_files.mix(BUSCO_DIAMOND.out.multiqc.collect().ifEmpty([]))
 
     MULTIQC (
         ch_multiqc_files.collect(),
