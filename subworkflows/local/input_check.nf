@@ -186,7 +186,7 @@ workflow INPUT_CHECK {
     blastn = ch_databases.blastn.first()    // channel: [ val(meta), path(blastn_db) ]
     blastp = ch_databases.blastp.first()    // channel: [ val(meta), path(blastp_db) ]
     blastx = ch_databases.blastx.first()    // channel: [ val(meta), path(blastx_db) ]
-    precomputed_busco = ch_parsed_busco    // channel: [ val(meta), path(busco_run_dir) ]
+    precomputed_busco = ch_parsed_busco     // channel: [ val(meta), path(busco_run_dir) ]
     busco_db = ch_busco_db.first()          // channel: [ path(busco_db) ]
     taxdump = ch_databases.taxdump.map { _, db_path -> db_path }          // channel: [ path(taxdump) ]
     versions = ch_versions                  // channel: [ versions.yml ]
