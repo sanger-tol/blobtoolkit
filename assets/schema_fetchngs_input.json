@@ -12,8 +12,7 @@
                 "description": "Accession number",
                 "pattern": "^\\S+$",
                 "errorMessage": "Accession number of the sequencing run",
-                "meta": ["run_accession"],
-                "unique": true
+                "meta": ["run_accession"]
             },
             "instrument_platform": {
                 "type": "string",
@@ -95,5 +94,6 @@
         "dependentRequired": {
             "fastq_2": ["fastq_1"]
         }
-    }
+    },
+    "uniqueEntries": ["run_accession"]
 }
