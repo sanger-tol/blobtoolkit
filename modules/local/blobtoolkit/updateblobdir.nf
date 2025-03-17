@@ -13,7 +13,7 @@ process BLOBTOOLKIT_UPDATEBLOBDIR {
     tuple val(meta3), path(categories_tsv)
     tuple val(meta4), path(blastx, stageAs: "blastx.txt")
     tuple val(meta5), path(blastn, stageAs: "blastn.txt")
-    path(taxdump)
+    path(taxdump, stageAs: 'taxdump/taxdump.json')
 
     output:
     tuple val(meta), path(prefix), emit: blobdir
@@ -35,7 +35,7 @@ process BLOBTOOLKIT_UPDATEBLOBDIR {
     mkdir ${prefix}
     cp --preserve=timestamp ${input}/* ${prefix}/
     blobtools replace \\
-        --taxdump ${taxdump} \\
+        --taxdump \$(dirname ${taxdump}) \\
         --taxrule bestdistorder=buscoregions \\
         ${hits_blastx} \\
         ${hits_blastn} \\

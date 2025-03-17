@@ -9,6 +9,7 @@ include { UNTAR                     } from '../../modules/nf-core/untar/main'
 include { CAT_CAT                   } from '../../modules/nf-core/cat/cat/main'
 include { SAMTOOLS_FLAGSTAT         } from '../../modules/nf-core/samtools/flagstat/main'
 include { GENERATE_CONFIG           } from '../../modules/local/generate_config'
+include { JSONIFY_TAXDUMP           } from '../../modules/local/jsonify_taxdump'
 
 workflow INPUT_CHECK {
     take:
@@ -176,6 +177,32 @@ workflow INPUT_CHECK {
     | ifEmpty( [] )
     | set { ch_busco_db }
 
+
+    //
+    // Convert the taxdump to a JSON file if there isn't one yet
+    //
+    ch_databases.taxdump
+    | filter { meta, db_path -> ! db_path.isFile() }
+    | map { meta, db_path -> [meta, db_path, db_path.listFiles().find { it.getName().endsWith('.json') }] }
+    | branch { meta, db_path, json_path ->
+        json: json_path
+                return [meta, json_path]
+        dir: true
+                return [meta, db_path]
+    }
+    | set { taxdump_dirs }
+
+    JSONIFY_TAXDUMP( taxdump_dirs.dir )
+    ch_versions = ch_versions.mix(JSONIFY_TAXDUMP.out.versions.first())
+
+    ch_databases.taxdump
+    | filter { meta, db_path -> db_path.isFile() }
+    | mix ( taxdump_dirs.json )
+    | mix( JSONIFY_TAXDUMP.out.json )
+    | map { _, db_path -> db_path }
+    | set { ch_taxdump }
+
+
     emit:
     reads                                   // channel: [ val(meta), path(datafile) ]
     config = GENERATE_CONFIG.out.yaml       // channel: [ val(meta), path(yaml) ]
@@ -188,7 +215,7 @@ workflow INPUT_CHECK {
     blastx = ch_databases.blastx.first()    // channel: [ val(meta), path(blastx_db) ]
     precomputed_busco = ch_parsed_busco     // channel: [ val(meta), path(busco_run_dir) ]
     busco_db = ch_busco_db.first()          // channel: [ path(busco_db) ]
-    taxdump = ch_databases.taxdump.map { _, db_path -> db_path }          // channel: [ path(taxdump) ]
+    taxdump = ch_taxdump.first()            // channel: [ path(taxdump) ]
     versions = ch_versions                  // channel: [ versions.yml ]
 }
 
