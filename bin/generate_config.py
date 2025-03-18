@@ -13,11 +13,11 @@ import requests
 import requests.adapters
 import yaml
 
-NCBI_TAXONOMY_API = "https://api.ncbi.nlm.nih.gov/datasets/v2alpha/taxonomy/taxon/%s"
+NCBI_TAXONOMY_API = "https://api.ncbi.nlm.nih.gov/datasets/v2/taxonomy/taxon/%s"
 GOAT_LOOKUP_API = "https://goat.genomehubs.org/api/v2/lookup?searchTerm=%s&result=taxon&size=10&taxonomy=ncbi"
 GOAT_RECORD_API = "https://goat.genomehubs.org/api/v2/record?recordId=%s&result=taxon&size=10&taxonomy=ncbi"
-NCBI_DATASETS_API = "https://api.ncbi.nlm.nih.gov/datasets/v2alpha/genome/accession/%s/dataset_report?filters.assembly_version=all_assemblies"
-NCBI_SEQUENCE_API = "https://api.ncbi.nlm.nih.gov/datasets/v2alpha/genome/accession/%s/sequence_reports"
+NCBI_DATASETS_API = "https://api.ncbi.nlm.nih.gov/datasets/v2/genome/accession/%s/dataset_report?filters.assembly_version=all_assemblies"
+NCBI_SEQUENCE_API = "https://api.ncbi.nlm.nih.gov/datasets/v2/genome/accession/%s/sequence_reports"
 
 RANKS = [
     "genus",
