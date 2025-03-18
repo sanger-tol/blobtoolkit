@@ -173,6 +173,8 @@ workflow BUSCO_DIAMOND {
 
     // Order BUSCO results according to the lineage index
     ch_all_busco_outputs
+        // 0. Filter out the BUSCO results that found no gene (seen for archaea/bacteria)
+        | filter { meta, outputs -> outputs.full_table }
         // 1. Extract the necessary information and create a consistent structure
         | map { meta, outputs ->
             def cleaned_meta = meta.findAll { it.key != "lineage_name" && it.key != "lineage_index" && it.key != "busco_dir" }

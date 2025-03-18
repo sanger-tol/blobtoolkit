@@ -27,8 +27,8 @@ process RESTRUCTUREBUSCODIR {
     [ -n "${short_summary_txt}" ] && cp --dereference ${short_summary_txt} ${lineage}/short_summary.txt
     [ -n "${short_summary_json}" ] && cp --dereference ${short_summary_json} ${lineage}/short_summary.json
 
-    [ -e ${full_table} ] && cp ${full_table} ${lineage}/
-    [ -e ${missing_busco_list} ] && cp ${missing_busco_list} ${lineage}/
+    [ -e "${full_table}" ] && cp ${full_table} ${lineage}/
+    [ -e "${missing_busco_list}" ] && cp ${missing_busco_list} ${lineage}/
 
     tar czf ${lineage}/single_copy_busco_sequences.tar.gz -C \$(dirname ${single_copy_busco_sequences}) \$(basename ${single_copy_busco_sequences})
     tar czf ${lineage}/multi_copy_busco_sequences.tar.gz -C \$(dirname ${multi_copy_busco_sequences}) \$(basename ${multi_copy_busco_sequences})
