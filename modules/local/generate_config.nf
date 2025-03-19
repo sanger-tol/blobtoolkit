@@ -3,19 +3,24 @@ process GENERATE_CONFIG {
     label 'process_single'
 
     conda "conda-forge::requests=2.28.1 conda-forge::pyyaml=6.0"
-    container "docker.io/genomehubs/blobtoolkit:4.3.9"
+    container "docker.io/genomehubs/blobtoolkit:4.4.4"
 
     input:
     tuple val(meta), val(fasta)
     val taxon_query
     val busco_lin
+    tuple val(metabn), path(blastn)
     path lineage_tax_ids
-    tuple val(meta2), path(blastn)
+    // The following are passed as "val" because we need to know the original paths. Staging would prevent that
+    val reads
+    val db_paths
 
     output:
-    tuple val(meta), path("*.yaml"), emit: yaml
-    tuple val(meta), path("*.csv") , emit: csv
-    path "versions.yml"            , emit: versions
+    tuple val(meta), path("*.yaml")          , emit: yaml
+    tuple val(meta), path("*.csv")           , emit: csv
+    tuple val(meta), path("*.synonyms.tsv")  , emit: synonyms_tsv,   optional: true
+    tuple val(meta), path("*.categories.tsv"), emit: categories_tsv, optional: true
+    path "versions.yml"                      , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -25,6 +30,9 @@ process GENERATE_CONFIG {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def busco_param = busco_lin ? "--busco '${busco_lin}'" : ""
     def accession_params = params.accession ? "--accession ${params.accession}" : ""
+    def input_reads = reads.collect{"--read_id ${it[0].id} --read_type ${it[0].datatype} --read_layout ${it[0].layout} --read_path ${it[1]}"}.join(' ')
+    def input_databases = db_paths.collect{"--${it[0].type} ${it[1]}"}.join(' ')
+
     """
     generate_config.py \\
         --fasta $fasta \\
@@ -32,9 +40,10 @@ process GENERATE_CONFIG {
         --lineage_tax_ids $lineage_tax_ids \\
         $busco_param \\
         $accession_params \\
-        --blastn $blastn \\
-        --yml_out ${prefix}.yaml \\
-        --csv_out ${prefix}.csv
+        --nt $blastn \\
+        $input_reads \\
+        $input_databases \\
+        --output_prefix ${prefix}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

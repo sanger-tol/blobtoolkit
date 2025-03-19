@@ -9,27 +9,33 @@ include { WINDOWMASKER_USTAT    } from '../../modules/nf-core/windowmasker/ustat
 
 workflow PREPARE_GENOME {
     take:
-    fasta     // channel: [ meta, path(genome) ]
+    genome    // channel: [ meta, path(fasta) ]
 
 
     main:
     ch_versions = Channel.empty()
 
+    //
+    // LOGIC: Identify the compressed files
+    //
+    ch_genomes_for_gunzip = genome
+        .branch { meta, fasta ->
+            gunzip: fasta.name.endsWith( ".gz" )
+            skip: true
+        }
 
     //
-    // MODULE: Decompress FASTA file if needed
+    // MODULE: Decompress compressed FASTA files
     //
-    if ( params.fasta.endsWith('.gz') ) {
-        ch_unzipped = GUNZIP ( fasta ).gunzip
-        ch_versions = ch_versions.mix ( GUNZIP.out.versions )
-    } else {
-        ch_unzipped = fasta
-    }
+    GUNZIP ( ch_genomes_for_gunzip.gunzip )
+    ch_versions = ch_versions.mix ( GUNZIP.out.versions.first() )
+
 
     //
     // LOGIC: Extract the genome size for decision making downstream
     //
-    ch_unzipped
+    ch_genomes_for_gunzip.skip
+    | mix( GUNZIP.out.gunzip )
     | map { meta, fa -> [ meta + [genome_size: fa.size()], fa] }
     | set { ch_genome }
 
@@ -38,10 +44,10 @@ workflow PREPARE_GENOME {
     //
     if ( params.mask ) {
         WINDOWMASKER_MKCOUNTS ( ch_genome )
-        ch_versions = ch_versions.mix ( WINDOWMASKER_MKCOUNTS.out.versions )
+        ch_versions = ch_versions.mix ( WINDOWMASKER_MKCOUNTS.out.versions.first() )
 
         WINDOWMASKER_USTAT ( WINDOWMASKER_MKCOUNTS.out.counts, ch_genome )
-        ch_versions = ch_versions.mix ( WINDOWMASKER_USTAT.out.versions )
+        ch_versions = ch_versions.mix ( WINDOWMASKER_USTAT.out.versions.first() )
 
         ch_fasta = WINDOWMASKER_USTAT.out.intervals
     } else {

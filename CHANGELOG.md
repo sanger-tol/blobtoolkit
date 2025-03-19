@@ -3,6 +3,43 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[0.7.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.7.0)] – Psyduck – [2025-03-19]
+
+- Fetch information about the chromosomes of the assemblies. Used to power
+  "grid plots".
+- Fill in accurate read information in the blobDir. Users are now reqiured
+  to indicate in the samplesheet whether the reads are paired or single.
+- Updated the Blastn settings to allow 7 days runtime at most, since that
+  covers 99.7% of the jobs.
+- Allow database inputs to be optionally compressed (`.tar.gz`)
+- Allow `BUSCO` run outputs to be optionally pre-computed and provided with `--precomputed_busco`
+
+The pipeline is now considered to be a complete and suitable replacement for the Snakemake version
+with the caveats that:
+
+- Resource requirements (CPU and memory) of the processes aren't optimal.
+- The Blastn step can take up to a week to run.
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency  | Old version       | New version     |
+| ----------- | ----------------- | --------------- |
+| blast       | 2.14.1 and 2.15.0 | only 2.15.0     |
+| blobtoolkit | 4.3.9             | 4.4.4           |
+| busco       | 5.5.0             | 5.7.1           |
+| multiqc     | 1.20 and 1.21     | 1.20 and 1.25.1 |
+| samtools    | 1.18 and 1.19.2   | 1.20 and 1.21   |
+
+### Parameters
+
+| Old parameter | New parameter       |
+| ------------- | ------------------- |
+|               | --precomputed_busco |
+
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
+
 ## [[0.6.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.6.0)] – Bellsprout – [2024-09-13]
 
 The pipeline has now been validated for draft (unpublished) assemblies.
@@ -87,13 +124,13 @@ The pipeline has now been validated on dozens of genomes, up to 11 Gbp.
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
 
-| Dependency  | Old version   | New version   |
-| ----------- | ------------- | ------------- |
-| blobtoolkit | 4.3.3         | 4.3.9         |
-| blast       | 2.14.0        | 2.15.0        |
-| multiqc     | 1.17 and 1.18 | 1.20 and 1.21 |
-| samtools    | 1.18          | 1.19.2        |
-| seqtk       | 1.3           | 1.4           |
+| Dependency  | Old version   | New version       |
+| ----------- | ------------- | ----------------- |
+| blobtoolkit | 4.3.3         | 4.3.9             |
+| blast       | 2.14.0        | 2.15.0 and 2.14.1 |
+| multiqc     | 1.17 and 1.18 | 1.20 and 1.21     |
+| samtools    | 1.18          | 1.18 and 1.19.2   |
+| seqtk       | 1.3           | 1.4               |
 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
 

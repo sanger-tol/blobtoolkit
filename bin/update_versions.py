@@ -15,26 +15,8 @@ def parse_args(args=None):
     parser.add_argument("--meta_in", help="Input JSON file.", required=True)
     parser.add_argument("--meta_out", help="Output JSON file.", required=True)
     parser.add_argument("--software", help="Input YAML file.", required=True)
-    parser.add_argument("--read_id", action="append", help="ID of a read set")
-    parser.add_argument("--read_type", action="append", help="Type of a read set")
-    parser.add_argument("--read_path", action="append", help="Path of a read set")
-    parser.add_argument("--blastp", help="Path to the blastp database", required=True)
-    parser.add_argument("--blastx", help="Path to the blastx database", required=True)
-    parser.add_argument("--blastn", help="Path to the blastn database", required=True)
-    parser.add_argument("--taxdump", help="Path to the taxonomy database", required=True)
-    parser.add_argument("--version", action="version", version="%(prog)s 1.2.0")
+    parser.add_argument("--version", action="version", version="%(prog)s 1.3.0")
     return parser.parse_args(args)
-
-
-def datatype_to_platform(s):
-    if s == "ont":
-        return "OXFORD_NANOPORE"
-    elif s.startswith("pacbio"):
-        return "PACBIO_SMRT"
-    elif s in ["hic", "illumina"]:
-        return "ILLUMINA"
-    else:
-        return "OTHER"
 
 
 def update_meta(args):
@@ -53,20 +35,6 @@ def update_meta(args):
 
     del new_dict["sanger-tol/blobtoolkit"]
     infile["settings"]["software_versions"] = new_dict
-
-    infile["settings"]["taxdump"] = args.taxdump
-    for k in ["blastn", "diamond_blastp", "diamond_blastx"]:
-        infile["similarity"].setdefault(k, {})
-    infile["similarity"]["blastn"]["path"] = args.blastn
-    infile["similarity"]["diamond_blastp"]["path"] = args.blastp
-    infile["similarity"]["diamond_blastx"]["path"] = args.blastx
-
-    infile["reads"] = {}
-    for id, datatype, path in zip(args.read_id, args.read_type, args.read_path):
-        infile["reads"][id] = {
-            "file": path,
-            "plaform": datatype_to_platform(datatype),
-        }
 
     return infile
 
