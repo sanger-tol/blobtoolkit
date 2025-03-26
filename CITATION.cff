@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-title: sanger-tol/blobtoolkit v0.7.0
+title: sanger-tol/blobtoolkit v0.7.1
 authors:
   - family-names: Butt
     given-names: Zaynab
@@ -44,5 +44,5 @@ authors:
 doi: 10.5281/zenodo.13758882
 repository-code: "https://github.com/sanger-tol/blobtoolkit"
 license: MIT
-version: 0.7.0
+version: 0.7.1
 date-released: "2024-09-13"
