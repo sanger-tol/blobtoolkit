@@ -3,7 +3,9 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[0.7.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.7.1)] – Psyduck (patch 1) – [2025-03-297
+## [[0.7.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.7.1)] – Psyduck (patch 1) – [2025-03-29]
+
+### Enhancements & fixes
 
 - Upgraded the blobtools version which contains a bugfix
 
@@ -16,6 +18,8 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | blobtoolkit | 4.4.4       | 4.4.5       |
 
 ## [[0.7.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.7.0)] – Psyduck – [2025-03-19]
+
+### Enhancements & fixes
 
 - Fetch information about the chromosomes of the assemblies. Used to power
   "grid plots".
@@ -53,6 +57,8 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
 ## [[0.6.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.6.0)] – Bellsprout – [2024-09-13]
+
+### Enhancements & fixes
 
 The pipeline has now been validated for draft (unpublished) assemblies.
 
