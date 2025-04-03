@@ -1,35 +1,35 @@
 lint:
   files_exist:
-    - CODE_OF_CONDUCT.md
-    - assets/nf-core-blobtoolkit_logo_light.png
-    - docs/images/nf-core-blobtoolkit_logo_light.png
-    - docs/images/nf-core-blobtoolkit_logo_dark.png
-    - .github/ISSUE_TEMPLATE/config.yml
-    - .github/workflows/awstest.yml
-    - .github/workflows/awsfulltest.yml
-    - conf/igenomes.config
+  - CODE_OF_CONDUCT.md
+  - assets/nf-core-blobtoolkit_logo_light.png
+  - docs/images/nf-core-blobtoolkit_logo_light.png
+  - docs/images/nf-core-blobtoolkit_logo_dark.png
+  - .github/ISSUE_TEMPLATE/config.yml
+  - .github/workflows/awstest.yml
+  - .github/workflows/awsfulltest.yml
+  - conf/igenomes.config
   files_unchanged:
-    - LICENCE
-    - lib/NfcoreTemplate.groovy
-    - CODE_OF_CONDUCT.md
-    - assets/sendmail_template.txt
-    - assets/email_template.html
-    - assets/email_template.txt
-    - assets/nf-core-blobtoolkit_logo_light.png
-    - docs/images/nf-core-blobtoolkit_logo_light.png
-    - docs/images/nf-core-blobtoolkit_logo_dark.png
-    - .github/ISSUE_TEMPLATE/bug_report.yml
-    - .github/PULL_REQUEST_TEMPLATE.md
-    - .github/workflows/linting.yml
-    - .github/workflows/branch.yml
-    - .github/CONTRIBUTING.md
-    - .github/workflows/linting_comment.yml
+  - LICENCE
+  - lib/NfcoreTemplate.groovy
+  - CODE_OF_CONDUCT.md
+  - assets/sendmail_template.txt
+  - assets/email_template.html
+  - assets/email_template.txt
+  - assets/nf-core-blobtoolkit_logo_light.png
+  - docs/images/nf-core-blobtoolkit_logo_light.png
+  - docs/images/nf-core-blobtoolkit_logo_dark.png
+  - .github/ISSUE_TEMPLATE/bug_report.yml
+  - .github/PULL_REQUEST_TEMPLATE.md
+  - .github/workflows/linting.yml
+  - .github/workflows/branch.yml
+  - .github/CONTRIBUTING.md
+  - .github/workflows/linting_comment.yml
   merge_markers: false
   multiqc_config:
-    - report_comment
+  - report_comment
   nextflow_config:
-    - manifest.name
-    - manifest.homePage
+  - manifest.name
+  - manifest.homePage
   template_strings: false
 nf_core_version: 3.2.0
 repository_type: pipeline
@@ -42,5 +42,5 @@ template:
   org: sanger-tol
   outdir: .
   skip_features:
-    - igenomes
-  version: 0.7.0
+  - igenomes
+  version: 0.7.1
