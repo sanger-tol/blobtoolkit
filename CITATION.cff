@@ -1,5 +1,9 @@
 cff-version: 1.2.0
 title: sanger-tol/blobtoolkit v0.7.1
+message: >-
+    If you use this software, please cite it using the
+    metadata from this file and all references from
+    CITATIONS.md .
 authors:
   - family-names: Butt
     given-names: Zaynab
