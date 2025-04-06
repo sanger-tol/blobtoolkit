@@ -1,0 +1,48 @@
+cff-version: 1.2.0
+title: sanger-tol/blobtoolkit v0.7.1
+authors:
+  - family-names: Butt
+    given-names: Zaynab
+    affiliation: Wellcome Sanger Institute
+    orcid: 0009-0009-7934-8440
+  - family-names: Chafin
+    given-names: Tyler
+    affiliation: Wellcome Sanger Institute
+    orcid: 0000-0001-8687-5905
+  - family-names: Challis
+    given-names: Rich
+    affiliation: Wellcome Sanger Institute
+    orcid: 0000-0002-3502-1122
+  - family-names: Kumar
+    given-names: Sujai
+    affiliation: Wellcome Sanger Institute
+    orcid: 0000-0001-5902-6641
+  - family-names: Muffato
+    given-names: Matthieu
+    affiliation: Wellcome Sanger Institute
+    orcid: 0000-0002-7860-3560
+  - family-names: Pointon
+    given-names: Damon-Lee
+    affiliation: Wellcome Sanger Institute
+    orcid: 0000-0003-2949-6719
+  - family-names: Qi
+    given-names: Guoying
+    orcid: 0000-0003-1262-8973
+    affiliation: Wellcome Sanger Institute
+  - family-names: "Ramos D\xEDaz"
+    given-names: Alexander
+    affiliation: Wellcome Sanger Institute
+    orcid: 0000-0001-6410-3349
+  - family-names: Surana
+    given-names: Priyanka
+    affiliation: Wellcome Sanger Institute
+    orcid: 0000-0002-7167-0875
+  - family-names: Yates
+    given-names: Bethan
+    affiliation: Wellcome Sanger Institute
+    orcid: 0000-0003-1658-1762
+doi: 10.5281/zenodo.13758882
+repository-code: "https://github.com/sanger-tol/blobtoolkit"
+license: MIT
+version: 0.7.1
+date-released: "2024-09-13"

@@ -1,0 +1,61 @@
+Changes in module 'nf-core/blast/blastn'
+--- modules/nf-core/blast/blastn/main.nf
++++ modules/nf-core/blast/blastn/main.nf
+@@ -1,6 +1,5 @@
+ process BLAST_BLASTN {
+     tag "$meta.id"
+-    label 'process_medium'
+ 
+     conda "${moduleDir}/environment.yml"
+     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+@@ -10,6 +9,7 @@
+     input:
+     tuple val(meta) , path(fasta)
+     tuple val(meta2), path(db)
++    val taxid
+ 
+     output:
+     tuple val(meta), path('*.txt'), emit: txt
+@@ -23,6 +23,8 @@
+     def prefix = task.ext.prefix ?: "${meta.id}"
+     def is_compressed = fasta.getExtension() == "gz" ? true : false
+     def fasta_name = is_compressed ? fasta.getBaseName() : fasta
++    def exclude_taxon = taxid ? "-negative_taxids ${taxid}" : ''
++    def command_epilog = taxid ? "|| true" : ''
+ 
+     """
+     if [ "${is_compressed}" == "true" ]; then
+@@ -35,12 +37,30 @@
+     fi
+     echo Using \$DB
+ 
++    if [ -n "${taxid}" ]; then
++        # Symlink the tax* files (needed for -taxid options to work)
++        for file in taxdb.btd taxdb.bti taxonomy4blast.sqlite3; do
++            if [ ! -f ${db}/\$file ]; then
++                echo "Error: \$file not found in ${db}"
++                exit 1
++            fi
++            ln -s ${db}/\$file .
++        done
++    fi
++
+     blastn \\
+         -num_threads ${task.cpus} \\
+         -db \$DB \\
+         -query ${fasta_name} \\
++        ${exclude_taxon} \\
+         ${args} \\
+-        -out ${prefix}.txt
++        -out ${prefix}.txt \\
++        2> >( tee "${prefix}.error.log" >&2 ) $command_epilog
++
++    if [[ -s "${prefix}.error.log" ]]
++    then
++        grep -qF 'BLAST Database error: Taxonomy ID(s) not found.Taxonomy ID(s) not found' "${prefix}.error.log"
++    fi
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+
+************************************************************
