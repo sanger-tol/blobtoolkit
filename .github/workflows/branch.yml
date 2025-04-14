@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # PRs to the nf-core repo main/master branch are only ok if coming from the nf-core repo `dev` or any `patch` branches
+      # Testing here
       - name: Check PRs
         if: github.repository == 'sanger-tol/blobtoolkit'
         run: |
