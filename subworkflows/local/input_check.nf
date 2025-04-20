@@ -13,12 +13,12 @@ include { JSONIFY_TAXDUMP           } from '../../modules/local/jsonify_taxdump'
 
 workflow INPUT_CHECK {
     take:
-    samplesheet     // channel: /path/to/samplesheet
-    fasta           // channel: [ meta, path(fasta) ]
-    taxon           // channel: val(taxon)
-    busco_lin       // channel: val([busco_lin])
-    lineage_tax_ids // channel: /path/to/lineage_tax_ids
-    databases
+        samplesheet     // channel: /path/to/samplesheet
+        fasta           // channel: [ meta, path(fasta) ]
+        taxon           // channel: val(taxon)
+        busco_lin       // channel: val([busco_lin])
+        lineage_tax_ids // channel: /path/to/lineage_tax_ids
+        databases
 
     main:
     ch_versions = Channel.empty()
@@ -31,7 +31,7 @@ workflow INPUT_CHECK {
     ch_dbs_for_untar = databases
         .branch { db_meta, db_path ->
             untar: db_path.name.endsWith( ".tar.gz" )
-            skip: true
+            skip:  ! db_path.name.endsWith(".tar.gz")
         }
 
     // Untar the databases
@@ -66,21 +66,30 @@ workflow INPUT_CHECK {
             .fromList(samplesheetToList(samplesheet, "assets/schema_fetchngs_input.json"))
             .map {it[0]}
             .branch { row ->
-                paired: row.fastq_2
-                    // Reformat for CAT_CAT
-                    [[id: row.run_accession, row:row], [row.fastq_1, row.fastq_2]]
-                not_paired: true
+                paired:     row.fastq_2 != null
+                not_paired: row.fastq_2 == null
             }
             .set { reads_pairedness }
 
-        CAT_CAT ( reads_pairedness.paired )
-        ch_versions = ch_versions.mix ( CAT_CAT.out.versions.first() )
+        reads_pairedness.paired
+            .map { row ->
+                def meta = [ id: row.run_accession, row: row ]
+                def files = [ row.fastq_1, row.fastq_2 ]
+                [ meta, files ]
+            }
+            .set { reads_for_cat_cat }
+
+        CAT_CAT(reads_for_cat_cat)
+        ch_versions = ch_versions.mix( CAT_CAT.out.versions.first() )
 
         CAT_CAT.out.file_out
-        | map { meta, file -> meta.row + [fastq_1: file] }
-        | mix ( reads_pairedness.not_paired )
-        | map { create_data_channels_from_fetchngs(it) }
-        | set { read_files }
+            .map { meta, file ->
+            // reconstruct a “row” map with the new fastq_1 path
+                meta.row + [ fastq_1: file ]
+            }
+            .mix( reads_pairedness.not_paired )
+            .map { row -> create_data_channels_from_fetchngs(row) }
+            .set { read_files }
 
     } else {
         Channel
@@ -114,7 +123,7 @@ workflow INPUT_CHECK {
         ch_databases.blastn,
         lineage_tax_ids,
         reads.collect(flat: false).ifEmpty([]),
-        db_paths.collect(flat: false),
+        db_paths.collect(flat: false)
     )
     ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions.first())
 
@@ -123,32 +132,25 @@ workflow INPUT_CHECK {
     // Parse the CSV file
     //
     GENERATE_CONFIG.out.csv
-    | map { meta, csv -> csv }
-    | splitCsv(header: ['key', 'value'])
-    | branch {
-        taxon_id: it.key == "taxon_id"
-                    return it.value
-        busco_lineage: it.key == "busco_lineage"
-                    return it.value
-    }
-    | set { ch_parsed_csv }
+        .map    { meta, csv -> csv }
+        .splitCsv(header: ['key','value'])
+        .branch { rec ->                                  // branch *only* on boolean tests
+            taxon_id:      rec.key == 'taxon_id'
+            busco_lineage: rec.key == 'busco_lineage'
+        }
+        .set { ch_parsed_csv }
 
-
-    //
-    // Get the taxon ID if we do taxon filtering in blast* searches
-    //
+    // 1. taxon_id → single value (apply skip_taxon_filtering if set)
     ch_parsed_csv.taxon_id
-    | map { params.skip_taxon_filtering ? '' : it }
-    | first
-    | set { ch_taxon_id }
-
-
-    //
-    // Get the BUSCO linages
-    //
+        .map { rec -> params.skip_taxon_filtering ? '' : rec.value }
+        .first()
+        .set { ch_taxon_id }
+    // 2. busco_lineage → potentially multiple lineages
     ch_parsed_csv.busco_lineage
-    | collect
-    | set { ch_busco_lineages }
+        .map    { rec -> rec.value }
+        .collect()
+        .set    { ch_busco_lineages }
+
 
     // Format pre-computed BUSCOs (if provided)
     // Parse the BUSCO output directories
@@ -161,6 +163,7 @@ workflow INPUT_CHECK {
             }
         }
 
+
     // Remove any invalid lineages from precomputed_busco
     ch_busco_lineages_list = ch_busco_lineages.flatten()
     ch_parsed_busco_filtered = ch_parsed_busco
@@ -169,54 +172,55 @@ workflow INPUT_CHECK {
         }
     ch_parsed_busco_filtered = ch_parsed_busco_filtered.ifEmpty { Channel.value([]) }
 
+
     //
     // Get the BUSCO path if set
     //
     ch_databases.busco
-    | map { _, db_path -> db_path }
-    | ifEmpty( [] )
-    | set { ch_busco_db }
+    .map { _, db_path -> db_path }
+    .ifEmpty { Channel.empty() }
+    .set { ch_busco_db }
 
 
-    //
     // Convert the taxdump to a JSON file if there isn't one yet
-    //
     ch_databases.taxdump
-    | filter { meta, db_path -> ! db_path.isFile() }
-    | map { meta, db_path -> [meta, db_path, db_path.listFiles().find { it.getName().endsWith('.json') }] }
-    | branch { meta, db_path, json_path ->
-        json: json_path
-                return [meta, json_path]
-        dir: true
-                return [meta, db_path]
-    }
-    | set { taxdump_dirs }
+        .filter  { meta, db -> ! db.isFile() }
+        .map     { meta, db ->
+            def existing = db.listFiles().find { it.name.endsWith('.json') }
+            [ meta, db, existing ]
+        }
+        .branch  { meta, db, existing ->
+            needsJson: existing == null
+            hasJson  : existing != null
+        }
+        .set { taxdump_branched }
 
-    JSONIFY_TAXDUMP( taxdump_dirs.dir )
-    ch_versions = ch_versions.mix(JSONIFY_TAXDUMP.out.versions.first())
+    taxdump_needsJson = taxdump_branched.needsJson
+    taxdump_hasJson   = taxdump_branched.hasJson
 
-    ch_databases.taxdump
-    | filter { meta, db_path -> db_path.isFile() }
-    | mix ( taxdump_dirs.json )
-    | mix( JSONIFY_TAXDUMP.out.json )
-    | map { _, db_path -> db_path }
-    | set { ch_taxdump }
-
+    // 1) Generate new JSON for those that need it
+    JSONIFY_TAXDUMP( taxdump_needsJson.map { meta, db, _ -> [meta, db] } )
+    ch_versions = ch_versions.mix( JSONIFY_TAXDUMP.out.versions.first() )
+    // 2) Merge the newly‐made JSON with the ones we already had
+    taxdump_hasJson.map { meta, db, existing -> existing }
+        .mix( JSONIFY_TAXDUMP.out.json.map { meta, json -> json } )
+        .mix( ch_databases.taxdump.filter { meta, db -> db.isFile() }.map { meta, db -> db } )
+        .set { ch_taxdump }
 
     emit:
-    reads                                   // channel: [ val(meta), path(datafile) ]
-    config = GENERATE_CONFIG.out.yaml       // channel: [ val(meta), path(yaml) ]
-    synonyms_tsv = GENERATE_CONFIG.out.synonyms_tsv     // channel: [ val(meta), path(tsv) ]
-    categories_tsv = GENERATE_CONFIG.out.categories_tsv // channel: [ val(meta), path(tsv) ]
-    taxon_id = ch_taxon_id                  // channel: val(taxon_id)
-    busco_lineages = ch_busco_lineages      // channel: val([busco_lin])
-    blastn = ch_databases.blastn.first()    // channel: [ val(meta), path(blastn_db) ]
-    blastp = ch_databases.blastp.first()    // channel: [ val(meta), path(blastp_db) ]
-    blastx = ch_databases.blastx.first()    // channel: [ val(meta), path(blastx_db) ]
-    precomputed_busco = ch_parsed_busco     // channel: [ val(meta), path(busco_run_dir) ]
-    busco_db = ch_busco_db.first()          // channel: [ path(busco_db) ]
-    taxdump = ch_taxdump.first()            // channel: [ path(taxdump) ]
-    versions = ch_versions                  // channel: [ versions.yml ]
+        reads                                   // channel: [ val(meta), path(datafile) ]
+        config = GENERATE_CONFIG.out.yaml       // channel: [ val(meta), path(yaml) ]
+        synonyms_tsv = GENERATE_CONFIG.out.synonyms_tsv     // channel: [ val(meta), path(tsv) ]
+        categories_tsv = GENERATE_CONFIG.out.categories_tsv // channel: [ val(meta), path(tsv) ]
+        taxon_id = ch_taxon_id                  // channel: val(taxon_id)
+        busco_lineages = ch_busco_lineages      // channel: val([busco_lin])
+        blastn = ch_databases.blastn.first()    // channel: [ val(meta), path(blastn_db) ]
+        blastp = ch_databases.blastp.first()    // channel: [ val(meta), path(blastp_db) ]
+        blastx = ch_databases.blastx.first()    // channel: [ val(meta), path(blastx_db) ]
+        precomputed_busco = ch_parsed_busco     // channel: [ val(meta), path(busco_run_dir) ]
+        busco_db = ch_busco_db.first()          // channel: [ path(busco_db) ]
+        taxdump = ch_taxdump.first()            // channel: [ path(taxdump) ]
+        versions = ch_versions                  // channel: [ versions.yml ]
 }
 
 // Function to get list of [ meta, datafile ]
