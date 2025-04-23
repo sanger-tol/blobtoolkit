@@ -48,7 +48,7 @@ process BLAST_BLASTN {
         done
     fi
 
-    timeout 12h blastn \\
+    timeout 11.9h blastn \\
       -num_threads ${task.cpus} \\
       -db \$DB \\
       -query ${fasta_name} \\
