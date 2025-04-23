@@ -55,7 +55,7 @@ process BLAST_BLASTN {
       ${exclude_taxon} \\
       ${args} \\
       -out ${prefix}.txt \\
-      2> >( tee "${prefix}.error.log" >&2 ) $command_epilog
+      2> >( tee "${prefix}.error.log" >&2 ) $command_epilog || true
 
     # Fallback if blastn fails or times out — make sure output exists
     if [ ! -s "${prefix}.txt" ]; then
