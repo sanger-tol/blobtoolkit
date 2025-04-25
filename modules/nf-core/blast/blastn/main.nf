@@ -49,13 +49,13 @@ process BLAST_BLASTN {
     fi
 
     timeout 11.9h blastn \\
-      -num_threads ${task.cpus} \\
-      -db \$DB \\
-      -query ${fasta_name} \\
-      ${exclude_taxon} \\
-      ${args} \\
-      -out ${prefix}.txt \\
-      2> >( tee "${prefix}.error.log" >&2 ) $command_epilog || true
+        -num_threads ${task.cpus} \\
+        -db \$DB \\
+        -query ${fasta_name} \\
+        ${exclude_taxon} \\
+        ${args} \\
+        -out ${prefix}.txt \\
+        2> >( tee "${prefix}.error.log" >&2 ) $command_epilog || true
 
     # Fallback if blastn fails or times out — make sure output exists
     if [ ! -s "${prefix}.txt" ]; then
