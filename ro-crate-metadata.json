@@ -22,7 +22,7 @@
             "@id": "./",
             "@type": "Dataset",
             "creativeWorkStatus": "Stable",
-            "datePublished": "2025-04-05T10:32:51+00:00",
+            "datePublished": "2025-04-25T07:30:29+00:00",
             "description": "# ![sanger-tol/blobtoolkit](docs/images/sanger-tol-blobtoolkit_logo.png)\n\n[![GitHub Actions CI Status](https://github.com/sanger-tol/blobtoolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/sanger-tol/blobtoolkit/actions/workflows/ci.yml)\n[![GitHub Actions Linting Status](https://github.com/sanger-tol/blobtoolkit/actions/workflows/linting.yml/badge.svg)](https://github.com/sanger-tol/blobtoolkit/actions/workflows/linting.yml)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.7949058-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.7949058)\n\n<!--[![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)-->\n\n[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A524.04.2-23aa62.svg)](https://www.nextflow.io/)\n[![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=conda)](https://docs.conda.io/en/latest/)\n[![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)\n[![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)\n[![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://cloud.seqera.io/launch?pipeline=https://github.com/sanger-tol/blobtoolkit)\n\n## Introduction\n\n**sanger-tol/blobtoolkit** is a bioinformatics pipeline that can be used to identify and analyse non-target DNA for eukaryotic genomes.\nIt takes a samplesheet of BAM/CRAM/FASTQ/FASTA files as input, calculates genome statistics, coverage and completeness information, combines them in a TSV file by window size to create a BlobDir dataset and static plots.\n\n1. Calculate genome statistics in windows ([`fastawindows`](https://github.com/tolkit/fasta_windows))\n2. Calculate Coverage ([`blobtk/depth`](https://github.com/blobtoolkit/blobtk))\n3. Determine the appropriate BUSCO lineages from the taxonomy.\n4. Run BUSCO ([`busco`](https://busco.ezlab.org/))\n5. Extract BUSCO genes ([`blobtoolkit/extractbuscos`](https://github.com/blobtoolkit/blobtoolkit))\n6. Run Diamond BLASTp against extracted BUSCO genes ([`diamond/blastp`](https://github.com/bbuchfink/diamond))\n7. Run BLASTx against sequences with no hit ([`diamond/blastx`](https://github.com/bbuchfink/diamond))\n8. Run BLASTn against sequences still with not hit ([`blast/blastn`](https://www.ncbi.nlm.nih.gov/books/NBK131777/))\n9. Count BUSCO genes ([`blobtoolkit/countbuscos`](https://github.com/blobtoolkit/blobtoolkit))\n10. Generate combined sequence stats across various window sizes ([`blobtoolkit/windowstats`](https://github.com/blobtoolkit/blobtoolkit))\n11. Imports analysis results into a BlobDir dataset ([`blobtoolkit/blobdir`](https://github.com/blobtoolkit/blobtoolkit))\n12. Create static plot images ([`blobtk/images`](https://github.com/blobtoolkit/blobtk))\n\n## Usage\n\n> [!NOTE]\n> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.\n\nFirst, prepare a samplesheet with your input data that looks as follows:\n\n`samplesheet.csv`:\n\n```csv\nsample,datatype,datafile,library_layout\nmMelMel3,hic,GCA_922984935.2.hic.mMelMel3.cram,PAIRED\nmMelMel1,illumina,GCA_922984935.2.illumina.mMelMel1.cram,PAIRED\nmMelMel3,ont,GCA_922984935.2.ont.mMelMel3.cram,SINGLE\n```\n\nEach row represents an aligned file.\nRows with the same sample identifier are considered technical replicates.\nThe datatype refers to the sequencing technology used to generate the underlying raw data and follows a controlled vocabulary (`ont`, `hic`, `pacbio`, `pacbio_clr`, `illumina`).\nThe library layout indicates whether the reads are paired or single.\nThe aligned read files can be generated using the [sanger-tol/readmapping](https://github.com/sanger-tol/readmapping) pipeline.\n\nNow, you can run the pipeline using:\n\n```bash\nnextflow run sanger-tol/blobtoolkit \\\n   -profile <docker/singularity/.../institute> \\\n   --input samplesheet.csv \\\n   --outdir <OUTDIR> \\\n   --fasta genome.fasta \\\n   --accession GCA_XXXXXXXXX.X \\\n   --taxon XXXX \\\n   --taxdump /path/to/taxdump/database \\\n   --blastp /path/to/diamond/database \\\n   --blastn /path/to/blastn/database \\\n   --blastx /path/to/blastx/database\n```\n\n> [!WARNING]\n> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/usage/getting_started/configuration#custom-configuration-files).\n\nFor more details, please refer to the [usage documentation](https://pipelines.tol.sanger.ac.uk/blobtoolkit/usage) and the [parameter documentation](https://pipelines.tol.sanger.ac.uk/blobtoolkit/parameters).\n\n## Pipeline output\n\nFor more details about the output files and reports, please refer to the [output documentation](https://pipelines.tol.sanger.ac.uk/blobtoolkit/output).\n\n## Credits\n\nsanger-tol/blobtoolkit was written in Nextflow by [Alexander Ramos Diaz](https://github.com/alxndrdiaz), [Zaynab Butt](https://github.com/zb32), [Matthieu Muffato](https://github.com/muffato), and [Priyanka Surana](https://github.com/priyanka-surana). The orignal design and coding for [BlobToolKit software and Snakemake pipeline](https://github.com/blobtoolkit/blobtoolkit) was done by [Richard Challis](https://github.com/rjchallis) and [Sujai Kumar](https://github.com/sujaikumar).\n\nWe thank the following people for their assistance in the development of this pipeline:\n\n- [Guoying Qi](https://github.com/gq1)\n- [Bethan Yates](https://github.com/BethYates)\n\n## Contributions and Support\n\nIf you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).\n\n## Citations\n\nIf you use sanger-tol/blobtoolkit for your analysis, please cite it using the following doi: [10.5281/zenodo.7949058](https://doi.org/10.5281/zenodo.7949058)\n\nAn extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.\n\nThis pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/main/LICENSE).\n\n> **The nf-core framework for community-curated bioinformatics pipelines.**\n>\n> Philip Ewels, Alexander Peltzer, Sven Fillinger, Harshil Patel, Johannes Alneberg, Andreas Wilm, Maxime Ulysse Garcia, Paolo Di Tommaso & Sven Nahnsen.\n>\n> _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).\n",
             "hasPart": [
                 {
@@ -105,7 +105,7 @@
             },
             "mentions": [
                 {
-                    "@id": "#6ab81de5-a58b-4bde-9dee-43a5fc537b90"
+                    "@id": "#9fa2220b-2b8c-42fb-b146-4b0f8fc8428b"
                 }
             ],
             "name": "sanger-tol/blobtoolkit"
@@ -160,11 +160,14 @@
                     "@id": "https://orcid.org/0000-0003-1262-8973"
                 },
                 {
+                    "@id": "https://orcid.org/0000-0003-4765-4872"
+                },
+                {
                     "@id": "https://orcid.org/0000-0003-1658-1762"
                 }
             ],
             "dateCreated": "",
-            "dateModified": "2025-04-05T11:32:51Z",
+            "dateModified": "2025-04-25T08:30:29Z",
             "dct:conformsTo": "https://bioschemas.org/profiles/ComputationalWorkflow/1.0-RELEASE/",
             "keywords": [
                 "nf-core",
@@ -208,11 +211,11 @@
             "version": "!>=24.04.2"
         },
         {
-            "@id": "#6ab81de5-a58b-4bde-9dee-43a5fc537b90",
+            "@id": "#9fa2220b-2b8c-42fb-b146-4b0f8fc8428b",
             "@type": "TestSuite",
             "instance": [
                 {
-                    "@id": "#884b53f5-ecd5-44b6-965f-cea18df6c565"
+                    "@id": "#f448fb58-b2b6-4e9e-8996-81a6ccbe4ba0"
                 }
             ],
             "mainEntity": {
@@ -221,7 +224,7 @@
             "name": "Test suite for sanger-tol/blobtoolkit"
         },
         {
-            "@id": "#884b53f5-ecd5-44b6-965f-cea18df6c565",
+            "@id": "#f448fb58-b2b6-4e9e-8996-81a6ccbe4ba0",
             "@type": "TestInstance",
             "name": "GitHub Actions workflow for testing sanger-tol/blobtoolkit",
             "resource": "repos/sanger-tol/blobtoolkit/actions/workflows/ci.yml",
@@ -411,6 +414,14 @@
             "email": "ra.ramos.diaz@gmail.com",
             "name": "Ramos D\u00edaz, Alexander",
             "url": "https://github.com/alxndrdiaz"
+        },
+        {
+            "@id": "https://orcid.org/0000-0003-4765-4872",
+            "@type": "Person",
+            "affiliation": "Wellcome Sanger Institute",
+            "email": "yy5@sanger.ac.uk",
+            "name": "Sims, Yumi",
+            "url": "https://github.com/yumisims"
         },
         {
             "@id": "https://orcid.org/0000-0002-7167-0875",
