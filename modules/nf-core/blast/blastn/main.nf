@@ -58,9 +58,10 @@ process BLAST_BLASTN {
         2> >( tee "${prefix}.error.log" >&2 ) $command_epilog || true
 
     # Fallback if blastn fails or times out — make sure output exists
-    if [ ! -s "${prefix}.txt" ]; then
-    echo "blastn failed or timed out — creating empty output"
-    touch "${prefix}.txt"
+    if [[ ! -s "${prefix}.txt" ]]
+    then
+        echo "blastn failed or timed out — creating empty output"
+        touch "${prefix}.txt"
     fi
 
     if [[ -s "${prefix}.error.log" ]]
