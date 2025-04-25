@@ -24,7 +24,6 @@ process BLAST_BLASTN {
     def is_compressed = fasta.getExtension() == "gz" ? true : false
     def fasta_name = is_compressed ? fasta.getBaseName() : fasta
     def exclude_taxon = taxid ? "-negative_taxids ${taxid}" : ''
-    def command_epilog = taxid ? "|| true" : ''
 
     """
     if [ "${is_compressed}" == "true" ]; then

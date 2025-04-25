@@ -18,16 +18,15 @@ Changes in 'blast/blastn/main.nf':
  
      output:
      tuple val(meta), path('*.txt'), emit: txt
-@@ -23,6 +23,8 @@
+@@ -23,6 +23,7 @@
      def prefix = task.ext.prefix ?: "${meta.id}"
      def is_compressed = fasta.getExtension() == "gz" ? true : false
      def fasta_name = is_compressed ? fasta.getBaseName() : fasta
 +    def exclude_taxon = taxid ? "-negative_taxids ${taxid}" : ''
-+    def command_epilog = taxid ? "|| true" : ''
  
      """
      if [ "${is_compressed}" == "true" ]; then
-@@ -35,12 +37,37 @@
+@@ -35,12 +36,37 @@
      fi
      echo Using \$DB
  
