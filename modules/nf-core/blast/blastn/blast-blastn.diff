@@ -1,4 +1,6 @@
-Changes in module 'nf-core/blast/blastn'
+Changes in component 'nf-core/blast/blastn'
+'modules/nf-core/blast/blastn/meta.yml' is unchanged
+Changes in 'blast/blastn/main.nf':
 --- modules/nf-core/blast/blastn/main.nf
 +++ modules/nf-core/blast/blastn/main.nf
 @@ -1,6 +1,5 @@
@@ -25,10 +27,11 @@ Changes in module 'nf-core/blast/blastn'
  
      """
      if [ "${is_compressed}" == "true" ]; then
-@@ -35,12 +37,30 @@
+@@ -35,12 +37,37 @@
      fi
      echo Using \$DB
  
+-    blastn \\
 +    if [ -n "${taxid}" ]; then
 +        # Symlink the tax* files (needed for -taxid options to work)
 +        for file in taxdb.btd taxdb.bti taxonomy4blast.sqlite3; do
@@ -40,7 +43,7 @@ Changes in module 'nf-core/blast/blastn'
 +        done
 +    fi
 +
-     blastn \\
++    timeout 11.9h blastn \\
          -num_threads ${task.cpus} \\
          -db \$DB \\
          -query ${fasta_name} \\
@@ -48,7 +51,14 @@ Changes in module 'nf-core/blast/blastn'
          ${args} \\
 -        -out ${prefix}.txt
 +        -out ${prefix}.txt \\
-+        2> >( tee "${prefix}.error.log" >&2 ) $command_epilog
++        2> >( tee "${prefix}.error.log" >&2 ) || true
++
++    # Fallback if blastn fails or times out — make sure output exists
++    if [[ ! -s "${prefix}.txt" ]]
++    then
++        echo "blastn failed or timed out — creating empty output"
++        touch "${prefix}.txt"
++    fi
 +
 +    if [[ -s "${prefix}.error.log" ]]
 +    then
@@ -58,4 +68,9 @@ Changes in module 'nf-core/blast/blastn'
      cat <<-END_VERSIONS > versions.yml
      "${task.process}":
 
+'modules/nf-core/blast/blastn/environment.yml' is unchanged
+'modules/nf-core/blast/blastn/tests/main.nf.test' is unchanged
+'modules/nf-core/blast/blastn/tests/tags.yml' is unchanged
+'modules/nf-core/blast/blastn/tests/nextflow.config' is unchanged
+'modules/nf-core/blast/blastn/tests/main.nf.test.snap' is unchanged
 ************************************************************
