@@ -24,7 +24,6 @@ process BLAST_BLASTN {
     def is_compressed = fasta.getExtension() == "gz" ? true : false
     def fasta_name = is_compressed ? fasta.getBaseName() : fasta
     def exclude_taxon = taxid ? "-negative_taxids ${taxid}" : ''
-    def command_epilog = taxid ? "|| true" : ''
 
     """
     if [ "${is_compressed}" == "true" ]; then
@@ -48,14 +47,21 @@ process BLAST_BLASTN {
         done
     fi
 
-    blastn \\
+    timeout 11.9h blastn \\
         -num_threads ${task.cpus} \\
         -db \$DB \\
         -query ${fasta_name} \\
         ${exclude_taxon} \\
         ${args} \\
         -out ${prefix}.txt \\
-        2> >( tee "${prefix}.error.log" >&2 ) $command_epilog
+        2> >( tee "${prefix}.error.log" >&2 ) || true
+
+    # Fallback if blastn fails or times out — make sure output exists
+    if [[ ! -s "${prefix}.txt" ]]
+    then
+        echo "blastn failed or timed out — creating empty output"
+        touch "${prefix}.txt"
+    fi
 
     if [[ -s "${prefix}.error.log" ]]
     then
