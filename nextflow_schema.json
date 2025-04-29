@@ -32,6 +32,11 @@
                     "description": "Turn on optional genome masking if needed.",
                     "fa_icon": "fas fa-toggle-off"
                 },
+                "metaeuk": {
+                    "type": "boolean",
+                    "description": "Turn on optional gene prediction mode metaeuk if needed.",
+                    "fa_icon": "fas fa-toggle-off"
+                },
                 "skip_taxon_filtering": {
                     "type": "boolean",
                     "description": "Skip filtering out hits from the same species in blast* searches.",
