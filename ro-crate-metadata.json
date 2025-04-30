@@ -192,10 +192,10 @@
             },
             "url": [
                 "https://github.com/sanger-tol/blobtoolkit",
-                "https://nf-co.re/sanger-tol/blobtoolkit/0.7.1/"
+                "https://nf-co.re/sanger-tol/blobtoolkit/0.8.0/"
             ],
             "version": [
-                "0.7.1"
+                "0.8.0"
             ]
         },
         {

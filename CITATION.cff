@@ -63,7 +63,7 @@ license: MIT
 message: If you use this software, please cite it using the metadata from this file
   and all references from CITATIONS.md .
 repository-code: https://github.com/sanger-tol/blobtoolkit
-title: sanger-tol/blobtoolkit v0.7.1 - Psyduck (patch 1)
+title: sanger-tol/blobtoolkit v0.8.0 - 
 type: software
 url: https://pipelines.tol.sanger.ac.uk/blobtoolkit
-version: 0.7.1
+version: 0.8.0
