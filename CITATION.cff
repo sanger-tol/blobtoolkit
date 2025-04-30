@@ -57,7 +57,6 @@ authors:
     orcid: https://orcid.org/0000-0003-1658-1762
     website: https://github.com/BethYates
 cff-version: 1.2.0
-commit: 098e1587b4bd1297f4aa11887499f0b6d687e278
 date-released: "2025-04-25"
 doi: 10.5281/zenodo.7949058
 license: MIT
