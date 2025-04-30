@@ -53,8 +53,21 @@ def parse_args(args=None):
     parser.add_argument("--taxdump", help="Path to the taxonomy database", required=True)
     parser.add_argument("--precomputed_busco", action="append", help="Path to precomputed BUSCO outputs", required=False)
     parser.add_argument("--version", action="version", version="%(prog)s 2.0")
-    return parser.parse_args(args)
+    args = parser.parse_args(args)
 
+    if not args.read_id and not args.read_type and not args.read_layout and not args.read_path:
+        # All read arguments skipped, OK
+        pass
+    elif args.read_id and args.read_type and args.read_layout and args.read_path:
+        # All read arguments passed
+        if set([len(args.read_id), len(args.read_type), len(args.read_layout), len(args.read_path)]) != 1:
+            print(f"The --read_id, --read_type, --read_layout, and --read_path, must be passed the same number of times", file=sys.stderr)
+            sys.exit(1)
+    else:
+        print(f"The --read_id, --read_type, --read_layout, and --read_path, must be passed the same number of times", file=sys.stderr)
+        sys.exit(1)
+
+    return args
 
 def make_dir(path):
     if len(path) > 0:
@@ -360,7 +373,7 @@ def main(args=None):
     if sequence_report:
         print_tsvs(args.output_prefix, sequence_report)
 
-    reads = zip(args.read_id, args.read_type, args.read_layout, args.read_path)
+    reads = zip(args.read_id, args.read_type, args.read_layout, args.read_path) if args.read_id else []
 
     print_yaml(
         f"{args.output_prefix}.yaml",
