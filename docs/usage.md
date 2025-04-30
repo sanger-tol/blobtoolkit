@@ -45,7 +45,7 @@ sample3,ont,ont.cram,SINGLE
 | `datafile`       | Full path to read data file.                                                                                                                                                          |
 | `library_layout` | Layout of the library. Must be one of `SINGLE`, `PAIRED`.                                                                                                                             |
 
-An [example samplesheet](assets/test/samplesheet.csv) has been provided with the pipeline.
+An [example samplesheet](../assets/test/samplesheet.csv) has been provided with the pipeline.
 
 ### Support for [nf-core/fetchngs](https://nf-co.re/fetchngs)
 
