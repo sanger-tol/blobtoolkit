@@ -45,7 +45,7 @@ sample3,ont,ont.cram,SINGLE
 | `datafile`       | Full path to read data file.                                                                                                                                                          |
 | `library_layout` | Layout of the library. Must be one of `SINGLE`, `PAIRED`.                                                                                                                             |
 
-An [example samplesheet](assets/test/samplesheet.csv) has been provided with the pipeline.
+An [example samplesheet](../assets/test/samplesheet.csv) has been provided with the pipeline.
 
 ### Support for [nf-core/fetchngs](https://nf-co.re/fetchngs)
 
@@ -261,31 +261,31 @@ see <https://training.nextflow.io/basic_training/config/> for some examples.
 Here is a full list of snakemake subworkflows and their Nextflow couterparts:
 
 - **`minimap.smk`**
-  - Implemented as [`minimap_alignment.nf`](subworkflows/local/minimap_alignment.nf).
+  - Implemented as [`minimap_alignment.nf`](../subworkflows/local/minimap_alignment.nf).
   - Optimised alignment is done using the [sanger-tol/readmapping](https://github.com/sanger-tol/readmapping) pipeline.
 - **`windowmasker.smk`**
-  - Implemented as part of [`prepare_genome.nf`](subworkflows/local/prepare_genome.nf).
+  - Implemented as part of [`prepare_genome.nf`](../subworkflows/local/prepare_genome.nf).
   - Genomes downloaded by [sanger-tol/insdcdownload](https://github.com/sanger-tol/insdcdownload) are already masked.
 - **`chunk_stats.smk`**
-  - Modified implementation as part of [`coverage_stats.nf`](subworkflows/local/coverage_stats.nf).
+  - Modified implementation as part of [`coverage_stats.nf`](../subworkflows/local/coverage_stats.nf).
   - BED file and additional statistics calculated using [`fasta_windows`](https://github.com/tolkit/fasta_windows).
 - **`busco.smk`**
-  - Implemented as [`busco_diamond_blastp.nf`](subworkflows/local/busco_diamond_blastp.nf).
+  - Implemented as [`busco_diamond_blastp.nf`](../subworkflows/local/busco_diamond_blastp.nf).
 - **`cov_stats.smk`**
-  - Implemented as part of [`coverage_stats.nf`](subworkflows/local/coverage_stats.nf).
-  - Combining the various tsv files is done in subworkflow [`collate_stats.nf`](subworkflows/local/collate_stats.nf).
+  - Implemented as part of [`coverage_stats.nf`](../subworkflows/local/coverage_stats.nf).
+  - Combining the various tsv files is done in subworkflow [`collate_stats.nf`](../subworkflows/local/collate_stats.nf).
 - **`window_stats.smk`**
-  - Implemented as part of [`collate_stats.nf`](subworkflows/local/collate_stats.nf).
+  - Implemented as part of [`collate_stats.nf`](../subworkflows/local/collate_stats.nf).
 - **`diamond_blastp.smk`**
-  - Implemented as [`busco_diamond_blastp.nf`](subworkflows/local/busco_diamond_blastp.nf).
+  - Implemented as [`busco_diamond_blastp.nf`](../subworkflows/local/busco_diamond_blastp.nf).
 - **`diamond.smk`**
-  - Implemented as [`run_blastx.nf`](subworkflows/local/run_blastx.nf).
+  - Implemented as [`run_blastx.nf`](../subworkflows/local/run_blastx.nf).
 - **`blastn.smk`**
-  - Implemented as [`run_blastn.nf`](subworkflows/local/run_blastn.nf).
+  - Implemented as [`run_blastn.nf`](../subworkflows/local/run_blastn.nf).
 - **`blobtools.smk`**
-  - Implemented as [`blobtools.nf`](subworkflows/local/blobtools.nf).
+  - Implemented as [`blobtools.nf`](../subworkflows/local/blobtools.nf).
 - **`view.smk`**
-  - Implemented as [`view.nf`](subworkflows/local/view.nf).
+  - Implemented as [`view.nf`](../subworkflows/local/view.nf).
 
 ### Software dependencies
 
