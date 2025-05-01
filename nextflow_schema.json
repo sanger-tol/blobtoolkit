@@ -50,7 +50,6 @@
                 },
                 "busco_gene_predictor": {
                     "type": "string",
-                    "pattern": "([^,]+_odb10,)*[^,]+_odb10",
                     "description": "Name of the gene predictor to run BUSCO on. By default, the pipeline will automatically select miniprot for gene prediction.",
                     "fa_icon": "fas fa-bone"
                 },
