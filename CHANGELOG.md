@@ -3,11 +3,12 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[0.8.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.8.0)] –  – [2025-05-02]
+## [[0.8.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.8.0)] – – [2025-05-02]
 
 ### Enhancements & fixes
 
 - Runtime of the blast commands is now capped at 12 hours
+- Added an option to control the gene predictor used in Busco
 - nf-core template upgrade (to version 3.2.1)
 - Documentation fixes (broken links)
 
