@@ -48,6 +48,12 @@
                     "description": "Name of the ODB10 lineages to run BUSCO on. By default, the pipeline will automatically select the correct lineage based on the taxonomy.",
                     "fa_icon": "fas fa-bone"
                 },
+                "busco_gene_predictor": {
+                    "type": "string",
+                    "enum": ["miniprot", "metaeuk", "augustus"],
+                    "description": "Name of the gene predictor to run BUSCO on. By default, the pipeline will automatically select miniprot for gene prediction.",
+                    "fa_icon": "fas fa-bone"
+                },
                 "precomputed_busco": {
                     "type": "string",
                     "format": "path",
