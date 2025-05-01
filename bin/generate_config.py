@@ -60,7 +60,7 @@ def parse_args(args=None):
         pass
     elif args.read_id and args.read_type and args.read_layout and args.read_path:
         # All read arguments passed
-        if set([len(args.read_id), len(args.read_type), len(args.read_layout), len(args.read_path)]) != 1:
+        if len(set([len(args.read_id), len(args.read_type), len(args.read_layout), len(args.read_path)])) != 1:
             print(f"The --read_id, --read_type, --read_layout, and --read_path, must be passed the same number of times", file=sys.stderr)
             sys.exit(1)
     else:
