@@ -5,7 +5,7 @@ process BLOBTOOLKIT_CREATEBLOBDIR {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         exit 1, "BLOBTOOLKIT_BLOBDIR module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
-    container "docker.io/genomehubs/blobtoolkit:4.4.5"
+    container "docker.io/genomehubs/blobtoolkit:develop"
 
     input:
     tuple val(meta), path(window, stageAs: 'windowstats/*')
@@ -32,7 +32,7 @@ process BLOBTOOLKIT_CREATEBLOBDIR {
         --meta ${yaml} \\
         --taxdump \$(dirname ${taxdump}) \\
         --taxrule buscogenes \\
-        ${busco_args} \\
+        --busco lineage01/full_table.tsv --busco lineage02/full_table.tsv --busco lineage03/full_table.tsv  \\
         ${hits_blastp} \\
         --threads ${task.cpus} \\
         $args \\

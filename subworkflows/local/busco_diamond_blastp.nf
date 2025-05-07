@@ -25,7 +25,8 @@ workflow BUSCO_DIAMOND {
     // Prepare the BUSCO lineages
     //
     // 0. Initialise sone variables
-    basal_lineages = [ "eukaryota_odb10", "bacteria_odb10", "archaea_odb10" ]
+    //basal_lineages = [ "eukaryota_odb10", "bacteria_odb10", "archaea_odb10" ]
+    basal_lineages = [ "bacteria_odb10", "archaea_odb10" ]
     def lineage_position = 0
     // 1. Start from the taxon's lineages
     busco_lin
