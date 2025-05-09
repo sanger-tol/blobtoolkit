@@ -5,7 +5,7 @@ process BLOBTOOLKIT_CREATEBLOBDIR {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         exit 1, "BLOBTOOLKIT_BLOBDIR module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
-    container "docker.io/genomehubs/blobtoolkit:develop"
+    container "docker.io/genomehubs/blobtoolkit:4.4.6"
 
     input:
     tuple val(meta), path(window, stageAs: 'windowstats/*')
