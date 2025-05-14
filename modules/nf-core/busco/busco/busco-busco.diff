@@ -3,23 +3,14 @@ Changes in component 'nf-core/busco/busco'
 Changes in 'busco/busco/main.nf':
 --- modules/nf-core/busco/busco/main.nf
 +++ modules/nf-core/busco/busco/main.nf
-@@ -1,6 +1,6 @@
+@@ -1,6 +1,5 @@
  process BUSCO_BUSCO {
 -    tag "${meta.id}"
 -    label 'process_medium'
-+    
 +    tag "${meta.id}_${lineage}"
  
      conda "${moduleDir}/environment.yml"
      container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-@@ -13,7 +13,6 @@
-     val lineage                           // Required:    lineage for checking against, or "auto/auto_prok/auto_euk" for enabling auto-lineage
-     path busco_lineages_path              // Recommended: BUSCO lineages file - downloads if not set
-     path config_file                      // Optional:    BUSCO configuration file
--    val clean_intermediates               // Optional:    Remove intermediate files
- 
-     output:
-     tuple val(meta), path("*-busco.batch_summary.txt")                                        , emit: batch_summary
 @@ -45,7 +44,7 @@
      def busco_lineage = lineage in ['auto', 'auto_prok', 'auto_euk']
          ? lineage.replaceFirst('auto', '--auto-lineage').replaceAll('_', '-')
