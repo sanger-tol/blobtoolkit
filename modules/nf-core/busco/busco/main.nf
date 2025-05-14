@@ -13,7 +13,6 @@ process BUSCO_BUSCO {
     val lineage                           // Required:    lineage for checking against, or "auto/auto_prok/auto_euk" for enabling auto-lineage
     path busco_lineages_path              // Recommended: BUSCO lineages file - downloads if not set
     path config_file                      // Optional:    BUSCO configuration file
-    val clean_intermediates               // Optional:    Remove intermediate files
 
     output:
     tuple val(meta), path("*-busco.batch_summary.txt")                                        , emit: batch_summary
