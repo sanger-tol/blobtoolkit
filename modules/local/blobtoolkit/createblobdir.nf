@@ -32,7 +32,7 @@ process BLOBTOOLKIT_CREATEBLOBDIR {
         --meta ${yaml} \\
         --taxdump \$(dirname ${taxdump}) \\
         --taxrule buscogenes \\
-        --busco lineage01/full_table.tsv --busco lineage02/full_table.tsv --busco lineage03/full_table.tsv  \\
+        ${busco_args} \\
         ${hits_blastp} \\
         --threads ${task.cpus} \\
         $args \\
