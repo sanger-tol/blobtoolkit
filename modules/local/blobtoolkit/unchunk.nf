@@ -5,7 +5,7 @@ process BLOBTOOLKIT_UNCHUNK {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         exit 1, "BLOBTOOLKIT_UNCHUNK module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
-    container "docker.io/genomehubs/blobtoolkit:4.4.5"
+    container "docker.io/genomehubs/blobtoolkit:4.4.6"
 
     input:
     tuple val(meta), path(blast_table)
