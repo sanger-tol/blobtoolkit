@@ -1,0 +1,2 @@
+sample,run_accession,instrument_platform,instrument_model,library_strategy,library_layout,fastq_1,fastq_2
+test,SRR123456,ILLUMINA,HiSeq2500,WGS,PAIRED,assets/test/reads_1.fastq.gz,assets/test/reads_2.fastq.gz
