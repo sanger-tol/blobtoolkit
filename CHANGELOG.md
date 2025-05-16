@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Enhancements & fixes
 
-- Runtime of the blast commands is now capped at 12 hours
-- Added an option to control the gene predictor used in Busco
-- nf-core template upgrade (to version 3.2.1)
-- Documentation fixes (broken links)
+- Runtime of the blast commands is now capped at 12 hours (#166)
+- Upgraded Busco and added an option to control the gene predictor used (#160, #174, #181)
+- nf-core template upgrade (to version 3.2.1) (#164, #176)
+- Documentation fixes (broken links) (#175)
+- Ability to run without any read data (#177)
 
 ### Software dependencies
 
