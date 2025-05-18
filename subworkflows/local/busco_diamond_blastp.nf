@@ -145,6 +145,7 @@ workflow BUSCO_DIAMOND {
                 ]
             }
     )
+    ch_versions = ch_versions.mix ( RESTRUCTUREBUSCODIR.out.versions.first() )
 
     //
     // Select input for BLOBTOOLKIT_EXTRACTBUSCOS
