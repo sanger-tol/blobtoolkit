@@ -19,6 +19,7 @@ workflow FINALISE_BLOBDIR {
     // MODULE: Update the software listed in the meta json file
     //
     BLOBTOOLKIT_UPDATEMETA ( blobdir, software )
+    ch_versions = ch_versions.mix ( BLOBTOOLKIT_UPDATEMETA.out.versions.first() )
 
     //
     // MODULE: Compress all the json files

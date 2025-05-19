@@ -1,48 +1,69 @@
-cff-version: 1.2.0
-title: sanger-tol/blobtoolkit v0.7.1
 authors:
-  - family-names: Butt
+  - affiliation: Wellcome Sanger Institute
+    family-names: Butt
     given-names: Zaynab
-    affiliation: Wellcome Sanger Institute
-    orcid: 0009-0009-7934-8440
-  - family-names: Chafin
+    orcid: https://orcid.org/0009-0009-7934-8440
+    website: https://github.com/zb32
+  - affiliation: Wellcome Sanger Institute
+    email: tc25@sanger.ac.uk
+    family-names: Chafin
     given-names: Tyler
-    affiliation: Wellcome Sanger Institute
-    orcid: 0000-0001-8687-5905
-  - family-names: Challis
+    orcid: https://orcid.org/0000-0001-8687-5905
+    website: https://github.com/tkchafin
+  - affiliation: Wellcome Sanger Institute
+    family-names: Challis
     given-names: Rich
-    affiliation: Wellcome Sanger Institute
-    orcid: 0000-0002-3502-1122
-  - family-names: Kumar
+    orcid: https://orcid.org/0000-0002-3502-1122
+    website: https://github.com/rjchallis
+  - affiliation: Wellcome Sanger Institute
+    email: sujaikumar@gmail.com
+    family-names: Kumar
     given-names: Sujai
-    affiliation: Wellcome Sanger Institute
-    orcid: 0000-0001-5902-6641
-  - family-names: Muffato
+    orcid: https://orcid.org/0000-0001-5902-6641
+    website: https://github.com/sujaikumar
+  - affiliation: Wellcome Sanger Institute
+    email: mm49@sanger.ac.uk
+    family-names: Muffato
     given-names: Matthieu
-    affiliation: Wellcome Sanger Institute
-    orcid: 0000-0002-7860-3560
-  - family-names: Pointon
-    given-names: Damon-Lee
-    affiliation: Wellcome Sanger Institute
-    orcid: 0000-0003-2949-6719
-  - family-names: Qi
+    orcid: https://orcid.org/0000-0002-7860-3560
+    website: https://github.com/muffato
+  - affiliation: Wellcome Sanger Institute
+    email: 729395+gq1@users.noreply.github.com
+    family-names: Qi
     given-names: Guoying
-    orcid: 0000-0003-1262-8973
-    affiliation: Wellcome Sanger Institute
-  - family-names: "Ramos D\xEDaz"
+    orcid: https://orcid.org/0000-0003-1262-8973
+    website: https://github.com/gq1
+  - email: ra.ramos.diaz@gmail.com
+    family-names: "Ramos D\xEDaz"
     given-names: Alexander
-    affiliation: Wellcome Sanger Institute
-    orcid: 0000-0001-6410-3349
-  - family-names: Surana
+    orcid: https://orcid.org/0000-0001-6410-3349
+    website: https://github.com/alxndrdiaz
+  - affiliation: Wellcome Sanger Institute
+    email: yy5@sanger.ac.uk
+    family-names: Sims
+    given-names: Yumi
+    orcid: https://orcid.org/0000-0003-4765-4872
+    website: https://github.com/yumisims
+  - affiliation: Wellcome Sanger Institute
+    email: ps22@sanger.ac.uk
+    family-names: Surana
     given-names: Priyanka
-    affiliation: Wellcome Sanger Institute
-    orcid: 0000-0002-7167-0875
-  - family-names: Yates
+    orcid: https://orcid.org/0000-0002-7167-0875
+    website: https://github.com/priyanka-surana
+  - affiliation: Wellcome Sanger Institute
+    email: 113996036+BethYates@users.noreply.github.com
+    family-names: Yates
     given-names: Bethan
-    affiliation: Wellcome Sanger Institute
-    orcid: 0000-0003-1658-1762
-doi: 10.5281/zenodo.13758882
-repository-code: "https://github.com/sanger-tol/blobtoolkit"
+    orcid: https://orcid.org/0000-0003-1658-1762
+    website: https://github.com/BethYates
+cff-version: 1.2.0
+date-released: "2025-04-25"
+doi: 10.5281/zenodo.7949058
 license: MIT
-version: 0.7.1
-date-released: "2024-09-13"
+message: If you use this software, please cite it using the metadata from this file
+  and all references from CITATIONS.md .
+repository-code: https://github.com/sanger-tol/blobtoolkit
+title: sanger-tol/blobtoolkit v0.8.0 -
+type: software
+url: https://pipelines.tol.sanger.ac.uk/blobtoolkit
+version: 0.8.0
