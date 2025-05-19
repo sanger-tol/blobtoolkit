@@ -3,7 +3,36 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[0.7.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.7.1)] – Psyduck (patch 1) – [2025-03-297
+## [[0.8.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.8.0)] – Sprigatito – [2025-05-19]
+
+### Enhancements & fixes
+
+- Runtime of the blast commands is now capped at 12 hours (#166)
+- Upgraded Busco and added an option to control the gene predictor used (#160, #174, #181)
+- nf-core template upgrade (to version 3.2.1) (#164, #176)
+- Documentation fixes (broken links) (#175)
+- Ability to run without any read data (#177)
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency  | Old version | New version |
+| ----------- | ----------- | ----------- |
+| blobtoolkit | 4.4.4       | 4.4.6       |
+| busco       | 5.7.1       | 5.8.3       |
+
+### Parameters
+
+| Old parameter | New parameter          |
+| ------------- | ---------------------- |
+|               | --busco_gene_predictor |
+
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
+
+## [[0.7.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.7.1)] – Psyduck (patch 1) – [2025-03-29]
+
+### Enhancements & fixes
 
 - Upgraded the blobtools version which contains a bugfix
 
@@ -16,6 +45,8 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | blobtoolkit | 4.4.4       | 4.4.5       |
 
 ## [[0.7.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.7.0)] – Psyduck – [2025-03-19]
+
+### Enhancements & fixes
 
 - Fetch information about the chromosomes of the assemblies. Used to power
   "grid plots".
@@ -53,6 +84,8 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 > **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
 
 ## [[0.6.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.6.0)] – Bellsprout – [2024-09-13]
+
+### Enhancements & fixes
 
 The pipeline has now been validated for draft (unpublished) assemblies.
 

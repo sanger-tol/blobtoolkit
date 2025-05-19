@@ -91,6 +91,7 @@ workflow BUSCO_DIAMOND {
         'genome',
         ch_busco_to_run.to_compute.map { it[0].lineage_name },
         busco_db,
+        [],
         []
     )
     ch_versions = ch_versions.mix ( BUSCO_BUSCO.out.versions.first() )
@@ -144,6 +145,7 @@ workflow BUSCO_DIAMOND {
                 ]
             }
     )
+    ch_versions = ch_versions.mix ( RESTRUCTUREBUSCODIR.out.versions.first() )
 
     //
     // Select input for BLOBTOOLKIT_EXTRACTBUSCOS
