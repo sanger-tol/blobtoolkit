@@ -35,6 +35,7 @@ jobs:
           - "singularity"
         test_name:
           - "test"
+          - "test_full"
         isMaster:
           - ${{ github.base_ref == 'main' }}
         # Exclude conda and singularity on dev
@@ -83,4 +84,7 @@ jobs:
       - name: "Run pipeline with test data ${{ matrix.NXF_VER }} | ${{ matrix.test_name }} | ${{ matrix.profile }}"
         continue-on-error: ${{ matrix.NXF_VER == 'latest-everything' }}
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile ${{ matrix.test_name }},${{ matrix.profile }} --outdir ./results
+          nextflow run ${GITHUB_WORKSPACE} \
+            -profile ${{ matrix.test_name }},${{ matrix.profile }} \
+            -stub \
+            --outdir ./results
