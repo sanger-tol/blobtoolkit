@@ -3,8 +3,8 @@ process BUSCO_BUSCO {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? 'https://depot.galaxyproject.org/singularity/busco:6.0.0--pyhdfd78af_0'
-        : 'biocontainers/busco:6.0.0--pyhdfd78af_0'}"
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/5a/5addbdeb1831564b96f31cd130ee7d89f41f56252795176052eef9de4d3bae3a/data'
+        : 'community.wave.seqera.io/library/augustus_busco:b6a688c8989c7a72'}"
 
     input:
     tuple val(meta), path(fasta, stageAs:'tmp_input/*')
