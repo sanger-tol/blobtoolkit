@@ -11,3 +11,4 @@ testing*
 *.pyc
 bin/
 ro-crate-metadata.json
+modules/nf-core/busco/busco/environment.yml
