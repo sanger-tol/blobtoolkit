@@ -14,17 +14,6 @@ You will need to create a samplesheet with information about the samples you wou
 --input '[path to samplesheet file]'
 ```
 
-### Multiple runs of the same sample
-
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
-
-```console
-sample,datatype,datafile,library_layout
-sample1,hic,hic.cram,PAIRED
-sample2,illumina,illumina.cram,PAIRED
-sample2,illumina,illumina.cram,PAIRED
-```
-
 ### Full samplesheet
 
 The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 4 columns to match those defined in the table below.
@@ -38,12 +27,12 @@ sample2,illumina,illumina.cram,PAIRED
 sample3,ont,ont.cram,SINGLE
 ```
 
-| Column           | Description                                                                                                                                                                           |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`         | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (\_). |
-| `datatype`       | Type of sequencing data. Must be one of `hic`, `illumina`, `pacbio`, `pacbio_clr` or `ont`.                                                                                           |
-| `datafile`       | Full path to read data file.                                                                                                                                                          |
-| `library_layout` | Layout of the library. Must be one of `SINGLE`, `PAIRED`.                                                                                                                             |
+| Column           | Description                                                                                                                                                                               |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`         | Custom sample name. It doesn't have to be an actual _sample_ name. It is used to name the read set on the BlobToolKit viewer and therefore needs to be **unique** across the samplesheet. |
+| `datatype`       | Type of sequencing data. Must be one of `hic`, `illumina`, `pacbio`, `pacbio_clr` or `ont`.                                                                                               |
+| `datafile`       | Full path to read data file.                                                                                                                                                              |
+| `library_layout` | Layout of the library. Must be one of `SINGLE`, `PAIRED`.                                                                                                                                 |
 
 An [example samplesheet](../assets/test/samplesheet.csv) has been provided with the pipeline.
 
@@ -92,7 +81,7 @@ The pipeline minimally requires outputs for the 'basal' lineages (archaea, eukar
 
 Configure access to your local databases with the `--busco`, `--blastp`, `--blastx`, `--blastn`, and `--taxdump` parameters.
 
-Note that `--busco` refers to the download path of _all_ lineages.
+Note that `--busco` refers to the download path which _contains_ the `lineages/` sub-directory.
 Then, when explicitly selecting the lineages to run the pipeline on,
 provide the names of these lineages _with_ their `_odb10` suffix as a comma-separated string.
 For instance:
@@ -143,7 +132,7 @@ mkdir -p $NT
 cd $NT
 ```
 
-Retrieve the NCBI blast nt database (version 5) files and tar gunzip them.
+Retrieve the NCBI blast nt database (version 5) files and extract them.
 `wget` and the use of the FTP protocol are necessary to resolve the wildcard `nt.???.tar.gz`.
 We are using the `&&` syntax to ensure that each command completes without error before the next one is run:
 
@@ -262,7 +251,7 @@ Nextflow
 
 ```bash
 # Public Assemblies
-nextflow run sanger-tol/blobtoolkit --input SAMPLESHEET --fasta GENOME –-accession GCA_ACCESSION --taxon TAXON_ID --taxdump TAXDUMP_DB --blastp DMND_db --blastn BLASTN_DB --blastx BLASTX_DB
+nextflow run sanger-tol/blobtoolkit --input SAMPLESHEET --fasta GENOME --accession GCA_ACCESSION --taxon TAXON_ID --taxdump TAXDUMP_DB --blastp DMND_db --blastn BLASTN_DB --blastx BLASTX_DB
 
 # Draft Assemblies
 nextflow run sanger-tol/blobtoolkit --input SAMPLESHEET --fasta GENOME --taxon TAXON_ID --taxdump TAXDUMP_DB --blastp DMND_db --blastn BLASTN_DB --blastx BLASTX_DB
@@ -274,7 +263,7 @@ see <https://training.nextflow.io/basic_training/config/> for some examples.
 
 ### Subworkflows
 
-Here is a full list of snakemake subworkflows and their Nextflow couterparts:
+Here is a full list of snakemake subworkflows and their Nextflow counterparts:
 
 - **`minimap.smk`**
   - Implemented as [`minimap_alignment.nf`](../subworkflows/local/minimap_alignment.nf).
@@ -307,33 +296,33 @@ Here is a full list of snakemake subworkflows and their Nextflow couterparts:
 
 List of tools for any given dataset can be fetched from the API, for example https://blobtoolkit.genomehubs.org/api/v1/dataset/id/CAJEUD01.1/settings/software_versions.
 
-| Dependency        | Snakemake | Nextflow |
-| ----------------- | --------- | -------- |
-| blobtoolkit       | 4.3.2     | 4.4.4    |
-| blast             | 2.12.0    | 2.14.1   |
-| blobtk            | 0.5.0     | 0.5.1    |
-| busco             | 5.3.2     | 5.5.0    |
-| diamond           | 2.0.15    | 2.1.8    |
-| fasta_windows     |           | 0.2.4    |
-| minimap2          | 2.24      | 2.24     |
-| ncbi-datasets-cli | 14.1.0    |          |
-| nextflow          |           | 23.10.0  |
-| python            | 3.9.13    | 3.12.0   |
-| samtools          | 1.15.1    | 1.19.2   |
-| seqtk             | 1.3       | 1.4      |
-| snakemake         | 7.19.1    |          |
-| windowmasker      | 2.12.0    | 2.14.0   |
+| Dependency        | Snakemake | Nextflow      |
+| ----------------- | --------- | ------------- |
+| blobtoolkit       | 4.3.2     | 4.4.6         |
+| blast             | 2.12.0    | 2.15.0        |
+| blobtk            | 0.5.0     | 0.5.1         |
+| busco             | 5.3.2     | 5.8.3         |
+| diamond           | 2.0.15    | 2.1.8         |
+| fasta_windows     |           | 0.2.4         |
+| minimap2          | 2.24      | 2.24-r1122    |
+| ncbi-datasets-cli | 14.1.0    |               |
+| nextflow          |           | 24.04.2       |
+| python            | 3.9.13    | 3.12.0        |
+| samtools          | 1.15.1    | 1.20 and 1.21 |
+| seqtk             | 1.3       | 1.4           |
+| snakemake         | 7.19.1    |               |
+| windowmasker      | 2.12.0    | 2.14.0        |
 
 > **NB:** Dependency has been **added** if only the Nextflow version information is present.
 > **NB:** Dependency has been **removed** if only the Snakemake version information is present.
-> **NB:** Dependency has been **updated** if bothe the Snakemake and Nextflow version information is present.
+> **NB:** Dependency has been **updated** if both the Snakemake and Nextflow version information is present.
 
 ## Running the pipeline
 
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run sanger-tol/blobtoolkit --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta -profile docker –-accession GCA_accession --taxon "species name" --taxdump /path/to/taxdump --blastp /path/to/buscogenes.dmnd --blastn /path/to/blastn.nt --blastx /path/to/buscoregions.dmnd
+nextflow run sanger-tol/blobtoolkit --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta -profile docker --accession GCA_accession --taxon "species name" --taxdump /path/to/taxdump --blastp /path/to/buscogenes.dmnd --blastn /path/to/blastn.nt --blastx /path/to/buscoregions.dmnd
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
