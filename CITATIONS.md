@@ -16,6 +16,8 @@
 
   > Camacho, Chritiam, et al. “BLAST+: architecture and applications.” BMC Bioinformatics, vol. 10, no. 412, Dec. 2009, <https://doi.org/10.1186/1471-2105-10-421>
 
+- [BlobTk](https://github.com/genomehubs/blobtk)
+
 - [BlobToolKit](https://github.com/blobtoolkit/blobtoolkit)
 
   > Challis, Richard, et al. “BlobToolKit – Interactive Quality Assessment of Genome Assemblies.” G3 Genes|Genomes|Genetics, vol. 10, no. 4, Apr. 2020, pp. 1361–74, <https://doi.org/10.1534/g3.119.400908>
@@ -47,6 +49,10 @@
 - [SeqTK](https://github.com/lh3/seqtk)
 
   > Li, Heng. "SeqTK v1.4" GitHub, 2023, <https://github.com/lh3/seqtk>
+
+- [WindowMasker](https://pubmed.ncbi.nlm.nih.gov/16287941/)
+
+  > Morgulis, A., et al. 2006. WindowMasker: window-based masker for sequenced genomes. Bioinformatics. 22(2). pp.134–141. doi: 10.1093/bioinformatics/bti774.
 
 ## Software packaging/containerisation tools
 
