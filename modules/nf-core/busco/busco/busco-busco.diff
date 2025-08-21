@@ -11,7 +11,7 @@ Changes in 'busco/busco/main.nf':
  
      conda "${moduleDir}/environment.yml"
      container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-@@ -45,7 +44,7 @@
+@@ -51,7 +50,7 @@
      def busco_lineage = lineage in ['auto', 'auto_prok', 'auto_euk']
          ? lineage.replaceFirst('auto', '--auto-lineage').replaceAll('_', '-')
          : "--lineage_dataset ${lineage}"
