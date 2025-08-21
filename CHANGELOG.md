@@ -16,7 +16,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 
 | Dependency | Old version | New version |
 | ---------- | ----------- | ----------- |
-| busco      | 5.7.1       | 6.0.0       |
+| busco      | 5.8.3       | 6.0.0       |
 
 ## [[0.8.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.8.0)] – Sprigatito – [2025-05-19]
 
