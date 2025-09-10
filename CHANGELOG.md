@@ -3,12 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[0.8.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.8.1)] – Sprigatito (H1) – [2025-08-19]
+## [[0.9.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.9.0)] – Scyther – [2025-09-11]
 
 ### Enhancements & fixes
 
 - Upgrade Busco (#190)
-- Update resource requirements for BLASTN modules (#191)
+- The pipeline now stops on Busco failures
+- Update resource requirements for BLASTN modules (#191) and BLOBTOOLKIT_WINDOWSTATS
+- Fixed the `test_full` profile (Sanger only)
 
 ### Software dependencies
 
