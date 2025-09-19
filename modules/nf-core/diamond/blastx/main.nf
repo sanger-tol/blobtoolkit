@@ -49,12 +49,16 @@ process DIAMOND_BLASTX {
             log.warn("Unknown output file format provided (${out_ext}): selecting DIAMOND default of tabular BLAST output (txt)");
             break
     }
+
+    def tmpdir_arg  = args =~ /--tmpdir\s+(\S+)/
+    def tmpdir      = tmpdir_arg ? tmpdir_arg[0][1] : ''
+
     """
     if [ "${is_compressed}" == "true" ]; then
         gzip -c -d ${fasta} > ${fasta_name}
     fi
 
-    mkdir ./tmpdir/
+    ${tmpdir ? "mkdir -p ${tmpdir}" : ''}
 
     DB=`find -L ./ -name "*.dmnd" | sed 's/\\.dmnd\$//'`
 
@@ -66,7 +70,6 @@ process DIAMOND_BLASTX {
         --outfmt ${outfmt} ${columns} \\
         ${exclude_taxon} \\
         ${args} \\
-        --tmpdir ./tmpdir/ \\
         --out ${prefix}.${out_ext} \\
         --log
 

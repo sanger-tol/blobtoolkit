@@ -20,25 +20,31 @@ Changes in 'diamond/blastp/main.nf':
      switch ( out_ext ) {
          case "blast": outfmt = 0; break
          case "xml": outfmt = 5; break
-@@ -51,6 +53,8 @@
+@@ -46,10 +48,16 @@
+             log.warn("Unknown output file format provided (${out_ext}): selecting DIAMOND default of tabular BLAST output (txt)");
+             break
+     }
++
++    def tmpdir_arg  = args =~ /--tmpdir\s+(\S+)/
++    def tmpdir      = tmpdir_arg ? tmpdir_arg[0][1] : ''
++
+     """
+     if [ "${is_compressed}" == "true" ]; then
          gzip -c -d ${fasta} > ${fasta_name}
      fi
- 
-+    mkdir ./tmpdir/
 +
++    ${tmpdir ? "mkdir -p ${tmpdir}" : ''}
+ 
      DB=`find -L ./ -name "*.dmnd" | sed 's/\\.dmnd\$//'`
  
-     diamond \\
-@@ -59,7 +63,9 @@
+@@ -59,6 +67,7 @@
          --db \$DB \\
          --query ${fasta_name} \\
          --outfmt ${outfmt} ${columns} \\
 +        ${exclude_taxon} \\
          ${args} \\
-+        --tmpdir ./tmpdir/ \\
          --out ${prefix}.${out_ext}
  
-     cat <<-END_VERSIONS > versions.yml
 
 'modules/nf-core/diamond/blastp/tests/main.nf.test' is unchanged
 'modules/nf-core/diamond/blastp/tests/main.nf.test.snap' is unchanged
