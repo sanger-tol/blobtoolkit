@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The pipeline now stops on Busco failures
 - Update resource requirements for BLASTN modules (#191) and BLOBTOOLKIT_WINDOWSTATS
 - Fixed the `test_full` profile (Sanger only)
+- Addition of `--tmpdir` to Diamond blast modules (#200)
 
 ### Software dependencies
 
