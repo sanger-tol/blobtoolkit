@@ -53,6 +53,8 @@ process DIAMOND_BLASTP {
         gzip -c -d ${fasta} > ${fasta_name}
     fi
 
+    mkdir ./blastp_tmp
+
     DB=`find -L ./ -name "*.dmnd" | sed 's/\\.dmnd\$//'`
 
     diamond \\
@@ -63,6 +65,7 @@ process DIAMOND_BLASTP {
         --outfmt ${outfmt} ${columns} \\
         ${exclude_taxon} \\
         ${args} \\
+        --tmpdir ./blastp_tmp/ \\
         --out ${prefix}.${out_ext}
 
     cat <<-END_VERSIONS > versions.yml
