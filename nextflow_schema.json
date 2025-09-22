@@ -175,9 +175,9 @@
             "properties": {
                 "use_work_dir_as_temp": {
                     "type": "boolean",
-                    "description": "Set to true to make tools (e.g. sort, FastK, MerquryFK) use the work directory for their temporary files, rather than the system default.",
+                    "description": "Set to true to make tools (e.g. sort, FastK, MerquryFK, BLASTP, BLASTX) use the work directory for their temporary files, rather than the system default.",
                     "fa_icon": "fas fa-arrow-circle-down",
-                    "hidden": true
+                    "hidden": false
                 }
             },
             "fa_icon": "fas fa-running"
