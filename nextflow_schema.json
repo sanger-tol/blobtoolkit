@@ -124,7 +124,8 @@
                 "busco": {
                     "type": "string",
                     "format": "path",
-                    "description": "Local directory where clade-specific BUSCO lineage datasets are stored",
+                    "description": "Local directory where clade-specific BUSCO lineage datasets are stored. Should point to the directory containing the 'lineages/' subdirectory.",
+                    "help_text": "Do NOT include '/lineages' at the end of the path. The pipeline will automatically correct paths ending with '/lineages'. Example: '/path/to/busco_downloads/' not '/path/to/busco_downloads/lineages/'",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "lineage_tax_ids": {
@@ -155,7 +156,8 @@
                     "type": "string",
                     "format": "path",
                     "exists": true,
-                    "description": "Path to the nucleotide BLAST database",
+                    "description": "Path to the nucleotide BLAST database. Can be either a directory containing a single database or a direct path to a .nal file.",
+                    "help_text": "For directories with multiple databases, specify the exact .nal file path to avoid ambiguity. Example: '/path/to/databases/nt.nal' instead of '/path/to/databases/'",
                     "fa_icon": "fas fa-file-archive"
                 },
                 "taxdump": {

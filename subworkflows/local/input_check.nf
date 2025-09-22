@@ -4,6 +4,137 @@
 
 include { samplesheetToList         } from 'plugin/nf-schema'
 
+/*
+ * Function to validate and resolve BUSCO database paths
+ * Handles the common user error of including '/lineages' at the end of the path
+ */
+def validateBuscoDatabase(db_path) {
+    def path_file = file(db_path)
+    
+    if (path_file.isDirectory()) {
+        // Check if path ends with /lineages and has a parent directory
+        if (path_file.name == 'lineages' && path_file.parent != null) {
+            def parent_dir = file(path_file.parent)
+            log.info "BUSCO path correction: Detected '/lineages' suffix in path"
+            log.info "  Original path: ${path_file}"
+            log.info "  Corrected path: ${parent_dir}"
+            log.info "This prevents the common error where BUSCO tries to use '${path_file}/lineages/lineage_name' instead of '${parent_dir}/lineages/lineage_name'"
+            return parent_dir
+        } else {
+            // Path looks correct, return as-is
+            log.info "Using BUSCO database path: ${path_file}"
+            return path_file
+        }
+    } else if (path_file.isFile()) {
+        // If it's a file (e.g., tar.gz), return as-is
+        log.info "Using BUSCO database file: ${path_file}"
+        return path_file
+    } else {
+        error """
+        ERROR: Invalid BUSCO database path: ${path_file}
+        
+        Please ensure the path points to a valid BUSCO database directory.
+        
+        Common issues:
+        - Path should point to the directory containing 'lineages/' subdirectory
+        - Do NOT include '/lineages' at the end of the path
+        
+        Example: --busco /path/to/busco_downloads/
+        NOT: --busco /path/to/busco_downloads/lineages/
+        """
+    }
+}
+
+/*
+ * Function to validate and resolve BLAST nucleotide database paths
+ * Handles both directory paths (for backwards compatibility) and direct .nal file paths
+ */
+def validateBlastnDatabase(db_path) {
+    def path_file = file(db_path)
+    
+    if (path_file.isFile()) {
+        // Direct file provided - validate it's a .nal file
+        if (path_file.name.endsWith('.nal')) {
+            log.info "Using directly specified BLAST database: ${path_file}"
+            return path_file
+        } else {
+            error """
+            ERROR: Invalid BLAST database file: ${path_file}
+            
+            The file must have a .nal extension.
+            
+            Please provide either:
+              - A directory containing a single BLAST database
+              - The direct path to a .nal file
+            
+            Example: --blastn /path/to/databases/nt.nal
+            """
+        }
+    } else if (path_file.isDirectory()) {
+        // Directory provided - search for database files
+        log.info "Searching for BLAST database files in directory: ${path_file}"
+        
+        // Look for .nal files
+        def nal_files = path_file.listFiles().findAll { it.name.endsWith('.nal') }
+        
+        if (nal_files.size() == 1) {
+            log.info "Found single BLAST database: ${nal_files[0].name}"
+            return path_file  // Return directory - the BLAST module will handle the find
+        } else if (nal_files.size() > 1) {
+            def db_names = nal_files.collect { it.name }.join('\n  - ')
+            error """
+            ERROR: Multiple BLAST databases found in ${path_file}:
+              - ${db_names}
+            
+            Please specify the exact path to the .nal file you want to use.
+            
+            Examples:
+              --blastn ${path_file}/${nal_files[0].name}
+              --blastn ${path_file}/${nal_files[1].name}
+            """
+        } else {
+            // Look for .nin files as fallback
+            def nin_files = path_file.listFiles().findAll { it.name.endsWith('.nin') }
+            
+            if (nin_files.size() == 1) {
+                log.info "Found single BLAST database: ${nin_files[0].name}"
+                return path_file  // Return directory - the BLAST module will handle the find
+            } else if (nin_files.size() > 1) {
+                def db_names = nin_files.collect { it.name }.join('\n  - ')
+                error """
+                ERROR: Multiple BLAST databases found in ${path_file}:
+                  - ${db_names}
+                
+                Please specify the exact path to the .nin file you want to use.
+                
+                Examples:
+                  --blastn ${path_file}/${nin_files[0].name}
+                  --blastn ${path_file}/${nin_files[1].name}
+                """
+            } else {
+                error """
+                ERROR: No BLAST database files (.nal or .nin) found in ${path_file}
+                
+                Please ensure the directory contains a valid BLAST database or
+                specify the direct path to a .nal file.
+                
+                Example: --blastn /path/to/databases/nt.nal
+                """
+            }
+        }
+    } else {
+        error """
+        ERROR: Invalid database path: ${path_file}
+        
+        The path must point to either:
+          - A directory containing a single BLAST database
+          - A direct path to a .nal file
+        
+        Example: --blastn /path/to/databases/nt.nal
+        """
+    }
+}
+
 
 include { UNTAR                     } from '../../modules/nf-core/untar/main'
 include { CAT_CAT                   } from '../../modules/nf-core/cat/cat/main'
@@ -45,6 +176,14 @@ workflow INPUT_CHECK {
         .map { db_meta, db_path ->
             if (db_meta.type in ["blastp", "blastx"] && db_path.isDirectory()) {
                 [db_meta, file(db_path.toString() + "/${db_path.name}", checkIfExists: true)]
+            } else if (db_meta.type == "blastn") {
+                // Special handling for BLAST nucleotide databases
+                def resolved_path = validateBlastnDatabase(db_path)
+                [db_meta, resolved_path]
+            } else if (db_meta.type == "busco") {
+                // Special handling for BUSCO databases
+                def resolved_path = validateBuscoDatabase(db_path)
+                [db_meta, resolved_path]
             } else {
                 [db_meta, db_path]
             }
