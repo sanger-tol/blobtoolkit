@@ -20,24 +20,16 @@ Changes in 'diamond/blastx/main.nf':
      switch ( out_ext ) {
          case "blast": outfmt = 0; break
          case "xml": outfmt = 5; break
-@@ -47,10 +49,16 @@
-             log.warn("Unknown output file format provided (${out_ext}): selecting DIAMOND default of tabular BLAST output (txt)");
-             break
-     }
-+
-+    def tmpdir_arg  = args =~ /--tmpdir\s+(\S+)/
-+    def tmpdir      = tmpdir_arg ? tmpdir_arg[0][1] : ''
-+
-     """
-     if [ "${is_compressed}" == "true" ]; then
+@@ -52,6 +54,8 @@
          gzip -c -d ${fasta} > ${fasta_name}
      fi
-+
-+    ${tmpdir ? "mkdir -p ${tmpdir}" : ''}
  
++    mkdir -p ./blastx_temp
++
      DB=`find -L ./ -name "*.dmnd" | sed 's/\\.dmnd\$//'`
  
-@@ -60,6 +68,7 @@
+     diamond \\
+@@ -60,6 +64,7 @@
          --db \$DB \\
          --query ${fasta_name} \\
          --outfmt ${outfmt} ${columns} \\

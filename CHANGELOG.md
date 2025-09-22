@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update resource requirements for BLASTN modules (#191) and BLOBTOOLKIT_WINDOWSTATS
 - Fixed the `test_full` profile (Sanger only)
 - Addition of `--tmpdir` to Diamond blast modules (#200)
+- `--use_work_dir_as_temp` is no longer a hidden param.
 
 ### Software dependencies
 
