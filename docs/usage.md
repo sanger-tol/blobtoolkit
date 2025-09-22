@@ -90,6 +90,38 @@ For instance:
 --busco path-to-databases/busco/ --busco_lineages vertebrata_odb10,bacteria_odb10,fungi_odb10
 ```
 
+### BUSCO database path format
+
+**Important**: The `--busco` parameter should point to the directory containing the `lineages/` subdirectory, **NOT** to the `lineages/` directory itself.
+
+```bash
+# ✅ Correct - points to the parent directory
+--busco /path/to/busco_downloads/
+
+# ❌ Common mistake - includes /lineages at the end
+--busco /path/to/busco_downloads/lineages/
+```
+
+The pipeline will automatically detect and correct paths ending with `/lineages` to prevent the common error where BUSCO tries to access `/path/to/lineages/lineages/lineage_name` instead of `/path/to/lineages/lineage_name`.
+
+### BLAST database path formats
+
+The `--blastn` parameter accepts two formats:
+
+1. **Directory path** (for backwards compatibility):
+   ```bash
+   --blastn /path/to/databases/nt_2024_10/
+   ```
+   This works only if the directory contains a single BLAST database.
+
+2. **Direct file path** (recommended for clarity):
+   ```bash
+   --blastn /path/to/databases/nt_2024_10/nt.nal
+   ```
+   This is required if your database directory contains multiple BLAST databases.
+
+If multiple databases are found in a directory, the pipeline will fail with a clear error message listing all available databases and suggesting the exact file paths to use.
+
 ### Getting databases ready for the pipeline
 
 The BlobToolKit pipeline can be run in many different ways. The default way requires access to several databases:
@@ -141,6 +173,23 @@ wget "ftp://ftp.ncbi.nlm.nih.gov/blast/db/v5/nt.???.tar.gz" -P $NT/ &&
 for file in $NT/*.tar.gz; do
     tar xf $file -C $NT && rm $file;
 done
+```
+
+##### Important: Handling directories with multiple BLAST databases
+
+If your database directory contains multiple BLAST databases (e.g., both `nt` and `nr` databases), you must specify the exact path to the `.nal` file to avoid ambiguity:
+
+```bash
+# ❌ This will fail if multiple databases are present
+--blastn /path/to/databases/
+
+# ✅ Specify the exact database file
+--blastn /path/to/databases/nt.nal
+```
+
+The pipeline supports two formats for the `--blastn` parameter:
+- **Directory path**: `/path/to/databases/nt_2024_10/` (only works if directory contains a single BLAST database)
+- **Direct file path**: `/path/to/databases/nt_2024_10/nt.nal` (recommended for directories with multiple databases)
 
 wget "https://ftp.ncbi.nlm.nih.gov/blast/db/v5/taxdb.tar.gz" &&
 tar xf taxdb.tar.gz -C $NT &&
