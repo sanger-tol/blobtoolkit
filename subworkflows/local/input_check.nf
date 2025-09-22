@@ -25,8 +25,7 @@ def validateBuscoDatabase(db_path) {
             log.info "Using BUSCO database path: ${path_file}"
             return path_file
         }
-    } else if (path_file.isFile()) {
-        // If it's a file (e.g., tar.gz), return as-is
+    } else if (path_file.isFile()) 
         log.info "Using BUSCO database file: ${path_file}"
         return path_file
     } else {
