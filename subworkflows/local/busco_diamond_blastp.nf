@@ -25,16 +25,12 @@ workflow BUSCO_DIAMOND {
     // Prepare the BUSCO lineages
     //
     // 0. Initialise sone variables
-    basal_lineages = [ "eukaryota_odb10", "bacteria_odb10", "archaea_odb10" ]
-    def lineage_position = 0
+    def basal_lineages = [ "eukaryota_odb10", "bacteria_odb10", "archaea_odb10" ]
     // 1. Start from the taxon's lineages
     busco_lin
-    // 2. Add the (missing) basal lineages
-    | map { lineages -> (lineages + basal_lineages).unique() }
-    | flatten ()
-    // 3. Add a (0-based) index to record the original order (i.e. by age)
-    | map { lineage_name -> [lineage_name, lineage_position++] }
-    // 4. Move the lineage information to `meta` to be able to distinguish the BUSCO jobs and group their outputs later
+    // 2. Add the (missing) basal lineages and a (0-based) index to record the original order (i.e. by age)
+    | flatMap { lineages -> (lineages + basal_lineages).unique().withIndex() }
+    // 3. Move the lineage information to `meta` to be able to distinguish the BUSCO jobs and group their outputs later
     | combine ( fasta )
     | map { lineage_name, lineage_index, meta, genome -> [meta + [lineage_name: lineage_name, lineage_index: lineage_index], genome] }
     | set { ch_fasta_with_lineage }
