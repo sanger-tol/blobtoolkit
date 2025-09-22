@@ -8,11 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Enhancements & fixes
 
 - Upgrade Busco (#190)
-- The pipeline now stops on Busco failures
+- The pipeline now stops on Busco failures (#194)
 - Update resource requirements for BLASTN modules (#191) and BLOBTOOLKIT_WINDOWSTATS
 - Fixed the `test_full` profile (Sanger only)
 - Addition of `--tmpdir` to Diamond blast modules (#200)
 - `--use_work_dir_as_temp` is no longer a hidden param.
+- Fixed some documentation (#193 and #197)
+- Made GENERATE_CONFIG more resilient to network errors (#197)
 
 ### Software dependencies
 
