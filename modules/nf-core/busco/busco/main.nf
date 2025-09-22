@@ -111,8 +111,13 @@ process BUSCO_BUSCO {
 
     if grep 'Run failed; check logs' ${prefix}-busco.batch_summary.txt > /dev/null
     then
-        echo "Busco run failed"
-        exit 1
+        if grep -Fx 'Sequence too long (max 32000000 permitted).' ${prefix}-busco.log > /dev/null
+        then
+            echo "Prodigal can't run on this genome. Skipping it"
+        else
+            echo "Busco run failed"
+            exit 1
+        fi
     fi
 
     cat <<-END_VERSIONS > versions.yml
