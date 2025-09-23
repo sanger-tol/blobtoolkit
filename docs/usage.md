@@ -109,9 +109,11 @@ The pipeline will automatically detect and correct paths ending with `/lineages`
 The `--blastn` parameter accepts two formats:
 
 1. **Directory path** (for backwards compatibility):
+
    ```bash
    --blastn /path/to/databases/nt_2024_10/
    ```
+
    This works only if the directory contains a single BLAST database.
 
 2. **Direct file path** (recommended for clarity):
@@ -188,6 +190,7 @@ If your database directory contains multiple BLAST databases (e.g., both `nt` an
 ```
 
 The pipeline supports two formats for the `--blastn` parameter:
+
 - **Directory path**: `/path/to/databases/nt_2024_10/` (only works if directory contains a single BLAST database)
 - **Direct file path**: `/path/to/databases/nt_2024_10/nt.nal` (recommended for directories with multiple databases)
 
@@ -196,10 +199,12 @@ tar xf taxdb.tar.gz -C $NT &&
 rm taxdb.tar.gz
 
 # Compress and cleanup
+
 cd ..
 tar -cvzf $NT_TAR $NT
 rm -r $NT
-```
+
+````
 
 #### 3. UniProt reference proteomes database
 
@@ -215,7 +220,7 @@ UNIPROT=/path/to/databases/uniprot_${DATE}
 UNIPROT_TAR=/path/to/databases/uniprot_${DATE}.tar.gz
 mkdir -p $UNIPROT
 cd $UNIPROT
-```
+````
 
 The UniProt `Refseq_Proteomes_YYYY_MM.tar.gz` file is very large (close to 200 GB) and will take a long time to download.
 The command below looks complex because it needs to get around the problem of using wildcards with wget and curl.
