@@ -55,7 +55,7 @@ def validateBlastnDatabase(db_path) {
         } else {
             error """
             ERROR: Invalid BLAST database file: ${path_file}
-            The file must have a .nal extension.     
+            The file must have a .nal extension.
             Please provide either:
                 - A directory containing a single BLAST database
                 - The direct path to a .nal file
@@ -65,7 +65,6 @@ def validateBlastnDatabase(db_path) {
     } else if (path_file.isDirectory()) {
         // Directory provided - search for database files
         log.info "Searching for BLAST database files in directory: ${path_file}"
-        
         // Look for .nal files
         def nal_files = path_file.listFiles().findAll { it.name.endsWith('.nal') }
         if (nal_files.size() == 1) {
@@ -75,11 +74,11 @@ def validateBlastnDatabase(db_path) {
             def db_names = nal_files.collect { it.name }.join('\n  - ')
             error """
             ERROR: Multiple BLAST databases found in ${path_file}:
-              - ${db_names}
+                - ${db_names}
             Please specify the exact path to the .nal file you want to use.
             Examples:
-              --blastn ${path_file}/${nal_files[0].name}
-              --blastn ${path_file}/${nal_files[1].name}
+                --blastn ${path_file}/${nal_files[0].name}
+                --blastn ${path_file}/${nal_files[1].name}
             """
         } else {
             // Look for .nin files as fallback
