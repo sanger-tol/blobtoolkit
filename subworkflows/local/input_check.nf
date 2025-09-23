@@ -299,17 +299,15 @@ def validateBuscoDatabase(db_path) {
             log.info "Using BUSCO database path: ${path_file}"
             return path_file
         }
-    } else if (path_file.isFile()) {
-        // If it's a file, return as-is
-        log.info "Using BUSCO database file: ${path_file}"
-        return path_file
     } else {
         error """
         ERROR: Invalid BUSCO database path: ${path_file}
+        BUSCO databases must be directories containing the 'lineages/' subdirectory.
         Please ensure the path points to a valid BUSCO database directory.
         Common issues:
         - Path should point to the directory containing 'lineages/' subdirectory
         - Do NOT include '/lineages' at the end of the path
+        - BUSCO databases cannot be individual files
         Example: --busco /path/to/busco_downloads/
         NOT: --busco /path/to/busco_downloads/lineages/
         """
@@ -323,10 +321,21 @@ def validateBuscoDatabase(db_path) {
 def validateBlastnDatabase(db_path) {
     def path_file = file(db_path)
     if (path_file.isFile()) {
-        // Direct file provided - validate it's a .nal file
+        // Direct file provided - validate it's a .nal file and return parent directory
         if (path_file.name.endsWith('.nal')) {
-            log.info "Using directly specified BLAST database: ${path_file}"
-            return path_file
+            if (!path_file.exists()) {
+                error """
+                ERROR: BLAST database file not found: ${path_file}
+                Please check that the path is correct and the file exists.
+                """
+            }
+            def parent_dir = file(path_file.parent)
+            def db_name = path_file.name.replaceAll('\\.nal$', '')
+            log.info "Direct BLAST database file specified: ${path_file}"
+            log.info "Database name: ${db_name}"
+            log.info "Using parent directory for downstream processes: ${parent_dir}"
+            log.info "This ensures all associated database files (taxonomy4blast.sqlite3, etc.) are available"
+            return parent_dir
         } else {
             error """
             ERROR: Invalid BLAST database file: ${path_file}
