@@ -90,11 +90,11 @@ def validateBlastnDatabase(db_path) {
                 def db_names = nin_files.collect { it.name }.join('\n  - ')
                 error """
                 ERROR: Multiple BLAST databases found in ${path_file}:
-                  - ${db_names}
+                    - ${db_names}
                 Please specify the exact path to the .nin file you want to use.
                 Examples:
-                  --blastn ${path_file}/${nin_files[0].name}
-                  --blastn ${path_file}/${nin_files[1].name}
+                    --blastn ${path_file}/${nin_files[0].name}
+                    --blastn ${path_file}/${nin_files[1].name}
                 """
             } else {
                 error """
@@ -109,8 +109,8 @@ def validateBlastnDatabase(db_path) {
         error """
         ERROR: Invalid database path: ${path_file}
         The path must point to either:
-          - A directory containing a single BLAST database
-          - A direct path to a .nal file
+            - A directory containing a single BLAST database
+            - A direct path to a .nal file
         Example: --blastn /path/to/databases/nt.nal
         """
     }
