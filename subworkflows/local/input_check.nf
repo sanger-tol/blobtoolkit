@@ -10,7 +10,6 @@ include { samplesheetToList         } from 'plugin/nf-schema'
  */
 def validateBuscoDatabase(db_path) {
     def path_file = file(db_path)
-    
     if (path_file.isDirectory()) {
         // Check if path ends with /lineages and has a parent directory
         if (path_file.name == 'lineages' && path_file.parent != null) {
@@ -31,14 +30,11 @@ def validateBuscoDatabase(db_path) {
         return path_file
     } else {
         error """
-        ERROR: Invalid BUSCO database path: ${path_file}
-        
+        ERROR: Invalid BUSCO database path: ${path_file} 
         Please ensure the path points to a valid BUSCO database directory.
-        
         Common issues:
         - Path should point to the directory containing 'lineages/' subdirectory
         - Do NOT include '/lineages' at the end of the path
-        
         Example: --busco /path/to/busco_downloads/
         NOT: --busco /path/to/busco_downloads/lineages/
         """
@@ -51,7 +47,6 @@ def validateBuscoDatabase(db_path) {
  */
 def validateBlastnDatabase(db_path) {
     def path_file = file(db_path)
-    
     if (path_file.isFile()) {
         // Direct file provided - validate it's a .nal file
         if (path_file.name.endsWith('.nal')) {
@@ -76,7 +71,6 @@ def validateBlastnDatabase(db_path) {
         
         // Look for .nal files
         def nal_files = path_file.listFiles().findAll { it.name.endsWith('.nal') }
-        
         if (nal_files.size() == 1) {
             log.info "Found single BLAST database: ${nal_files[0].name}"
             return path_file  // Return directory - the BLAST module will handle the find
@@ -85,9 +79,7 @@ def validateBlastnDatabase(db_path) {
             error """
             ERROR: Multiple BLAST databases found in ${path_file}:
               - ${db_names}
-            
             Please specify the exact path to the .nal file you want to use.
-            
             Examples:
               --blastn ${path_file}/${nal_files[0].name}
               --blastn ${path_file}/${nal_files[1].name}
@@ -95,7 +87,6 @@ def validateBlastnDatabase(db_path) {
         } else {
             // Look for .nin files as fallback
             def nin_files = path_file.listFiles().findAll { it.name.endsWith('.nin') }
-            
             if (nin_files.size() == 1) {
                 log.info "Found single BLAST database: ${nin_files[0].name}"
                 return path_file  // Return directory - the BLAST module will handle the find
@@ -104,9 +95,7 @@ def validateBlastnDatabase(db_path) {
                 error """
                 ERROR: Multiple BLAST databases found in ${path_file}:
                   - ${db_names}
-                
                 Please specify the exact path to the .nin file you want to use.
-                
                 Examples:
                   --blastn ${path_file}/${nin_files[0].name}
                   --blastn ${path_file}/${nin_files[1].name}
@@ -114,10 +103,8 @@ def validateBlastnDatabase(db_path) {
             } else {
                 error """
                 ERROR: No BLAST database files (.nal or .nin) found in ${path_file}
-                
                 Please ensure the directory contains a valid BLAST database or
                 specify the direct path to a .nal file.
-                
                 Example: --blastn /path/to/databases/nt.nal
                 """
             }
@@ -125,16 +112,13 @@ def validateBlastnDatabase(db_path) {
     } else {
         error """
         ERROR: Invalid database path: ${path_file}
-        
         The path must point to either:
           - A directory containing a single BLAST database
           - A direct path to a .nal file
-        
         Example: --blastn /path/to/databases/nt.nal
         """
     }
 }
-
 
 include { UNTAR                     } from '../../modules/nf-core/untar/main'
 include { CAT_CAT                   } from '../../modules/nf-core/cat/cat/main'
