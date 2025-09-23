@@ -103,7 +103,7 @@ For instance:
 
 ### BUSCO database path format
 
-**Important**: The `--busco` parameter should point to the directory containing the `lineages/` subdirectory, **NOT** to the `lineages/` directory itself.
+**Important**: The `--busco` parameter must be a directory containing the `lineages/` subdirectory, **NOT** to the `lineages/` directory itself. BUSCO databases are always directories, never individual files.
 
 ```bash
 # ✅ Correct - points to the parent directory
@@ -131,7 +131,7 @@ The `--blastn` parameter accepts two formats:
    ```bash
    --blastn /path/to/databases/nt_2024_10/nt.nal
    ```
-   This is required if your database directory contains multiple BLAST databases.
+   This is required if your database directory contains multiple BLAST databases. Note: When you specify a direct `.nal` file path, the pipeline automatically uses the parent directory to ensure all associated database files are available.
 
 If multiple databases are found in a directory, the pipeline will fail with a clear error message listing all available databases and suggesting the exact file paths to use.
 
