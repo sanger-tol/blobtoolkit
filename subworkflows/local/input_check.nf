@@ -30,7 +30,7 @@ def validateBuscoDatabase(db_path) {
         return path_file
     } else {
         error """
-        ERROR: Invalid BUSCO database path: ${path_file} 
+        ERROR: Invalid BUSCO database path: ${path_file}
         Please ensure the path points to a valid BUSCO database directory.
         Common issues:
         - Path should point to the directory containing 'lineages/' subdirectory
@@ -55,13 +55,10 @@ def validateBlastnDatabase(db_path) {
         } else {
             error """
             ERROR: Invalid BLAST database file: ${path_file}
-            
-            The file must have a .nal extension.
-            
+            The file must have a .nal extension.     
             Please provide either:
-              - A directory containing a single BLAST database
-              - The direct path to a .nal file
-            
+                - A directory containing a single BLAST database
+                - The direct path to a .nal file
             Example: --blastn /path/to/databases/nt.nal
             """
         }
