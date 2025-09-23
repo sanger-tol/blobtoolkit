@@ -18,6 +18,7 @@ include { COLLATE_STATS      } from '../subworkflows/local/collate_stats'
 include { BLOBTOOLS          } from '../subworkflows/local/blobtools'
 include { VIEW               } from '../subworkflows/local/view'
 include { FINALISE_BLOBDIR   } from '../subworkflows/local/finalise_blobdir'
+include { GET_BLOBTK_PLOTS   } from '../subworkflows/local/get_blobtk_plots/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -175,6 +176,12 @@ workflow BLOBTOOLKIT {
     )
     // Don't update ch_versions because it's already been consumed by now
 
+    GET_BLOBTK_PLOTS(
+        ch_prepared_genome,
+        FINALISE_BLOBDIR.out.blobdir.map{ meta, path -> path},
+        Channel.of([])
+    )
+    // Don't update ch_versions because it's already been consumed by now
 
     //
     // MODULE: MultiQC
