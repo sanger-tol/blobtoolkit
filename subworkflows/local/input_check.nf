@@ -294,7 +294,7 @@ def validateBuscoDatabase(db_path) {
             log.info "  Corrected path: ${parent_dir}"
             log.info "This prevents the common error where BUSCO tries to use '${path_file}/lineages/lineage_name' instead of '${parent_dir}/lineages/lineage_name'"
             return parent_dir
-        } 
+        }
         // Check if path points to a specific lineage directory (e.g., eukaryota_odb10)
         else if (path_file.name.endsWith('_odb10') && path_file.parent != null) {
             def parent_dir = file(path_file.parent)
@@ -309,11 +309,9 @@ def validateBuscoDatabase(db_path) {
             } else {
                 error """
                 ERROR: Invalid BUSCO lineage directory structure: ${path_file}
-                
                 It appears you're pointing to a specific BUSCO lineage directory (${path_file.name}),
                 but the expected directory structure is:
-                /path/to/busco_downloads/lineages/${path_file.name}/
-                
+                /path/to/busco_downloads/lineages/${path_file.name}/ 
                 Please provide the path to the root BUSCO database directory.
                 Example: --busco /path/to/busco_downloads/
                 """
@@ -357,19 +355,19 @@ def validateBlastnDatabase(db_path) {
             }
             def parent_dir = file(path_file.parent)
             def db_name = path_file.name.replaceAll('\\.nal$', '')
-            
+
             // Create a temporary directory with symlinks to only the specified database files
             def temp_dir = file("${parent_dir}/.btk_isolated_${db_name}")
             if (!temp_dir.exists()) {
                 temp_dir.mkdirs()
             }
-            
+
             // Find all files belonging to this specific database
-            def db_files = parent_dir.listFiles().findAll { 
-                it.name.startsWith("${db_name}.") || 
+            def db_files = parent_dir.listFiles().findAll {
+                it.name.startsWith("${db_name}.") ||
                 it.name in ['taxdb.btd', 'taxdb.bti', 'taxonomy4blast.sqlite3']
             }
-            
+
             // Create symlinks in the temporary directory
             db_files.each { source_file ->
                 def link_file = file("${temp_dir}/${source_file.name}")
@@ -378,7 +376,7 @@ def validateBlastnDatabase(db_path) {
                     link_file.createLink(source_file)
                 }
             }
-            
+
             log.info "Direct BLAST database file specified: ${path_file}"
             log.info "Database name: ${db_name}"
             log.info "Created isolated directory: ${temp_dir}"
