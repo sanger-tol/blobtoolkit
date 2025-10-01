@@ -305,6 +305,7 @@ def validateBuscoDatabase(db_path) {
                 log.info "  Original path: ${path_file} (specific lineage: ${path_file.name})"
                 log.info "  Corrected path: ${busco_root}"
                 log.info "This prevents the error where BUSCO tries to use a specific lineage directory instead of the root BUSCO database directory"
+                log.warn "Use `--busco_lineages ${path_file.name}` to control the lineage"
                 return busco_root
             } else {
                 error """
