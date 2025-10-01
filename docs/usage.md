@@ -100,9 +100,12 @@ For instance:
 
 # ❌ Common mistake - includes /lineages at the end
 --busco /path/to/busco_downloads/lineages/
+
+# ❌ Another common mistake - points to a specific lineage
+--busco /path/to/busco_downloads/lineages/eukaryota_odb10/
 ```
 
-The pipeline will automatically detect and correct paths ending with `/lineages` to prevent the common error where BUSCO tries to access `/path/to/lineages/lineages/lineage_name` instead of `/path/to/lineages/lineage_name`.
+The pipeline will automatically detect and correct paths ending with `/lineages` or pointing to specific lineage directories (e.g., `eukaryota_odb10`) to prevent common errors where BUSCO tries to access incorrect paths.
 
 ### BLAST database path formats
 
@@ -177,6 +180,18 @@ for file in $NT/*.tar.gz; do
 done
 ```
 
+wget "https://ftp.ncbi.nlm.nih.gov/blast/db/v5/taxdb.tar.gz" &&
+tar xf taxdb.tar.gz -C $NT &&
+rm taxdb.tar.gz
+
+# Compress and cleanup
+
+cd ..
+tar -cvzf $NT_TAR $NT
+rm -r $NT
+
+````
+
 ##### Important: Handling directories with multiple BLAST databases
 
 If your database directory contains multiple BLAST databases (e.g., both `nt` and `nr` databases), you must specify the exact path to the `.nal` file to avoid ambiguity:
@@ -192,19 +207,7 @@ If your database directory contains multiple BLAST databases (e.g., both `nt` an
 The pipeline supports two formats for the `--blastn` parameter:
 
 - **Directory path**: `/path/to/databases/nt_2024_10/` (only works if directory contains a single BLAST database)
-- **Direct file path**: `/path/to/databases/nt_2024_10/nt.nal` (recommended for directories with multiple databases)
-
-wget "https://ftp.ncbi.nlm.nih.gov/blast/db/v5/taxdb.tar.gz" &&
-tar xf taxdb.tar.gz -C $NT &&
-rm taxdb.tar.gz
-
-# Compress and cleanup
-
-cd ..
-tar -cvzf $NT_TAR $NT
-rm -r $NT
-
-````
+- **Direct file path**: `/path/to/databases/nt_2024_10/nt.nal` (recommended for directories with multiple databases). Note: When you specify a direct `.nal` file path, the pipeline automatically uses the parent directory to ensure all associated database files are available.
 
 #### 3. UniProt reference proteomes database
 
