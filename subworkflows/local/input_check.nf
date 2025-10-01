@@ -311,7 +311,7 @@ def validateBuscoDatabase(db_path) {
                 ERROR: Invalid BUSCO lineage directory structure: ${path_file}
                 It appears you're pointing to a specific BUSCO lineage directory (${path_file.name}),
                 but the expected directory structure is:
-                /path/to/busco_downloads/lineages/${path_file.name}/ 
+                /path/to/busco_downloads/lineages/${path_file.name}/
                 Please provide the path to the root BUSCO database directory.
                 Example: --busco /path/to/busco_downloads/
                 """
