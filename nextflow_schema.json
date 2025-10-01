@@ -125,7 +125,7 @@
                     "type": "string",
                     "format": "path",
                     "description": "Local directory where clade-specific BUSCO lineage datasets are stored. Must be a directory containing the 'lineages/' subdirectory.",
-                    "help_text": "BUSCO databases are always directories, never individual files. Do NOT include '/lineages' at the end of the path. The pipeline will automatically correct paths ending with '/lineages'. Example: '/path/to/busco_downloads/' not '/path/to/busco_downloads/lineages/'",
+                    "help_text": "BUSCO databases are always directories, never individual files. Do NOT include '/lineages' at the end of the path or point to specific lineage directories. The pipeline will automatically correct paths ending with '/lineages' or pointing to specific lineages. Example: '/path/to/busco_downloads/' not '/path/to/busco_downloads/lineages/' or '/path/to/busco_downloads/lineages/eukaryota_odb10/'",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "lineage_tax_ids": {
