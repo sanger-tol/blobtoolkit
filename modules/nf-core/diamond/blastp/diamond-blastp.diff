@@ -1,4 +1,7 @@
-Changes in module 'nf-core/diamond/blastp'
+Changes in component 'nf-core/diamond/blastp'
+'modules/nf-core/diamond/blastp/meta.yml' is unchanged
+'modules/nf-core/diamond/blastp/environment.yml' is unchanged
+Changes in 'diamond/blastp/main.nf':
 --- modules/nf-core/diamond/blastp/main.nf
 +++ modules/nf-core/diamond/blastp/main.nf
 @@ -12,6 +12,7 @@
@@ -17,7 +20,16 @@ Changes in module 'nf-core/diamond/blastp'
      switch ( out_ext ) {
          case "blast": outfmt = 0; break
          case "xml": outfmt = 5; break
-@@ -59,6 +61,7 @@
+@@ -51,6 +53,8 @@
+         gzip -c -d ${fasta} > ${fasta_name}
+     fi
+ 
++    mkdir -p ./blastp_tmp
++
+     DB=`find -L ./ -name "*.dmnd" | sed 's/\\.dmnd\$//'`
+ 
+     diamond \\
+@@ -59,6 +63,7 @@
          --db \$DB \\
          --query ${fasta_name} \\
          --outfmt ${outfmt} ${columns} \\
@@ -26,4 +38,7 @@ Changes in module 'nf-core/diamond/blastp'
          --out ${prefix}.${out_ext}
  
 
+'modules/nf-core/diamond/blastp/tests/main.nf.test' is unchanged
+'modules/nf-core/diamond/blastp/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/diamond/blastp/tests/tags.yml' is unchanged
 ************************************************************

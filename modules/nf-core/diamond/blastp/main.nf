@@ -53,6 +53,8 @@ process DIAMOND_BLASTP {
         gzip -c -d ${fasta} > ${fasta_name}
     fi
 
+    mkdir -p ./blastp_tmp
+
     DB=`find -L ./ -name "*.dmnd" | sed 's/\\.dmnd\$//'`
 
     diamond \\
