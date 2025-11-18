@@ -124,7 +124,7 @@ workflow BLOBTOOLKIT {
     //
     RUN_BLASTN (
         RUN_BLASTX.out.blastx_out.filter { params.blast_annotations == "all" },
-        ch_prepared_genome.filter,
+        ch_prepared_genome,
         INPUT_CHECK.out.blastn,
         INPUT_CHECK.out.taxon_id,
     )
