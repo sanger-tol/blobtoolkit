@@ -3,20 +3,21 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[0.9.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.9.1)] – Scyther (patch 1) – [2025-11-20]
+## [[0.10.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.10.0)] – Onix – [2025-11-20]
 
 ### Enhancements & fixes
 
-- Addition of the `--busco_annotations` flag to control whether:
+- Addition of the `--blast_annotations` flag to control whether:
   - `all` blast annotations are used
-  - `only_protein` for only blastp annotations
+  - `blastp` for only blastp annotations
+  - `blastx` for blastp and blastx annotations
   - `off` for no blast annotations
 
 ### Parameters
 
 | Old parameter | New parameter       |
 | ------------- | ------------------- |
-|               | --busco_annotations |
+|               | --blast_annotations |
 
 ## [[0.9.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.9.0)] – Scyther – [2025-10-03]
 

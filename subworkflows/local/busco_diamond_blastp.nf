@@ -174,7 +174,9 @@ workflow BUSCO_DIAMOND {
     //       FILTER OUT EMPTY FILES FROM ANALYSIS
     //
     BLOBTOOLKIT_EXTRACTBUSCOS.out.genes
-        .filter { it[1].size() > 140 }
+        .filter { it[1].size() > 140 &&
+                  params.blast_annotations in ["all", "blastp", "blastx"]
+        }
         .set { ch_busco_genes }
 
 
@@ -185,7 +187,7 @@ workflow BUSCO_DIAMOND {
     def outext = 'txt'
     def cols   = 'qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore'
     DIAMOND_BLASTP (
-        ch_busco_genes.filter { meta, fasta -> params.blast_annotations == "all" || params.blast_annotations == "only_protein" },
+        ch_busco_genes,
         blastp,
         outext,
         cols,

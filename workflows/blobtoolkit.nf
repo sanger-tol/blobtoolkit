@@ -107,10 +107,10 @@ workflow BLOBTOOLKIT {
 
     //
     // SUBWORKFLOW: Diamond blastx search of assembly contigs against the UniProt reference proteomes
-    //              BLASTX WILL NOT RUN IF blast_annotations IS SET TO `off` or `only_protein`
+    //              BLASTX WILL NOT RUN IF blast_annotations IS SET TO `off` or `blastp`
     //
     RUN_BLASTX (
-        ch_prepared_genome.filter { meta, fasta -> params.blast_annotations == "all" },
+        ch_prepared_genome.filter { meta, fasta -> params.blast_annotations == "all" || params.blast_annotation == "blastx" },
         BUSCO_DIAMOND.out.first_table,
         INPUT_CHECK.out.blastx,
         INPUT_CHECK.out.taxon_id,
@@ -120,11 +120,11 @@ workflow BLOBTOOLKIT {
 
     //
     // SUBWORKFLOW: Run blastn search on sequences that had no blastx hits
-    //              BLASTN WILL NOT RUN IF blast_annotations IS SET TO `off` or `only_protein`
+    //              BLASTN WILL NOT RUN IF blast_annotations IS SET TO `off`, `blastp` or `blastx`
     //
     RUN_BLASTN (
-        RUN_BLASTX.out.blastx_out,
-        ch_prepared_genome.filter { meta, fasta -> params.blast_annotations == "all" },
+        RUN_BLASTX.out.blastx_out.filter { params.blast_annotations == "all" },
+        ch_prepared_genome.filter,
         INPUT_CHECK.out.blastn,
         INPUT_CHECK.out.taxon_id,
     )
