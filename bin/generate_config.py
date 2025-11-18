@@ -31,7 +31,18 @@ RANKS = [
 
 BUSCO_BASAL_LINEAGES = ["eukaryota_odb10", "bacteria_odb10", "archaea_odb10"]
 
+# Wrapper around requests.get to use a "session", which can recover from network errors
+def get_http_request_json(url):
+    retry_strategy = urllib3.util.Retry(total=5, backoff_factor=0.1, status_forcelist=[429, 500, 502, 503, 504])
+    adapter = requests.adapters.HTTPAdapter(max_retries=retry_strategy)
+    session = requests.Session()
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    response = session.get(url)
+    return response.json()
 
+
+# Argument parsing
 def parse_args(args=None):
     Description = "Produce the various configuration files needed within the pipeline"
 
@@ -99,12 +110,12 @@ def fetch_taxon_info_from_goat(taxon_name: typing.Union[str, int]) -> TaxonInfo:
         record_id = "taxon-%d" % taxon_name
     else:
         # Resolve the taxon_id of the species
-        response = requests.get(GOAT_LOOKUP_API % taxon_name).json()
+        response = get_http_request_json(GOAT_LOOKUP_API % taxon_name)
         taxon_id = int(response["results"][0]["result"]["taxon_id"])
         record_id = response["results"][0]["id"]
 
     # Using API, get the taxon_ids of the species and all parents
-    response = requests.get(GOAT_RECORD_API % record_id).json()
+    response = get_http_request_json(GOAT_RECORD_API % record_id)
     body = response["records"][0]["record"]
     return make_taxon_info_from_goat(body)
 
@@ -113,12 +124,7 @@ def fetch_taxon_info_from_goat(taxon_name: typing.Union[str, int]) -> TaxonInfo:
 def fetch_taxon_info_from_ncbi(taxon_name: typing.Union[str, int], with_lineage=True) -> typing.Optional[TaxonInfo]:
     # "/" has to be double encoded, e.g. "Gymnodinium sp. CCAP1117/9" -> "Gymnodinium%20sp.%20CCAP1117%252F9"
     url_safe_taxon_name = urllib.parse.quote(str(taxon_name).replace("/", "%2F"))
-    retry_strategy = urllib3.util.Retry(total=5, backoff_factor=0.1, status_forcelist=[429, 500, 502, 503, 504])
-    adapter = requests.adapters.HTTPAdapter(max_retries=retry_strategy)
-    session = requests.Session()
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
-    response = session.get(NCBI_TAXONOMY_API % url_safe_taxon_name).json()
+    response = get_http_request_json(NCBI_TAXONOMY_API % url_safe_taxon_name)
     if "taxonomy" in response["taxonomy_nodes"][0]:
         body = response["taxonomy_nodes"][0]["taxonomy"]
         if with_lineage:
@@ -186,7 +192,7 @@ def get_odb(
 
 
 def get_assembly_info(accession: str) -> typing.Dict[str, typing.Union[str, int]]:
-    response = requests.get(NCBI_DATASETS_API % accession).json()
+    response = get_http_request_json(NCBI_DATASETS_API % accession)
     if response["total_count"] != 1:
         print(f"Assembly not found: {accession}", file=sys.stderr)
         sys.exit(1)
@@ -212,7 +218,7 @@ def get_assembly_info(accession: str) -> typing.Dict[str, typing.Union[str, int]
 
 
 def get_sequence_report(accession: str):
-    response = requests.get(NCBI_SEQUENCE_API % accession).json()
+    response = get_http_request_json(NCBI_SEQUENCE_API % accession)
     if not response["reports"]:
         print(f"Assembly not found: {accession}", file=sys.stderr)
         sys.exit(1)

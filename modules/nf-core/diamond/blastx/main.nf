@@ -54,6 +54,8 @@ process DIAMOND_BLASTX {
         gzip -c -d ${fasta} > ${fasta_name}
     fi
 
+    mkdir -p ./blastx_tmp
+
     DB=`find -L ./ -name "*.dmnd" | sed 's/\\.dmnd\$//'`
 
     mkdir ./tmpdir/

@@ -3,14 +3,32 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[0.9.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.9.1)] – Scyther (patch 1) – [2025-11-20]
 
+### Enhancements & fixes
+- Addition of the `--busco_annotations` flag to control whether:
+  - `all` blast annotations are used
+  - `only_protein` for only blastp annotations
+  - `off` for no blast annotations
 
-## [[0.8.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.8.1)] – Sprigatito (H1) – [2025-08-19]
+### Parameters
+
+| Old parameter | New parameter          |
+| ------------- | ---------------------- |
+|               | --busco_annotations    |
+
+## [[0.9.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.9.0)] – Scyther – [2025-10-03]
 
 ### Enhancements & fixes
 
 - Upgrade Busco (#190)
-- Update resource requirements for BLASTN modules (#191)
+- The pipeline now stops on Busco failures (#194)
+- Update resource requirements for BLASTN modules (#191) and BLOBTOOLKIT_WINDOWSTATS
+- Fixed the `test_full` profile (Sanger only)
+- Addition of `--tmpdir` to Diamond blast modules (#200)
+- `--use_work_dir_as_temp` is no longer a hidden param.
+- Fixed some documentation (#193 and #197)
+- Made GENERATE_CONFIG more resilient to network errors (#197)
 
 ### Software dependencies
 

@@ -30,7 +30,7 @@ workflow BUSCO_DIAMOND {
     busco_lin
     // 2. Add the (missing) basal lineages and a (0-based) index to record the original order (i.e. by age)
     | flatMap { lineages -> (lineages + basal_lineages).unique().withIndex() }
-     // 3. Move the lineage information to `meta` to be able to distinguish the BUSCO jobs and group their outputs later
+    // 3. Move the lineage information to `meta` to be able to distinguish the BUSCO jobs and group their outputs later
     | combine ( fasta )
     | map { lineage_name, lineage_index, meta, genome -> [meta + [lineage_name: lineage_name, lineage_index: lineage_index], genome] }
     | set { ch_fasta_with_lineage }
