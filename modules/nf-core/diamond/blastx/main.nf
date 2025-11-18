@@ -56,6 +56,8 @@ process DIAMOND_BLASTX {
 
     DB=`find -L ./ -name "*.dmnd" | sed 's/\\.dmnd\$//'`
 
+    mkdir ./tmpdir/
+
     diamond \\
         blastx \\
         --threads ${task.cpus} \\
@@ -64,6 +66,7 @@ process DIAMOND_BLASTX {
         --outfmt ${outfmt} ${columns} \\
         ${exclude_taxon} \\
         ${args} \\
+        --tmpdir ./tmpdir/ \\
         --out ${prefix}.${out_ext} \\
         --log
 

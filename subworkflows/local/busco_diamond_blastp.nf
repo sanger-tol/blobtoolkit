@@ -22,32 +22,30 @@ workflow BUSCO_DIAMOND {
 
 
     //
-    // Prepare the BUSCO lineages
+    // LOGIC: Prepare the BUSCO lineages
     //
     // 0. Initialise sone variables
-    basal_lineages = [ "eukaryota_odb10", "bacteria_odb10", "archaea_odb10" ]
-    def lineage_position = 0
+    def basal_lineages = [ "eukaryota_odb10", "bacteria_odb10", "archaea_odb10" ]
     // 1. Start from the taxon's lineages
     busco_lin
-    // 2. Add the (missing) basal lineages
-    | map { lineages -> (lineages + basal_lineages).unique() }
-    | flatten ()
-    // 3. Add a (0-based) index to record the original order (i.e. by age)
-    | map { lineage_name -> [lineage_name, lineage_position++] }
-    // 4. Move the lineage information to `meta` to be able to distinguish the BUSCO jobs and group their outputs later
+    // 2. Add the (missing) basal lineages and a (0-based) index to record the original order (i.e. by age)
+    | flatMap { lineages -> (lineages + basal_lineages).unique().withIndex() }
+     // 3. Move the lineage information to `meta` to be able to distinguish the BUSCO jobs and group their outputs later
     | combine ( fasta )
     | map { lineage_name, lineage_index, meta, genome -> [meta + [lineage_name: lineage_name, lineage_index: lineage_index], genome] }
     | set { ch_fasta_with_lineage }
 
 
     //
-    // Format pre-computed outputs
+    // LOGIC: Format pre-computed outputs
     //
     ch_precomputed_busco = precomputed_busco
         .map { meta, dir -> [meta.lineage, [meta, dir]] }
 
     ch_combined = ch_fasta_with_lineage
-        .map { meta, fasta -> [meta.lineage_name, [meta, fasta]] }
+        .map {
+            meta, fasta -> [meta.lineage_name, [meta, fasta]]
+        }
         .join(ch_precomputed_busco, by: 0, remainder: true)
         .map { lineage, fasta_data, busco_data ->
             def (meta, fasta) = fasta_data
@@ -55,14 +53,16 @@ workflow BUSCO_DIAMOND {
             [meta + [busco_dir: busco_dir], fasta]
         }
 
-    // Branch based on whether there's a pre-computed BUSCO output
+    // NOTE: Branch based on whether there's a pre-computed BUSCO output
     ch_busco_to_run = ch_combined.branch {
         precomputed: it[0].busco_dir != null
         to_compute: true
     }
 
 
-    // Format precomputed BUSCO outputs
+    //
+    // LOGIC: Format precomputed BUSCO outputs
+    //
     ch_formatted_precomputed = ch_busco_to_run.precomputed
         .map { meta, fasta ->
             def busco_dir = file(meta.busco_dir)
@@ -84,7 +84,7 @@ workflow BUSCO_DIAMOND {
         }
 
     //
-    // Run BUSCO search
+    // MODULE: Run BUSCO search
     //
     BUSCO_BUSCO(
         ch_busco_to_run.to_compute,
@@ -96,7 +96,9 @@ workflow BUSCO_DIAMOND {
     )
     ch_versions = ch_versions.mix ( BUSCO_BUSCO.out.versions.first() )
 
-    // Join new and pre-computed BUSCO outputs
+    //
+    // LOIGC: Join new and pre-computed BUSCO outputs
+    //
     ch_all_busco_outputs = BUSCO_BUSCO.out.batch_summary
         .join(BUSCO_BUSCO.out.short_summaries_txt, by: 0, remainder: true )
         .join(BUSCO_BUSCO.out.short_summaries_json, by: 0, remainder: true )
@@ -125,7 +127,7 @@ workflow BUSCO_DIAMOND {
         .mix(ch_formatted_precomputed)
 
     //
-    // Tidy up the BUSCO output directories before publication
+    // MODULE: Tidy up the BUSCO output directories before publication
     //
     RESTRUCTUREBUSCODIR(
         ch_all_busco_outputs
@@ -148,7 +150,7 @@ workflow BUSCO_DIAMOND {
     ch_versions = ch_versions.mix ( RESTRUCTUREBUSCODIR.out.versions.first() )
 
     //
-    // Select input for BLOBTOOLKIT_EXTRACTBUSCOS
+    // LOGIC: Select input for BLOBTOOLKIT_EXTRACTBUSCOS
     //
     ch_all_busco_outputs
         .filter { meta, outputs -> basal_lineages.contains(meta.lineage_name) }
@@ -156,24 +158,45 @@ workflow BUSCO_DIAMOND {
         .collect { it[1] }
         .set { ch_basal_buscos }
 
-    // Extract BUSCO genes from the basal lineages
-    BLOBTOOLKIT_EXTRACTBUSCOS ( fasta, ch_basal_buscos )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_EXTRACTBUSCOS.out.versions.first() )
 
     //
-    // Align BUSCO genes against the BLASTp database
+    // MODULE: Extract BUSCO genes from the basal lineages
+    //
+    BLOBTOOLKIT_EXTRACTBUSCOS (
+        fasta,
+        ch_basal_buscos
+    )
+    ch_versions = ch_versions.mix ( BLOBTOOLKIT_EXTRACTBUSCOS.out.versions.first() )
+
+
+    //
+    // LOGIC: Align BUSCO genes against the BLASTp database
+    //       FILTER OUT EMPTY FILES FROM ANALYSIS
     //
     BLOBTOOLKIT_EXTRACTBUSCOS.out.genes
         .filter { it[1].size() > 140 }
         .set { ch_busco_genes }
 
-    // Hardcoded to match the format expected by blobtools
+
+    //
+    // MODULE: Hardcoded to match the format expected by blobtools
+    //         DIAMOND WILL NOT RUN IF blast_annotations IS SET TO `off`
+    //
     def outext = 'txt'
     def cols   = 'qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore'
-    DIAMOND_BLASTP ( ch_busco_genes, blastp, outext, cols, taxon_id )
+    DIAMOND_BLASTP (
+        ch_busco_genes.filter { meta, fasta -> params.blast_annotations == "all" || params.blast_annotations == "only_protein" },
+        blastp,
+        outext,
+        cols,
+        taxon_id
+    )
     ch_versions = ch_versions.mix ( DIAMOND_BLASTP.out.versions.first() )
 
-    // Order BUSCO results according to the lineage index
+
+    //
+    // MODULE: Order BUSCO results according to the lineage index
+    //
     ch_all_busco_outputs
         // 0. Filter out the BUSCO results that found no gene (seen for archaea/bacteria)
         | filter { meta, outputs -> outputs.full_table }
