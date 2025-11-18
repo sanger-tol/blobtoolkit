@@ -175,7 +175,7 @@ workflow BUSCO_DIAMOND {
     //
     BLOBTOOLKIT_EXTRACTBUSCOS.out.genes
         .filter { it[1].size() > 140 &&
-                  params.blast_annotations in ["all", "blastp", "blastx"]
+                    params.blast_annotations in ["all", "blastp", "blastx"]
         }
         .set { ch_busco_genes }
 
