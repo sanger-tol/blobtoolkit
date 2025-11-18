@@ -120,7 +120,7 @@ workflow BLOBTOOLKIT {
 
     //
     // SUBWORKFLOW: Run blastn search on sequences that had no blastx hits
-    //              BLASTX WILL NOT RUN IF blast_annotations IS SET TO `off` or `only_protein`
+    //              BLASTN WILL NOT RUN IF blast_annotations IS SET TO `off` or `only_protein`
     //
     RUN_BLASTN (
         RUN_BLASTX.out.blastx_out,

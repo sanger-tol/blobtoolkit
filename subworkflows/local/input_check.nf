@@ -94,8 +94,9 @@ workflow INPUT_CHECK {
     //
     // MODULE: Extract the read counts and insert into the meta
     //
-    read_files.view{"READS: $it"}
-    SAMTOOLS_FLAGSTAT ( read_files.map { meta, datafile -> [meta, datafile, []] } )
+    SAMTOOLS_FLAGSTAT (
+        read_files.map { meta, datafile -> [meta, datafile, []] }
+    )
     ch_versions = ch_versions.mix(SAMTOOLS_FLAGSTAT.out.versions.first())
 
     read_files

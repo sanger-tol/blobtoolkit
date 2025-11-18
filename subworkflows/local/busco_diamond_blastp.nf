@@ -97,7 +97,7 @@ workflow BUSCO_DIAMOND {
     ch_versions = ch_versions.mix ( BUSCO_BUSCO.out.versions.first() )
 
     //
-    // LOIGC: Join new and pre-computed BUSCO outputs
+    // LOGIC: Join new and pre-computed BUSCO outputs
     //
     ch_all_busco_outputs = BUSCO_BUSCO.out.batch_summary
         .join(BUSCO_BUSCO.out.short_summaries_txt, by: 0, remainder: true )
