@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [[0.9.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.9.1)] – Scyther (patch 1) – [2025-11-20]
 
 ### Enhancements & fixes
+
 - Addition of the `--busco_annotations` flag to control whether:
   - `all` blast annotations are used
   - `only_protein` for only blastp annotations
@@ -13,9 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Parameters
 
-| Old parameter | New parameter          |
-| ------------- | ---------------------- |
-|               | --busco_annotations    |
+| Old parameter | New parameter       |
+| ------------- | ------------------- |
+|               | --busco_annotations |
 
 ## [[0.9.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.9.0)] – Scyther – [2025-10-03]
 
