@@ -150,18 +150,32 @@ def get_classification(taxon_info: TaxonInfo) -> typing.Dict[str, str]:
     return {r: ancestors[r] for r in RANKS if r in ancestors}
 
 
+def get_odb_version(file_name):
+    if "odb10" in file_name:
+        return "_odb10"
+    elif "odb12" in file_name:
+        return "_odb12"
+    else:
+        print(f"Can't recognise the odb version of {file_name}", file=sys.stderr)
+        sys.exit(1)
+
+
 def get_odb(
     taxon_info: TaxonInfo,
     lineage_tax_ids: str,
     requested_buscos: typing.Optional[str],
     pre_computed_buscos: typing.List[str],
 ) -> typing.List[str]:
+
+    # Get the ODB version from the file name
+    odb_version = get_odb_version(lineage_tax_ids)
+
     # Read the mapping between the BUSCO lineages and their taxon_id
     with open(lineage_tax_ids) as file_in:
         lineage_tax_ids_dict: typing.Dict[int, str] = {}
         for line in file_in:
             arr = line.split()
-            lineage_tax_ids_dict[int(arr[0])] = arr[1] + "_odb10"
+            lineage_tax_ids_dict[int(arr[0])] = arr[1] + odb_version
 
     valid_odbs = set(lineage_tax_ids_dict.values())
 
@@ -186,7 +200,7 @@ def get_odb(
             if anc_taxon_info.taxon_id in lineage_tax_ids_dict
         ]
 
-    return odb_arr
+    return (odb_version, odb_arr)
 
 
 def get_assembly_info(accession: str) -> typing.Dict[str, typing.Union[str, int]]:
@@ -319,12 +333,13 @@ def print_yaml(
         yaml.dump(data, fout)
 
 
-def print_csv(file_out, taxon_id: int, odb_arr: typing.List[str]):
+def print_csv(file_out, taxon_id: int, odb_version: str, odb_arr: typing.List[str]):
     out_dir = os.path.dirname(file_out)
     make_dir(out_dir)
 
     with open(file_out, "w") as fout:
         print("taxon_id", taxon_id, sep=",", file=fout)
+        print("odb_version", odb_version, sep=",", file=fout)
         for odb_val in odb_arr:
             print("busco_lineage", odb_val, sep=",", file=fout)
 
@@ -371,7 +386,7 @@ def main(args=None):
     classification = get_classification(taxon_info)
 
     precomputed_busco = [os.path.basename(path).replace("run_", "") for path in (args.precomputed_busco or [])]
-    odb_arr = get_odb(taxon_info, args.lineage_tax_ids, args.busco, precomputed_busco)
+    (odb_version, odb_arr) = get_odb(taxon_info, args.lineage_tax_ids, args.busco, precomputed_busco)
     taxon_id = adjust_taxon_id(args.nt, taxon_info)
 
     if sequence_report:
@@ -390,7 +405,7 @@ def main(args=None):
         args.blastn,
         args.taxdump,
     )
-    print_csv(f"{args.output_prefix}.csv", taxon_id, odb_arr)
+    print_csv(f"{args.output_prefix}.csv", taxon_id, odb_version, odb_arr)
 
 
 if __name__ == "__main__":
