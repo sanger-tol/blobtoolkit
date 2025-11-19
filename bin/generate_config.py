@@ -29,8 +29,6 @@ RANKS = [
     "superkingdom",
 ]
 
-BUSCO_BASAL_LINEAGES = ["eukaryota_odb10", "bacteria_odb10", "archaea_odb10"]
-
 # Wrapper around requests.get to use a "session", which can recover from network errors
 def get_http_request_json(url):
     retry_strategy = urllib3.util.Retry(total=5, backoff_factor=0.1, status_forcelist=[429, 500, 502, 503, 504])
