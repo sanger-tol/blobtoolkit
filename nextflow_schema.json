@@ -67,6 +67,13 @@
                     "fa_icon": "fas fa-image",
                     "default": "png"
                 },
+                "blast_annotations": {
+                    "type": "string",
+                    "enum": ["all", "blastp", "blastx", "off"],
+                    "default": "all",
+                    "description": "Control whether to use all, `blastp` (for minimal annotations), `blastx` (for both blastp and blastx annotations) or `no` blast annotations.",
+                    "fa_icon": "fas fa-file-signature"
+                },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",

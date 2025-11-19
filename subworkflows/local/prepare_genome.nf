@@ -24,6 +24,7 @@ workflow PREPARE_GENOME {
             skip: true
         }
 
+
     //
     // MODULE: Decompress compressed FASTA files
     //
@@ -38,6 +39,7 @@ workflow PREPARE_GENOME {
     | mix( GUNZIP.out.gunzip )
     | map { meta, fa -> [ meta + [genome_size: fa.size()], fa] }
     | set { ch_genome }
+
 
     //
     // MODULES: Mask the genome if needed

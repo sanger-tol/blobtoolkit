@@ -24,21 +24,21 @@ workflow INPUT_CHECK {
     ch_versions = Channel.empty()
 
     //
-    // SUBWORKFLOW: Decompress databases if needed
+    // MODULE: Check which need to be decompressed & Untar if needed
     //
-
-    // Check which need to be decompressed
     ch_dbs_for_untar = databases
         .branch { db_meta, db_path ->
             untar: db_path.name.endsWith( ".tar.gz" )
             skip: true
         }
 
-    // Untar the databases
     UNTAR ( ch_dbs_for_untar.untar )
     ch_versions = ch_versions.mix( UNTAR.out.versions.first() )
 
-    // Join and format dbs
+
+    //
+    // MODULE: Join and format dbs
+    //
     ch_databases = ch_dbs_for_untar.skip
         .mix( UNTAR.out.untar )
         .map { meta, db -> [ meta + [id: db.baseName], db] }
@@ -58,8 +58,9 @@ workflow INPUT_CHECK {
             taxdump: db_meta.type == "taxdump"
         }
 
+
     //
-    // SUBWORKFLOW: Process samplesheet
+    // MODULE: Process samplesheet
     //
     if ( params.fetchngs_samplesheet ) {
         Channel
@@ -90,8 +91,12 @@ workflow INPUT_CHECK {
     }
 
 
-    // Extract the read counts
-    SAMTOOLS_FLAGSTAT ( read_files.map { meta, datafile -> [meta, datafile, []] } )
+    //
+    // MODULE: Extract the read counts and insert into the meta
+    //
+    SAMTOOLS_FLAGSTAT (
+        read_files.map { meta, datafile -> [meta, datafile, []] }
+    )
     ch_versions = ch_versions.mix(SAMTOOLS_FLAGSTAT.out.versions.first())
 
     read_files
@@ -100,7 +105,9 @@ workflow INPUT_CHECK {
     | set { reads }
 
 
-    // Get the source paths of all the databases, except Busco which is not recorded in the blobDir meta.json
+    //
+    // MODULE:  Get the source paths of all the databases, except Busco which is not recorded in the blobDir meta.json
+    //
     databases
     | filter { meta, file -> meta.type != "busco" && meta.type != "precomputed_busco" }
     | map {meta, file -> [meta, file.toUriString()]}
@@ -120,7 +127,7 @@ workflow INPUT_CHECK {
 
 
     //
-    // Parse the CSV file
+    // LOGIC: Parse the CSV file
     //
     GENERATE_CONFIG.out.csv
     | map { meta, csv -> csv }
@@ -135,7 +142,7 @@ workflow INPUT_CHECK {
 
 
     //
-    // Get the taxon ID if we do taxon filtering in blast* searches
+    // LOGIC: Get the taxon ID if we do taxon filtering in blast* searches
     //
     ch_parsed_csv.taxon_id
     | map { params.skip_taxon_filtering ? '' : it }
@@ -144,14 +151,15 @@ workflow INPUT_CHECK {
 
 
     //
-    // Get the BUSCO linages
+    // LOGIC: Get the BUSCO linages
     //
     ch_parsed_csv.busco_lineage
     | collect
     | set { ch_busco_lineages }
 
-    // Format pre-computed BUSCOs (if provided)
-    // Parse the BUSCO output directories
+    //
+    // LOGIC: Format pre-computed BUSCOs (if provided)
+    //          Parse the BUSCO output directories
     ch_parsed_busco = ch_databases.precomputed_busco
         .flatMap { meta, dir ->
             def subdirs = file(dir).listFiles().findAll { it.isDirectory() }
@@ -161,16 +169,19 @@ workflow INPUT_CHECK {
             }
         }
 
-    // Remove any invalid lineages from precomputed_busco
-    // ch_busco_lineages_list = ch_busco_lineages.flatten()
+    //
+    // LOGIC: Remove any invalid lineages from precomputed_busco
+    //
+    //ch_busco_lineages_list = ch_busco_lineages.flatten()
     // ch_parsed_busco_filtered = ch_parsed_busco
     //     .filter { meta, path ->
     //         ch_busco_lineages.contains(meta.lineage)
     //     }
     // ch_parsed_busco_filtered = ch_parsed_busco_filtered.ifEmpty { Channel.value([]) }
 
+
     //
-    // Get the BUSCO path if set
+    // LOGIC: Get the BUSCO path if set
     //
     ch_databases.busco
     | map { _, db_path -> db_path }
@@ -179,7 +190,7 @@ workflow INPUT_CHECK {
 
 
     //
-    // Convert the taxdump to a JSON file if there isn't one yet
+    // MODULE: Convert the taxdump to a JSON file if there isn't one yet
     //
     ch_databases.taxdump
     | filter { meta, db_path -> ! db_path.isFile() }
@@ -192,8 +203,10 @@ workflow INPUT_CHECK {
     }
     | set { taxdump_dirs }
 
+
     JSONIFY_TAXDUMP( taxdump_dirs.dir )
     ch_versions = ch_versions.mix(JSONIFY_TAXDUMP.out.versions.first())
+
 
     ch_databases.taxdump
     | filter { meta, db_path -> db_path.isFile() }
