@@ -20,23 +20,28 @@ Changes in 'diamond/blastp/main.nf':
      switch ( out_ext ) {
          case "blast": outfmt = 0; break
          case "xml": outfmt = 5; break
-@@ -51,6 +53,8 @@
+@@ -51,7 +53,11 @@
          gzip -c -d ${fasta} > ${fasta_name}
      fi
  
 +    mkdir -p ./blastp_tmp
 +
      DB=`find -L ./ -name "*.dmnd" | sed 's/\\.dmnd\$//'`
++
++    mkdir ./tmpdir/
  
      diamond \\
-@@ -59,6 +63,7 @@
+         blastp \\
+@@ -59,7 +65,9 @@
          --db \$DB \\
          --query ${fasta_name} \\
          --outfmt ${outfmt} ${columns} \\
 +        ${exclude_taxon} \\
          ${args} \\
++        --tmpdir ./tmpdir/ \\
          --out ${prefix}.${out_ext}
  
+     cat <<-END_VERSIONS > versions.yml
 
 'modules/nf-core/diamond/blastp/tests/main.nf.test' is unchanged
 'modules/nf-core/diamond/blastp/tests/main.nf.test.snap' is unchanged
