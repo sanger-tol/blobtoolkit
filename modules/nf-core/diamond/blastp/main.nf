@@ -57,8 +57,6 @@ process DIAMOND_BLASTP {
 
     DB=`find -L ./ -name "*.dmnd" | sed 's/\\.dmnd\$//'`
 
-    mkdir ./tmpdir/
-
     diamond \\
         blastp \\
         --threads ${task.cpus} \\
@@ -67,7 +65,6 @@ process DIAMOND_BLASTP {
         --outfmt ${outfmt} ${columns} \\
         ${exclude_taxon} \\
         ${args} \\
-        --tmpdir ./tmpdir/ \\
         --out ${prefix}.${out_ext}
 
     cat <<-END_VERSIONS > versions.yml
