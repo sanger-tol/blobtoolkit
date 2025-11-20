@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `blastp` for only blastp annotations
   - `blastx` for blastp and blastx annotations
   - `off` for no blast annotations
+- Added support for Busco odb12 databases. odb10 is still supported,
+  but odb12 is the default.
 
 ### Parameters
 
