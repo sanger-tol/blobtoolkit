@@ -108,8 +108,8 @@
                     "format": "file-path",
                     "exists": true,
                     "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
-                    "description": "Path to FASTA genome file.",
+                    "pattern": "^\\S+\\.fa(\\.gz)?$",
+                    "description": "Path to FASTA genome file (must have .fa extension).",
                     "fa_icon": "far fa-file-code"
                 }
             }
@@ -159,6 +159,12 @@
                     "description": "Path to the nucleotide BLAST database. Can be either a directory containing a single database or a direct path to a .nal file.",
                     "help_text": "For directories with multiple databases, specify the exact .nal file path to avoid ambiguity. When a .nal file is specified, the parent directory is used to ensure all database files are available. Example: '/path/to/databases/nt.nal' instead of '/path/to/databases/'",
                     "fa_icon": "fas fa-file-archive"
+                },
+                "ntdb_prefix": {
+                    "type": "string",
+                    "description": "Database basename (prefix) to select when --blastn is a directory. Provide the name without extension, e.g. 'nt' for 'nt.nal'.",
+                    "help_text": "When supplying a directory to --blastn, set --ntdb_prefix to identify the database basename (without the .nal extension). The pipeline will look for a file named <prefix>.nal inside that directory and use it. Example: --blastn /path/to/databases/ --ntdb_prefix nt.",
+                    "fa_icon": "fas fa-tag"
                 },
                 "taxdump": {
                     "type": "string",

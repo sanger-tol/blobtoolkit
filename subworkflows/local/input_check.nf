@@ -357,8 +357,11 @@ def validateBlastnDatabase(db_path) {
             def parent_dir = file(path_file.parent)
             def db_name = path_file.name.replaceAll('\\.nal$', '')
 
-            // Create a temporary directory with symlinks to only the specified database files
-            def temp_dir = file("${parent_dir}/.btk_isolated_${db_name}")
+            // Create a temporary directory in the system temp folder with a UUID to avoid
+            // writing into the database parent directory
+            def uuid = java.util.UUID.randomUUID().toString()
+            // Create isolated directory inside the pipeline working directory
+            def temp_dir = file("${System.getProperty('user.dir')}/.btk_isolated_${db_name}_${uuid}")
             if (!temp_dir.exists()) {
                 temp_dir.mkdirs()
             }
@@ -394,48 +397,54 @@ def validateBlastnDatabase(db_path) {
             """
         }
     } else if (path_file.isDirectory()) {
-        // Directory provided - search for database files
-        log.info "Searching for BLAST database files in directory: ${path_file}"
-        // Look for .nal files
-        def nal_files = path_file.listFiles().findAll { it.name.endsWith('.nal') }
-        if (nal_files.size() == 1) {
-            log.info "Found single BLAST database: ${nal_files[0].name}"
-            return [path_file, null]  // Return directory with no specific db name
-        } else if (nal_files.size() > 1) {
-            def db_names = nal_files.collect { it.name }.join('\n  - ')
+        // Directory provided - require the user to specify the database prefix
+        log.info "BLAST database directory provided: ${path_file}"
+        def prefix = (this.binding.hasVariable('params') && params.containsKey('ntdb_prefix')) ? params.ntdb_prefix : null
+        if (!prefix) {
             error """
-            ERROR: Multiple BLAST databases found in ${path_file}:
-                - ${db_names}
-            Please specify the exact path to the .nal file you want to use.
-            Examples:
-                --blastn ${path_file}/${nal_files[0].name}
-                --blastn ${path_file}/${nal_files[1].name}
+            ERROR: A BLAST database directory was provided (${path_file}) but no database prefix was supplied.
+            The pipeline requires you to select which database inside the directory to use.
+            Please provide the database prefix (basename without extension) using --ntdb_prefix.
+            Example: --blastn ${path_file} --ntdb_prefix nt  (will select ${path_file}/nt.nal)
             """
-        } else {
-            // Look for .nin files as fallback
-            def nin_files = path_file.listFiles().findAll { it.name.endsWith('.nin') }
-            if (nin_files.size() == 1) {
-                log.info "Found single BLAST database: ${nin_files[0].name}"
-                return [path_file, null]  // Return directory with no specific db name
-            } else if (nin_files.size() > 1) {
-                def db_names = nin_files.collect { it.name }.join('\n  - ')
-                error """
-                ERROR: Multiple BLAST databases found in ${path_file}:
-                    - ${db_names}
-                Please specify the exact path to the .nin file you want to use.
-                Examples:
-                    --blastn ${path_file}/${nin_files[0].name}
-                    --blastn ${path_file}/${nin_files[1].name}
-                """
-            } else {
-                error """
-                ERROR: No BLAST database files (.nal or .nin) found in ${path_file}
-                Please ensure the directory contains a valid BLAST database or
-                specify the direct path to a .nal file.
-                Example: --blastn /path/to/databases/nt.nal
-                """
+        }
+
+        // Look for the requested .nal file inside the directory
+        def expected_name = "${prefix}.nal"
+        def expected_file = path_file.listFiles().find { it.name == expected_name }
+        if (!expected_file) {
+            error """
+            ERROR: Requested BLAST database prefix '${prefix}' not found in ${path_file}
+            Expected file: ${path_file}/${expected_name}
+            Please ensure the prefix passed with --ntdb_prefix matches a .nal file in the directory.
+            """
+        }
+
+        // Create isolated directory with symlinks to the chosen database files
+        def parent_dir = file(expected_file.parent)
+        def db_name = expected_file.name.replaceAll('\\.nal$', '')
+        def uuid = java.util.UUID.randomUUID().toString()
+    // Create isolated directory inside the pipeline working directory
+    def temp_dir = file("${System.getProperty('user.dir')}/.btk_isolated_${db_name}_${uuid}")
+        if (!temp_dir.exists()) {
+            temp_dir.mkdirs()
+        }
+
+        def db_files = parent_dir.listFiles().findAll {
+            it.name.startsWith("${db_name}.") ||
+            it.name in ['taxdb.btd', 'taxdb.bti', 'taxonomy4blast.sqlite3']
+        }
+
+        db_files.each { source_file ->
+            def link_file = file("${temp_dir}/${source_file.name}")
+            if (!link_file.exists()) {
+                link_file.createLink(source_file)
             }
         }
+
+        log.info "Using BLAST database '${db_name}' from directory: ${path_file}"
+        log.info "Created isolated directory: ${temp_dir}"
+        return [temp_dir, db_name]
     } else {
         error """
         ERROR: Invalid database path: ${path_file}
