@@ -135,6 +135,8 @@ workflow INPUT_CHECK {
     | branch {
         taxon_id: it.key == "taxon_id"
                     return it.value
+        odb_version: it.key == "odb_version"
+                    return it.value
         busco_lineage: it.key == "busco_lineage"
                     return it.value
     }
@@ -148,6 +150,14 @@ workflow INPUT_CHECK {
     | map { params.skip_taxon_filtering ? '' : it }
     | first
     | set { ch_taxon_id }
+
+
+    //
+    // LOGIC: Get the ODB version to use
+    //
+    ch_parsed_csv.odb_version
+    | collect
+    | set { ch_odb_version }
 
 
     //
@@ -223,6 +233,7 @@ workflow INPUT_CHECK {
     categories_tsv = GENERATE_CONFIG.out.categories_tsv // channel: [ val(meta), path(tsv) ]
     taxon_id = ch_taxon_id                  // channel: val(taxon_id)
     busco_lineages = ch_busco_lineages      // channel: val([busco_lin])
+    odb_version = ch_odb_version            // channel: val(odb_version)
     blastn = ch_databases.blastn.first()    // channel: [ val(meta), path(blastn_db) ]
     blastp = ch_databases.blastp.first()    // channel: [ val(meta), path(blastp_db) ]
     blastx = ch_databases.blastx.first()    // channel: [ val(meta), path(blastx_db) ]

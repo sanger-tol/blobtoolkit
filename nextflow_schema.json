@@ -44,7 +44,7 @@
                 },
                 "busco_lineages": {
                     "type": "string",
-                    "pattern": "([^,]+_odb10,)*[^,]+_odb10",
+                    "pattern": "([^,]+_odb(10|12),)*[^,]+_odb(10|12)",
                     "description": "Name of the ODB10 lineages to run BUSCO on. By default, the pipeline will automatically select the correct lineage based on the taxonomy.",
                     "fa_icon": "fas fa-bone"
                 },

@@ -13,6 +13,7 @@ workflow BUSCO_DIAMOND {
     fasta        // channel: [ val(meta), path(fasta) ]
     busco_lin    // channel: val([busco_lineages])
     busco_db     // channel: path(busco_db)
+    odb_version  // channel: val(odb_version)
     blastp       // channel: path(blastp_db)
     taxon_id     // channel: val(taxon_id)
     precomputed_busco // channel: [ val(meta}, path(busco_run_dir) ] optional precomputed busco outputs
@@ -24,17 +25,29 @@ workflow BUSCO_DIAMOND {
     //
     // LOGIC: Prepare the BUSCO lineages
     //
-    // 0. Initialise sone variables
-    def basal_lineages = [ "eukaryota_odb10", "bacteria_odb10", "archaea_odb10" ]
-    // 1. Start from the taxon's lineages
+
+    // 0. Initialise the basal lineages according to the odb version
+    def basal_lineages = [ "eukaryota", "bacteria", "archaea" ]
+
+    Channel.from(basal_lineages)
+    | combine ( odb_version )
+    | map { lineage, version -> lineage + version }
+    | set { ch_basal_lineages }
+
+    // Combine the list of relevant lineages with the basal lineages, and with the fasta
+    // 1. Convert the list of strings to a channel of a strings
     busco_lin
-    // 2. Add the (missing) basal lineages and a (0-based) index to record the original order (i.e. by age)
-    | flatMap { lineages -> (lineages + basal_lineages).unique().withIndex() }
-    // 3. Move the lineage information to `meta` to be able to distinguish the BUSCO jobs and group their outputs later
+    | flatMap
+    // 2. Add the basal lineages, and remove any duplicate introduced
+    | concat ( ch_basal_lineages)
+    | unique
+    // 3. Add a (0-based) index to record the original order (i.e. by age) – withIndex doesn't work on channels
+    | toList
+    | flatMap { lineages -> lineages.withIndex() }
+    // 4. Add the genome fasta and meta, and keys for the lineage so that we can distinguish the BUSCO jobs and group their outputs later
     | combine ( fasta )
     | map { lineage_name, lineage_index, meta, genome -> [meta + [lineage_name: lineage_name, lineage_index: lineage_index], genome] }
     | set { ch_fasta_with_lineage }
-
 
     //
     // LOGIC: Format pre-computed outputs
@@ -152,12 +165,14 @@ workflow BUSCO_DIAMOND {
     //
     // LOGIC: Select input for BLOBTOOLKIT_EXTRACTBUSCOS
     //
-    ch_all_busco_outputs
-        .filter { meta, outputs -> basal_lineages.contains(meta.lineage_name) }
-        .map { meta, outputs -> [meta, outputs.seq_dir] }
-        .collect { it[1] }
-        .set { ch_basal_buscos }
 
+    ch_all_busco_outputs
+    | map { meta, outputs -> [meta.lineage_name, meta, outputs] }
+    // The join is equivalent to selecting the channel items whose lineage is basal
+    | join ( ch_basal_lineages )
+    // Without flat:false, collect will flatten meta and outputs
+    | collect(flat: false) { lineage_name, meta, outputs -> outputs.seq_dir }
+    | set { ch_basal_buscos }
 
     //
     // MODULE: Extract BUSCO genes from the basal lineages
