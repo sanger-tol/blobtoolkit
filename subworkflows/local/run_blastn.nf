@@ -28,7 +28,10 @@ workflow RUN_BLASTN {
     NOHIT_LIST ( blast_table, fasta )
     ch_versions = ch_versions.mix ( NOHIT_LIST.out.versions.first() )
 
-    // Subset of sequences with no hits
+
+    //
+    // MODULE: Subset of sequences with no hits
+    //
     SEQTK_SUBSEQ (
         fasta,
         NOHIT_LIST.out.nohitlist.map { meta, nohit -> nohit } . filter { it.size() > 0 }
@@ -40,6 +43,7 @@ workflow RUN_BLASTN {
     // create chunks
     BLOBTOOLKIT_CHUNK ( SEQTK_SUBSEQ.out.sequences, [[],[]] )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_CHUNK.out.versions.first() )
+
 
     // Check that there are still sequences left after chunking (which excludes masked regions)
     BLOBTOOLKIT_CHUNK.out.chunks
@@ -86,7 +90,10 @@ workflow RUN_BLASTN {
     | mix( ch_blastn_taxon_out.not_empty )
     | set { ch_blastn_txt }
 
-    // Unchunk chunked blastn results
+
+    //
+    // MODULE: Unchunk chunked blastn results
+    //
     BLOBTOOLKIT_UNCHUNK ( ch_blastn_txt )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_UNCHUNK.out.versions.first() )
 
