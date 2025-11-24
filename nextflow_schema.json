@@ -44,7 +44,7 @@
                 },
                 "busco_lineages": {
                     "type": "string",
-                    "pattern": "([^,]+_odb10,)*[^,]+_odb10",
+                    "pattern": "([^,]+_odb(10|12),)*[^,]+_odb(10|12)",
                     "description": "Name of the ODB10 lineages to run BUSCO on. By default, the pipeline will automatically select the correct lineage based on the taxonomy.",
                     "fa_icon": "fas fa-bone"
                 },
@@ -66,6 +66,13 @@
                     "description": "Select the format of the output images.",
                     "fa_icon": "fas fa-image",
                     "default": "png"
+                },
+                "blast_annotations": {
+                    "type": "string",
+                    "enum": ["all", "blastp", "blastx", "off"],
+                    "default": "all",
+                    "description": "Control whether to use all, `blastp` (for minimal annotations), `blastx` (for both blastp and blastx annotations) or `no` blast annotations.",
+                    "fa_icon": "fas fa-file-signature"
                 },
                 "outdir": {
                     "type": "string",
