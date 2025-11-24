@@ -27,16 +27,6 @@
                     "description": "Turn on optional alignment before running the rest of the pipeline.",
                     "fa_icon": "fas fa-toggle-off"
                 },
-                "mask": {
-                    "type": "boolean",
-                    "description": "Turn on optional genome masking if needed.",
-                    "fa_icon": "fas fa-toggle-off"
-                },
-                "skip_taxon_filtering": {
-                    "type": "boolean",
-                    "description": "Skip filtering out hits from the same species in blast* searches.",
-                    "fa_icon": "fas fa-toggle-off"
-                },
                 "fetchngs_samplesheet": {
                     "type": "boolean",
                     "description": "Turn on the conversion from a nf-core/fetchngs samplesheet.",
@@ -159,12 +149,6 @@
                     "description": "Path to the nucleotide BLAST database. Can be either a directory containing a single database or a direct path to a .nal file.",
                     "help_text": "For directories with multiple databases, specify the exact .nal file path to avoid ambiguity. When a .nal file is specified, the parent directory is used to ensure all database files are available. Example: '/path/to/databases/nt.nal' instead of '/path/to/databases/'",
                     "fa_icon": "fas fa-file-archive"
-                },
-                "ntdb_prefix": {
-                    "type": "string",
-                    "description": "Database basename (prefix) to select when --blastn is a directory. Provide the name without extension, e.g. 'nt' for 'nt.nal'.",
-                    "help_text": "When supplying a directory to --blastn, set --ntdb_prefix to identify the database basename (without the .nal extension). The pipeline will look for a file named <prefix>.nal inside that directory and use it. Example: --blastn /path/to/databases/ --ntdb_prefix nt.",
-                    "fa_icon": "fas fa-tag"
                 },
                 "taxdump": {
                     "type": "string",

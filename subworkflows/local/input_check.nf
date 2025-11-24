@@ -168,12 +168,12 @@ workflow INPUT_CHECK {
         }
 
     // Remove any invalid lineages from precomputed_busco
-    // ch_busco_lineages_list = ch_busco_lineages.flatten()
-    // ch_parsed_busco_filtered = ch_parsed_busco
-    //     .filter { meta, path ->
-    //         ch_busco_lineages.contains(meta.lineage)
-    //     }
-    // ch_parsed_busco_filtered = ch_parsed_busco_filtered.ifEmpty { Channel.value([]) }
+    ch_busco_lineages_list = ch_busco_lineages.flatten()
+    ch_parsed_busco_filtered = ch_parsed_busco
+        .filter { meta, path ->
+            ch_busco_lineages.contains(meta.lineage)
+        }
+    ch_parsed_busco_filtered = ch_parsed_busco_filtered.ifEmpty { Channel.value([]) }
 
     //
     // Get the BUSCO path if set
@@ -345,96 +345,66 @@ def validateBuscoDatabase(db_path) {
  */
 def validateBlastnDatabase(db_path) {
     def path_file = file(db_path)
+    // If user provided a file path, require it to be a .nal file
     if (path_file.isFile()) {
-        // Direct file provided - validate it's a .nal file and create isolated directory
-        if (path_file.name.endsWith('.nal')) {
-            if (!path_file.exists()) {
-                error """
-                ERROR: BLAST database file not found: ${path_file}
-                Please check that the path is correct and the file exists.
-                """
-            }
-            def parent_dir = file(path_file.parent)
-            def db_name = path_file.name.replaceAll('\\.nal$', '')
-
-            // Create a temporary directory in the system temp folder with a UUID to avoid
-            // writing into the database parent directory
-            def uuid = java.util.UUID.randomUUID().toString()
-            // Create isolated directory inside the pipeline working directory
-            def temp_dir = file("${System.getProperty('user.dir')}/.btk_isolated_${db_name}_${uuid}")
-            if (!temp_dir.exists()) {
-                temp_dir.mkdirs()
-            }
-
-            // Find all files belonging to this specific database
-            def db_files = parent_dir.listFiles().findAll {
-                it.name.startsWith("${db_name}.") ||
-                it.name in ['taxdb.btd', 'taxdb.bti', 'taxonomy4blast.sqlite3']
-            }
-
-            // Create symlinks in the temporary directory
-            db_files.each { source_file ->
-                def link_file = file("${temp_dir}/${source_file.name}")
-                if (!link_file.exists()) {
-                    // Create symbolic link
-                    link_file.createLink(source_file)
-                }
-            }
-
-            log.info "Direct BLAST database file specified: ${path_file}"
-            log.info "Database name: ${db_name}"
-            log.info "Created isolated directory: ${temp_dir}"
-            log.info "This ensures only the specified database is available to BLAST"
-            return [temp_dir, db_name]
-        } else {
+        if (!path_file.name.endsWith('.nal')) {
             error """
             ERROR: Invalid BLAST database file: ${path_file}
-            The file must have a .nal extension.
-            Please provide either:
-                - A directory containing a single BLAST database
-                - The direct path to a .nal file
-            Example: --blastn /path/to/databases/nt.nal
-            """
-        }
-    } else if (path_file.isDirectory()) {
-        // Directory provided - require the user to specify the database prefix
-        log.info "BLAST database directory provided: ${path_file}"
-        def prefix = (this.binding.hasVariable('params') && params.containsKey('ntdb_prefix')) ? params.ntdb_prefix : null
-        if (!prefix) {
-            error """
-            ERROR: A BLAST database directory was provided (${path_file}) but no database prefix was supplied.
-            The pipeline requires you to select which database inside the directory to use.
-            Please provide the database prefix (basename without extension) using --ntdb_prefix.
-            Example: --blastn ${path_file} --ntdb_prefix nt  (will select ${path_file}/nt.nal)
+            The pipeline requires a BLAST nucleotide database file with a .nal extension.
+            Please provide the direct path to the .nal file, for example:
+                --blastn /path/to/databases/nt.nal
             """
         }
 
-        // Look for the requested .nal file inside the directory
-        def expected_name = "${prefix}.nal"
-        def expected_file = path_file.listFiles().find { it.name == expected_name }
-        if (!expected_file) {
+        if (!path_file.exists()) {
             error """
-            ERROR: Requested BLAST database prefix '${prefix}' not found in ${path_file}
-            Expected file: ${path_file}/${expected_name}
-            Please ensure the prefix passed with --ntdb_prefix matches a .nal file in the directory.
+            ERROR: BLAST database file not found: ${path_file}
+            Please check that the path is correct and the file exists.
             """
         }
 
-        // Create isolated directory with symlinks to the chosen database files
-        def parent_dir = file(expected_file.parent)
-        def db_name = expected_file.name.replaceAll('\\.nal$', '')
+        def parent_dir = file(path_file.parent)
+        def db_name = path_file.name.replaceAll('\\.nal$', '')
+
+        // Create an isolated directory inside the pipeline working directory to avoid
+        // exposing other databases in the same parent directory.
         def uuid = java.util.UUID.randomUUID().toString()
-    // Create isolated directory inside the pipeline working directory
-    def temp_dir = file("${System.getProperty('user.dir')}/.btk_isolated_${db_name}_${uuid}")
+        def temp_dir = file("${System.getProperty('user.dir')}/.btk_isolated_${db_name}_${uuid}")
         if (!temp_dir.exists()) {
             temp_dir.mkdirs()
         }
 
-        def db_files = parent_dir.listFiles().findAll {
-            it.name.startsWith("${db_name}.") ||
-            it.name in ['taxdb.btd', 'taxdb.bti', 'taxonomy4blast.sqlite3']
+        // Ensure the core BLAST database file types exist in the parent directory.
+        // NOTE: files do not strictly need to share the same prefix as the .nal file;
+        // many installations may name index/sequence/header files independently.
+        def required_exts = ['.nin', '.nsq', '.nhr']
+        def parent_listing = parent_dir.listFiles()
+        def missing = required_exts.findAll { ext ->
+            ! parent_listing.any { it.name.endsWith(ext) }
+        }
+        if (missing && missing.size() > 0) {
+            error """
+            ERROR: BLAST database appears incomplete in ${parent_dir}
+            Missing required file types: ${missing.join(', ')}
+            A valid nucleotide BLAST database directory must contain at least one file of each
+            of these types (index, sequence, header), for example:
+                someprefix.nin
+                someprefix.nsq
+                someprefix.nhr
+            Note: these files do not necessarily have to match the .nal filename prefix.
+            Please check the database files and provide the correct .nal path when ready.
+            """
         }
 
+        // Collect files to include in the isolated directory. We include any files that
+        // either match the database prefix, or are known BLAST DB extensions, plus
+        // optional taxonomy helper files.
+        def db_files = parent_listing.findAll { f ->
+            f.name.startsWith("${db_name}.") ||
+            required_exts.any { ext -> f.name.endsWith(ext) } ||
+            f.name in ['taxdb.btd', 'taxdb.bti', 'taxonomy4blast.sqlite3'] ||
+            f.name.endsWith('.nal')
+        }
         db_files.each { source_file ->
             def link_file = file("${temp_dir}/${source_file.name}")
             if (!link_file.exists()) {
@@ -442,16 +412,29 @@ def validateBlastnDatabase(db_path) {
             }
         }
 
-        log.info "Using BLAST database '${db_name}' from directory: ${path_file}"
+        log.info "Direct BLAST database file specified: ${path_file}"
+        log.info "Database name: ${db_name}"
         log.info "Created isolated directory: ${temp_dir}"
+        log.info "This ensures only the specified database is available to BLAST"
         return [temp_dir, db_name]
-    } else {
+    }
+
+    // If a directory is provided, instruct the user to pass a .nal file path instead
+    else if (path_file.isDirectory()) {
         error """
-        ERROR: Invalid database path: ${path_file}
-        The path must point to either:
-            - A directory containing a single BLAST database
-            - A direct path to a .nal file
-        Example: --blastn /path/to/databases/nt.nal
+        ERROR: BLAST database path is a directory: ${path_file}
+        This pipeline requires the direct path to the BLAST .nal file.
+        Please pass the .nal file to --blastn, for example:
+            --blastn /path/to/databases/nt.nal
+        """
+    }
+
+    // Fallback for non-existent paths or other invalid inputs
+    else {
+        error """
+        ERROR: Invalid BLAST database path: ${path_file}
+        Please provide the direct path to a BLAST .nal file, for example:
+            --blastn /path/to/databases/nt.nal
         """
     }
 }
