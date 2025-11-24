@@ -27,6 +27,16 @@
                     "description": "Turn on optional alignment before running the rest of the pipeline.",
                     "fa_icon": "fas fa-toggle-off"
                 },
+                "mask": {
+                    "type": "boolean",
+                    "description": "Turn on optional genome masking if needed.",
+                    "fa_icon": "fas fa-toggle-off"
+                },
+                "skip_taxon_filtering": {
+                    "type": "boolean",
+                    "description": "Skip filtering out hits from the same species in blast* searches.",
+                    "fa_icon": "fas fa-toggle-off"
+                },
                 "fetchngs_samplesheet": {
                     "type": "boolean",
                     "description": "Turn on the conversion from a nf-core/fetchngs samplesheet.",
