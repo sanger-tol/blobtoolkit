@@ -48,20 +48,9 @@ workflow INPUT_CHECK {
                 // If db_path is a directory (from untar), look for .nal file inside
                 def actual_db_path = db_path
                 if (db_path.isDirectory()) {
-                    def nal_files = db_path.listFiles().findAll { it.name.endsWith('.nal') }
-                    if (nal_files.size() == 1) {
-                        actual_db_path = nal_files[0]
-                    } else if (nal_files.size() > 1) {
-                        error """
-                        ERROR: Multiple .nal files found in extracted blastn database directory: ${db_path}
-                        Found: ${nal_files.collect { it.name }.join(', ')}
-                        Please ensure the database archive contains only one .nal file.
-                        """
-                    } else {
-                        error """
-                        ERROR: No .nal file found in extracted blastn database directory: ${db_path}
-                        A valid BLAST nucleotide database must contain a .nal file.
-                        """
+                    def sql_file = db_path.listFiles().findAll { it.name.endsWith('.sqlite3') }
+                    if (sql_file.size() == 1) {
+                        actual_db_path = sql_file[0]
                     }
                 }
                 def (resolved_path, db_name) = validateBlastnDatabase(actual_db_path)
@@ -388,14 +377,14 @@ def validateBuscoDatabase(db_path) {
  */
 def validateBlastnDatabase(db_path) {
     def path_file = file(db_path)
-    // If user provided a file path, require it to be a .nal file
+    // If user provided a file path, require it to be a .sqlite3 file
     if (path_file.isFile()) {
-        if (!path_file.name.endsWith('.nal')) {
+        if (!path_file.name.endsWith('.sqlite3')) {
             error """
             ERROR: Invalid BLAST database file: ${path_file}
-            The pipeline requires a BLAST nucleotide database file with a .nal extension.
-            Please provide the direct path to the .nal file, for example:
-                --blastn /path/to/databases/nt.nal
+            The pipeline requires a BLAST nucleotide database file with a .sqlite3 extension.
+            Please provide the direct path to the .sqlite3 file, for example:
+                --blastn /path/to/databases/taxonomy4blast.sqlite3
             """
         }
 
@@ -407,7 +396,39 @@ def validateBlastnDatabase(db_path) {
         }
 
         def parent_dir = file(path_file.parent)
-        def db_name = path_file.name.replaceAll('\\.nal$', '')
+        
+        // Extract db_name from .nin, .nhr, or .nsq files instead of just .nal
+        def parent_listing = parent_dir.listFiles()
+        
+        // Look for database files with extensions .nin, .nhr, .nsq to determine the actual db_name
+        def db_files = parent_listing.findAll { f ->
+            f.name.endsWith('.nin') || f.name.endsWith('.nhr') || f.name.endsWith('.nsq')
+        }
+        
+        def db_name = path_file.name.replaceAll('\\.sqlite3$', '') // Default fallback
+        
+        if (db_files.size() > 0) {
+            // Extract the common prefix from the database files
+            def prefixes = db_files.collect { f ->
+                def name = f.name
+                if (name.endsWith('.nin')) {
+                    return name.replaceAll('\\.nin$', '')
+                } else if (name.endsWith('.nhr')) {
+                    return name.replaceAll('\\.nhr$', '')
+                } else if (name.endsWith('.nsq')) {
+                    return name.replaceAll('\\.nsq$', '')
+                }
+                return null
+            }.findAll { it != null }.unique()
+            
+            if (prefixes.size() == 1) {
+                db_name = prefixes[0]
+            } else if (prefixes.size() > 1) {
+                // Multiple prefixes found, use the most common one or the first one
+                db_name = prefixes[0]
+                log.warn "Multiple database prefixes found: ${prefixes.join(', ')}. Using: ${db_name}"
+            }
+        }
 
         // Create an isolated directory inside the pipeline working directory to avoid
         // exposing other databases in the same parent directory.
@@ -421,7 +442,6 @@ def validateBlastnDatabase(db_path) {
         // NOTE: files do not strictly need to share the same prefix as the .nal file;
         // many installations may name index/sequence/header files independently.
         def required_exts = ['.nin', '.nsq', '.nhr']
-        def parent_listing = parent_dir.listFiles()
         def missing = required_exts.findAll { ext ->
             ! parent_listing.any { it.name.endsWith(ext) }
         }
@@ -442,13 +462,13 @@ def validateBlastnDatabase(db_path) {
         // Collect files to include in the isolated directory. We include any files that
         // either match the database prefix, or are known BLAST DB extensions, plus
         // optional taxonomy helper files.
-        def db_files = parent_listing.findAll { f ->
+        def all_db_files = parent_listing.findAll { f ->
             f.name.startsWith("${db_name}.") ||
             required_exts.any { ext -> f.name.endsWith(ext) } ||
             f.name in ['taxdb.btd', 'taxdb.bti', 'taxonomy4blast.sqlite3'] ||
-            f.name.endsWith('.nal')
+            f.name.endsWith('.sqlite3')
         }
-        db_files.each { source_file ->
+        all_db_files.each { source_file ->
             def link_file = file("${temp_dir}/${source_file.name}")
             if (!link_file.exists()) {
                 link_file.createLink(source_file)
@@ -462,13 +482,13 @@ def validateBlastnDatabase(db_path) {
         return [temp_dir, db_name]
     }
 
-    // If a directory is provided, instruct the user to pass a .nal file path instead
+    // If a directory is provided, instruct the user to pass a .sqlite3 file path instead
     else if (path_file.isDirectory()) {
         error """
         ERROR: BLAST database path is a directory: ${path_file}
-        This pipeline requires the direct path to the BLAST .nal file.
-        Please pass the .nal file to --blastn, for example:
-            --blastn /path/to/databases/nt.nal
+        This pipeline requires the direct path to the BLAST .sqlite3 file.
+        Please pass the .sqlite3 file to --blastn, for example:
+            --blastn /path/to/databases/taxonomy4blast.sqlite3
         """
     }
 
@@ -476,8 +496,8 @@ def validateBlastnDatabase(db_path) {
     else {
         error """
         ERROR: Invalid BLAST database path: ${path_file}
-        Please provide the direct path to a BLAST .nal file, for example:
-            --blastn /path/to/databases/nt.nal
+        Please provide the direct path to a BLAST .sqlite3 file, for example:
+            --blastn /path/to/databases/taxonomy4blast.sqlite3
         """
     }
 }
