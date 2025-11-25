@@ -467,7 +467,10 @@ def validateBlastnDatabase(db_path) {
         all_db_files.each { source_file ->
             def link_file = file("${temp_dir}/${source_file.name}")
             if (!link_file.exists()) {
-                java.nio.file.Files.createSymbolicLink(link_file.toPath(), source_file.toPath())
+                java.nio.file.Files.createSymbolicLink(
+                    java.nio.file.Paths.get(link_file.toString()), 
+                    java.nio.file.Paths.get(source_file.toString())
+                )
             }
         }
 
