@@ -45,7 +45,26 @@ workflow INPUT_CHECK {
                 [db_meta, file(db_path.toString() + "/${db_path.name}", checkIfExists: true)]
             } else if (db_meta.type == "blastn") {
                 // Special handling for BLAST nucleotide databases
-                def (resolved_path, db_name) = validateBlastnDatabase(db_path)
+                // If db_path is a directory (from untar), look for .nal file inside
+                def actual_db_path = db_path
+                if (db_path.isDirectory()) {
+                    def nal_files = db_path.listFiles().findAll { it.name.endsWith('.nal') }
+                    if (nal_files.size() == 1) {
+                        actual_db_path = nal_files[0]
+                    } else if (nal_files.size() > 1) {
+                        error """
+                        ERROR: Multiple .nal files found in extracted blastn database directory: ${db_path}
+                        Found: ${nal_files.collect { it.name }.join(', ')}
+                        Please ensure the database archive contains only one .nal file.
+                        """
+                    } else {
+                        error """
+                        ERROR: No .nal file found in extracted blastn database directory: ${db_path}
+                        A valid BLAST nucleotide database must contain a .nal file.
+                        """
+                    }
+                }
+                def (resolved_path, db_name) = validateBlastnDatabase(actual_db_path)
                 [db_meta, resolved_path]
             } else if (db_meta.type == "busco") {
                 // Special handling for BUSCO databases

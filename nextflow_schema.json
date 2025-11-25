@@ -331,6 +331,11 @@
             }
         }
     },
+    "properties": {
+        "mask": { "$ref": "#/$defs/input_output_options/properties/mask" },
+        "skip_taxon_filtering": { "$ref": "#/$defs/input_output_options/properties/skip_taxon_filtering" }
+    },
+
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
