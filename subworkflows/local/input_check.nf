@@ -417,7 +417,6 @@ def validateBlastnDatabase(db_path) {
                 }
                 return null
             }.findAll { it != null }.unique()
-            
             if (prefixes.size() == 1) {
                 db_name = prefixes[0]
             } else if (prefixes.size() > 1) {
