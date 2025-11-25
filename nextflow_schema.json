@@ -115,8 +115,8 @@
                     "format": "file-path",
                     "exists": true,
                     "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.fa(\\.gz)?$",
-                    "description": "Path to FASTA genome file (must have .fa extension).",
+                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
+                    "description": "Path to FASTA genome file.",
                     "fa_icon": "far fa-file-code"
                 }
             }
@@ -131,8 +131,7 @@
                 "busco": {
                     "type": "string",
                     "format": "path",
-                    "description": "Local directory where clade-specific BUSCO lineage datasets are stored. Must be a directory containing the 'lineages/' subdirectory.",
-                    "help_text": "BUSCO databases are always directories, never individual files. Do NOT include '/lineages' at the end of the path or point to specific lineage directories. The pipeline will automatically correct paths ending with '/lineages' or pointing to specific lineages. Example: '/path/to/busco_downloads/' not '/path/to/busco_downloads/lineages/' or '/path/to/busco_downloads/lineages/eukaryota_odb10/'",
+                    "description": "Local directory where clade-specific BUSCO lineage datasets are stored",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "lineage_tax_ids": {
@@ -163,8 +162,7 @@
                     "type": "string",
                     "format": "path",
                     "exists": true,
-                    "description": "Path to the nucleotide BLAST database. Can be either a directory containing a single database or a direct path to a .nal file.",
-                    "help_text": "For directories with multiple databases, specify the exact .nal file path to avoid ambiguity. When a .nal file is specified, the parent directory is used to ensure all database files are available. Example: '/path/to/databases/nt.nal' instead of '/path/to/databases/'",
+                    "description": "Path to the nucleotide BLAST database",
                     "fa_icon": "fas fa-file-archive"
                 },
                 "taxdump": {
@@ -331,11 +329,6 @@
             }
         }
     },
-    "properties": {
-        "mask": { "$ref": "#/$defs/input_output_options/properties/mask" },
-        "skip_taxon_filtering": { "$ref": "#/$defs/input_output_options/properties/skip_taxon_filtering" }
-    },
-
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
