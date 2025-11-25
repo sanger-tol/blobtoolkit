@@ -396,17 +396,14 @@ def validateBlastnDatabase(db_path) {
         }
 
         def parent_dir = file(path_file.parent)
-        
         // Extract db_name from .nin, .nhr, or .nsq files instead of just .nal
         def parent_listing = parent_dir.listFiles()
-        
         // Look for database files with extensions .nin, .nhr, .nsq to determine the actual db_name
         def db_files = parent_listing.findAll { f ->
             f.name.endsWith('.nin') || f.name.endsWith('.nhr') || f.name.endsWith('.nsq')
         }
-        
         def db_name = path_file.name.replaceAll('\\.sqlite3$', '') // Default fallback
-        
+
         if (db_files.size() > 0) {
             // Extract the common prefix from the database files
             def prefixes = db_files.collect { f ->
