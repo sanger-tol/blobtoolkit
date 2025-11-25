@@ -83,6 +83,7 @@ The `--blastn` parameter requires a **taxonomy4blast.sqlite3** file, not a tradi
 #### Supported Formats:
 
 1. **Direct SQLite3 file** (recommended for local installations):
+
    ```bash
    --blastn /path/to/databases/taxonomy4blast.sqlite3
    ```
@@ -99,7 +100,7 @@ When using a local database, ensure your BLAST database directory contains:
 - **taxonomy4blast.sqlite3** - The main taxonomy file (required)
 - **Core BLAST files** - At least one file each with extensions:
   - `.nin` (index file)
-  - `.nsq` (sequence file) 
+  - `.nsq` (sequence file)
   - `.nhr` (header file)
 - **Optional taxonomy files**:
   - `taxdb.btd`, `taxdb.bti` (taxonomy database files)
@@ -110,7 +111,7 @@ When using a local database, ensure your BLAST database directory contains:
 /data/blast/nt/
 ├── taxonomy4blast.sqlite3    # Main taxonomy file (point --blastn here)
 ├── nt.00.nin                # Index files
-├── nt.00.nsq                # Sequence files  
+├── nt.00.nsq                # Sequence files
 ├── nt.00.nhr                # Header files
 ├── nt.01.nin
 ├── nt.01.nsq
@@ -121,6 +122,7 @@ When using a local database, ensure your BLAST database directory contains:
 #### Database Isolation:
 
 The pipeline automatically creates an isolated directory containing only the necessary database files for each run. This ensures:
+
 - Security: Only specified databases are accessible
 - Consistency: No interference between different database versions
 - Performance: Optimized file access patterns
