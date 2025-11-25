@@ -65,7 +65,7 @@ nextflow run sanger-tol/blobtoolkit \
    --taxon XXXX \
    --taxdump /path/to/taxdump/database \
    --blastp /path/to/diamond/database \
-   --blastn /path/to/blastn/database \
+   --blastn /path/to/blastn/taxonomy4blast.sqlite3 \
    --blastx /path/to/blastx/database
 ```
 
@@ -73,6 +73,63 @@ nextflow run sanger-tol/blobtoolkit \
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/usage/getting_started/configuration#custom-configuration-files).
 
 For more details, please refer to the [usage documentation](https://pipelines.tol.sanger.ac.uk/blobtoolkit/usage) and the [parameter documentation](https://pipelines.tol.sanger.ac.uk/blobtoolkit/parameters).
+
+## BLAST Database Configuration
+
+### BLASTn Database Requirements
+
+The `--blastn` parameter requires a **taxonomy4blast.sqlite3** file, not a traditional BLAST database directory. This file contains taxonomic information used for sequence classification.
+
+#### Supported Formats:
+
+1. **Direct SQLite3 file** (recommended for local installations):
+   ```bash
+   --blastn /path/to/databases/taxonomy4blast.sqlite3
+   ```
+
+2. **Compressed archive** (for CI/testing):
+   ```bash
+   --blastn https://example.com/path/to/nt_database.tar.gz
+   ```
+
+#### Database Structure Requirements:
+
+When using a local database, ensure your BLAST database directory contains:
+
+- **taxonomy4blast.sqlite3** - The main taxonomy file (required)
+- **Core BLAST files** - At least one file each with extensions:
+  - `.nin` (index file)
+  - `.nsq` (sequence file) 
+  - `.nhr` (header file)
+- **Optional taxonomy files**:
+  - `taxdb.btd`, `taxdb.bti` (taxonomy database files)
+
+#### Example Directory Structure:
+
+```
+/data/blast/nt/
+├── taxonomy4blast.sqlite3    # Main taxonomy file (point --blastn here)
+├── nt.00.nin                # Index files
+├── nt.00.nsq                # Sequence files  
+├── nt.00.nhr                # Header files
+├── nt.01.nin
+├── nt.01.nsq
+├── nt.01.nhr
+└── taxdb.btd                # Optional taxonomy files
+```
+
+#### Database Isolation:
+
+The pipeline automatically creates an isolated directory containing only the necessary database files for each run. This ensures:
+- Security: Only specified databases are accessible
+- Consistency: No interference between different database versions
+- Performance: Optimized file access patterns
+
+#### Troubleshooting:
+
+- **Error: "Invalid BLAST database file"** - Ensure you're pointing to the `.sqlite3` file, not a directory
+- **Error: "Missing required file types"** - Verify that `.nin`, `.nsq`, and `.nhr` files exist in the same directory
+- **Error: "BLAST database appears incomplete"** - Check that all required BLAST database components are present
 
 ## Pipeline output
 
