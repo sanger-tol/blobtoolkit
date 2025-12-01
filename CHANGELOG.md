@@ -3,14 +3,350 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v0.9.0 - [date]
+## [[0.10.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.10.0)] – Onix – [2025-11-20]
 
-Initial release of sanger-tol/blobtoolkit, created with the [nf-core](https://nf-co.re/) template.
+### Enhancements & fixes
 
-### `Added`
+- Addition of the `--blast_annotations` flag to control whether:
+  - `all` blast annotations are used
+  - `blastp` for only blastp annotations
+  - `blastx` for blastp and blastx annotations
+  - `off` for no blast annotations
+- Added support for Busco odb12 databases. odb10 is still supported,
+  but odb12 is the default.
 
-### `Fixed`
+### Parameters
 
-### `Dependencies`
+| Old parameter | New parameter       |
+| ------------- | ------------------- |
+|               | --blast_annotations |
 
-### `Deprecated`
+## [[0.9.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.9.0)] – Scyther – [2025-10-03]
+
+### Enhancements & fixes
+
+- Upgrade Busco (#190)
+- The pipeline now stops on Busco failures (#194)
+- Update resource requirements for BLASTN modules (#191) and BLOBTOOLKIT_WINDOWSTATS
+- Fixed the `test_full` profile (Sanger only)
+- Addition of `--tmpdir` to Diamond blast modules (#200)
+- `--use_work_dir_as_temp` is no longer a hidden param.
+- Fixed some documentation (#193 and #197)
+- Made GENERATE_CONFIG more resilient to network errors (#197)
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency | Old version | New version |
+| ---------- | ----------- | ----------- |
+| busco      | 5.8.3       | 6.0.0       |
+
+## [[0.8.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.8.0)] – Sprigatito – [2025-05-19]
+
+### Enhancements & fixes
+
+- Runtime of the blast commands is now capped at 12 hours (#166)
+- Upgraded Busco and added an option to control the gene predictor used (#160, #174, #181)
+- nf-core template upgrade (to version 3.2.1) (#164, #176)
+- Documentation fixes (broken links) (#175)
+- Ability to run without any read data (#177)
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency  | Old version | New version |
+| ----------- | ----------- | ----------- |
+| blobtoolkit | 4.4.4       | 4.4.6       |
+| busco       | 5.7.1       | 5.8.3       |
+
+### Parameters
+
+| Old parameter | New parameter          |
+| ------------- | ---------------------- |
+|               | --busco_gene_predictor |
+
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
+
+## [[0.7.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.7.1)] – Psyduck (patch 1) – [2025-03-29]
+
+### Enhancements & fixes
+
+- Upgraded the blobtools version which contains a bugfix
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency  | Old version | New version |
+| ----------- | ----------- | ----------- |
+| blobtoolkit | 4.4.4       | 4.4.5       |
+
+## [[0.7.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.7.0)] – Psyduck – [2025-03-19]
+
+### Enhancements & fixes
+
+- Fetch information about the chromosomes of the assemblies. Used to power
+  "grid plots".
+- Fill in accurate read information in the blobDir. Users are now reqiured
+  to indicate in the samplesheet whether the reads are paired or single.
+- Updated the Blastn settings to allow 7 days runtime at most, since that
+  covers 99.7% of the jobs.
+- Allow database inputs to be optionally compressed (`.tar.gz`)
+- Allow `BUSCO` run outputs to be optionally pre-computed and provided with `--precomputed_busco`
+
+The pipeline is now considered to be a complete and suitable replacement for the Snakemake version
+with the caveats that:
+
+- Resource requirements (CPU and memory) of the processes aren't optimal.
+- The Blastn step can take up to a week to run.
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency  | Old version       | New version     |
+| ----------- | ----------------- | --------------- |
+| blast       | 2.14.1 and 2.15.0 | only 2.15.0     |
+| blobtoolkit | 4.3.9             | 4.4.4           |
+| busco       | 5.5.0             | 5.7.1           |
+| multiqc     | 1.20 and 1.21     | 1.20 and 1.25.1 |
+| samtools    | 1.18 and 1.19.2   | 1.20 and 1.21   |
+
+### Parameters
+
+| Old parameter | New parameter       |
+| ------------- | ------------------- |
+|               | --precomputed_busco |
+
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
+
+## [[0.6.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.6.0)] – Bellsprout – [2024-09-13]
+
+### Enhancements & fixes
+
+The pipeline has now been validated for draft (unpublished) assemblies.
+
+- The pipeline now queries the NCBI database instead of GoaT to establish the
+  taxonomic classification of the species and the relevant Busco lineages.
+  In case the taxon_id is not found, the pipeline falls back to GoaT, which
+  is aware of upcoming taxon_ids in ENA.
+- New `--busco_lineages` parameter to choose specific Busco lineages instead of
+  automatically selecting based on the taxonomy.
+- All parameters are now passed the regular Nextflow way. There is no support
+  for the original Yaml configuration files of the Snakemake version.
+- New option `--skip_taxon_filtering` to skip the taxon filtering in blast searches.
+  Mostly relevant for draft assemblies.
+- Introduced the `--use_work_dir_as_temp` parameter to avoid leaving files in `/tmp`.
+
+### Parameters
+
+| Old parameter | New parameter          |
+| ------------- | ---------------------- |
+| --yaml        |                        |
+|               | --busco_lineages       |
+|               | --skip_taxon_filtering |
+|               | --use_work_dir_as_temp |
+
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency | Old version | New version |
+| ---------- | ----------- | ----------- |
+| goat       | 0.2.5       |             |
+
+## [[0.5.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.5.1)] – Snorlax (patch 1) – [2024-08-22]
+
+### Enhancements & fixes
+
+- Bugfix: skip BLASTN if there are no chunks to align
+
+## [[0.5.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.5.0)] – Snorlax – [2024-07-31]
+
+General tidy up of the configuration and the pipeline
+
+### Enhancements & fixes
+
+- Increased the resources for blastn
+- Removed some options that were not used or not needed
+- All relevant outputs are now copied to the output directory
+- Fixed some blast parameters to match the behaviour of the Snakemake pipeline
+- Fixed parsing of samplesheets from fetchngs to capture correct data type
+
+### Parameters
+
+| Old parameter   | New parameter |
+| --------------- | ------------- |
+| --taxa_file     |               |
+| --blastp_outext |               |
+| --blastp_cols   |               |
+| --blastx_outext |               |
+| --blastx_cols   |               |
+
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
+
+## [[0.4.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.4.0)] – Buneary – [2024-04-17]
+
+The pipeline has now been validated on dozens of genomes, up to 11 Gbp.
+
+### Enhancements & fixes
+
+- Upgraded the version of `blobtools`, which enables a better reporting of
+  wrong accession numbers and a better handling of oddities in input files.
+- Files in the output blobdir are now compressed.
+- All modules handling blobdirs can now be cached.
+- Large genomes supported, up to at least 11 Gbp.
+- Allow all variations of FASTA and FASTQ extensions for input.
+- More fields included in the trace files.
+- All nf-core modules updated
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency  | Old version   | New version       |
+| ----------- | ------------- | ----------------- |
+| blobtoolkit | 4.3.3         | 4.3.9             |
+| blast       | 2.14.0        | 2.15.0 and 2.14.1 |
+| multiqc     | 1.17 and 1.18 | 1.20 and 1.21     |
+| samtools    | 1.18          | 1.18 and 1.19.2   |
+| seqtk       | 1.3           | 1.4               |
+
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
+
+## [[0.3.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.3.0)] – Poliwag – [2024-02-09]
+
+The pipeline has now been validated on five genomes, all under 100 Mbp: a
+sponge, a platyhelminth, and three fungi.
+
+### Enhancements & fixes
+
+- Fixed the conditional runs of blastn
+- Fixed the generation of the no-hit list
+- Fixed the conversion of the unaligned input files to Fasta
+- Fixed the documentation about preparing the NT database
+- Fixed the detection of the NT database in the nf-core module
+- The pipeline now supports samplesheets generated by the
+  [nf-core/fetchngs](https://nf-co.re/fetchngs) pipeline by passing the
+  `--fetchngs_samplesheet true` option.
+- FastQ files can bypass the conversion to Fasta
+- Fixed missing BUSCO results from the blobdir (only 1 BUSCO was loaded)
+- Fixed the default category used to colour the blob plots
+- Fixed the output directory of the images
+- Added an option to select the format of the images (PNG or SVG)
+
+### Parameters
+
+| Old parameter | New parameter          |
+| ------------- | ---------------------- |
+|               | --fetchngs_samplesheet |
+|               | --image_format         |
+
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency  | Old version | New version |
+| ----------- | ----------- | ----------- |
+| blobtoolkit | 4.3.2       | 4.3.3       |
+
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
+
+## [[0.2.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.2.0)] – Pikachu – [2023-12-22]
+
+### Enhancements & fixes
+
+- Template updated to nf-core/tools 2.11.1
+- Includes all subworkflows in the [Snakemake version](https://github.com/blobtoolkit/blobtoolkit)
+- Added blastx and blastn subworkflows
+- Replaced mosdepth with blobtk depth
+- Updated config creation script
+
+### Parameters
+
+| Old parameter | New parameter   |
+| ------------- | --------------- |
+|               | --mask          |
+|               | --align         |
+| --uniprot     | --blastp        |
+|               | --blastx        |
+|               | --blastn        |
+|               | --blastx_outext |
+|               | --blastx_cols   |
+
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency   | Old version | New version |
+| ------------ | ----------- | ----------- |
+| blobtoolkit  | 4.1.4       | 4.3.2       |
+| busco        | 5.4.3       | 5.5.0       |
+| goat         | 0.2.0       | 0.2.5       |
+| mosdepth     | 0.3.3       |             |
+| nextflow     | 22.10.6     | 23.10.0     |
+| python       | 3.10.6      | 3.12.0      |
+| samtools     | 1.15.1      | 1.18        |
+| tar          | 1.30        |             |
+| yaml         | 6.0         | 6.0.1       |
+| blobtk       | 0.3.3       | 0.5.1       |
+| diamond      | 2.0.15      | 2.1.8       |
+| minimap2     |             | 2.24-r1122  |
+| blast        |             | 2.14.1      |
+| windowmasker |             | 2.14.0      |
+
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
+
+## [[0.1.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.1.0)] – Vaporeon – [2023-05-18]
+
+### Enhancements & fixes
+
+Initial release of sanger-tol/blobtoolkit :tada:
+
+This release marks the point where the pipeline was moved from Snakemake at [blobtoolkit/blobtoolkit](https://github.com/blobtoolkit/blobtoolkit) over to Nextflow DSL2 at [sanger-tol/blobtoolkit](https://github.com/sanger-tol/blobtoolkit). There are two subworkflows in the Snakemake version that are still being implemented in Nextflow – `diamond_blastx` and `blastn`.
+
+### Parameters
+
+| Old parameter | New parameter   |
+| ------------- | --------------- |
+|               | --input         |
+|               | --fasta         |
+|               | --accession     |
+|               | --taxon         |
+|               | --taxa_file     |
+|               | --yaml          |
+|               | --blastp_outext |
+|               | --blastp_cols   |
+|               | --taxdump       |
+|               | --busco         |
+|               | --uniprot       |
+
+> **NB:** Parameter has been **updated** if both old and new parameter information is present. </br> **NB:** Parameter has been **added** if just the new parameter information is present. </br> **NB:** Parameter has been **removed** if new parameter information isn't present.
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency    | Old version | New version |
+| ------------- | ----------- | ----------- |
+| blobtoolkit   |             | 4.1.4       |
+| busco         |             | 5.4.3       |
+| fasta_windows |             | 0.2.4       |
+| goat          |             | 0.2.0       |
+| gunzip        |             | 1.10        |
+| mosdepth      |             | 0.3.3       |
+| nextflow      |             | 22.10.6     |
+| python        |             | 3.10.6      |
+| samtools      |             | 1.15.1      |
+| tar           |             | 1.30        |
+| yaml          |             | 6.0         |
+
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.

@@ -1,0 +1,44 @@
+Changes in component 'nf-core/busco/busco'
+'modules/nf-core/busco/busco/meta.yml' is unchanged
+Changes in 'busco/busco/main.nf':
+--- modules/nf-core/busco/busco/main.nf
++++ modules/nf-core/busco/busco/main.nf
+@@ -1,6 +1,5 @@
+ process BUSCO_BUSCO {
+-    tag "${meta.id}"
+-    label 'process_medium'
++    tag "${meta.id}_${lineage}"
+ 
+     conda "${moduleDir}/environment.yml"
+     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+@@ -51,7 +50,7 @@
+     def busco_lineage = lineage in ['auto', 'auto_prok', 'auto_euk']
+         ? lineage.replaceFirst('auto', '--auto-lineage').replaceAll('_', '-')
+         : "--lineage_dataset ${lineage}"
+-    def busco_lineage_dir = busco_lineages_path ? "--download_path ${busco_lineages_path}" : ''
++    def busco_lineage_dir = busco_lineages_path ? "--download_path ${busco_lineages_path} --offline" : ''
+     def intermediate_files = [
+         './*-busco/*/auto_lineage',
+         './*-busco/*/**/{miniprot,hmmer,.bbtools}_output',
+@@ -112,8 +111,13 @@
+ 
+     if grep 'Run failed; check logs' ${prefix}-busco.batch_summary.txt > /dev/null
+     then
+-        echo "Busco run failed"
+-        exit 1
++        if grep -Fx 'Sequence too long (max 32000000 permitted).' ${prefix}-busco.log > /dev/null
++        then
++            echo "Prodigal can't run on this genome. Skipping it"
++        else
++            echo "Busco run failed"
++            exit 1
++        fi
+     fi
+ 
+     cat <<-END_VERSIONS > versions.yml
+
+'modules/nf-core/busco/busco/environment.yml' is unchanged
+'modules/nf-core/busco/busco/tests/main.nf.test' is unchanged
+'modules/nf-core/busco/busco/tests/nextflow.config' is unchanged
+'modules/nf-core/busco/busco/tests/main.nf.test.snap' is unchanged
+************************************************************
