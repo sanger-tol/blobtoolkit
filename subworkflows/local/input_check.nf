@@ -45,12 +45,33 @@ workflow INPUT_CHECK {
                 [db_meta, file(db_path.toString() + "/${db_path.name}", checkIfExists: true)]
             } else if (db_meta.type == "blastn") {
                 // Special handling for BLAST nucleotide databases
-                // If db_path is a directory (from untar), look for .nal file inside
+                // If db_path is a directory (from untar), look for .nal file inside or .nin file as fallback
                 def actual_db_path = db_path
                 if (db_path.isDirectory()) {
-                    def sql_file = db_path.listFiles().findAll { it.name.endsWith('.sqlite3') }
-                    if (sql_file.size() == 1) {
-                        actual_db_path = sql_file[0]
+                    // First priority: look for .nal files
+                    def nal_files = db_path.listFiles().findAll { it.name.endsWith('.nal') }
+                    if (nal_files.size() == 1) {
+                        actual_db_path = nal_files[0]
+                    } else if (nal_files.size() > 1) {
+                        error """
+                        ERROR: Multiple .nal files found in extracted blastn database directory: ${db_path}
+                        Found: ${nal_files.collect { it.name }.join(', ')}
+                        Please ensure the database archive contains only one .nal file.
+                        """
+                    } else {
+                        // Second priority: look for .nin files if no .nal found
+                        def nin_files = db_path.listFiles().findAll { it.name.endsWith('.nin') }
+                        if (nin_files.size() >= 1) {
+                            // Use the first .nin file found (could be nt.nin or nt.00.nin)
+                            actual_db_path = nin_files[0]
+                        } else {
+                            error """
+                            ERROR: No .nal or .nin file found in extracted blastn database directory: ${db_path}
+                            A valid BLAST nucleotide database must contain either:
+                            1. A .nal file (preferred), or
+                            2. At least one .nin file
+                            """
+                        }
                     }
                 }
                 def (resolved_path, db_name) = validateBlastnDatabase(actual_db_path)
