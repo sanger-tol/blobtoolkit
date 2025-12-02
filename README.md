@@ -83,11 +83,13 @@ The `--blastn` parameter requires a direct path to a **BLAST database file**, ei
 #### Supported File Types:
 
 1. **`.nal` file (preferred)** - BLAST alias file:
+
    ```bash
    --blastn /path/to/databases/nt.nal
    ```
 
 2. **`.nin` file (fallback)** - BLAST index file (when .nal is not available):
+
    ```bash
    --blastn /path/to/databases/nt.nin
    ```
@@ -100,14 +102,18 @@ The `--blastn` parameter requires a direct path to a **BLAST database file**, ei
 #### Database Structure Requirements:
 
 ##### When using a `.nal` file:
+
 The directory must contain all companion files with the same prefix:
+
 - `db_name.nal` (alias file - the file you point to)
 - `db_name.nin` or `db_name.##.nin` (index file(s))
 - `db_name.nhr` or `db_name.##.nhr` (header file(s))
 - `db_name.nsq` or `db_name.##.nsq` (sequence file(s))
 
 ##### When using a `.nin` file:
+
 The directory must contain companion files with the same prefix:
+
 - `db_name.nin` or `db_name.##.nin` (index file - the file you point to)
 - `db_name.nhr` or `db_name.##.nhr` (header file(s))
 - `db_name.nsq` or `db_name.##.nsq` (sequence file(s))
@@ -117,6 +123,7 @@ The directory must contain companion files with the same prefix:
 #### Example Directory Structures:
 
 ##### Single File Pattern:
+
 ```
 /data/blast/nt/
 ├── nt.nal                   # Point --blastn here
@@ -128,6 +135,7 @@ The directory must contain companion files with the same prefix:
 ```
 
 ##### Numbered File Pattern (Large Databases):
+
 ```
 /data/blast/nt/
 ├── nt.nal                   # Point --blastn here
@@ -145,6 +153,7 @@ The directory must contain companion files with the same prefix:
 ```
 
 ##### Using .nin file (when .nal is not available):
+
 ```
 /data/blast/nt/
 ├── nt.nin                   # Point --blastn here (no .nal file)
@@ -157,6 +166,7 @@ The directory must contain companion files with the same prefix:
 #### Database Isolation:
 
 The pipeline automatically creates an isolated directory containing only the necessary database files for each run. This ensures:
+
 - **Security**: Only specified databases are accessible
 - **Consistency**: No interference between different database versions
 - **Performance**: Optimized file access patterns
@@ -171,6 +181,7 @@ The pipeline automatically creates an isolated directory containing only the nec
 #### Migration from Previous Versions:
 
 If you were previously using `--blastn /path/to/taxonomy4blast.sqlite3`, you now need to:
+
 1. Use `--blastn /path/to/nt.nal` (if available), or
 2. Use `--blastn /path/to/nt.nin` (if .nal is not available)
 
