@@ -377,13 +377,13 @@ def validateBuscoDatabase(db_path) {
  */
 def validateBlastnDatabase(db_path) {
     def path_file = file(db_path)
-    
+
     if (path_file.isFile()) {
         def parent_dir = file(path_file.parent)
         def parent_listing = parent_dir.listFiles()
         def db_name = ""
         def main_file = path_file
-        
+
         // First priority: Check if user provided a .nal file
         if (path_file.name.endsWith('.nal')) {
             if (!path_file.exists()) {
@@ -392,20 +392,20 @@ def validateBlastnDatabase(db_path) {
                 Please check that the path is correct and the file exists.
                 """
             }
-            
+
             db_name = path_file.name.replaceAll('\\.nal$', '')
-            
+
             // Check if required companion files (.nin, .nhr, .nsq) are present
             // Files can be either single files (nt.nin) or numbered files (nt.00.nin, nt.01.nin, etc.)
             def required_companions = ['.nin', '.nhr', '.nsq']
             def missing_companions = required_companions.findAll { ext ->
                 ! parent_listing.any { f ->
                     // Check for both patterns: db_name.ext and db_name.##.ext
-                    f.name == "${db_name}${ext}" || 
+                    f.name == "${db_name}${ext}" ||
                     f.name.matches("${db_name}\\.\\d+${ext}")
                 }
             }
-            
+
             if (missing_companions.size() > 0) {
                 error """
                 ERROR: BLAST database appears incomplete in ${parent_dir}
@@ -419,7 +419,7 @@ def validateBlastnDatabase(db_path) {
                 Where ## represents numbers like 00, 01, 02, etc.
                 """
             }
-            
+
             // Check if taxonomy4blast.sqlite3 file is present
             def taxonomy_file = parent_listing.find { it.name == 'taxonomy4blast.sqlite3' }
             if (!taxonomy_file) {
@@ -431,10 +431,10 @@ def validateBlastnDatabase(db_path) {
                 Please ensure this file is present in the same directory.
                 """
             }
-            
+
             log.info "Found .nal file with all required companion files and taxonomy file"
         }
-        
+
         // Second priority: Check if user provided a .nin file (when .nal is not available)
         else if (path_file.name.endsWith('.nin')) {
             if (!path_file.exists()) {
@@ -443,20 +443,20 @@ def validateBlastnDatabase(db_path) {
                 Please check that the path is correct and the file exists.
                 """
             }
-            
+
             db_name = path_file.name.replaceAll('\\.nin$', '')
-            
+
             // Check if required companion files (.nhr, .nsq) are present
             // Files can be either single files (nt.nhr) or numbered files (nt.00.nhr, nt.01.nhr, etc.)
             def required_companions = ['.nhr', '.nsq']
             def missing_companions = required_companions.findAll { ext ->
                 ! parent_listing.any { f ->
                     // Check for both patterns: db_name.ext and db_name.##.ext
-                    f.name == "${db_name}${ext}" || 
+                    f.name == "${db_name}${ext}" ||
                     f.name.matches("${db_name}\\.\\d+${ext}")
                 }
             }
-            
+
             if (missing_companions.size() > 0) {
                 error """
                 ERROR: BLAST database appears incomplete in ${parent_dir}
@@ -469,7 +469,7 @@ def validateBlastnDatabase(db_path) {
                 Where ## represents numbers like 00, 01, 02, etc.
                 """
             }
-            
+
             // Check if taxonomy4blast.sqlite3 file is present
             def taxonomy_file = parent_listing.find { it.name == 'taxonomy4blast.sqlite3' }
             if (!taxonomy_file) {
@@ -481,10 +481,10 @@ def validateBlastnDatabase(db_path) {
                 Please ensure this file is present in the same directory.
                 """
             }
-            
+
             log.info "Found .nin file with all required companion files (.nhr, .nsq) and taxonomy file"
         }
-        
+
         // Invalid file extension
         else {
             error """
@@ -492,7 +492,7 @@ def validateBlastnDatabase(db_path) {
             The pipeline requires either:
             1. A .nal file (preferred): --blastn /path/to/databases/nt.nal
             2. A .nin file (if .nal not available): --blastn /path/to/databases/nt.nin
-            
+
             You provided: ${path_file.name}
             """
         }
@@ -510,12 +510,12 @@ def validateBlastnDatabase(db_path) {
             f.name.startsWith("${db_name}.") ||
             f.name in ['taxdb.btd', 'taxdb.bti', 'taxonomy4blast.sqlite3']
         }
-        
+
         all_db_files.each { source_file ->
             def link_file = file("${temp_dir}/${source_file.name}")
             if (!link_file.exists()) {
                 java.nio.file.Files.createSymbolicLink(
-                    java.nio.file.Paths.get(link_file.toString()), 
+                    java.nio.file.Paths.get(link_file.toString()),
                     java.nio.file.Paths.get(source_file.toString())
                 )
             }
