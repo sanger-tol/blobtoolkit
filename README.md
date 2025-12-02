@@ -65,7 +65,7 @@ nextflow run sanger-tol/blobtoolkit \
    --taxon XXXX \
    --taxdump /path/to/taxdump/database \
    --blastp /path/to/diamond/database \
-   --blastn /path/to/blastn/taxonomy4blast.sqlite3 \
+   --blastn /path/to/blastn/nt.nal \
    --blastx /path/to/blastx/database
 ```
 
@@ -78,60 +78,101 @@ For more details, please refer to the [usage documentation](https://pipelines.to
 
 ### BLASTn Database Requirements
 
-The `--blastn` parameter requires a **taxonomy4blast.sqlite3** file, not a traditional BLAST database directory. This file contains taxonomic information used for sequence classification.
+The `--blastn` parameter requires a direct path to a **BLAST database file**, either a `.nal` (alias) file or a `.nin` (index) file. The pipeline validates that all required companion files are present.
 
-#### Supported Formats:
+#### Supported File Types:
 
-1. **Direct SQLite3 file** (recommended for local installations):
-
+1. **`.nal` file (preferred)** - BLAST alias file:
    ```bash
-   --blastn /path/to/databases/taxonomy4blast.sqlite3
+   --blastn /path/to/databases/nt.nal
    ```
 
-2. **Compressed archive** (for CI/testing):
+2. **`.nin` file (fallback)** - BLAST index file (when .nal is not available):
+   ```bash
+   --blastn /path/to/databases/nt.nin
+   ```
+
+3. **Compressed archive** (for CI/testing):
    ```bash
    --blastn https://example.com/path/to/nt_database.tar.gz
    ```
 
 #### Database Structure Requirements:
 
-When using a local database, ensure your BLAST database directory contains:
+##### When using a `.nal` file:
+The directory must contain all companion files with the same prefix:
+- `db_name.nal` (alias file - the file you point to)
+- `db_name.nin` or `db_name.##.nin` (index file(s))
+- `db_name.nhr` or `db_name.##.nhr` (header file(s))
+- `db_name.nsq` or `db_name.##.nsq` (sequence file(s))
 
-- **taxonomy4blast.sqlite3** - The main taxonomy file (required)
-- **Core BLAST files** - At least one file each with extensions:
-  - `.nin` (index file)
-  - `.nsq` (sequence file)
-  - `.nhr` (header file)
-- **Optional taxonomy files**:
-  - `taxdb.btd`, `taxdb.bti` (taxonomy database files)
+##### When using a `.nin` file:
+The directory must contain companion files with the same prefix:
+- `db_name.nin` or `db_name.##.nin` (index file - the file you point to)
+- `db_name.nhr` or `db_name.##.nhr` (header file(s))
+- `db_name.nsq` or `db_name.##.nsq` (sequence file(s))
 
-#### Example Directory Structure:
+**Note**: `##` represents numbers like `00`, `01`, `02`, etc. for large databases split into multiple files.
 
+#### Example Directory Structures:
+
+##### Single File Pattern:
 ```
 /data/blast/nt/
-├── taxonomy4blast.sqlite3    # Main taxonomy file (point --blastn here)
-├── nt.00.nin                # Index files
-├── nt.00.nsq                # Sequence files
-├── nt.00.nhr                # Header files
+├── nt.nal                   # Point --blastn here
+├── nt.nin                   # Required companion files
+├── nt.nhr
+├── nt.nsq
+├── taxdb.btd                # Optional taxonomy files
+└── taxonomy4blast.sqlite3
+```
+
+##### Numbered File Pattern (Large Databases):
+```
+/data/blast/nt/
+├── nt.nal                   # Point --blastn here
+├── nt.00.nin                # Required numbered companion files
+├── nt.00.nhr
+├── nt.00.nsq
 ├── nt.01.nin
-├── nt.01.nsq
 ├── nt.01.nhr
-└── taxdb.btd                # Optional taxonomy files
+├── nt.01.nsq
+├── nt.02.nin
+├── nt.02.nhr
+├── nt.02.nsq
+├── taxdb.btd                # Optional taxonomy files
+└── taxonomy4blast.sqlite3
+```
+
+##### Using .nin file (when .nal is not available):
+```
+/data/blast/nt/
+├── nt.nin                   # Point --blastn here (no .nal file)
+├── nt.nhr                   # Required companion files
+├── nt.nsq
+├── taxdb.btd                # Optional taxonomy files
+└── taxonomy4blast.sqlite3
 ```
 
 #### Database Isolation:
 
 The pipeline automatically creates an isolated directory containing only the necessary database files for each run. This ensures:
-
-- Security: Only specified databases are accessible
-- Consistency: No interference between different database versions
-- Performance: Optimized file access patterns
+- **Security**: Only specified databases are accessible
+- **Consistency**: No interference between different database versions
+- **Performance**: Optimized file access patterns
 
 #### Troubleshooting:
 
-- **Error: "Invalid BLAST database file"** - Ensure you're pointing to the `.sqlite3` file, not a directory
-- **Error: "Missing required file types"** - Verify that `.nin`, `.nsq`, and `.nhr` files exist in the same directory
+- **Error: "Invalid BLAST database file"** - Ensure you're pointing to either a `.nal` or `.nin` file, not a directory
+- **Error: "Missing required companion files"** - Verify that all companion files (`.nin`, `.nhr`, `.nsq`) exist with the same prefix
 - **Error: "BLAST database appears incomplete"** - Check that all required BLAST database components are present
+- **Error: "File not found"** - Verify the file path is correct and the file exists
+
+#### Migration from Previous Versions:
+
+If you were previously using `--blastn /path/to/taxonomy4blast.sqlite3`, you now need to:
+1. Use `--blastn /path/to/nt.nal` (if available), or
+2. Use `--blastn /path/to/nt.nin` (if .nal is not available)
 
 ## Pipeline output
 

@@ -377,53 +377,124 @@ def validateBuscoDatabase(db_path) {
  */
 def validateBlastnDatabase(db_path) {
     def path_file = file(db_path)
-    // If user provided a file path, require it to be a .sqlite3 file
+    
     if (path_file.isFile()) {
-        if (!path_file.name.endsWith('.sqlite3')) {
+        def parent_dir = file(path_file.parent)
+        def parent_listing = parent_dir.listFiles()
+        def db_name = ""
+        def main_file = path_file
+        
+        // First priority: Check if user provided a .nal file
+        if (path_file.name.endsWith('.nal')) {
+            if (!path_file.exists()) {
+                error """
+                ERROR: BLAST database .nal file not found: ${path_file}
+                Please check that the path is correct and the file exists.
+                """
+            }
+            
+            db_name = path_file.name.replaceAll('\\.nal$', '')
+            
+            // Check if required companion files (.nin, .nhr, .nsq) are present
+            // Files can be either single files (nt.nin) or numbered files (nt.00.nin, nt.01.nin, etc.)
+            def required_companions = ['.nin', '.nhr', '.nsq']
+            def missing_companions = required_companions.findAll { ext ->
+                ! parent_listing.any { f ->
+                    // Check for both patterns: db_name.ext and db_name.##.ext
+                    f.name == "${db_name}${ext}" || 
+                    f.name.matches("${db_name}\\.\\d+${ext}")
+                }
+            }
+            
+            if (missing_companions.size() > 0) {
+                error """
+                ERROR: BLAST database appears incomplete in ${parent_dir}
+                Found .nal file: ${path_file.name}
+                Missing required companion files with prefix '${db_name}': ${missing_companions.join(', ')}
+                A valid nucleotide BLAST database must contain:
+                    ${db_name}.nal (alias file)
+                    ${db_name}.nin or ${db_name}.##.nin (index file(s))
+                    ${db_name}.nhr or ${db_name}.##.nhr (header file(s))
+                    ${db_name}.nsq or ${db_name}.##.nsq (sequence file(s))
+                Where ## represents numbers like 00, 01, 02, etc.
+                """
+            }
+            
+            // Check if taxonomy4blast.sqlite3 file is present
+            def taxonomy_file = parent_listing.find { it.name == 'taxonomy4blast.sqlite3' }
+            if (!taxonomy_file) {
+                error """
+                ERROR: Missing taxonomy file in ${parent_dir}
+                Found .nal file: ${path_file.name}
+                A valid nucleotide BLAST database must also contain:
+                    taxonomy4blast.sqlite3 (taxonomy information file)
+                Please ensure this file is present in the same directory.
+                """
+            }
+            
+            log.info "Found .nal file with all required companion files and taxonomy file"
+        }
+        
+        // Second priority: Check if user provided a .nin file (when .nal is not available)
+        else if (path_file.name.endsWith('.nin')) {
+            if (!path_file.exists()) {
+                error """
+                ERROR: BLAST database .nin file not found: ${path_file}
+                Please check that the path is correct and the file exists.
+                """
+            }
+            
+            db_name = path_file.name.replaceAll('\\.nin$', '')
+            
+            // Check if required companion files (.nhr, .nsq) are present
+            // Files can be either single files (nt.nhr) or numbered files (nt.00.nhr, nt.01.nhr, etc.)
+            def required_companions = ['.nhr', '.nsq']
+            def missing_companions = required_companions.findAll { ext ->
+                ! parent_listing.any { f ->
+                    // Check for both patterns: db_name.ext and db_name.##.ext
+                    f.name == "${db_name}${ext}" || 
+                    f.name.matches("${db_name}\\.\\d+${ext}")
+                }
+            }
+            
+            if (missing_companions.size() > 0) {
+                error """
+                ERROR: BLAST database appears incomplete in ${parent_dir}
+                Found .nin file: ${path_file.name}
+                Missing required companion files with prefix '${db_name}': ${missing_companions.join(', ')}
+                A valid nucleotide BLAST database must contain:
+                    ${db_name}.nin or ${db_name}.##.nin (index file(s))
+                    ${db_name}.nhr or ${db_name}.##.nhr (header file(s))
+                    ${db_name}.nsq or ${db_name}.##.nsq (sequence file(s))
+                Where ## represents numbers like 00, 01, 02, etc.
+                """
+            }
+            
+            // Check if taxonomy4blast.sqlite3 file is present
+            def taxonomy_file = parent_listing.find { it.name == 'taxonomy4blast.sqlite3' }
+            if (!taxonomy_file) {
+                error """
+                ERROR: Missing taxonomy file in ${parent_dir}
+                Found .nin file: ${path_file.name}
+                A valid nucleotide BLAST database must also contain:
+                    taxonomy4blast.sqlite3 (taxonomy information file)
+                Please ensure this file is present in the same directory.
+                """
+            }
+            
+            log.info "Found .nin file with all required companion files (.nhr, .nsq) and taxonomy file"
+        }
+        
+        // Invalid file extension
+        else {
             error """
             ERROR: Invalid BLAST database file: ${path_file}
-            The pipeline requires a BLAST nucleotide database file with a .sqlite3 extension.
-            Please provide the direct path to the .sqlite3 file, for example:
-                --blastn /path/to/databases/taxonomy4blast.sqlite3
+            The pipeline requires either:
+            1. A .nal file (preferred): --blastn /path/to/databases/nt.nal
+            2. A .nin file (if .nal not available): --blastn /path/to/databases/nt.nin
+            
+            You provided: ${path_file.name}
             """
-        }
-
-        if (!path_file.exists()) {
-            error """
-            ERROR: BLAST database file not found: ${path_file}
-            Please check that the path is correct and the file exists.
-            """
-        }
-
-        def parent_dir = file(path_file.parent)
-        // Extract db_name from .nin, .nhr, or .nsq files instead of just .nal
-        def parent_listing = parent_dir.listFiles()
-        // Look for database files with extensions .nin, .nhr, .nsq to determine the actual db_name
-        def db_files = parent_listing.findAll { f ->
-            f.name.endsWith('.nin') || f.name.endsWith('.nhr') || f.name.endsWith('.nsq')
-        }
-        def db_name = path_file.name.replaceAll('\\.sqlite3$', '') // Default fallback
-
-        if (db_files.size() > 0) {
-            // Extract the common prefix from the database files
-            def prefixes = db_files.collect { f ->
-                def name = f.name
-                if (name.endsWith('.nin')) {
-                    return name.replaceAll('\\.nin$', '')
-                } else if (name.endsWith('.nhr')) {
-                    return name.replaceAll('\\.nhr$', '')
-                } else if (name.endsWith('.nsq')) {
-                    return name.replaceAll('\\.nsq$', '')
-                }
-                return null
-            }.findAll { it != null }.unique()
-            if (prefixes.size() == 1) {
-                db_name = prefixes[0]
-            } else if (prefixes.size() > 1) {
-                // Multiple prefixes found, use the most common one or the first one
-                db_name = prefixes[0]
-                log.warn "Multiple database prefixes found: ${prefixes.join(', ')}. Using: ${db_name}"
-            }
         }
 
         // Create an isolated directory inside the pipeline working directory to avoid
@@ -434,41 +505,17 @@ def validateBlastnDatabase(db_path) {
             temp_dir.mkdirs()
         }
 
-        // Ensure the core BLAST database file types exist in the parent directory.
-        // NOTE: files do not strictly need to share the same prefix as the .nal file;
-        // many installations may name index/sequence/header files independently.
-        def required_exts = ['.nin', '.nsq', '.nhr']
-        def missing = required_exts.findAll { ext ->
-            ! parent_listing.any { it.name.endsWith(ext) }
-        }
-        if (missing && missing.size() > 0) {
-            error """
-            ERROR: BLAST database appears incomplete in ${parent_dir}
-            Missing required file types: ${missing.join(', ')}
-            A valid nucleotide BLAST database directory must contain at least one file of each
-            of these types (index, sequence, header), for example:
-                someprefix.nin
-                someprefix.nsq
-                someprefix.nhr
-            Note: these files do not necessarily have to match the .nal filename prefix.
-            Please check the database files and provide the correct .nal path when ready.
-            """
-        }
-
-        // Collect files to include in the isolated directory. We include any files that
-        // either match the database prefix, or are known BLAST DB extensions, plus
-        // optional taxonomy helper files.
+        // Collect files to include in the isolated directory
         def all_db_files = parent_listing.findAll { f ->
             f.name.startsWith("${db_name}.") ||
-            required_exts.any { ext -> f.name.endsWith(ext) } ||
-            f.name in ['taxdb.btd', 'taxdb.bti', 'taxonomy4blast.sqlite3'] ||
-            f.name.endsWith('.sqlite3')
+            f.name in ['taxdb.btd', 'taxdb.bti', 'taxonomy4blast.sqlite3']
         }
+        
         all_db_files.each { source_file ->
             def link_file = file("${temp_dir}/${source_file.name}")
             if (!link_file.exists()) {
                 java.nio.file.Files.createSymbolicLink(
-                    java.nio.file.Paths.get(link_file.toString()),
+                    java.nio.file.Paths.get(link_file.toString()), 
                     java.nio.file.Paths.get(source_file.toString())
                 )
             }
@@ -481,13 +528,14 @@ def validateBlastnDatabase(db_path) {
         return [temp_dir, db_name]
     }
 
-    // If a directory is provided, instruct the user to pass a .sqlite3 file path instead
+    // If a directory is provided, instruct the user to pass a specific file
     else if (path_file.isDirectory()) {
         error """
         ERROR: BLAST database path is a directory: ${path_file}
-        This pipeline requires the direct path to the BLAST .sqlite3 file.
-        Please pass the .sqlite3 file to --blastn, for example:
-            --blastn /path/to/databases/taxonomy4blast.sqlite3
+        This pipeline requires the direct path to a BLAST database file.
+        Please provide either:
+        1. A .nal file (preferred): --blastn /path/to/databases/nt.nal
+        2. A .nin file (if .nal not available): --blastn /path/to/databases/nt.nin
         """
     }
 
@@ -495,8 +543,9 @@ def validateBlastnDatabase(db_path) {
     else {
         error """
         ERROR: Invalid BLAST database path: ${path_file}
-        Please provide the direct path to a BLAST .sqlite3 file, for example:
-            --blastn /path/to/databases/taxonomy4blast.sqlite3
+        Please provide the direct path to a BLAST database file:
+        1. A .nal file (preferred): --blastn /path/to/databases/nt.nal
+        2. A .nin file (if .nal not available): --blastn /path/to/databases/nt.nin
         """
     }
 }
