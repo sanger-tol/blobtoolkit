@@ -66,7 +66,7 @@ workflow INPUT_CHECK {
                             actual_db_path = nin_files[0]
                         } else {
                             error """
-                            ERROR: No .nal or .nin file found in extracted blastn database directory: ${db_path}
+                            ERROR: No .nal or .nin file found in blastn database directory: ${db_path}
                             A valid BLAST nucleotide database must contain either:
                             1. A .nal file (preferred), or
                             2. At least one .nin file
