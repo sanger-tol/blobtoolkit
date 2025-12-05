@@ -54,7 +54,7 @@ workflow INPUT_CHECK {
                         actual_db_path = nal_files[0]
                     } else if (nal_files.size() > 1) {
                         error """
-                        ERROR: Multiple .nal files found in extracted blastn database directory: ${db_path}
+                        ERROR: Multiple .nal files found in blastn database directory: ${db_path}
                         Found: ${nal_files.collect { it.name }.join(', ')}
                         Please ensure the database archive contains only one .nal file.
                         """
