@@ -3,6 +3,18 @@
 //
 
 include { samplesheetToList         } from 'plugin/nf-schema'
+// Helper: resolve symlinks to their real target directory/file
+def resolveSymlink(fileObj) {
+    if (fileObj == null) return fileObj
+    try {
+        def p = fileObj.toPath()
+        def real = p.toRealPath().toFile()
+        return real
+    } catch (Exception e) {
+        return fileObj
+    }
+}
+
 include { UNTAR                     } from '../../modules/nf-core/untar/main'
 include { CAT_CAT                   } from '../../modules/nf-core/cat/cat/main'
 include { SAMTOOLS_FLAGSTAT         } from '../../modules/nf-core/samtools/flagstat/main'
@@ -48,8 +60,10 @@ workflow INPUT_CHECK {
                 // If db_path is a directory (from untar), look for .nal file inside or .nin file as fallback
                 def actual_db_path = db_path
                 if (db_path.isDirectory()) {
+                    // Resolve symlinks so listing returns the target directory contents
+                    def resolved_dir = resolveSymlink(db_path)
                     // First priority: look for .nal files
-                    def nal_files = db_path.listFiles().findAll { it.name.endsWith('.nal') }
+                    def nal_files = resolved_dir.listFiles().findAll { it.name.endsWith('.nal') }
                     if (nal_files.size() == 1) {
                         actual_db_path = nal_files[0]
                     } else if (nal_files.size() > 1) {
@@ -60,7 +74,7 @@ workflow INPUT_CHECK {
                         """
                     } else {
                         // Second priority: look for .nin files if no .nal found
-                        def nin_files = db_path.listFiles().findAll { it.name.endsWith('.nin') }
+                        def nin_files = resolved_dir.listFiles().findAll { it.name.endsWith('.nin') }
                         if (nin_files.size() >= 1) {
                             // Use the first .nin file found (could be nt.nin or nt.00.nin)
                             actual_db_path = nin_files[0]
@@ -207,7 +221,9 @@ workflow INPUT_CHECK {
     //          Parse the BUSCO output directories
     ch_parsed_busco = ch_databases.precomputed_busco
         .flatMap { meta, dir ->
-            def subdirs = file(dir).listFiles().findAll { it.isDirectory() }
+            def dir_file = file(dir)
+            def resolved_run_dir = resolveSymlink(dir_file)
+            def subdirs = resolved_run_dir.listFiles().findAll { it.isDirectory() }
             subdirs.collect { subdir ->
                 def lineage = subdir.name.startsWith('run_') ? subdir.name.substring(4) : subdir.name
                 [[type: 'precomputed_busco', id: subdir.name, lineage: lineage], subdir]
@@ -239,7 +255,11 @@ workflow INPUT_CHECK {
     //
     ch_databases.taxdump
     | filter { meta, db_path -> ! db_path.isFile() }
-    | map { meta, db_path -> [meta, db_path, db_path.listFiles().find { it.getName().endsWith('.json') }] }
+    | map { meta, db_path ->
+        def db_dir = file(db_path)
+        def resolved_db_dir = resolveSymlink(db_dir)
+        [meta, db_path, resolved_db_dir.listFiles().find { it.getName().endsWith('.json') }]
+    }
     | branch { meta, db_path, json_path ->
         json: json_path
                 return [meta, json_path]
@@ -348,8 +368,9 @@ def validateBuscoDatabase(db_path) {
             log.info "This prevents the common error where BUSCO tries to use '${path_file}/lineages/lineage_name' instead of '${parent_dir}/lineages/lineage_name'"
             return parent_dir
         }
-        // Check if path points to a specific lineage directory (e.g., eukaryota_odb10)
-        else if (path_file.name.endsWith('_odb10') && path_file.parent != null) {
+        // Check if path points to a specific lineage directory (e.g., eukaryota_odb10, eukaryota_odb12)
+        // Accept any lineage name that ends with _odb<digits> (odb10, odb12, etc.)
+        else if (path_file.name ==~ /.*_odb\\d+$/ && path_file.parent != null) {
             def parent_dir = file(path_file.parent)
             // Check if parent is 'lineages' - if so, we need to go up two levels
             if (parent_dir.name == 'lineages' && parent_dir.parent != null) {
@@ -387,7 +408,7 @@ def validateBuscoDatabase(db_path) {
         - BUSCO databases cannot be individual files
         Example: --busco /path/to/busco_downloads/
         NOT: --busco /path/to/busco_downloads/lineages/
-        NOT: --busco /path/to/busco_downloads/lineages/eukaryota_odb10/
+        NOT: --busco /path/to/busco_downloads/lineages/eukaryota_odb10/ (or other lineage directories such as eukaryota_odb12/)
         """
     }
 }
@@ -401,7 +422,8 @@ def validateBlastnDatabase(db_path) {
 
     if (path_file.isFile()) {
         def parent_dir = file(path_file.parent)
-        def parent_listing = parent_dir.listFiles()
+        def resolved_parent_dir = resolveSymlink(parent_dir)
+        def parent_listing = resolved_parent_dir.listFiles()
         def db_name = ""
         def main_file = path_file
 
