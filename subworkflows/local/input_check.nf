@@ -478,4 +478,3 @@ def validateBlastnDatabase(db_path) {
     log.info "--- Database Integrity Verified: Ready to run BLAST ---"
     return [parent_dir, db_name]
 }
-
