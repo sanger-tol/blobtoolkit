@@ -446,7 +446,7 @@ def validateBlastnDatabase(db_path) {
 
     nal_files = alldb_files.findAll { it.endsWith('.nal') }
     nin_files = alldb_files.findAll { it.endsWith('.nin') }
-    
+
 
     def missingExtensions = requiredExtensions.findAll { ext ->
         !alldb_files.any { it.endsWith(ext) }
