@@ -440,7 +440,7 @@ def validateBlastnDatabase(db_path) {
     //log.info "BLAST DB directory file names (${parent_dir}): ${alldb_files}"
 
     // The specific extensions/names we are looking for
-    def requiredExtensions = [".nal", ".nin", ".nhr", ".nsq"]
+    def requiredExtensions = [".nin", ".nhr", ".nsq"]
     def requiredFullFiles = ["taxonomy4blast.sqlite3", "taxdb.btd", "taxdb.bti"]
 
 
@@ -463,7 +463,6 @@ def validateBlastnDatabase(db_path) {
         ERROR: BLAST database appears incomplete in ${parent_dir}
         Missing required files: ${missing_parts.join(', ')}
         A valid nucleotide BLAST database must contain:
-            .nal (alias file)
             .nin (index file)
             .nhr (header file)
             .nsq (sequence file)
