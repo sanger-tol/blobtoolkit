@@ -15,6 +15,7 @@ def resolveSymlink(fileObj) {
     }
 }
 
+
 include { UNTAR                     } from '../../modules/nf-core/untar/main'
 include { CAT_CAT                   } from '../../modules/nf-core/cat/cat/main'
 include { SAMTOOLS_FLAGSTAT         } from '../../modules/nf-core/samtools/flagstat/main'
