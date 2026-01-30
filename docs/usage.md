@@ -187,7 +187,7 @@ rm taxdb.tar.gz
 cd ..
 tar -cvzf $NT_TAR $NT
 rm -r $NT
-````
+```
 
 ##### Important: Handling directories with multiple BLAST databases
 
