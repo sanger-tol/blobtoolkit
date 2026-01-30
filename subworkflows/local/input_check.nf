@@ -61,7 +61,7 @@ workflow INPUT_CHECK {
                 // If db_path is a directory (from untar), look for .nal file inside or .nin file as fallback
                 def actual_db_path = db_path
                 def (resolved_path, db_name) = validateBlastnDatabase(actual_db_path)
-                [db_meta, resolved_path]
+                [db_meta + [db_name: db_name], resolved_path]
             } else if (db_meta.type == "busco") {
                 // Special handling for BUSCO databases
                 def resolved_path = validateBuscoDatabase(db_path)
