@@ -342,7 +342,7 @@ def validateBuscoDatabase(db_path) {
         }
         // Check if path points to a specific lineage directory (e.g., eukaryota_odb10, eukaryota_odb12)
         // Accept any lineage name that ends with _odb<digits> (odb10, odb12, etc.)
-        else if (path_file.name ==~ /.*_odb\\d+$/ && path_file.parent != null) {
+        else if (path_file.name ==~ /.*_odb\d+$/ && path_file.parent != null) {
             def parent_dir = file(path_file.parent)
             // Check if parent is 'lineages' - if so, we need to go up two levels
             if (parent_dir.name == 'lineages' && parent_dir.parent != null) {
