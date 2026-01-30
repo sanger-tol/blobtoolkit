@@ -249,15 +249,6 @@ def adjust_taxon_id(nt: str, taxon_info: TaxonInfo) -> int:
     print(f"adjust_taxon_id nt: {nt}", file=sys.stderr)
     the_path = os.path.join(base_dir, "taxonomy4blast.sqlite3")
     print(f"Taxonomy database path: {the_path}", file=sys.stderr)
-    if not os.path.exists(the_path):
-        fallback_path = os.path.join(base_dir, "latest", "taxonomy4blast.sqlite3")
-        if os.path.exists(fallback_path):
-            print(f"Taxonomy database path (fallback): {fallback_path}", file=sys.stderr)
-            the_path = fallback_path
-        else:
-            print(f"Taxonomy database not found: {the_path}", file=sys.stderr)
-            print(f"Taxonomy database not found: {fallback_path}", file=sys.stderr)
-            sys.exit(1)
     con = sqlite3.connect(the_path)
     cur = con.cursor()
     for taxon_id in [taxon_info.taxon_id] + [anc_taxon_info.taxon_id for anc_taxon_info in taxon_info.lineage]:

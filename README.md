@@ -148,7 +148,8 @@ The directory must contain companion files with the same prefix:
 ├── nt.02.nin
 ├── nt.02.nhr
 ├── nt.02.nsq
-├── taxdb.btd                # Optional taxonomy files
+├── taxdb.btd
+├── taxdb.bti
 └── taxonomy4blast.sqlite3
 ```
 
@@ -159,7 +160,8 @@ The directory must contain companion files with the same prefix:
 ├── nt.nin                   # Point --blastn here (no .nal file)
 ├── nt.nhr                   # Required companion files
 ├── nt.nsq
-├── taxdb.btd                # Optional taxonomy files
+├── taxdb.btd
+├── taxdb.bti
 └── taxonomy4blast.sqlite3
 ```
 

@@ -1,6 +1,7 @@
 process GENERATE_CONFIG {
     tag "$meta.id"
     label 'process_single'
+    stageInMode 'copy'
 
     conda "conda-forge::requests=2.28.1 conda-forge::pyyaml=6.0"
     container "docker.io/genomehubs/blobtoolkit:4.4.6"

@@ -403,16 +403,27 @@ def validateBlastnDatabase(db_path) {
     def nin_files = []
 
     if (path_file.isDirectory()) {
-        parent_dir = path_file
+        error """
+        ERROR: Invalid BLAST database path: ${path_file}
+        Please provide a direct path to a .nal/.nin file.
+        """
     } else if (path_file.isFile()) {
         parent_dir = file(path_file.parent)
+        if (!path_file.name.endsWith('.nal') && !path_file.name.endsWith('.nin')) {
+            error """
+            ERROR: Invalid BLAST database file: ${path_file}
+            Please provide a direct path to a .nal or .nin file.
+            """
+        }
+        db_name = path_file.name.replaceAll('\\.(nal|nin)$', '')
     } else {
         error """
         ERROR: Invalid BLAST database path: ${path_file}
-        Please provide a directory containing a BLAST database or a direct path to a .nal/.nin file.
+        Please provide direct path to a .nal/.nin file.
         """
     }
-    parent_dir.eachFile { file ->
+    def resolved_parent_dir = resolveSymlink(parent_dir)
+    resolved_parent_dir.eachFile { file ->
         alldb_files << file.name
     }
     //log.info "BLAST DB directory file names (${parent_dir}): ${alldb_files}"
@@ -433,12 +444,20 @@ def validateBlastnDatabase(db_path) {
         !alldb_files.contains(name)
     }
 
-    if (missingExtensions || missingFullFiles) {
+    def requiredPrefixed = [".nin", ".nhr", ".nsq"]
+    def missingPrefixed = requiredPrefixed.findAll { ext ->
+        !alldb_files.any { name ->
+            name.startsWith("${db_name}") && name.endsWith(ext)
+        }
+    }
+
+    if (missingExtensions || missingFullFiles || missingPrefixed) {
         def missing_parts = []
         missingExtensions.each { missing_parts << "*${it}" }
         missingFullFiles.each { missing_parts << it }
+        missingPrefixed.each { missing_parts << "${db_name}*${it}" }
         error """
-        ERROR: BLAST database appears incomplete in ${parent_dir}
+        ERROR: BLAST database appears incomplete in ${resolved_parent_dir}
         Missing required files: ${missing_parts.join(', ')}
         A valid nucleotide BLAST database must contain:
             .nin (index file)
@@ -450,8 +469,7 @@ def validateBlastnDatabase(db_path) {
         """
     }
 
-    db_name = nal_files.size() == 1 ? nal_files[0].replaceAll('\\.nal$', '') : nin_files[0].replaceAll('\\.nin$', '')
-
+    log.info "BLAST DB name: ${db_name}"
     log.info "--- Database Integrity Verified: Ready to run BLAST ---"
-    return [parent_dir, db_name]
+    return [resolved_parent_dir, db_name]
 }
