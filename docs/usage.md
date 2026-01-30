@@ -178,18 +178,15 @@ wget "ftp://ftp.ncbi.nlm.nih.gov/blast/db/v5/nt.???.tar.gz" -P $NT/ &&
 for file in $NT/*.tar.gz; do
     tar xf $file -C $NT && rm $file;
 done
-```
 
 wget "https://ftp.ncbi.nlm.nih.gov/blast/db/v5/taxdb.tar.gz" &&
 tar xf taxdb.tar.gz -C $NT &&
 rm taxdb.tar.gz
 
 # Compress and cleanup
-
 cd ..
 tar -cvzf $NT_TAR $NT
 rm -r $NT
-
 ````
 
 ##### Important: Handling directories with multiple BLAST databases
@@ -223,7 +220,7 @@ UNIPROT=/path/to/databases/uniprot_${DATE}
 UNIPROT_TAR=/path/to/databases/uniprot_${DATE}.tar.gz
 mkdir -p $UNIPROT
 cd $UNIPROT
-````
+```
 
 The UniProt `Refseq_Proteomes_YYYY_MM.tar.gz` file is very large (close to 200 GB) and will take a long time to download.
 The command below looks complex because it needs to get around the problem of using wildcards with wget and curl.
