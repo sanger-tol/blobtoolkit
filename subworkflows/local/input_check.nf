@@ -364,9 +364,17 @@ def validateBuscoDatabase(db_path) {
                 """
             }
         } else {
-            // Path looks correct, return as-is
-            //log.info "Using BUSCO database path: ${path_file}"
-            return path_file
+            def lineages_subdirs = path_file.listFiles().findAll { it.name == "lineages" }
+            if (lineages_subdirs.size() == 1) {
+                // Path looks correct, return as-is
+                return path_file
+            }
+            error """
+            ERROR: Invalid BUSCO lineage directory structure: ${path_file}
+            It appears you're pointing to a directory that does not contain a 'lineages' sub-directory
+            Please provide the path to the root BUSCO database directory.
+            Example: --busco /path/to/busco_downloads/
+            """
         }
     } else {
         error """
