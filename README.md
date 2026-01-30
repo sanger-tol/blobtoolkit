@@ -163,18 +163,10 @@ The directory must contain companion files with the same prefix:
 └── taxonomy4blast.sqlite3
 ```
 
-#### Database Isolation:
-
-The pipeline automatically creates an isolated directory containing only the necessary database files for each run. This ensures:
-
-- **Security**: Only specified databases are accessible
-- **Consistency**: No interference between different database versions
-- **Performance**: Optimized file access patterns
-
 #### Troubleshooting:
 
-- **Error: "Invalid BLAST database file"** - Ensure you're pointing to either a `.nal` or `.nin` file, not a directory
-- **Error: "Missing required companion files"** - Verify that all companion files (`.nin`, `.nhr`, `.nsq`) exist with the same prefix
+- **Error: "Invalid BLAST database path"** - Ensure you're pointing to either a `.nal` or `.nin` file, not a directory
+- **Error: "Missing required files"** - Verify that all companion files (`.nin`, `.nhr`, `.nsq`) exist with the same prefix
 - **Error: "BLAST database appears incomplete"** - Check that all required BLAST database components are present
 - **Error: "File not found"** - Verify the file path is correct and the file exists
 
