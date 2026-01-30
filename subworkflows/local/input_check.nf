@@ -193,9 +193,7 @@ workflow INPUT_CHECK {
     //          Parse the BUSCO output directories
     ch_parsed_busco = ch_databases.precomputed_busco
         .flatMap { meta, dir ->
-            def dir_file = file(dir)
-            def resolved_run_dir = resolveSymlink(dir_file)
-            def subdirs = resolved_run_dir.listFiles().findAll { it.isDirectory() }
+            def subdirs = file(dir).listFiles().findAll { it.isDirectory() }
             subdirs.collect { subdir ->
                 def lineage = subdir.name.startsWith('run_') ? subdir.name.substring(4) : subdir.name
                 [[type: 'precomputed_busco', id: subdir.name, lineage: lineage], subdir]
