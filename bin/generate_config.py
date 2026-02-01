@@ -245,11 +245,7 @@ def get_sequence_report(accession: str):
 
 
 def adjust_taxon_id(nt: str, taxon_info: TaxonInfo) -> int:
-    base_dir = os.path.dirname(nt) if nt.endswith((".nal", ".nin")) else nt
-    print(f"adjust_taxon_id nt: {nt}", file=sys.stderr)
-    the_path = os.path.join(base_dir, "taxonomy4blast.sqlite3")
-    print(f"Taxonomy database path: {the_path}", file=sys.stderr)
-    con = sqlite3.connect(the_path)
+    con = sqlite3.connect(os.path.join(nt, "taxonomy4blast.sqlite3"))
     cur = con.cursor()
     for taxon_id in [taxon_info.taxon_id] + [anc_taxon_info.taxon_id for anc_taxon_info in taxon_info.lineage]:
         res = cur.execute("SELECT * FROM TaxidInfo WHERE taxid = ?", (taxon_id,))
