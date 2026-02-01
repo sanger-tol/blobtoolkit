@@ -3,17 +3,6 @@
 //
 
 include { samplesheetToList         } from 'plugin/nf-schema'
-// Helper: resolve symlinks to their real target directory/file
-def resolveSymlink(fileObj) {
-    if (fileObj == null) return fileObj
-    try {
-        def p = fileObj.toPath()
-        def real = p.toRealPath().toFile()
-        return real
-    } catch (Exception e) {
-        return fileObj
-    }
-}
 
 
 include { UNTAR                     } from '../../modules/nf-core/untar/main'
@@ -61,9 +50,8 @@ workflow INPUT_CHECK {
                 // If db_path is a directory from untar, look for a .nal or .nin file to use as input
                 def actual_db_path = db_path
                 if (db_path.isDirectory()) {
-                    def resolved_dir = resolveSymlink(db_path)
-                    def nal_files = resolved_dir.listFiles().findAll { it.name.endsWith('.nal') }
-                    def nin_files = resolved_dir.listFiles().findAll { it.name.endsWith('.nin') }
+                    def nal_files = findAllInDir(db_path) { it.name.endsWith('.nal') }
+                    def nin_files = findAllInDir(db_path) { it.name.endsWith('.nin') }
                     if (nal_files.size() == 1) {
                         actual_db_path = nal_files[0]
                     } else if (nal_files.size() > 1) {
@@ -220,7 +208,7 @@ workflow INPUT_CHECK {
     //          Parse the BUSCO output directories
     ch_parsed_busco = ch_databases.precomputed_busco
         .flatMap { meta, dir ->
-            def subdirs = file(dir).listFiles().findAll { it.isDirectory() }
+            def subdirs = findAllInDir(dir) { it.isDirectory() }
             subdirs.collect { subdir ->
                 def lineage = subdir.name.startsWith('run_') ? subdir.name.substring(4) : subdir.name
                 [[type: 'precomputed_busco', id: subdir.name, lineage: lineage], subdir]
@@ -252,11 +240,7 @@ workflow INPUT_CHECK {
     //
     ch_databases.taxdump
     | filter { meta, db_path -> ! db_path.isFile() }
-    | map { meta, db_path ->
-        def db_dir = file(db_path)
-        def resolved_db_dir = resolveSymlink(db_dir)
-        [meta, db_path, resolved_db_dir.listFiles().find { it.getName().endsWith('.json') }]
-    }
+    | map { meta, db_path -> [meta, db_path, findInDir(db_path) { it.name.endsWith('.json') }] }
     | branch { meta, db_path, json_path ->
         json: json_path
                 return [meta, json_path]
@@ -349,6 +333,24 @@ def get_read_counts ( stats ) {
     return read_count_meta
 }
 
+
+// Helpers to find files in a directory matching a closure
+
+// Return all as a list, potentially empty
+def findAllInDir(path, closure) {
+    // listFiles() doesn't work on a symlink
+    def files = path.toRealPath().listFiles()
+    if (!files) return []
+    return files.findAll(closure)
+}
+
+// Return one or null
+def findInDir(path, closure) {
+    def files = findAllInDir(path, closure)
+    return files ? files[0] : null
+}
+
+
 /*
  * Function to validate and resolve BUSCO database paths
  * Handles the common user error of including '/lineages' at the end of the path
@@ -389,8 +391,8 @@ def validateBuscoDatabase(db_path) {
                 """
             }
         } else {
-            def lineages_subdirs = path_file.listFiles().findAll { it.name == "lineages" }
-            if (lineages_subdirs.size() == 1) {
+            def lineages_subdir = findInDir(path_file) { it.name == "lineages" }
+            if (lineages_subdir) {
                 // Path looks correct, return as-is
                 return path_file
             }
@@ -421,11 +423,9 @@ def validateBuscoDatabase(db_path) {
 /*
  * Function to validate and resolve BLAST nucleotide database paths
  */
-def validateBlastnDatabase(db_path) {
-    def path_file = file(db_path)
+def validateBlastnDatabase(path_file) {
     def parent_dir = null
     def db_name = null
-    def alldb_files = []
     def nal_files = []
     def nin_files = []
 
@@ -449,10 +449,7 @@ def validateBlastnDatabase(db_path) {
         Please provide direct path to a .nal/.nin file.
         """
     }
-    def resolved_parent_dir = resolveSymlink(parent_dir)
-    resolved_parent_dir.eachFile { file ->
-        alldb_files << file.name
-    }
+    def alldb_files = findAllInDir(parent_dir) { it.isFile() } .collect { it.name }
     //log.info "BLAST DB directory file names (${parent_dir}): ${alldb_files}"
 
     // The specific extensions/names we are looking for
@@ -484,7 +481,7 @@ def validateBlastnDatabase(db_path) {
         missingFullFiles.each { missing_parts << it }
         missingPrefixed.each { missing_parts << "${db_name}*${it}" }
         error """
-        ERROR: BLAST database appears incomplete in ${resolved_parent_dir}
+        ERROR: BLAST database appears incomplete in ${parent_dir}
         Missing required files: ${missing_parts.join(', ')}
         A valid nucleotide BLAST database must contain:
             .nin (index file)
@@ -496,7 +493,7 @@ def validateBlastnDatabase(db_path) {
         """
     }
 
-    log.info "BLAST DB name: ${db_name}"
+    log.info "BLAST DB name: ${db_name} in ${parent_dir}"
     log.info "--- Database Integrity Verified: Ready to run BLAST ---"
-    return [resolved_parent_dir, db_name]
+    return [parent_dir, db_name]
 }
