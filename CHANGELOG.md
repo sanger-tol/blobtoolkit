@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[0.10.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.10.0)] – Onix – [2025-11-20]
+## [[0.10.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.10.0)] – Onix – [2026-02-02]
 
 ### Enhancements & fixes
 
@@ -13,7 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `blastx` for blastp and blastx annotations
   - `off` for no blast annotations
 - Added support for Busco odb12 databases. odb10 is still supported,
-  but odb12 is the default.
+  but odb12 is now the default.
+- Check the validity of the Busco and Blast Database paths before
+  running the pipeline.
+- Blast database paths can now be given as full path to a `.nal` or
+  `.nin` file, for instance when multiple databases are mixed up in
+  the same directory.
 
 ### Parameters
 

@@ -45,6 +45,42 @@ workflow INPUT_CHECK {
         .map { db_meta, db_path ->
             if (db_meta.type in ["blastp", "blastx"] && db_path.isDirectory()) {
                 [db_meta, file(db_path.toString() + "/${db_path.name}", checkIfExists: true)]
+            } else if (db_meta.type == "blastn") {
+                // Special handling for BLAST nucleotide databases
+                // If db_path is a directory from untar, look for a .nal or .nin file to use as input
+                def actual_db_path = db_path
+                if (db_path.isDirectory()) {
+                    def nal_files = findAllInDir(db_path) { it.name.endsWith('.nal') }
+                    def nin_files = findAllInDir(db_path) { it.name.endsWith('.nin') }
+                    if (nal_files.size() == 1) {
+                        actual_db_path = nal_files[0]
+                    } else if (nal_files.size() > 1) {
+                        error """
+                        ERROR: Multiple .nal files found in blastn database directory: ${db_path}
+                        Found: ${nal_files.collect { it.name }.join(', ')}
+                        Please ensure the directory contains only one .nal file.
+                        """
+                    } else if (nin_files.size() == 1) {
+                        actual_db_path = nin_files[0]
+                    } else if (nin_files.size() > 1) {
+                        error """
+                        ERROR: Multiple .nin files found in blastn database directory: ${db_path}
+                        Found: ${nin_files.collect { it.name }.join(', ')}
+                        Please ensure the directory contains only one .nin file.
+                        """
+                    } else {
+                        error """
+                        ERROR: No .nal or .nin file found in blastn database directory: ${db_path}
+                        Please ensure the directory contains a .nal or .nin file.
+                        """
+                    }
+                }
+                def (resolved_path, db_name) = validateBlastnDatabase(actual_db_path)
+                [db_meta + [db_name: db_name], resolved_path]
+            } else if (db_meta.type == "busco") {
+                // Special handling for BUSCO databases
+                def resolved_path = validateBuscoDatabase(db_path)
+                [db_meta, resolved_path]
             } else {
                 [db_meta, db_path]
             }
@@ -172,7 +208,7 @@ workflow INPUT_CHECK {
     //          Parse the BUSCO output directories
     ch_parsed_busco = ch_databases.precomputed_busco
         .flatMap { meta, dir ->
-            def subdirs = file(dir).listFiles().findAll { it.isDirectory() }
+            def subdirs = findAllInDir(dir) { it.isDirectory() }
             subdirs.collect { subdir ->
                 def lineage = subdir.name.startsWith('run_') ? subdir.name.substring(4) : subdir.name
                 [[type: 'precomputed_busco', id: subdir.name, lineage: lineage], subdir]
@@ -204,7 +240,7 @@ workflow INPUT_CHECK {
     //
     ch_databases.taxdump
     | filter { meta, db_path -> ! db_path.isFile() }
-    | map { meta, db_path -> [meta, db_path, db_path.listFiles().find { it.getName().endsWith('.json') }] }
+    | map { meta, db_path -> [meta, db_path, findInDir(db_path) { it.name.endsWith('.json') }] }
     | branch { meta, db_path, json_path ->
         json: json_path
                 return [meta, json_path]
@@ -295,4 +331,169 @@ def get_read_counts ( stats ) {
     }
 
     return read_count_meta
+}
+
+
+// Helpers to find files in a directory matching a closure
+
+// Return all as a list, potentially empty
+def findAllInDir(path, closure) {
+    // listFiles() doesn't work on a symlink
+    def files = path.toRealPath().listFiles()
+    if (!files) return []
+    return files.findAll(closure)
+}
+
+// Return one or null
+def findInDir(path, closure) {
+    def files = findAllInDir(path, closure)
+    return files ? files[0] : null
+}
+
+
+/*
+ * Function to validate and resolve BUSCO database paths
+ * Handles the common user error of including '/lineages' at the end of the path
+ */
+def validateBuscoDatabase(db_path) {
+    def path_file = file(db_path)
+    if (path_file.isDirectory()) {
+        // Check if path ends with /lineages and has a parent directory
+        if (path_file.name == 'lineages' && path_file.parent != null) {
+            def parent_dir = file(path_file.parent)
+            log.info "BUSCO path correction: Detected '/lineages' suffix in path"
+            log.info "  Original path: ${path_file}"
+            log.info "  Corrected path: ${parent_dir}"
+            log.info "This prevents the common error where BUSCO tries to use '${path_file}/lineages/lineage_name' instead of '${parent_dir}/lineages/lineage_name'"
+            return parent_dir
+        }
+        // Check if path points to a specific lineage directory (e.g., eukaryota_odb10, eukaryota_odb12)
+        // Accept any lineage name that ends with _odb<digits> (odb10, odb12, etc.)
+        else if (path_file.name ==~ /.*_odb\d+$/ && path_file.parent != null) {
+            def parent_dir = file(path_file.parent)
+            // Check if parent is 'lineages' - if so, we need to go up two levels
+            if (parent_dir.name == 'lineages' && parent_dir.parent != null) {
+                def busco_root = file(parent_dir.parent)
+                log.info "BUSCO path correction: Detected specific lineage directory in path"
+                log.info "  Original path: ${path_file} (specific lineage: ${path_file.name})"
+                log.info "  Corrected path: ${busco_root}"
+                log.info "This prevents the error where BUSCO tries to use a specific lineage directory instead of the root BUSCO database directory"
+                log.warn "Use `--busco_lineages ${path_file.name}` to control the lineage"
+                return busco_root
+            } else {
+                error """
+                ERROR: Invalid BUSCO lineage directory structure: ${path_file}
+                It appears you're pointing to a specific BUSCO lineage directory (${path_file.name}),
+                but the expected directory structure is:
+                /path/to/busco_downloads/lineages/${path_file.name}/
+                Please provide the path to the root BUSCO database directory.
+                Example: --busco /path/to/busco_downloads/
+                """
+            }
+        } else {
+            def lineages_subdir = findInDir(path_file) { it.name == "lineages" }
+            if (lineages_subdir) {
+                // Path looks correct, return as-is
+                return path_file
+            }
+            error """
+            ERROR: Invalid BUSCO lineage directory structure: ${path_file}
+            It appears you're pointing to a directory that does not contain a 'lineages' sub-directory
+            Please provide the path to the root BUSCO database directory.
+            Example: --busco /path/to/busco_downloads/
+            """
+        }
+    } else {
+        error """
+        ERROR: Invalid BUSCO database path: ${path_file}
+        BUSCO databases must be directories containing the 'lineages/' subdirectory.
+        Please ensure the path points to a valid BUSCO database directory.
+        Common issues:
+        - Path should point to the directory containing 'lineages/' subdirectory
+        - Do NOT include '/lineages' at the end of the path
+        - Do NOT point to a specific lineage directory (e.g., eukaryota_odb10)
+        - BUSCO databases cannot be individual files
+        Example: --busco /path/to/busco_downloads/
+        NOT: --busco /path/to/busco_downloads/lineages/
+        NOT: --busco /path/to/busco_downloads/lineages/eukaryota_odb10/ (or other lineage directories such as eukaryota_odb12/)
+        """
+    }
+}
+
+/*
+ * Function to validate and resolve BLAST nucleotide database paths
+ */
+def validateBlastnDatabase(path_file) {
+    def parent_dir = null
+    def db_name = null
+    def nal_files = []
+    def nin_files = []
+
+    if (path_file.isDirectory()) {
+        error """
+        ERROR: Invalid BLAST database path: ${path_file}
+        Please provide a direct path to a .nal/.nin file.
+        """
+    } else if (path_file.isFile()) {
+        parent_dir = file(path_file.parent)
+        if (!path_file.name.endsWith('.nal') && !path_file.name.endsWith('.nin')) {
+            error """
+            ERROR: Invalid BLAST database file: ${path_file}
+            Please provide a direct path to a .nal or .nin file.
+            """
+        }
+        db_name = path_file.name.replaceAll('\\.(nal|nin)$', '')
+    } else {
+        error """
+        ERROR: Invalid BLAST database path: ${path_file}
+        Please provide direct path to a .nal/.nin file.
+        """
+    }
+    def alldb_files = findAllInDir(parent_dir) { it.isFile() } .collect { it.name }
+    //log.info "BLAST DB directory file names (${parent_dir}): ${alldb_files}"
+
+    // The specific extensions/names we are looking for
+    def requiredExtensions = [".nin", ".nhr", ".nsq"]
+    def requiredFullFiles = ["taxonomy4blast.sqlite3", "taxdb.btd", "taxdb.bti"]
+
+
+    nal_files = alldb_files.findAll { it.endsWith('.nal') }
+    nin_files = alldb_files.findAll { it.endsWith('.nin') }
+
+
+    def missingExtensions = requiredExtensions.findAll { ext ->
+        !alldb_files.any { it.endsWith(ext) }
+    }
+    def missingFullFiles = requiredFullFiles.findAll { name ->
+        !alldb_files.contains(name)
+    }
+
+    def requiredPrefixed = [".nin", ".nhr", ".nsq"]
+    def missingPrefixed = requiredPrefixed.findAll { ext ->
+        !alldb_files.any { name ->
+            name.startsWith("${db_name}") && name.endsWith(ext)
+        }
+    }
+
+    if (missingExtensions || missingFullFiles || missingPrefixed) {
+        def missing_parts = []
+        missingExtensions.each { missing_parts << "*${it}" }
+        missingFullFiles.each { missing_parts << it }
+        missingPrefixed.each { missing_parts << "${db_name}*${it}" }
+        error """
+        ERROR: BLAST database appears incomplete in ${parent_dir}
+        Missing required files: ${missing_parts.join(', ')}
+        A valid nucleotide BLAST database must contain:
+            .nin (index file)
+            .nhr (header file)
+            .nsq (sequence file)
+            taxonomy4blast.sqlite3 (taxonomy information file)
+            taxdb.btd (taxonomy index file)
+            taxdb.bti (taxonomy index file)
+        """
+    }
+
+    log.info "BLAST DB name: ${db_name} in ${parent_dir}"
+    log.info "--- Database Integrity Verified: Ready to run BLAST ---"
+    return [parent_dir, db_name]
 }
