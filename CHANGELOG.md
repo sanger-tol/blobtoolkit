@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `blastp` for only blastp annotations
   - `blastx` for blastp and blastx annotations
   - `off` for no blast annotations
+- Bugfix: the BUSCO archives now contain the sequences predicted by
+  BUSCO (in Fasta and GFF formats).
 - Added support for Busco odb12 databases. odb10 is still supported,
   but odb12 is now the default.
 - Check the validity of the Busco and Blast Database paths before

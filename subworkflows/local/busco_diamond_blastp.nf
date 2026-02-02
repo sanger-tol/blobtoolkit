@@ -156,7 +156,6 @@ workflow BUSCO_DIAMOND {
                     outputs.seq_dir ? "${outputs.seq_dir}/single_copy_busco_sequences" : [],
                     outputs.seq_dir ? "${outputs.seq_dir}/multi_copy_busco_sequences" : [],
                     outputs.seq_dir ? "${outputs.seq_dir}/fragmented_busco_sequences" : [],
-                    outputs.busco_dir ? "${outputs.busco_dir}/hmmer_output" : []
                 ]
             }
     )
