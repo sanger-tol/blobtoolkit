@@ -30,9 +30,9 @@ process RESTRUCTUREBUSCODIR {
     [ -e "${full_table}" ] && cp ${full_table} ${lineage}/
     [ -e "${missing_busco_list}" ] && cp ${missing_busco_list} ${lineage}/
 
-    tar czf ${lineage}/single_copy_busco_sequences.tar.gz -C \$(dirname ${single_copy_busco_sequences}) \$(basename ${single_copy_busco_sequences})
-    tar czf ${lineage}/multi_copy_busco_sequences.tar.gz -C \$(dirname ${multi_copy_busco_sequences}) \$(basename ${multi_copy_busco_sequences})
-    tar czf ${lineage}/fragmented_busco_sequences.tar.gz -C \$(dirname ${fragmented_busco_sequences}) \$(basename ${fragmented_busco_sequences})
+    tar czf ${lineage}/single_copy_busco_sequences.tar.gz --dereference -C \$(dirname ${single_copy_busco_sequences}) \$(basename ${single_copy_busco_sequences})
+    tar czf ${lineage}/multi_copy_busco_sequences.tar.gz  --dereference -C \$(dirname ${multi_copy_busco_sequences})  \$(basename ${multi_copy_busco_sequences})
+    tar czf ${lineage}/fragmented_busco_sequences.tar.gz  --dereference -C \$(dirname ${fragmented_busco_sequences})  \$(basename ${fragmented_busco_sequences})
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
