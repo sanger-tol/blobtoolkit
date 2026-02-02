@@ -8,7 +8,7 @@ process RESTRUCTUREBUSCODIR {
         'nf-core/ubuntu:20.04' }"
 
     input:
-    tuple val(meta), val(lineage), path(batch_summary), path(short_summary_txt), path(short_summary_json), path(full_table), path(missing_busco_list), path(single_copy_busco_sequences), path(multi_copy_busco_sequences), path(fragmented_busco_sequences), path(hmmer_output)
+    tuple val(meta), val(lineage), path(batch_summary), path(short_summary_txt), path(short_summary_json), path(full_table), path(missing_busco_list), path(single_copy_busco_sequences), path(multi_copy_busco_sequences), path(fragmented_busco_sequences)
 
     output:
     tuple val(meta), path("${lineage}"), emit: clean_busco_dir
@@ -33,7 +33,6 @@ process RESTRUCTUREBUSCODIR {
     tar czf ${lineage}/single_copy_busco_sequences.tar.gz -C \$(dirname ${single_copy_busco_sequences}) \$(basename ${single_copy_busco_sequences})
     tar czf ${lineage}/multi_copy_busco_sequences.tar.gz -C \$(dirname ${multi_copy_busco_sequences}) \$(basename ${multi_copy_busco_sequences})
     tar czf ${lineage}/fragmented_busco_sequences.tar.gz -C \$(dirname ${fragmented_busco_sequences}) \$(basename ${fragmented_busco_sequences})
-    tar czf ${lineage}/hmmer_output.tar.gz --exclude=.checkpoint -C \$(dirname ${hmmer_output}) \$(basename ${hmmer_output})
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
