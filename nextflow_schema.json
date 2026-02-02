@@ -16,25 +16,77 @@
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
-                    "schema": "assets/schema_input.json",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
                     "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
                     "fa_icon": "fas fa-file-csv"
                 },
+                "align": {
+                    "type": "boolean",
+                    "description": "Turn on optional alignment before running the rest of the pipeline.",
+                    "fa_icon": "fas fa-toggle-off"
+                },
+                "mask": {
+                    "type": "boolean",
+                    "description": "Turn on optional genome masking if needed.",
+                    "fa_icon": "fas fa-toggle-off"
+                },
+                "skip_taxon_filtering": {
+                    "type": "boolean",
+                    "description": "Skip filtering out hits from the same species in blast* searches.",
+                    "fa_icon": "fas fa-toggle-off"
+                },
+                "fetchngs_samplesheet": {
+                    "type": "boolean",
+                    "description": "Turn on the conversion from a nf-core/fetchngs samplesheet.",
+                    "fa_icon": "fas fa-toggle-off"
+                },
+                "busco_lineages": {
+                    "type": "string",
+                    "pattern": "([^,]+_odb(10|12),)*[^,]+_odb(10|12)",
+                    "description": "Name of the ODB10 lineages to run BUSCO on. By default, the pipeline will automatically select the correct lineage based on the taxonomy.",
+                    "fa_icon": "fas fa-bone"
+                },
+                "busco_gene_predictor": {
+                    "type": "string",
+                    "enum": ["miniprot", "metaeuk", "augustus"],
+                    "description": "Name of the gene predictor to run BUSCO on. By default, the pipeline will automatically select miniprot for gene prediction.",
+                    "fa_icon": "fas fa-bone"
+                },
+                "precomputed_busco": {
+                    "type": "string",
+                    "format": "path",
+                    "description": "Directory containing precomputed BUSCO results (each named as `run_{lineage}_odbxx`), which can be supplied to skip running BUSCO in the pipeline.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "image_format": {
+                    "type": "string",
+                    "enum": ["png", "svg"],
+                    "description": "Select the format of the output images.",
+                    "fa_icon": "fas fa-image",
+                    "default": "png"
+                },
+                "blast_annotations": {
+                    "type": "string",
+                    "enum": ["all", "blastp", "blastx", "off"],
+                    "default": "all",
+                    "description": "Control whether to use all, `blastp` (for minimal annotations), `blastx` (for both blastp and blastx annotations) or `no` blast annotations.",
+                    "fa_icon": "fas fa-file-signature"
+                },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
-                    "fa_icon": "fas fa-folder-open"
+                    "fa_icon": "fas fa-folder-open",
+                    "default": "results"
                 },
                 "email": {
                     "type": "string",
+                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
                     "description": "Email address for completion summary.",
-                    "fa_icon": "fas fa-envelope",
                     "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
-                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+                    "fa_icon": "fas fa-envelope"
                 },
                 "multiqc_title": {
                     "type": "string",
@@ -42,6 +94,100 @@
                     "fa_icon": "fas fa-file-signature"
                 }
             }
+        },
+        "reference_genome_options": {
+            "title": "Reference genome options",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "Reference genome related files and options required for the workflow.",
+            "required": ["taxon", "fasta"],
+            "properties": {
+                "taxon": {
+                    "type": ["string", "integer"],
+                    "description": "Name or taxonomy ID for the genome species"
+                },
+                "accession": {
+                    "type": "string",
+                    "description": "Genome accession where available or an identifier for draft assemblies"
+                },
+                "fasta": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
+                    "description": "Path to FASTA genome file.",
+                    "fa_icon": "far fa-file-code"
+                }
+            }
+        },
+        "databases": {
+            "title": "Databases",
+            "type": "object",
+            "fa_icon": "fas fa-database",
+            "description": "Define the location and parameters to work with databases.",
+            "required": ["blastp", "blastx", "blastn", "lineage_tax_ids", "taxdump"],
+            "properties": {
+                "busco": {
+                    "type": "string",
+                    "format": "path",
+                    "description": "Local directory where clade-specific BUSCO lineage datasets are stored",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "lineage_tax_ids": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "File that holds a mapping between BUSCO lineages and taxon IDs.",
+                    "help_text": "Initialised from https://busco-data.ezlab.org/v5/data/placement_files/mapping_taxids-busco_dataset_name.*.2019-12-16.txt.tar.gz",
+                    "fa_icon": "fas fa-file-code"
+                },
+                "blastp": {
+                    "type": "string",
+                    "format": "path",
+                    "exists": true,
+                    "pattern": "^\\S+\\.dmnd.*$",
+                    "description": "Path to the Diamond species-specific buscogenes database",
+                    "fa_icon": "fas fa-file-archive"
+                },
+                "blastx": {
+                    "type": "string",
+                    "format": "path",
+                    "exists": true,
+                    "pattern": "^\\S+\\.dmnd.*$",
+                    "description": "Path to the Diamond species-specific buscoregions database",
+                    "fa_icon": "fas fa-file-archive"
+                },
+                "blastn": {
+                    "type": "string",
+                    "format": "path",
+                    "exists": true,
+                    "description": "Path to the nucleotide BLAST database",
+                    "fa_icon": "fas fa-file-archive"
+                },
+                "taxdump": {
+                    "type": "string",
+                    "format": "path",
+                    "exists": true,
+                    "description": "Path to the new NCBI tax dump database",
+                    "fa_icon": "fas fa-folder-open"
+                }
+            }
+        },
+        "execution": {
+            "title": "Execution",
+            "type": "object",
+            "description": "Control the execution of the pipeline.",
+            "default": "",
+            "properties": {
+                "use_work_dir_as_temp": {
+                    "type": "boolean",
+                    "description": "Set to true to make tools (e.g. sort, FastK, MerquryFK, BLASTP, BLASTX) use the work directory for their temporary files, rather than the system default.",
+                    "fa_icon": "fas fa-arrow-circle-down",
+                    "hidden": false
+                }
+            },
+            "fa_icon": "fas fa-running"
         },
         "institutional_config_options": {
             "title": "Institutional config options",
@@ -164,20 +310,14 @@
                 "multiqc_methods_description": {
                     "type": "string",
                     "description": "Custom MultiQC yaml file containing HTML including a methods description.",
-                    "fa_icon": "fas fa-cog"
+                    "fa_icon": "fas fa-cog",
+                    "hidden": true
                 },
                 "validate_params": {
                     "type": "boolean",
                     "description": "Boolean whether to validate parameters against the schema at runtime",
                     "default": true,
                     "fa_icon": "fas fa-check-square",
-                    "hidden": true
-                },
-                "pipelines_testdata_base_path": {
-                    "type": "string",
-                    "fa_icon": "far fa-check-circle",
-                    "description": "Base URL or local path to location of pipeline test dataset files",
-                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/",
                     "hidden": true
                 },
                 "trace_report_suffix": {
@@ -204,6 +344,15 @@
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
+        },
+        {
+            "$ref": "#/$defs/reference_genome_options"
+        },
+        {
+            "$ref": "#/$defs/databases"
+        },
+        {
+            "$ref": "#/$defs/execution"
         },
         {
             "$ref": "#/$defs/institutional_config_options"

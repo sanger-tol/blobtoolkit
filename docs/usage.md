@@ -4,58 +4,379 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
+<!-- Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 4 columns, and a header row as shown in the examples below.
 
 ```bash
 --input '[path to samplesheet file]'
 ```
 
-### Multiple runs of the same sample
-
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
-
-```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
-```
-
 ### Full samplesheet
 
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
+The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 4 columns to match those defined in the table below.
 
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
+A final samplesheet file may look something like the one below.
 
-```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
+```console
+sample,datatype,datafile,library_layout
+sample1,hic,hic.cram,PAIRED
+sample2,illumina,illumina.cram,PAIRED
+sample3,ont,ont.cram,SINGLE
 ```
 
-| Column    | Description                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+| Column           | Description                                                                                                                                                                               |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`         | Custom sample name. It doesn't have to be an actual _sample_ name. It is used to name the read set on the BlobToolKit viewer and therefore needs to be **unique** across the samplesheet. |
+| `datatype`       | Type of sequencing data. Must be one of `hic`, `illumina`, `pacbio`, `pacbio_clr` or `ont`.                                                                                               |
+| `datafile`       | Full path to read data file.                                                                                                                                                              |
+| `library_layout` | Layout of the library. Must be one of `SINGLE`, `PAIRED`.                                                                                                                                 |
 
-An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
+An [example samplesheet](../assets/test/samplesheet.csv) has been provided with the pipeline.
+
+### Support for [nf-core/fetchngs](https://nf-co.re/fetchngs)
+
+The pipeline can also accept a samplesheet generated by the [nf-core/fetchngs](https://nf-co.re/fetchngs) pipeline (tested with version 1.11.0).
+The pipeline then needs the `--fetchngs_samplesheet true` option _and_ `--align true`, since the data files would all be unaligned.
+
+## BUSCO
+
+BUSCO is an important part of the assessment done by the pipeline.
+
+### Gene prediction method
+
+Busco starts with a quick gene prediction run, for which it has the following options (by decreasing speed):
+
+- Miniprot
+- Metaeuk
+- Augustus
+
+The default value has changed across Busco versions (and may change in the future).
+The pipeline exposes the `--busco_gene_predictor` option to force a specific method to be used.
+Otherwise, the pipeline will default to Busco's own default (currently Miniprot).
+
+### Support for pre-computed `BUSCO` outputs
+
+The pipeline may be optionally run with a set of pre-computed [`BUSCO`](https://busco.ezlab.org) runs, provided using the `--precomputed_busco` parameter. These can be provided as either a directory path, or a `.tar.gz` compressed archive. The contents should be each `run_` output directory (directly from `BUSCO`) named as `run_[odb_dabasase_name]`:
+
+```
+GCA_922984935.2_busco_output/
+├── run_archaea_odb10
+├── run_bacteria_odb10
+├── run_carnivora_odb10
+├── run_eukaryota_odb10
+├── run_eutheria_odb10
+├── run_laurasiatheria_odb10
+├── run_mammalia_odb10
+├── run_metazoa_odb10
+├── run_tetrapoda_odb10
+└── run_vertebrata_odb10
+```
+
+The pipeline minimally requires outputs for the 'basal' lineages (archaea, eukaryota, and bacteria) -- any of these which are not present in the pre-computed outputs will be automatically detected and run.
+
+## Database parameters
+
+Configure access to your local databases with the `--busco`, `--blastp`, `--blastx`, `--blastn`, and `--taxdump` parameters.
+
+Note that `--busco` refers to the download path which _contains_ the `lineages/` sub-directory.
+Then, when explicitly selecting the lineages to run the pipeline on,
+provide the names of these lineages _with_ their `_odb10` suffix as a comma-separated string.
+For instance:
+
+```bash
+--busco path-to-databases/busco/ --busco_lineages vertebrata_odb10,bacteria_odb10,fungi_odb10
+```
+
+### BUSCO database path format
+
+**Important**: The `--busco` parameter must be a directory containing the `lineages/` subdirectory, **NOT** to the `lineages/` directory itself. BUSCO databases are always directories, never individual files.
+
+```bash
+# ✅ Correct - points to the parent directory
+--busco /path/to/busco_downloads/
+
+# ❌ Common mistake - includes /lineages at the end
+--busco /path/to/busco_downloads/lineages/
+
+# ❌ Another common mistake - points to a specific lineage
+--busco /path/to/busco_downloads/lineages/eukaryota_odb10/
+```
+
+The pipeline will automatically detect and correct paths ending with `/lineages` or pointing to specific lineage directories (e.g., `eukaryota_odb10`) to prevent common errors where BUSCO tries to access incorrect paths.
+
+### BLAST database path formats
+
+The `--blastn` parameter accepts two formats:
+
+1. **Directory path** (for backwards compatibility):
+
+   ```bash
+   --blastn /path/to/databases/nt_2024_10/
+   ```
+
+   This works only if the directory contains a single BLAST database.
+
+2. **Direct file path** (recommended for clarity):
+   ```bash
+   --blastn /path/to/databases/nt_2024_10/nt.nal
+   ```
+   This is required if your database directory contains multiple BLAST databases. Note: When you specify a direct `.nal` file path, the pipeline automatically uses the parent directory to ensure all associated database files are available.
+
+If multiple databases are found in a directory, the pipeline will fail with a clear error message listing all available databases and suggesting the exact file paths to use.
+
+### Getting databases ready for the pipeline
+
+The BlobToolKit pipeline can be run in many different ways. The default way requires access to several databases:
+
+1. [NCBI taxdump database](https://www.ncbi.nlm.nih.gov/taxonomy)
+2. [NCBI nucleotide BLAST database](https://blast.ncbi.nlm.nih.gov/doc/blast-help/downloadblastdata.html#databases)
+3. [UniProt reference proteomes database](https://www.uniprot.org)
+4. [BUSCO database](https://busco.ezlab.org)
+
+It is a good idea to put a date suffix for each database location so you know at a glance whether you are using the latest version. We are using the `YYYY_MM` format as we do not expect the databases to be updated more frequently than once a month. However, feel free to use `DATE=YYYY_MM_DD` or a different format if you prefer.
+
+Note that all input databases may be optionally passed directly to the pipeline compressed as `.tar.gz`, and the pipeline will handle decompression.
+The instructions below show how to build each input database in _two_ forms: decompressed _and_ compressed. You may not need to do both. Select the one that is most appropriate for how you want to use the pipeline.
+
+#### 1. NCBI taxdump database
+
+Create the database directory, retrieve and decompress the NCBI taxonomy:
+
+```bash
+DATE=2024_10
+TAXDUMP=/path/to/databases/taxdump_${DATE}
+TAXDUMP_TAR=/path/to/databases/taxdump_${DATE}.tar.gz
+mkdir -p "$TAXDUMP"
+curl -L ftp://ftp.ncbi.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz -o $TAXDUMP_TAR
+tar -xzf $TAXDUMP_TAR -C "$TAXDUMP"
+```
+
+The first time the pipeline will run, it will generate a file named `resources/taxdump.json` in the results folder.
+This JSON file is a digested version of the taxonomy that can then be fed into the pipeline instead of the bare `new_taxdump` directory to make it run faster.
+
+#### 2. NCBI nucleotide BLAST database
+
+Create the database directory and move into the directory:
+
+```bash
+DATE=2024_10
+NT=/path/to/databases/nt_${DATE}
+NT_TAR=/path/to/databases/nt_${DATE}.tar.gz
+mkdir -p $NT
+cd $NT
+```
+
+Retrieve the NCBI blast nt database (version 5) files and extract them.
+`wget` and the use of the FTP protocol are necessary to resolve the wildcard `nt.???.tar.gz`.
+We are using the `&&` syntax to ensure that each command completes without error before the next one is run:
+
+```bash
+wget "ftp://ftp.ncbi.nlm.nih.gov/blast/db/v5/nt.???.tar.gz" -P $NT/ &&
+for file in $NT/*.tar.gz; do
+    tar xf $file -C $NT && rm $file;
+done
+
+wget "https://ftp.ncbi.nlm.nih.gov/blast/db/v5/taxdb.tar.gz" &&
+tar xf taxdb.tar.gz -C $NT &&
+rm taxdb.tar.gz
+
+# Compress and cleanup
+cd ..
+tar -cvzf $NT_TAR $NT
+rm -r $NT
+```
+
+##### Important: Handling directories with multiple BLAST databases
+
+If your database directory contains multiple BLAST databases (e.g., both `nt` and `nr` databases), you must specify the exact path to the `.nal` file to avoid ambiguity:
+
+```bash
+# ❌ This will fail if multiple databases are present
+--blastn /path/to/databases/
+
+# ✅ Specify the exact database file
+--blastn /path/to/databases/nt.nal
+```
+
+The pipeline supports two formats for the `--blastn` parameter:
+
+- **Directory path**: `/path/to/databases/nt_2024_10/` (only works if directory contains a single BLAST database)
+- **Direct file path**: `/path/to/databases/nt_2024_10/nt.nal` (recommended for directories with multiple databases). Note: When you specify a direct `.nal` file path, the pipeline automatically uses the parent directory to ensure all associated database files are available.
+
+#### 3. UniProt reference proteomes database
+
+You need [diamond blast](https://github.com/bbuchfink/diamond) installed for this step.
+The easiest way is probably to install their [pre-compiled release](https://github.com/bbuchfink/diamond/releases).
+Make sure you have the latest version of Diamond (>2.x.x) otherwise the `--taxonnames` argument may not work.
+
+Create the database directory and move into the directory:
+
+```bash
+DATE=2024_10
+UNIPROT=/path/to/databases/uniprot_${DATE}
+UNIPROT_TAR=/path/to/databases/uniprot_${DATE}.tar.gz
+mkdir -p $UNIPROT
+cd $UNIPROT
+```
+
+The UniProt `Refseq_Proteomes_YYYY_MM.tar.gz` file is very large (close to 200 GB) and will take a long time to download.
+The command below looks complex because it needs to get around the problem of using wildcards with wget and curl.
+
+```bash
+EBI_URL=ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/
+mkdir extract
+curl -L $EBI_URL/$(curl -vs $EBI_URL 2>&1 | awk '/tar.gz/ {print $9}') | \
+  tar -xzf - -C extract
+
+# Create a single fasta file with all the fasta files from each subdirectory:
+find extract -type f -name '*.fasta.gz' ! -name '*_DNA.fasta.gz' ! -name '*_additional.fasta.gz' -exec cat '{}' '+' > reference_proteomes.fasta.gz
+
+# create the accession-to-taxid map for all reference proteome sequences:
+find extract -type f -name '*.idmapping.gz' -exec zcat {} + | \
+  awk 'BEGIN {OFS="\t"; print "accession", "accession.version", "taxid", "gi"} $2=="NCBI_TaxID" {print $1, $1, $3, 0}' > reference_proteomes.taxid_map
+
+# create the taxon aware diamond blast database
+diamond makedb -p 16 --in reference_proteomes.fasta.gz --taxonmap reference_proteomes.taxid_map --taxonnodes $TAXDUMP/nodes.dmp --taxonnames $TAXDUMP/names.dmp -d reference_proteomes.dmnd
+
+# clean up
+mv extract/{README,STATS} .
+rm -r extract
+rm -r $TAXDUMP
+
+# Compress final database and cleanup
+cd ..
+tar -cvzf $UNIPROT_TAR $UNIPROT
+rm -r $UNIPROT
+```
+
+#### 4. BUSCO databases
+
+Create the database directory and move into the directory:
+
+```bash
+DATE=2024_10
+BUSCO=/path/to/databases/busco_${DATE}
+BUSCO_TAR=/path/to/databases/busco_${DATE}.tar.gz
+mkdir -p $BUSCO
+cd $BUSCO
+```
+
+Download BUSCO data and lineages to allow BUSCO to run in offline mode:
+
+```bash
+wget -r -nH https://busco-data.ezlab.org/v5/data/
+# the trailing slash after data is important. Otherwise wget doesn't get the subdirectories
+
+# tar gunzip all folders that have been stored as tar.gz, in the same parent directories as where they were stored:
+find v5/data -name "*.tar.gz" | while read -r TAR; do tar -C `dirname $TAR` -xzf $TAR; done
+```
+
+If you have [GNU parallel](https://www.gnu.org/software/parallel/) installed, you can also use the command below which will run faster as it will run the decompression commands in parallel:
+
+```bash
+find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
+```
+
+Finally re-compress and cleanup the files:
+
+```bash
+tar -cvzf $BUSCO_TAR $BUSCO
+rm -r $BUSCO
+```
+
+## Changes from Snakemake to Nextflow
+
+### Commands
+
+Snakemake
+
+```bash
+# Public Assemblies
+run_btk_pipeline.sh GCA_ACCESSION
+
+# Draft Assemblies
+blobtoolkit-pipeline run --config YAML --threads INT --workdir DIR
+```
+
+Nextflow
+
+```bash
+# Public Assemblies
+nextflow run sanger-tol/blobtoolkit --input SAMPLESHEET --fasta GENOME --accession GCA_ACCESSION --taxon TAXON_ID --taxdump TAXDUMP_DB --blastp DMND_db --blastn BLASTN_DB --blastx BLASTX_DB
+
+# Draft Assemblies
+nextflow run sanger-tol/blobtoolkit --input SAMPLESHEET --fasta GENOME --taxon TAXON_ID --taxdump TAXDUMP_DB --blastp DMND_db --blastn BLASTN_DB --blastx BLASTX_DB
+```
+
+The Nextflow pipeline does not support taking input from the Yaml files of the Snakemake pipeline.
+Instead, Nextflow has a uniform way of setting input parameters on the command-line or via a JSON / Yaml file,
+see <https://training.nextflow.io/basic_training/config/> for some examples.
+
+### Subworkflows
+
+Here is a full list of snakemake subworkflows and their Nextflow counterparts:
+
+- **`minimap.smk`**
+  - Implemented as [`minimap_alignment.nf`](../subworkflows/local/minimap_alignment.nf).
+  - Optimised alignment is done using the [sanger-tol/readmapping](https://github.com/sanger-tol/readmapping) pipeline.
+- **`windowmasker.smk`**
+  - Implemented as part of [`prepare_genome.nf`](../subworkflows/local/prepare_genome.nf).
+  - Genomes downloaded by [sanger-tol/insdcdownload](https://github.com/sanger-tol/insdcdownload) are already masked.
+- **`chunk_stats.smk`**
+  - Modified implementation as part of [`coverage_stats.nf`](../subworkflows/local/coverage_stats.nf).
+  - BED file and additional statistics calculated using [`fasta_windows`](https://github.com/tolkit/fasta_windows).
+- **`busco.smk`**
+  - Implemented as [`busco_diamond_blastp.nf`](../subworkflows/local/busco_diamond_blastp.nf).
+- **`cov_stats.smk`**
+  - Implemented as part of [`coverage_stats.nf`](../subworkflows/local/coverage_stats.nf).
+  - Combining the various tsv files is done in subworkflow [`collate_stats.nf`](../subworkflows/local/collate_stats.nf).
+- **`window_stats.smk`**
+  - Implemented as part of [`collate_stats.nf`](../subworkflows/local/collate_stats.nf).
+- **`diamond_blastp.smk`**
+  - Implemented as [`busco_diamond_blastp.nf`](../subworkflows/local/busco_diamond_blastp.nf).
+- **`diamond.smk`**
+  - Implemented as [`run_blastx.nf`](../subworkflows/local/run_blastx.nf).
+- **`blastn.smk`**
+  - Implemented as [`run_blastn.nf`](../subworkflows/local/run_blastn.nf).
+- **`blobtools.smk`**
+  - Implemented as [`blobtools.nf`](../subworkflows/local/blobtools.nf).
+- **`view.smk`**
+  - Implemented as [`view.nf`](../subworkflows/local/view.nf).
+
+### Software dependencies
+
+List of tools for any given dataset can be fetched from the API, for example https://blobtoolkit.genomehubs.org/api/v1/dataset/id/CAJEUD01.1/settings/software_versions.
+
+| Dependency        | Snakemake | Nextflow      |
+| ----------------- | --------- | ------------- |
+| blobtoolkit       | 4.3.2     | 4.4.6         |
+| blast             | 2.12.0    | 2.15.0        |
+| blobtk            | 0.5.0     | 0.5.1         |
+| busco             | 5.3.2     | 5.8.3         |
+| diamond           | 2.0.15    | 2.1.8         |
+| fasta_windows     |           | 0.2.4         |
+| minimap2          | 2.24      | 2.24-r1122    |
+| ncbi-datasets-cli | 14.1.0    |               |
+| nextflow          |           | 24.04.2       |
+| python            | 3.9.13    | 3.12.0        |
+| samtools          | 1.15.1    | 1.20 and 1.21 |
+| seqtk             | 1.3       | 1.4           |
+| snakemake         | 7.19.1    |               |
+| windowmasker      | 2.12.0    | 2.14.0        |
+
+> **NB:** Dependency has been **added** if only the Nextflow version information is present.
+> **NB:** Dependency has been **removed** if only the Snakemake version information is present.
+> **NB:** Dependency has been **updated** if both the Snakemake and Nextflow version information is present.
 
 ## Running the pipeline
 
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run sanger-tol/blobtoolkit --input ./samplesheet.csv --outdir ./results  -profile docker
+nextflow run sanger-tol/blobtoolkit --input samplesheet.csv --outdir <OUTDIR> --fasta genome.fasta -profile docker --accession GCA_accession --taxon "species name" --taxdump /path/to/taxdump --blastp /path/to/buscogenes.dmnd --blastn /path/to/blastn.nt --blastx /path/to/buscoregions.dmnd
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.

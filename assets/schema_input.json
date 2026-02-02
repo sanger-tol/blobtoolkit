@@ -9,25 +9,33 @@
         "properties": {
             "sample": {
                 "type": "string",
+                "description": "Sample identifier",
                 "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "errorMessage": "Sample name must be provided, be unique, and cannot contain spaces",
                 "meta": ["id"]
             },
-            "fastq_1": {
+            "datatype": {
                 "type": "string",
-                "format": "file-path",
-                "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^\\S+$",
+                "enum": ["hic", "illumina", "ont", "pacbio", "pacbio_clr"],
+                "errorMessage": "Data type must be one of: 'hic' or 'illumina' or 'ont' or 'pacbio'",
+                "meta": ["datatype"]
             },
-            "fastq_2": {
+            "datafile": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^\\S+\\.(bam|cram|fa|fa.gz|fasta|fasta.gz|fq|fq.gz|fastq|fastq.gz)$",
+                "errorMessage": "Data file for reads cannot contain spaces and must be BAM/CRAM/FASTQ/FASTA"
+            },
+            "library_layout": {
+                "type": "string",
+                "pattern": "^(SINGLE|PAIRED)$",
+                "errorMessage": "The only valid layouts are SINGLE and PAIRED",
+                "meta": ["layout"]
             }
         },
-        "required": ["sample", "fastq_1"]
-    }
+        "required": ["datafile", "datatype", "sample"]
+    },
+    "uniqueEntries": ["sample"]
 }
