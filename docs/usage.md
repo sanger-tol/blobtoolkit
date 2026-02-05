@@ -83,12 +83,14 @@ Configure access to your local databases with the `--busco`, `--blastp`, `--blas
 
 Note that `--busco` refers to the download path which _contains_ the `lineages/` sub-directory.
 Then, when explicitly selecting the lineages to run the pipeline on,
-provide the names of these lineages _with_ their `_odb10` suffix as a comma-separated string.
+provide the names of these lineages _with_ their `_odb10` or `_odb12` suffix as a comma-separated string.
 For instance:
 
 ```bash
 --busco path-to-databases/busco/ --busco_lineages vertebrata_odb10,bacteria_odb10,fungi_odb10
 ```
+
+The basal lineages, `eukaryota`, `bacteria`, and `archaea`, are _always_ included and do not need to be listed.
 
 ### BUSCO database path format
 
