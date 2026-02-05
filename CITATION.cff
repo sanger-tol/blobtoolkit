@@ -69,7 +69,7 @@ license: MIT
 message: If you use this software, please cite it using the metadata from this file
   and all references from CITATIONS.md .
 repository-code: https://github.com/sanger-tol/blobtoolkit
-title: sanger-tol/blobtoolkit v0.9.0 - Scyther
+title: sanger-tol/blobtoolkit v0.10.0 - Scyther
 type: software
 url: https://pipelines.tol.sanger.ac.uk/blobtoolkit
-version: 0.9.0
+version: 0.10.0
