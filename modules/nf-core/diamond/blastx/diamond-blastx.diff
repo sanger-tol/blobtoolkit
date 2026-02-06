@@ -1,6 +1,6 @@
 Changes in component 'nf-core/diamond/blastx'
-'modules/nf-core/diamond/blastx/meta.yml' is unchanged
 'modules/nf-core/diamond/blastx/environment.yml' is unchanged
+'modules/nf-core/diamond/blastx/meta.yml' is unchanged
 Changes in 'diamond/blastx/main.nf':
 --- modules/nf-core/diamond/blastx/main.nf
 +++ modules/nf-core/diamond/blastx/main.nf
@@ -17,10 +17,10 @@ Changes in 'diamond/blastx/main.nf':
      def fasta_name = is_compressed ? fasta.getBaseName() : fasta
      def columns = blast_columns ? "${blast_columns}" : ''
 +    def exclude_taxon = taxid ? "--taxon-exclude ${taxid}" : ''
-     switch ( out_ext ) {
-         case "blast": outfmt = 0; break
-         case "xml": outfmt = 5; break
-@@ -52,6 +54,8 @@
+     if (out_ext == 'blast') {
+         outfmt = 0
+     }
+@@ -64,6 +66,8 @@
          gzip -c -d ${fasta} > ${fasta_name}
      fi
  
@@ -29,7 +29,7 @@ Changes in 'diamond/blastx/main.nf':
      DB=`find -L ./ -name "*.dmnd" | sed 's/\\.dmnd\$//'`
  
      diamond \\
-@@ -60,6 +64,7 @@
+@@ -72,6 +76,7 @@
          --db \$DB \\
          --query ${fasta_name} \\
          --outfmt ${outfmt} ${columns} \\
@@ -38,7 +38,6 @@ Changes in 'diamond/blastx/main.nf':
          --out ${prefix}.${out_ext} \\
          --log
 
-'modules/nf-core/diamond/blastx/tests/main.nf.test' is unchanged
 'modules/nf-core/diamond/blastx/tests/main.nf.test.snap' is unchanged
-'modules/nf-core/diamond/blastx/tests/tags.yml' is unchanged
+'modules/nf-core/diamond/blastx/tests/main.nf.test' is unchanged
 ************************************************************

@@ -24,13 +24,13 @@
                     },
                     "diamond/blastp": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "4012b87ef8f242b7aa1eb17e165aa003b86b49c0",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/diamond/blastp/diamond-blastp.diff"
                     },
                     "diamond/blastx": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "4012b87ef8f242b7aa1eb17e165aa003b86b49c0",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/diamond/blastx/diamond-blastx.diff"
                     },
