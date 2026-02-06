@@ -298,18 +298,14 @@ def create_data_channels_from_fetchngs(LinkedHashMap row) {
 
     // Same as https://github.com/blobtoolkit/blobtoolkit/blob/4.3.3/src/blobtoolkit-pipeline/src/lib/functions.py#L30-L39
     // with the addition of "hic"
-    switch (row.instrument_platform) {
-        case "ILLUMINA":
-            meta.datatype = (row.library_strategy == "Hi-C" ? "hic" : "illumina")
-            break
-        case "OXFORD_NANOPORE":
-            meta.datatype = "ont"
-            break
-        case "PACBIO_SMRT":
-            meta.datatype = (row.instrument_model == "Sequel" ? "pacbio_clr" : "pacbio")
-            break
-        default:
-            meta.datatype = "illumina"
+    if (row.instrument_platform == "ILLUMINA") {
+        meta.datatype = (row.library_strategy == "Hi-C" ? "hic" : "illumina")
+    } else if (row.instrument_platform == "OXFORD_NANOPORE") {
+        meta.datatype = "ont"
+    } else if (row.instrument_platform == "PACBIO_SMRT") {
+        meta.datatype = (row.instrument_model == "Sequel" ? "pacbio_clr" : "pacbio")
+    } else {
+        meta.datatype = "illumina"
     }
 
     return [ meta, file(row.fastq_1) ]
