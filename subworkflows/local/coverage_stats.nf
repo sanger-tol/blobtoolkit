@@ -12,8 +12,8 @@ include { CREATE_BED     } from '../../modules/local/create_bed'
 
 workflow COVERAGE_STATS {
     take:
-    input    // channel: [ val(meta), path(aln) ]
-    fasta    // channel: [ val(meta), path(fasta) ]
+    ch_reads    // channel: [ val(meta), path(aln) ]
+    ch_fasta    // channel: [ val(meta), path(fasta) ]
 
 
     main:
@@ -21,16 +21,16 @@ workflow COVERAGE_STATS {
 
 
     // Create aligned BAM and index CSI channel
-    input
+    ch_reads
     | branch { meta, aln ->
-        bam : aln.toString().endsWith("bam") == true
+        bam : aln.name.endsWith("bam")
             return [ meta, aln ]
-        cram : aln.toString().endsWith("cram") == true
+        cram : aln.name.endsWith("cram")
             return [ meta, aln, [] ]
     }
     | set { ch_aln_idx}
 
-    SAMTOOLS_VIEW ( ch_aln_idx.cram, fasta, [] )
+    SAMTOOLS_VIEW ( ch_aln_idx.cram, ch_fasta, [] )
     ch_versions = ch_versions.mix ( SAMTOOLS_VIEW.out.versions.first() )
 
     SAMTOOLS_VIEW.out.bam
@@ -50,7 +50,7 @@ workflow COVERAGE_STATS {
 
 
     // Calculate genome statistics
-    FASTAWINDOWS ( fasta )
+    FASTAWINDOWS ( ch_fasta )
     ch_versions = ch_versions.mix ( FASTAWINDOWS.out.versions.first() )
 
 
@@ -77,7 +77,7 @@ workflow COVERAGE_STATS {
 
     // Combining  regions_bed in single channel
     BLOBTK_DEPTH.out.bed
-    | combine ( fasta )
+    | combine ( ch_fasta )
     | map { meta, bed, meta2, fasta -> [ meta2, bed ] }
     | groupTuple ()
     | set { ch_coverage }
