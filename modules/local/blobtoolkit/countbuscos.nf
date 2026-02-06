@@ -22,12 +22,13 @@ process BLOBTOOLKIT_COUNTBUSCOS {
 
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def busco_inputs = (table instanceof List ? table : [table]).collect{"--in $it"}.join(' ')
+    def busco_inputs = (table instanceof List ? table : [table]).collect{ file -> "--in " + file }.join(' ')
     """
     btk pipeline count-busco-genes \\
         $busco_inputs \\
         --mask ${bed} \\
-        --out ${prefix}_buscogenes.tsv
+        --out ${prefix}_buscogenes.tsv \\
+        ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

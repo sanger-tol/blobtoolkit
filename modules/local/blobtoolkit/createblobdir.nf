@@ -25,7 +25,7 @@ process BLOBTOOLKIT_CREATEBLOBDIR {
 
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"
-    def busco_args = (busco instanceof List ? busco : [busco]).collect { "--busco " + it } .join(' ')
+    def busco_args = (busco instanceof List ? busco : [busco]).collect { file -> "--busco " + file } .join(' ')
     def hits_blastp = blastp ? "--hits ${blastp}" : ""
     """
     blobtools replace \\

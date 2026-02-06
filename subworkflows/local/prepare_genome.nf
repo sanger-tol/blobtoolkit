@@ -19,7 +19,7 @@ workflow PREPARE_GENOME {
     // LOGIC: Identify the compressed files
     //
     ch_genomes_for_gunzip = genome
-        .branch { meta, fasta ->
+        .branch { _meta, fasta ->
             gunzip: fasta.name.endsWith( ".gz" )
             skip: true
         }

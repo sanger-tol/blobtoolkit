@@ -78,7 +78,7 @@ workflow COVERAGE_STATS {
     // Combining  regions_bed in single channel
     BLOBTK_DEPTH.out.bed
     | combine ( ch_fasta )
-    | map { meta, bed, meta2, fasta -> [ meta2, bed ] }
+    | map { _meta, bed, meta2, _fasta -> [ meta2, bed ] }
     | groupTuple ()
     | set { ch_coverage }
 

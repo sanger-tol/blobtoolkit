@@ -22,7 +22,7 @@ workflow MINIMAP2_ALIGNMENT {
     // Branch input by sequencing type
     input
     | branch {
-        meta, reads ->
+        meta, _reads ->
             hic: meta.datatype == "hic"
             illumina : meta.datatype == "illumina"
             pacbio : meta.datatype == "pacbio"

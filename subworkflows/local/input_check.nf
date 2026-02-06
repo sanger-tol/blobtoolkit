@@ -27,7 +27,7 @@ workflow INPUT_CHECK {
     // MODULE: Check which need to be decompressed & Untar if needed
     //
     ch_dbs_for_untar = databases
-        .branch { db_meta, db_path ->
+        .branch { _db_meta, db_path ->
             untar: db_path.name.endsWith( ".tar.gz" )
             skip: true
         }
@@ -50,14 +50,14 @@ workflow INPUT_CHECK {
                 // If db_path is a directory from untar, look for a .nal or .nin file to use as input
                 def actual_db_path = db_path
                 if (db_path.isDirectory()) {
-                    def nal_files = findAllInDir(db_path) { it.name.endsWith('.nal') }
-                    def nin_files = findAllInDir(db_path) { it.name.endsWith('.nin') }
+                    def nal_files = findAllInDir(db_path) { path -> path.name.endsWith('.nal') }
+                    def nin_files = findAllInDir(db_path) { path -> path.name.endsWith('.nin') }
                     if (nal_files.size() == 1) {
                         actual_db_path = nal_files[0]
                     } else if (nal_files.size() > 1) {
                         error """
                         ERROR: Multiple .nal files found in blastn database directory: ${db_path}
-                        Found: ${nal_files.collect { it.name }.join(', ')}
+                        Found: ${nal_files.collect { path -> path.name }.join(', ')}
                         Please ensure the directory contains only one .nal file.
                         """
                     } else if (nin_files.size() == 1) {
@@ -65,7 +65,7 @@ workflow INPUT_CHECK {
                     } else if (nin_files.size() > 1) {
                         error """
                         ERROR: Multiple .nin files found in blastn database directory: ${db_path}
-                        Found: ${nin_files.collect { it.name }.join(', ')}
+                        Found: ${nin_files.collect { path -> path.name }.join(', ')}
                         Please ensure the directory contains only one .nin file.
                         """
                     } else {
@@ -85,7 +85,7 @@ workflow INPUT_CHECK {
                 [db_meta, db_path]
             }
         }
-        .branch { db_meta, db_path ->
+        .branch { db_meta, _db_path ->
             blastn: db_meta.type == "blastn"
             blastp: db_meta.type == "blastp"
             blastx: db_meta.type == "blastx"
@@ -101,7 +101,7 @@ workflow INPUT_CHECK {
     if ( params.fetchngs_samplesheet ) {
         channel
             .fromList(samplesheetToList(samplesheet, "assets/schema_fetchngs_input.json"))
-            .map {it[0]}
+            .map { row -> row[0] }
             .branch { row ->
                 paired: row.fastq_2
                     // Reformat for CAT_CAT
@@ -116,13 +116,13 @@ workflow INPUT_CHECK {
         CAT_CAT.out.file_out
         | map { meta, file -> meta.row + [fastq_1: file] }
         | mix ( reads_pairedness.not_paired )
-        | map { create_data_channels_from_fetchngs(it) }
+        | map { data -> create_data_channels_from_fetchngs(data) }
         | set { read_files }
 
     } else {
         channel
             .fromList(samplesheetToList(samplesheet, "assets/schema_input.json"))
-            .map { check_data_channel(it) }
+            .map { row -> check_data_channel(row) }
             .set { read_files }
     }
 
@@ -145,7 +145,7 @@ workflow INPUT_CHECK {
     // MODULE:  Get the source paths of all the databases, except Busco which is not recorded in the blobDir meta.json
     //
     databases
-    | filter { meta, file -> meta.type != "busco" && meta.type != "precomputed_busco" }
+    | filter { meta, _file -> meta.type != "busco" && meta.type != "precomputed_busco" }
     | map {meta, file -> [meta, file.toUriString()]}
     | set { db_paths }
 
@@ -166,15 +166,15 @@ workflow INPUT_CHECK {
     // LOGIC: Parse the CSV file
     //
     GENERATE_CONFIG.out.csv
-    | map { meta, csv -> csv }
+    | map { _meta, csv -> csv }
     | splitCsv(header: ['key', 'value'])
-    | branch {
-        taxon_id: it.key == "taxon_id"
-                    return it.value
-        odb_version: it.key == "odb_version"
-                    return it.value
-        busco_lineage: it.key == "busco_lineage"
-                    return it.value
+    | branch { row ->
+        taxon_id: row.key == "taxon_id"
+                    return row.value
+        odb_version: row.key == "odb_version"
+                    return row.value
+        busco_lineage: row.key == "busco_lineage"
+                    return row.value
     }
     | set { ch_parsed_csv }
 
@@ -183,7 +183,7 @@ workflow INPUT_CHECK {
     // LOGIC: Get the taxon ID if we do taxon filtering in blast* searches
     //
     ch_parsed_csv.taxon_id
-    | map { params.skip_taxon_filtering ? '' : it }
+    | map { taxon_id -> params.skip_taxon_filtering ? '' : taxon_id }
     | first
     | set { ch_taxon_id }
 
@@ -207,8 +207,8 @@ workflow INPUT_CHECK {
     // LOGIC: Format pre-computed BUSCOs (if provided)
     //          Parse the BUSCO output directories
     ch_parsed_busco = ch_databases.precomputed_busco
-        .flatMap { meta, dir ->
-            def subdirs = findAllInDir(dir) { it.isDirectory() }
+        .flatMap { _meta, dir ->
+            def subdirs = findAllInDir(dir) { path -> path.isDirectory() }
             subdirs.collect { subdir ->
                 def lineage = subdir.name.startsWith('run_') ? subdir.name.substring(4) : subdir.name
                 [[type: 'precomputed_busco', id: subdir.name, lineage: lineage], subdir]
@@ -230,7 +230,7 @@ workflow INPUT_CHECK {
     // LOGIC: Get the BUSCO path if set
     //
     ch_databases.busco
-    | map { _, db_path -> db_path }
+    | map { _meta, db_path -> db_path }
     | ifEmpty( [] )
     | set { ch_busco_db }
 
@@ -239,8 +239,8 @@ workflow INPUT_CHECK {
     // MODULE: Convert the taxdump to a JSON file if there isn't one yet
     //
     ch_databases.taxdump
-    | filter { meta, db_path -> ! db_path.isFile() }
-    | map { meta, db_path -> [meta, db_path, findInDir(db_path) { it.name.endsWith('.json') }] }
+    | filter { _meta, db_path -> ! db_path.isFile() }
+    | map { meta, db_path -> [meta, db_path, findInDir(db_path) { path -> path.name.endsWith('.json') }] }
     | branch { meta, db_path, json_path ->
         json: json_path
                 return [meta, json_path]
@@ -255,10 +255,10 @@ workflow INPUT_CHECK {
 
 
     ch_databases.taxdump
-    | filter { meta, db_path -> db_path.isFile() }
+    | filter { _meta, db_path -> db_path.isFile() }
     | mix ( taxdump_dirs.json )
     | mix( JSONIFY_TAXDUMP.out.json )
-    | map { _, db_path -> db_path }
+    | map { _meta, db_path -> db_path }
     | set { ch_taxdump }
 
 
@@ -319,8 +319,8 @@ def get_read_counts ( stats ) {
     // Read the first line of the flagstat file
     // 3127898040 + 0 in total (QC-passed reads + QC-failed reads)
     // and make the sum of both integers
-    stats.withReader {
-        line = it.readLine()
+    stats.withReader { reader ->
+        def line = reader.readLine()
         def lspl = line.split()
         def read_count = lspl[0].toLong() + lspl[2].toLong()
         read_count_meta.read_count = read_count
@@ -387,7 +387,7 @@ def validateBuscoDatabase(db_path) {
                 """
             }
         } else {
-            def lineages_subdir = findInDir(path_file) { it.name == "lineages" }
+            def lineages_subdir = findInDir(path_file) { path -> path.name == "lineages" }
             if (lineages_subdir) {
                 // Path looks correct, return as-is
                 return path_file
@@ -445,7 +445,7 @@ def validateBlastnDatabase(path_file) {
         Please provide direct path to a .nal/.nin file.
         """
     }
-    def alldb_files = findAllInDir(parent_dir) { it.isFile() } .collect { it.name }
+    def alldb_files = findAllInDir(parent_dir) { path -> path.isFile() } .collect { path -> path.name }
     //log.info "BLAST DB directory file names (${parent_dir}): ${alldb_files}"
 
     // The specific extensions/names we are looking for
@@ -453,12 +453,12 @@ def validateBlastnDatabase(path_file) {
     def requiredFullFiles = ["taxonomy4blast.sqlite3", "taxdb.btd", "taxdb.bti"]
 
 
-    nal_files = alldb_files.findAll { it.endsWith('.nal') }
-    nin_files = alldb_files.findAll { it.endsWith('.nin') }
+    nal_files = alldb_files.findAll { name -> name.endsWith('.nal') }
+    nin_files = alldb_files.findAll { name -> name.endsWith('.nin') }
 
 
     def missingExtensions = requiredExtensions.findAll { ext ->
-        !alldb_files.any { it.endsWith(ext) }
+        !alldb_files.any { name -> name.endsWith(ext) }
     }
     def missingFullFiles = requiredFullFiles.findAll { name ->
         !alldb_files.contains(name)
@@ -473,9 +473,9 @@ def validateBlastnDatabase(path_file) {
 
     if (missingExtensions || missingFullFiles || missingPrefixed) {
         def missing_parts = []
-        missingExtensions.each { missing_parts << "*${it}" }
-        missingFullFiles.each { missing_parts << it }
-        missingPrefixed.each { missing_parts << "${db_name}*${it}" }
+        missingExtensions.each { ext -> missing_parts << "*${ext}" }
+        missingFullFiles.each { full -> missing_parts << full }
+        missingPrefixed.each { prefix -> missing_parts << "${db_name}*${prefix}" }
         error """
         ERROR: BLAST database appears incomplete in ${parent_dir}
         Missing required files: ${missing_parts.join(', ')}

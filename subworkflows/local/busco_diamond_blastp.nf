@@ -57,18 +57,18 @@ workflow BUSCO_DIAMOND {
 
     ch_combined = ch_fasta_with_lineage
         .map {
-            meta, fasta -> [meta.lineage_name, [meta, fasta]]
+            meta, file -> [meta.lineage_name, [meta, file]]
         }
         .join(ch_precomputed_busco, by: 0, remainder: true)
-        .map { lineage, fasta_data, busco_data ->
-            def (meta, fasta) = fasta_data
-            def (busco_meta, busco_dir) = busco_data ?: [null, null]
-            [meta + [busco_dir: busco_dir], fasta]
+        .map { _lineage, fasta_data, busco_data ->
+            def (meta, file) = fasta_data
+            def (_busco_meta, busco_dir) = busco_data ?: [null, null]
+            [meta + [busco_dir: busco_dir], file]
         }
 
     // NOTE: Branch based on whether there's a pre-computed BUSCO output
-    ch_busco_to_run = ch_combined.branch {
-        precomputed: it[0].busco_dir != null
+    ch_busco_to_run = ch_combined.branch { meta, _fasta ->
+        precomputed: meta.busco_dir != null
         to_compute: true
     }
 
@@ -77,9 +77,8 @@ workflow BUSCO_DIAMOND {
     // LOGIC: Format precomputed BUSCO outputs
     //
     ch_formatted_precomputed = ch_busco_to_run.precomputed
-        .map { meta, fasta ->
+        .map { meta, _fasta ->
             def busco_dir = file(meta.busco_dir)
-            def lineage = meta.lineage_name
             [
                 meta,
                 [
@@ -102,7 +101,7 @@ workflow BUSCO_DIAMOND {
     BUSCO_BUSCO(
         ch_busco_to_run.to_compute,
         'genome',
-        ch_busco_to_run.to_compute.map { it[0].lineage_name },
+        ch_busco_to_run.to_compute.map { meta, _fasta -> meta.lineage_name },
         busco_db,
         [],
         []
@@ -170,7 +169,7 @@ workflow BUSCO_DIAMOND {
     // The join is equivalent to selecting the channel items whose lineage is basal
     | join ( ch_basal_lineages )
     // Without flat:false, collect will flatten meta and outputs
-    | collect(flat: false) { lineage_name, meta, outputs -> outputs.seq_dir }
+    | collect(flat: false) { _lineage_name, _meta, outputs -> outputs.seq_dir }
     | set { ch_basal_buscos }
 
     //
@@ -188,7 +187,7 @@ workflow BUSCO_DIAMOND {
     //       FILTER OUT EMPTY FILES FROM ANALYSIS
     //
     BLOBTOOLKIT_EXTRACTBUSCOS.out.genes
-        .filter { it[1].size() > 140 &&
+        .filter { _meta, file -> file.size() > 140 &&
                     params.blast_annotations in ["all", "blastp", "blastx"]
         }
         .set { ch_busco_genes }
@@ -215,10 +214,10 @@ workflow BUSCO_DIAMOND {
     //
     ch_all_busco_outputs
         // 0. Filter out the BUSCO results that found no gene (seen for archaea/bacteria)
-        | filter { meta, outputs -> outputs.full_table }
+        | filter { _meta, outputs -> outputs.full_table }
         // 1. Extract the necessary information and create a consistent structure
         | map { meta, outputs ->
-            def cleaned_meta = meta.findAll { it.key != "lineage_name" && it.key != "lineage_index" && it.key != "busco_dir" }
+            def cleaned_meta = meta.findAll { pair -> pair.key != "lineage_name" && pair.key != "lineage_index" && pair.key != "busco_dir" }
             def full_table = outputs.full_table
             def lineage_index = meta.lineage_index
             [cleaned_meta, [full_table, lineage_index]]
@@ -229,7 +228,7 @@ workflow BUSCO_DIAMOND {
         | map { meta, table_positions ->
             [
                 meta,
-                table_positions.sort { a, b -> a[1] <=> b[1] }.collect { it[0] }
+                table_positions.sort { a, b -> a[1] <=> b[1] }.collect { name, _pos -> name }
             ]
         }
         | set { ch_indexed_buscos }
@@ -241,7 +240,7 @@ workflow BUSCO_DIAMOND {
 
     // BUSCO results for MULTIQC
     BUSCO_BUSCO.out.short_summaries_txt
-        .map { meta, outputs -> outputs }
+        .map { _meta, outputs -> outputs }
         .set { multiqc }
 
     emit:

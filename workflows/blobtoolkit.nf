@@ -111,7 +111,7 @@ workflow BLOBTOOLKIT {
     //              BLASTX WILL NOT RUN IF blast_annotations IS SET TO `off` or `blastp`
     //
     RUN_BLASTX (
-        ch_prepared_genome.filter { meta, fasta -> params.blast_annotations == "all" || params.blast_annotations == "blastx" },
+        ch_prepared_genome.filter { params.blast_annotations == "all" || params.blast_annotations == "blastx" },
         BUSCO_DIAMOND.out.first_table,
         INPUT_CHECK.out.blastx,
         INPUT_CHECK.out.taxon_id,
