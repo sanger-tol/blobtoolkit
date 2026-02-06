@@ -2,9 +2,6 @@ process BLOBTOOLKIT_CHUNK {
     tag "$meta.id"
     label 'process_single'
 
-    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        exit 1, "BLOBTOOLKIT_CHUNK module does not support Conda. Please use Docker / Singularity / Podman instead."
-    }
     container "docker.io/genomehubs/blobtoolkit:4.4.6"
 
     input:
@@ -19,6 +16,10 @@ process BLOBTOOLKIT_CHUNK {
     task.ext.when == null || task.ext.when
 
     script:
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        exit 1, "BLOBTOOLKIT_CHUNK module does not support Conda. Please use Docker / Singularity / Podman instead."
+    }
+
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def busco = busco_table ? "--busco ${busco_table}" : "--busco None"
