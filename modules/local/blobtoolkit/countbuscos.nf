@@ -5,7 +5,7 @@ process BLOBTOOLKIT_COUNTBUSCOS {
     container "docker.io/genomehubs/blobtoolkit:4.4.6"
 
     input:
-    tuple val(meta), path(table, stageAs: 'dir??/*')
+    tuple val(meta1), path(table, stageAs: 'dir??/*')
     tuple val(meta), path(bed)
 
     output:
