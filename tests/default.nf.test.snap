@@ -45,10 +45,10 @@
                     "create_bed": 1.03
                 },
                 "DIAMOND_BLASTP": {
-                    "diamond": "2.1.8"
+                    "diamond": "2.1.16"
                 },
                 "DIAMOND_BLASTX": {
-                    "diamond": "2.1.8"
+                    "diamond": "2.1.16"
                 },
                 "FASTAWINDOWS": {
                     "fasta_windows": "0.2.4"
@@ -814,6 +814,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-02-04T23:27:06.067385324"
+        "timestamp": "2026-02-06T09:20:28.846765838"
     }
 }
