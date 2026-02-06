@@ -20,7 +20,7 @@ workflow RUN_BLASTN {
 
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
 
     // Extract no hits fasta
@@ -58,7 +58,7 @@ workflow RUN_BLASTN {
 
         // fake ch_blastn_taxon_out.not_empty
         ch_blastn_taxon_out = [
-            not_empty: Channel.empty()
+            not_empty: channel.empty()
         ]
 
     } else {

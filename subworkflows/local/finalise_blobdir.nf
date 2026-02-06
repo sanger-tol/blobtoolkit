@@ -13,7 +13,7 @@ workflow FINALISE_BLOBDIR {
 
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     //
     // MODULE: Update the software listed in the meta json file

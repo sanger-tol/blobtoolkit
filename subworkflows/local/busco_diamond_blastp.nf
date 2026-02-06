@@ -19,7 +19,7 @@ workflow BUSCO_DIAMOND {
     precomputed_busco // channel: [ val(meta}, path(busco_run_dir) ] optional precomputed busco outputs
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
 
     //
@@ -29,7 +29,7 @@ workflow BUSCO_DIAMOND {
     // 0. Initialise the basal lineages according to the odb version
     def basal_lineages = [ "eukaryota", "bacteria", "archaea" ]
 
-    Channel.from(basal_lineages)
+    channel.from(basal_lineages)
     | combine ( odb_version )
     | map { lineage, version -> lineage + version }
     | set { ch_basal_lineages }

@@ -21,7 +21,7 @@ workflow INPUT_CHECK {
     databases
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     //
     // MODULE: Check which need to be decompressed & Untar if needed
@@ -99,7 +99,7 @@ workflow INPUT_CHECK {
     // MODULE: Process samplesheet
     //
     if ( params.fetchngs_samplesheet ) {
-        Channel
+        channel
             .fromList(samplesheetToList(samplesheet, "assets/schema_fetchngs_input.json"))
             .map {it[0]}
             .branch { row ->
@@ -120,7 +120,7 @@ workflow INPUT_CHECK {
         | set { read_files }
 
     } else {
-        Channel
+        channel
             .fromList(samplesheetToList(samplesheet, "assets/schema_input.json"))
             .map { check_data_channel(it) }
             .set { read_files }
@@ -223,7 +223,7 @@ workflow INPUT_CHECK {
     //     .filter { meta, path ->
     //         ch_busco_lineages.contains(meta.lineage)
     //     }
-    // ch_parsed_busco_filtered = ch_parsed_busco_filtered.ifEmpty { Channel.value([]) }
+    // ch_parsed_busco_filtered = ch_parsed_busco_filtered.ifEmpty { channel.value([]) }
 
 
     //

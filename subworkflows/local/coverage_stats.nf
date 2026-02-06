@@ -17,7 +17,7 @@ workflow COVERAGE_STATS {
 
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
 
     // Create aligned BAM and index CSI channel

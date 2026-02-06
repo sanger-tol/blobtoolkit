@@ -16,7 +16,7 @@ workflow MINIMAP2_ALIGNMENT {
 
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
 
     // Branch input by sequencing type
@@ -50,7 +50,7 @@ workflow MINIMAP2_ALIGNMENT {
 
 
     // Combine aligned reads
-    Channel.empty()
+    channel.empty()
     | mix ( MINIMAP2_HIC.out.bam )
     | mix ( MINIMAP2_ILMN.out.bam )
     | mix ( MINIMAP2_CCS.out.bam )
