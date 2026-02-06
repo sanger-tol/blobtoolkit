@@ -46,9 +46,8 @@ workflow RUN_BLASTN {
 
 
     // Check that there are still sequences left after chunking (which excludes masked regions)
-    BLOBTOOLKIT_CHUNK.out.chunks
+    ch_chunks = BLOBTOOLKIT_CHUNK.out.chunks
         .filter { _meta, file -> file.size() > 0 }
-        .set { ch_chunks }
 
     // Run blastn search
     if (params.skip_taxon_filtering) {
@@ -68,27 +67,24 @@ workflow RUN_BLASTN {
         ch_versions = ch_versions.mix ( BLASTN_TAXON.out.versions.first() )
 
         // check if blastn output table is empty
-        BLASTN_TAXON.out.txt
+        ch_blastn_taxon_out = BLASTN_TAXON.out.txt
             .branch { _meta, txt ->
                 empty:     txt.isEmpty()
                 not_empty: true
             }
-            .set { ch_blastn_taxon_out }
 
         // repeat the blastn search without excluding taxon_id
-        ch_blastn_taxon_out.empty
+        ch_blast_blastn_input = ch_blastn_taxon_out.empty
             .join(ch_chunks)
             .map { meta, _txt, file -> [meta, file] }
-            .set { ch_blast_blastn_input }
 
     }
 
     BLAST_BLASTN ( ch_blast_blastn_input, blastn, [] )
     ch_versions = ch_versions.mix ( BLAST_BLASTN.out.versions.first() )
 
-    BLAST_BLASTN.out.txt
+    ch_blastn_txt = BLAST_BLASTN.out.txt
         .mix(ch_blastn_taxon_out.not_empty)
-        .set { ch_blastn_txt }
 
 
     //

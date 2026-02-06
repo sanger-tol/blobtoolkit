@@ -106,14 +106,13 @@ workflow PIPELINE_INITIALISATION {
 
     ch_fasta = channel.value([ [ 'id': params.accession ?: file(params.fasta.replace(".gz", "")).baseName ], file(params.fasta) ])
 
-    channel.empty()
+    ch_databases = channel.empty()
         .concat( channel.fromPath(params.blastn).map { path -> tuple(["type": "blastn"], path) } )
         .concat( channel.fromPath(params.blastx).map { path -> tuple(["type": "blastx"], path) } )
         .concat( channel.fromPath(params.blastp).map { path -> tuple(["type": "blastp"], path) } )
         .concat( params.precomputed_busco ? channel.fromPath(params.precomputed_busco).map { path -> tuple([ "type": "precomputed_busco"], path ) } : channel.empty() )
         .concat( params.busco ? channel.fromPath(params.busco).map { path -> tuple([ "type": "busco"], path ) } : channel.empty() )
         .concat( channel.fromPath(params.taxdump).map { path -> tuple(["type": "taxdump"], path) } )
-        .set { ch_databases }
 
     emit:
     versions    = ch_versions

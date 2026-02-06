@@ -35,10 +35,9 @@ workflow PREPARE_GENOME {
     //
     // LOGIC: Extract the genome size for decision making downstream
     //
-    ch_genomes_for_gunzip.skip
+    ch_genome = ch_genomes_for_gunzip.skip
         .mix(GUNZIP.out.gunzip)
         .map { meta, fa -> [ meta + [genome_size: fa.size()], fa] }
-        .set { ch_genome }
 
 
     //

@@ -20,7 +20,7 @@ workflow MINIMAP2_ALIGNMENT {
 
 
     // Branch input by sequencing type
-    input
+    ch_input = input
         .branch { meta, _reads ->
             hic: meta.datatype == "hic"
             illumina : meta.datatype == "illumina"
@@ -28,7 +28,6 @@ workflow MINIMAP2_ALIGNMENT {
             clr : meta.datatype == "pacbio_clr"
             ont : meta.datatype == "ont"
         }
-        .set { ch_input }
 
 
     // Align with Minimap2
@@ -49,13 +48,12 @@ workflow MINIMAP2_ALIGNMENT {
 
 
     // Combine aligned reads
-    channel.empty()
+    ch_aligned = channel.empty()
         .mix(MINIMAP2_HIC.out.bam)
         .mix(MINIMAP2_ILMN.out.bam)
         .mix(MINIMAP2_CCS.out.bam)
         .mix(MINIMAP2_CLR.out.bam)
         .mix(MINIMAP2_ONT.out.bam)
-        .set { ch_aligned }
 
 
     emit:

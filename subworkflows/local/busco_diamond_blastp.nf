@@ -29,25 +29,23 @@ workflow BUSCO_DIAMOND {
     // 0. Initialise the basal lineages according to the odb version
     def basal_lineages = [ "eukaryota", "bacteria", "archaea" ]
 
-    channel.from(basal_lineages)
+    ch_basal_lineages = channel.from(basal_lineages)
         .combine(odb_version)
         .map { lineage, version -> lineage + version }
-        .set { ch_basal_lineages }
 
     // Combine the list of relevant lineages with the basal lineages, and with the fasta
     // 1. Convert the list of strings to a channel of a strings
-    busco_lin
-        .flatMap
+    ch_fasta_with_lineage = busco_lin
+        .flatMap()
         // 2. Add the basal lineages, and remove any duplicate introduced
         .concat(ch_basal_lineages)
-        .unique
+        .unique()
         // 3. Add a (0-based) index to record the original order (i.e. by age) – withIndex doesn't work on channels
-        .toList
+        .toList()
         .flatMap { lineages -> lineages.withIndex() }
         // 4. Add the genome fasta and meta, and keys for the lineage so that we can distinguish the BUSCO jobs and group their outputs later
         .combine(fasta)
         .map { lineage_name, lineage_index, meta, genome -> [meta + [lineage_name: lineage_name, lineage_index: lineage_index], genome] }
-        .set { ch_fasta_with_lineage }
 
     //
     // LOGIC: Format pre-computed outputs
@@ -164,13 +162,12 @@ workflow BUSCO_DIAMOND {
     // LOGIC: Select input for BLOBTOOLKIT_EXTRACTBUSCOS
     //
 
-    ch_all_busco_outputs
+    ch_basal_buscos = ch_all_busco_outputs
         .map { meta, outputs -> [meta.lineage_name, meta, outputs] }
         // The join is equivalent to selecting the channel items whose lineage is basal
         .join(ch_basal_lineages)
         // Without flat:false, collect will flatten meta and outputs
         .collect(flat: false) { _lineage_name, _meta, outputs -> outputs.seq_dir }
-        .set { ch_basal_buscos }
 
     //
     // MODULE: Extract BUSCO genes from the basal lineages
@@ -186,11 +183,10 @@ workflow BUSCO_DIAMOND {
     // LOGIC: Align BUSCO genes against the BLASTp database
     //       FILTER OUT EMPTY FILES FROM ANALYSIS
     //
-    BLOBTOOLKIT_EXTRACTBUSCOS.out.genes
+    ch_busco_genes = BLOBTOOLKIT_EXTRACTBUSCOS.out.genes
         .filter { _meta, file -> file.size() > 140 &&
                     params.blast_annotations in ["all", "blastp", "blastx"]
         }
-        .set { ch_busco_genes }
 
 
     //
@@ -212,7 +208,7 @@ workflow BUSCO_DIAMOND {
     //
     // MODULE: Order BUSCO results according to the lineage index
     //
-    ch_all_busco_outputs
+    ch_indexed_buscos = ch_all_busco_outputs
         // 0. Filter out the BUSCO results that found no gene (seen for archaea/bacteria)
         .filter { _meta, outputs -> outputs.full_table }
         // 1. Extract the necessary information and create a consistent structure
@@ -231,17 +227,15 @@ workflow BUSCO_DIAMOND {
                 table_positions.sort { a, b -> a[1] <=> b[1] }.collect { name, _pos -> name }
             ]
         }
-        .set { ch_indexed_buscos }
+
 
     // Select BUSCO results for taxonomically closest database
-    ch_indexed_buscos
+    ch_first_table = ch_indexed_buscos
         .map { meta, tables -> [meta, tables[0]] }
-        .set { ch_first_table }
 
     // BUSCO results for MULTIQC
-    BUSCO_BUSCO.out.short_summaries_txt
+    multiqc = BUSCO_BUSCO.out.short_summaries_txt
         .map { _meta, outputs -> outputs }
-        .set { multiqc }
 
     emit:
     first_table = ch_first_table          // channel: [ val(meta), path(full_table) ]
