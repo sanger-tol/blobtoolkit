@@ -114,10 +114,10 @@ workflow INPUT_CHECK {
         ch_versions = ch_versions.mix ( CAT_CAT.out.versions.first() )
 
         CAT_CAT.out.file_out
-        | map { meta, file -> meta.row + [fastq_1: file] }
-        | mix ( reads_pairedness.not_paired )
-        | map { data -> create_data_channels_from_fetchngs(data) }
-        | set { read_files }
+            .map { meta, file -> meta.row + [fastq_1: file] }
+            .mix(reads_pairedness.not_paired)
+            .map { data -> create_data_channels_from_fetchngs(data) }
+            .set { read_files }
 
     } else {
         channel
@@ -136,18 +136,18 @@ workflow INPUT_CHECK {
     ch_versions = ch_versions.mix(SAMTOOLS_FLAGSTAT.out.versions.first())
 
     read_files
-    | join( SAMTOOLS_FLAGSTAT.out.flagstat )
-    | map { meta, datafile, stats -> [meta + get_read_counts(stats), datafile] }
-    | set { reads }
+        .join(SAMTOOLS_FLAGSTAT.out.flagstat)
+        .map { meta, datafile, stats -> [meta + get_read_counts(stats), datafile] }
+        .set { reads }
 
 
     //
     // MODULE:  Get the source paths of all the databases, except Busco which is not recorded in the blobDir meta.json
     //
     databases
-    | filter { meta, _file -> meta.type != "busco" && meta.type != "precomputed_busco" }
-    | map {meta, file -> [meta, file.toUriString()]}
-    | set { db_paths }
+        .filter { meta, _file -> meta.type != "busco" && meta.type != "precomputed_busco" }
+        .map {meta, file -> [meta, file.toUriString()]}
+        .set { db_paths }
 
 
     GENERATE_CONFIG (
@@ -166,42 +166,42 @@ workflow INPUT_CHECK {
     // LOGIC: Parse the CSV file
     //
     GENERATE_CONFIG.out.csv
-    | map { _meta, csv -> csv }
-    | splitCsv(header: ['key', 'value'])
-    | branch { row ->
-        taxon_id: row.key == "taxon_id"
-                    return row.value
-        odb_version: row.key == "odb_version"
-                    return row.value
-        busco_lineage: row.key == "busco_lineage"
-                    return row.value
-    }
-    | set { ch_parsed_csv }
+        .map { _meta, csv -> csv }
+        .splitCsv(header: ['key', 'value'])
+        .branch { row ->
+            taxon_id: row.key == "taxon_id"
+                        return row.value
+            odb_version: row.key == "odb_version"
+                        return row.value
+            busco_lineage: row.key == "busco_lineage"
+                        return row.value
+        }
+        .set { ch_parsed_csv }
 
 
     //
     // LOGIC: Get the taxon ID if we do taxon filtering in blast* searches
     //
     ch_parsed_csv.taxon_id
-    | map { taxon_id -> params.skip_taxon_filtering ? '' : taxon_id }
-    | first
-    | set { ch_taxon_id }
+        .map { taxon_id -> params.skip_taxon_filtering ? '' : taxon_id }
+        .first
+        .set { ch_taxon_id }
 
 
     //
     // LOGIC: Get the ODB version to use
     //
     ch_parsed_csv.odb_version
-    | collect
-    | set { ch_odb_version }
+        .collect
+        .set { ch_odb_version }
 
 
     //
     // LOGIC: Get the BUSCO linages
     //
     ch_parsed_csv.busco_lineage
-    | collect
-    | set { ch_busco_lineages }
+        .collect
+        .set { ch_busco_lineages }
 
     //
     // LOGIC: Format pre-computed BUSCOs (if provided)
@@ -230,24 +230,24 @@ workflow INPUT_CHECK {
     // LOGIC: Get the BUSCO path if set
     //
     ch_databases.busco
-    | map { _meta, db_path -> db_path }
-    | ifEmpty( [] )
-    | set { ch_busco_db }
+        .map { _meta, db_path -> db_path }
+        .ifEmpty( [] )
+        .set { ch_busco_db }
 
 
     //
     // MODULE: Convert the taxdump to a JSON file if there isn't one yet
     //
-    ch_databases.taxdump
-    | filter { _meta, db_path -> ! db_path.isFile() }
-    | map { meta, db_path -> [meta, db_path, findInDir(db_path) { path -> path.name.endsWith('.json') }] }
-    | branch { meta, db_path, json_path ->
-        json: json_path
+        ch_databases.taxdump
+        .filter { _meta, db_path -> ! db_path.isFile() }
+        .map { meta, db_path -> [meta, db_path, findInDir(db_path) { path -> path.name.endsWith('.json') }] }
+        .branch { meta, db_path, json_path ->
+            json: json_path
                 return [meta, json_path]
-        dir: true
+            dir: true
                 return [meta, db_path]
-    }
-    | set { taxdump_dirs }
+        }
+        .set { taxdump_dirs }
 
 
     JSONIFY_TAXDUMP( taxdump_dirs.dir )
@@ -255,11 +255,11 @@ workflow INPUT_CHECK {
 
 
     ch_databases.taxdump
-    | filter { _meta, db_path -> db_path.isFile() }
-    | mix ( taxdump_dirs.json )
-    | mix( JSONIFY_TAXDUMP.out.json )
-    | map { _meta, db_path -> db_path }
-    | set { ch_taxdump }
+        .filter { _meta, db_path -> db_path.isFile() }
+        .mix(taxdump_dirs.json)
+        .mix(JSONIFY_TAXDUMP.out.json)
+        .map { _meta, db_path -> db_path }
+        .set { ch_taxdump }
 
 
     emit:

@@ -30,24 +30,24 @@ workflow BUSCO_DIAMOND {
     def basal_lineages = [ "eukaryota", "bacteria", "archaea" ]
 
     channel.from(basal_lineages)
-    | combine ( odb_version )
-    | map { lineage, version -> lineage + version }
-    | set { ch_basal_lineages }
+        .combine(odb_version)
+        .map { lineage, version -> lineage + version }
+        .set { ch_basal_lineages }
 
     // Combine the list of relevant lineages with the basal lineages, and with the fasta
     // 1. Convert the list of strings to a channel of a strings
     busco_lin
-    | flatMap
-    // 2. Add the basal lineages, and remove any duplicate introduced
-    | concat ( ch_basal_lineages)
-    | unique
-    // 3. Add a (0-based) index to record the original order (i.e. by age) – withIndex doesn't work on channels
-    | toList
-    | flatMap { lineages -> lineages.withIndex() }
-    // 4. Add the genome fasta and meta, and keys for the lineage so that we can distinguish the BUSCO jobs and group their outputs later
-    | combine ( fasta )
-    | map { lineage_name, lineage_index, meta, genome -> [meta + [lineage_name: lineage_name, lineage_index: lineage_index], genome] }
-    | set { ch_fasta_with_lineage }
+        .flatMap
+        // 2. Add the basal lineages, and remove any duplicate introduced
+        .concat(ch_basal_lineages)
+        .unique
+        // 3. Add a (0-based) index to record the original order (i.e. by age) – withIndex doesn't work on channels
+        .toList
+        .flatMap { lineages -> lineages.withIndex() }
+        // 4. Add the genome fasta and meta, and keys for the lineage so that we can distinguish the BUSCO jobs and group their outputs later
+        .combine(fasta)
+        .map { lineage_name, lineage_index, meta, genome -> [meta + [lineage_name: lineage_name, lineage_index: lineage_index], genome] }
+        .set { ch_fasta_with_lineage }
 
     //
     // LOGIC: Format pre-computed outputs
@@ -165,12 +165,12 @@ workflow BUSCO_DIAMOND {
     //
 
     ch_all_busco_outputs
-    | map { meta, outputs -> [meta.lineage_name, meta, outputs] }
-    // The join is equivalent to selecting the channel items whose lineage is basal
-    | join ( ch_basal_lineages )
-    // Without flat:false, collect will flatten meta and outputs
-    | collect(flat: false) { _lineage_name, _meta, outputs -> outputs.seq_dir }
-    | set { ch_basal_buscos }
+        .map { meta, outputs -> [meta.lineage_name, meta, outputs] }
+        // The join is equivalent to selecting the channel items whose lineage is basal
+        .join(ch_basal_lineages)
+        // Without flat:false, collect will flatten meta and outputs
+        .collect(flat: false) { _lineage_name, _meta, outputs -> outputs.seq_dir }
+        .set { ch_basal_buscos }
 
     //
     // MODULE: Extract BUSCO genes from the basal lineages
@@ -214,24 +214,24 @@ workflow BUSCO_DIAMOND {
     //
     ch_all_busco_outputs
         // 0. Filter out the BUSCO results that found no gene (seen for archaea/bacteria)
-        | filter { _meta, outputs -> outputs.full_table }
+        .filter { _meta, outputs -> outputs.full_table }
         // 1. Extract the necessary information and create a consistent structure
-        | map { meta, outputs ->
+        .map { meta, outputs ->
             def cleaned_meta = meta.findAll { pair -> pair.key != "lineage_name" && pair.key != "lineage_index" && pair.key != "busco_dir" }
             def full_table = outputs.full_table
             def lineage_index = meta.lineage_index
             [cleaned_meta, [full_table, lineage_index]]
         }
         // 2. Group by the cleaned meta information
-        | groupTuple(by: 0)
+        .groupTuple(by: 0)
         // 3. Sort the tables by lineage index and collect only the tables
-        | map { meta, table_positions ->
+        .map { meta, table_positions ->
             [
                 meta,
                 table_positions.sort { a, b -> a[1] <=> b[1] }.collect { name, _pos -> name }
             ]
         }
-        | set { ch_indexed_buscos }
+        .set { ch_indexed_buscos }
 
     // Select BUSCO results for taxonomically closest database
     ch_indexed_buscos

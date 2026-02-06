@@ -22,31 +22,31 @@ workflow COVERAGE_STATS {
 
     // Create aligned BAM and index CSI channel
     ch_reads
-    | branch { meta, aln ->
-        bam : aln.name.endsWith("bam")
-            return [ meta, aln ]
-        cram : aln.name.endsWith("cram")
-            return [ meta, aln, [] ]
-    }
-    | set { ch_aln_idx}
+        .branch { meta, aln ->
+            bam : aln.name.endsWith("bam")
+                return [ meta, aln ]
+            cram : aln.name.endsWith("cram")
+                return [ meta, aln, [] ]
+        }
+        .set { ch_aln_idx}
 
     SAMTOOLS_VIEW ( ch_aln_idx.cram, ch_fasta, [] )
     ch_versions = ch_versions.mix ( SAMTOOLS_VIEW.out.versions.first() )
 
     SAMTOOLS_VIEW.out.bam
-    | join ( SAMTOOLS_VIEW.out.csi )
-    | set { ch_view }
+        .join(SAMTOOLS_VIEW.out.csi)
+        .set { ch_view }
 
     SAMTOOLS_INDEX ( ch_aln_idx.bam )
     ch_versions = ch_versions.mix ( SAMTOOLS_INDEX.out.versions.first() )
 
     ch_aln_idx.bam
-    | join ( SAMTOOLS_INDEX.out.csi )
-    | set { ch_index }
+        .join(SAMTOOLS_INDEX.out.csi)
+        .set { ch_index }
 
     ch_view
-    | mix ( ch_index )
-    | set { ch_bam_csi }
+        .mix(ch_index)
+        .set { ch_bam_csi }
 
 
     // Calculate genome statistics
@@ -56,11 +56,7 @@ workflow COVERAGE_STATS {
 
     // Compress the TSV files
     PIGZ_COMPRESS (
-        FASTAWINDOWS.out.mononuc
-        | mix ( FASTAWINDOWS.out.dinuc )
-        | mix ( FASTAWINDOWS.out.trinuc )
-        | mix ( FASTAWINDOWS.out.tetranuc )
-        | mix ( FASTAWINDOWS.out.freq )
+        FASTAWINDOWS.out.mononuc.mix(FASTAWINDOWS.out.dinuc).mix(FASTAWINDOWS.out.trinuc).mix(FASTAWINDOWS.out.tetranuc).mix(FASTAWINDOWS.out.freq)
     )
     ch_versions = ch_versions.mix ( PIGZ_COMPRESS.out.versions.first() )
 
@@ -77,10 +73,10 @@ workflow COVERAGE_STATS {
 
     // Combining  regions_bed in single channel
     BLOBTK_DEPTH.out.bed
-    | combine ( ch_fasta )
-    | map { _meta, bed, meta2, _fasta -> [ meta2, bed ] }
-    | groupTuple ()
-    | set { ch_coverage }
+        .combine(ch_fasta)
+        .map { _meta, bed, meta2, _fasta -> [ meta2, bed ] }
+        .groupTuple()
+        .set { ch_coverage }
 
 
     emit:
