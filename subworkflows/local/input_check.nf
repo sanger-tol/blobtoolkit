@@ -227,15 +227,15 @@ workflow INPUT_CHECK {
     //
     // MODULE: Convert the taxdump to a JSON file if there isn't one yet
     //
-        taxdump_dirs = ch_databases.taxdump
-        .filter { _meta, db_path -> ! db_path.isFile() }
-        .map { meta, db_path -> [meta, db_path, findInDir(db_path) { path -> path.name.endsWith('.json') }] }
-        .branch { meta, db_path, json_path ->
-            json: json_path
-                return [meta, json_path]
-            dir: true
-                return [meta, db_path]
-        }
+    taxdump_dirs = ch_databases.taxdump
+    .filter { _meta, db_path -> ! db_path.isFile() }
+    .map { meta, db_path -> [meta, db_path, findInDir(db_path) { path -> path.name.endsWith('.json') }] }
+    .branch { meta, db_path, json_path ->
+        json: json_path
+            return [meta, json_path]
+        dir: true
+            return [meta, db_path]
+    }
 
 
 
