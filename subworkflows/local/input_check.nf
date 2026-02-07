@@ -111,7 +111,6 @@ workflow INPUT_CHECK {
 
 
         CAT_CAT ( reads_pairedness.paired )
-        ch_versions = ch_versions.mix ( CAT_CAT.out.versions.first() )
 
         read_files = CAT_CAT.out.file_out
             .map { meta, file -> meta.row + [fastq_1: file] }

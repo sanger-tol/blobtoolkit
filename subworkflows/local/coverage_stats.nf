@@ -50,7 +50,6 @@ workflow COVERAGE_STATS {
     PIGZ_COMPRESS (
         FASTAWINDOWS.out.mononuc.mix(FASTAWINDOWS.out.dinuc).mix(FASTAWINDOWS.out.trinuc).mix(FASTAWINDOWS.out.tetranuc).mix(FASTAWINDOWS.out.freq)
     )
-    ch_versions = ch_versions.mix ( PIGZ_COMPRESS.out.versions.first() )
 
 
     // Create genome windows file in BED format
