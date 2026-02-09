@@ -215,16 +215,6 @@ workflow INPUT_CHECK {
             }
         }
 
-    //
-    // LOGIC: Remove any invalid lineages from precomputed_busco
-    //
-    //ch_busco_lineages_list = ch_busco_lineages.flatten()
-    // ch_parsed_busco_filtered = ch_parsed_busco
-    //     .filter { meta, path ->
-    //         ch_busco_lineages.contains(meta.lineage)
-    //     }
-    // ch_parsed_busco_filtered = ch_parsed_busco_filtered.ifEmpty { Channel.value([]) }
-
 
     //
     // LOGIC: Get the BUSCO path if set
