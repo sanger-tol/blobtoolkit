@@ -1,16 +1,16 @@
 process BLOBTOOLKIT_COUNTBUSCOS {
-    tag "$meta.id"
+    tag "$meta2.id"
     label 'process_single'
 
     container "docker.io/genomehubs/blobtoolkit:4.4.6"
 
     input:
-    tuple val(meta1), path(table, stageAs: 'dir??/*')
-    tuple val(meta), path(bed)
+    tuple val(meta), path(table, stageAs: 'dir??/*')
+    tuple val(meta2), path(bed)
 
     output:
-    tuple val(meta), path("*_buscogenes.tsv"), emit: tsv
-    path "versions.yml"                      , emit: versions
+    tuple val(meta2), path("*_buscogenes.tsv"), emit: tsv
+    path "versions.yml"                       , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -21,7 +21,7 @@ process BLOBTOOLKIT_COUNTBUSCOS {
     }
 
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "${meta2.id}"
     def busco_inputs = (table instanceof List ? table : [table]).collect{ file -> "--in " + file }.join(' ')
     """
     btk pipeline count-busco-genes \\
