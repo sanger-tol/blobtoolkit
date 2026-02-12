@@ -1,44 +1,43 @@
 Changes in component 'nf-core/diamond/blastp'
-'modules/nf-core/diamond/blastp/meta.yml' is unchanged
 'modules/nf-core/diamond/blastp/environment.yml' is unchanged
+'modules/nf-core/diamond/blastp/meta.yml' is unchanged
 Changes in 'diamond/blastp/main.nf':
 --- modules/nf-core/diamond/blastp/main.nf
 +++ modules/nf-core/diamond/blastp/main.nf
 @@ -12,6 +12,7 @@
      tuple val(meta2), path(db)
-     val out_ext
+     val outfmt
      val blast_columns
 +    val taxid
  
      output:
-     tuple val(meta), path('*.blast'), optional: true, emit: blast
-@@ -32,6 +33,7 @@
-     def is_compressed = fasta.getExtension() == "gz" ? true : false
-     def fasta_name = is_compressed ? fasta.getBaseName() : fasta
+     tuple val(meta), path('*.{blast,blast.gz}'), optional: true, emit: blast
+@@ -31,6 +32,7 @@
+     def prefix = task.ext.prefix ?: "${meta.id}"
+ 
      def columns = blast_columns ? "${blast_columns}" : ''
 +    def exclude_taxon = taxid ? "--taxon-exclude ${taxid}" : ''
-     switch ( out_ext ) {
-         case "blast": outfmt = 0; break
-         case "xml": outfmt = 5; break
-@@ -51,6 +53,8 @@
-         gzip -c -d ${fasta} > ${fasta_name}
-     fi
+     def out_ext = ""
  
+     if (outfmt == 0) {
+@@ -65,12 +67,15 @@
+     }
+ 
+     """
 +    mkdir -p ./blastp_tmp
 +
-     DB=`find -L ./ -name "*.dmnd" | sed 's/\\.dmnd\$//'`
- 
      diamond \\
-@@ -59,6 +63,7 @@
-         --db \$DB \\
-         --query ${fasta_name} \\
+         blastp \\
+         --threads ${task.cpus} \\
+         --db ${db} \\
+         --query ${fasta} \\
          --outfmt ${outfmt} ${columns} \\
 +        ${exclude_taxon} \\
          ${args} \\
          --out ${prefix}.${out_ext}
  
 
-'modules/nf-core/diamond/blastp/tests/main.nf.test' is unchanged
 'modules/nf-core/diamond/blastp/tests/main.nf.test.snap' is unchanged
-'modules/nf-core/diamond/blastp/tests/tags.yml' is unchanged
+'modules/nf-core/diamond/blastp/tests/nextflow.config' is unchanged
+'modules/nf-core/diamond/blastp/tests/main.nf.test' is unchanged
 ************************************************************

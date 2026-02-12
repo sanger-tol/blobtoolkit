@@ -8,9 +8,9 @@ process WINDOWSTATS_INPUT {
 
     input:
     tuple val(meta), path(freq)
-    tuple val(meta), path(mononuc)
-    tuple val(meta), path(depth)
-    tuple val(meta), path(countbusco)
+    tuple val(meta2), path(mononuc)
+    tuple val(meta3), path(depth)
+    tuple val(meta4), path(countbusco)
 
     output:
     tuple val(meta), path("*.tsv"), emit: tsv

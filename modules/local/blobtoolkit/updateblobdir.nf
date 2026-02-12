@@ -2,9 +2,6 @@ process BLOBTOOLKIT_UPDATEBLOBDIR {
     tag "$meta.id"
     label 'process_medium'
 
-    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        exit 1, "BLOBTOOLKIT_BLOBDIR module does not support Conda. Please use Docker / Singularity / Podman instead."
-    }
     container "docker.io/genomehubs/blobtoolkit:4.4.6"
 
     input:
@@ -23,6 +20,10 @@ process BLOBTOOLKIT_UPDATEBLOBDIR {
     task.ext.when == null || task.ext.when
 
     script:
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        exit 1, "BLOBTOOLKIT_BLOBDIR module does not support Conda. Please use Docker / Singularity / Podman instead."
+    }
+
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"
     def hits_blastx = blastx ? "--hits ${blastx}" : ""

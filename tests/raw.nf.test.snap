@@ -39,10 +39,10 @@
                     "create_bed": 1.03
                 },
                 "DIAMOND_BLASTP": {
-                    "diamond": "2.1.8"
+                    "diamond": "2.1.16"
                 },
                 "DIAMOND_BLASTX": {
-                    "diamond": "2.1.8"
+                    "diamond": "2.1.16"
                 },
                 "FASTAWINDOWS": {
                     "fasta_windows": "0.2.4"
@@ -63,9 +63,6 @@
                 },
                 "NOHIT_LIST": {
                     "nohit_list": 1.0
-                },
-                "PIGZ_COMPRESS": {
-                    "pigz": 2.8
                 },
                 "RESTRUCTUREBUSCODIR": {
                     "tar": 1.3
@@ -668,6 +665,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-02-09T10:02:37.56394362"
+        "timestamp": "2026-02-12T09:41:19.508904774"
     }
 }

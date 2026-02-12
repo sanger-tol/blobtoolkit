@@ -29,10 +29,10 @@ workflow PIPELINE_INITIALISATION {
     take:
     version           // boolean: Display version and exit
     validate_params   // boolean: Boolean whether to validate parameters against the schema at runtime
-    monochrome_logs   // boolean: Do not use coloured log outputs
+    _monochrome_logs  // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
-    input             //  string: Path to input samplesheet
+    _input            //  string: Path to input samplesheet
     help              // boolean: Display help message and exit
     help_full         // boolean: Show the full help message
     show_hidden       // boolean: Show hidden parameters in the help message
@@ -104,16 +104,15 @@ workflow PIPELINE_INITIALISATION {
         error('--taxdump can take either a JSON file, a tar.gz archive, or a directory')
     }
 
-    ch_fasta = Channel.value([ [ 'id': params.accession ?: file(params.fasta.replace(".gz", "")).baseName ], file(params.fasta) ])
+    ch_fasta = channel.value([ [ 'id': params.accession ?: file(params.fasta.replace(".gz", "")).baseName ], file(params.fasta) ])
 
-    Channel.empty()
-        .concat( Channel.fromPath(params.blastn).map { tuple(["type": "blastn"], it) } )
-        .concat( Channel.fromPath(params.blastx).map { tuple(["type": "blastx"], it) } )
-        .concat( Channel.fromPath(params.blastp).map { tuple(["type": "blastp"], it) } )
-        .concat( params.precomputed_busco ? Channel.fromPath(params.precomputed_busco).map { tuple([ "type": "precomputed_busco"], it ) } : Channel.empty() )
-        .concat( params.busco ? Channel.fromPath(params.busco).map { tuple([ "type": "busco"], it ) } : Channel.empty() )
-        .concat( Channel.fromPath(params.taxdump).map { tuple(["type": "taxdump"], it) } )
-        .set { ch_databases }
+    ch_databases = channel.empty()
+        .concat( channel.fromPath(params.blastn).map { path -> tuple(["type": "blastn"], path) } )
+        .concat( channel.fromPath(params.blastx).map { path -> tuple(["type": "blastx"], path) } )
+        .concat( channel.fromPath(params.blastp).map { path -> tuple(["type": "blastp"], path) } )
+        .concat( params.precomputed_busco ? channel.fromPath(params.precomputed_busco).map { path -> tuple([ "type": "precomputed_busco"], path ) } : channel.empty() )
+        .concat( params.busco ? channel.fromPath(params.busco).map { path -> tuple([ "type": "busco"], path ) } : channel.empty() )
+        .concat( channel.fromPath(params.taxdump).map { path -> tuple(["type": "taxdump"], path) } )
 
     emit:
     versions    = ch_versions
