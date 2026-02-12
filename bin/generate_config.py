@@ -60,7 +60,6 @@ def parse_args(args=None):
     parser.add_argument("--blastx", help="Path to the blastx database", required=True)
     parser.add_argument("--blastn", help="Path to the blastn database", required=True)
     parser.add_argument("--taxdump", help="Path to the taxonomy database", required=True)
-    parser.add_argument("--precomputed_busco", action="append", help="Path to precomputed BUSCO outputs", required=False)
     parser.add_argument("--version", action="version", version="%(prog)s 2.0")
     args = parser.parse_args(args)
 
@@ -164,7 +163,6 @@ def get_odb(
     taxon_info: TaxonInfo,
     lineage_tax_ids: str,
     requested_buscos: typing.Optional[str],
-    pre_computed_buscos: typing.List[str],
 ) -> typing.List[str]:
 
     # Get the ODB version from the file name
@@ -179,14 +177,7 @@ def get_odb(
 
     valid_odbs = set(lineage_tax_ids_dict.values())
 
-    if pre_computed_buscos:
-        # Use pre-computed BUSCO lineages if available
-        odb_arr = pre_computed_buscos
-        for odb in odb_arr:
-            if odb not in valid_odbs:
-                print(f"Invalid pre-computed BUSCO lineage: {odb}", file=sys.stderr)
-                sys.exit(1)
-    elif requested_buscos:
+    if requested_buscos:
         odb_arr = requested_buscos.split(",")
         for odb in odb_arr:
             if odb not in valid_odbs:
@@ -385,8 +376,7 @@ def main(args=None):
     taxon_info = fetch_taxon_info(args.taxon_query)
     classification = get_classification(taxon_info)
 
-    precomputed_busco = [os.path.basename(path).replace("run_", "") for path in (args.precomputed_busco or [])]
-    (odb_version, odb_arr) = get_odb(taxon_info, args.lineage_tax_ids, args.busco, precomputed_busco)
+    (odb_version, odb_arr) = get_odb(taxon_info, args.lineage_tax_ids, args.busco)
     taxon_id = adjust_taxon_id(args.nt, taxon_info)
 
     if sequence_report:

@@ -45,7 +45,7 @@
                 "busco_lineages": {
                     "type": "string",
                     "pattern": "([^,]+_odb(10|12),)*[^,]+_odb(10|12)",
-                    "description": "Name of the ODB lineages to run BUSCO on. By default, the pipeline will automatically select the correct lineage based on the taxonomy. Basal lineages do *not* need to be listed as they are _always_ included.",
+                    "description": "Name of the ODB lineages to run BUSCO on. By default, the pipeline will automatically select the correct lineage based on the taxonomy. The three basal lineages `eukaryota`, `bacteria`, and `archaea`, do *not* need to be listed as they are _always_ included.",
                     "fa_icon": "fas fa-bone"
                 },
                 "busco_gene_predictor": {
