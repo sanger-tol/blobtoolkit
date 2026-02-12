@@ -58,7 +58,7 @@ workflow INPUT_CHECK {
                         error """
                         ERROR: Multiple .nal files found in blastn database directory: ${db_path}
                         Found: ${nal_files.collect { it.name }.join(', ')}
-                        Please ensure the directory contains only one .nal file.
+                        Please ensure the directory contains only one .nal file or provide the path to the specific .nal you want to use.
                         """
                     } else if (nin_files.size() == 1) {
                         actual_db_path = nin_files[0]
@@ -66,7 +66,7 @@ workflow INPUT_CHECK {
                         error """
                         ERROR: Multiple .nin files found in blastn database directory: ${db_path}
                         Found: ${nin_files.collect { it.name }.join(', ')}
-                        Please ensure the directory contains only one .nin file.
+                        Please ensure the directory contains only one .nin file or provide the path to the specific .nin you want to use.
                         """
                     } else {
                         error """
