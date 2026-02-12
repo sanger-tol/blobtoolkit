@@ -30,8 +30,8 @@ process GENERATE_CONFIG {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def busco_param = busco_lin ? "--busco '${busco_lin}'" : ""
     def accession_params = params.accession ? "--accession ${params.accession}" : ""
-    def input_reads = reads.collect{"--read_id ${it[0].id} --read_type ${it[0].datatype} --read_layout ${it[0].layout} --read_path ${it[1]}"}.join(' ')
-    def input_databases = db_paths.collect{"--${it[0].type} ${it[1]}"}.join(' ')
+    def input_reads = reads.collect{ read_meta, file -> "--read_id ${read_meta.id} --read_type ${read_meta.datatype} --read_layout ${read_meta.layout} --read_path ${file}"}.join(' ')
+    def input_databases = db_paths.collect{ db_meta, file -> "--${db_meta.type} ${file}"}.join(' ')
 
     """
     generate_config.py \\
@@ -43,7 +43,8 @@ process GENERATE_CONFIG {
         --nt $blastn \\
         $input_reads \\
         $input_databases \\
-        --output_prefix ${prefix}
+        --output_prefix ${prefix} \\
+        $args
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

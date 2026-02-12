@@ -13,16 +13,17 @@ workflow PREPARE_GENOME {
 
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     //
     // LOGIC: Identify the compressed files
     //
     ch_genomes_for_gunzip = genome
-        .branch { meta, fasta ->
+        .branch { _meta, fasta ->
             gunzip: fasta.name.endsWith( ".gz" )
             skip: true
         }
+
 
     //
     // MODULE: Decompress compressed FASTA files
@@ -34,10 +35,10 @@ workflow PREPARE_GENOME {
     //
     // LOGIC: Extract the genome size for decision making downstream
     //
-    ch_genomes_for_gunzip.skip
-    | mix( GUNZIP.out.gunzip )
-    | map { meta, fa -> [ meta + [genome_size: fa.size()], fa] }
-    | set { ch_genome }
+    ch_genome = ch_genomes_for_gunzip.skip
+        .mix(GUNZIP.out.gunzip)
+        .map { meta, fa -> [ meta + [genome_size: fa.size()], fa] }
+
 
     //
     // MODULES: Mask the genome if needed

@@ -34,7 +34,7 @@ sample3,ont,ont.cram,SINGLE
 | `datafile`       | Full path to read data file.                                                                                                                                                              |
 | `library_layout` | Layout of the library. Must be one of `SINGLE`, `PAIRED`.                                                                                                                                 |
 
-An [example samplesheet](../assets/test/samplesheet.csv) has been provided with the pipeline.
+An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
 ### Support for [nf-core/fetchngs](https://nf-co.re/fetchngs)
 
@@ -83,12 +83,51 @@ Configure access to your local databases with the `--busco`, `--blastp`, `--blas
 
 Note that `--busco` refers to the download path which _contains_ the `lineages/` sub-directory.
 Then, when explicitly selecting the lineages to run the pipeline on,
-provide the names of these lineages _with_ their `_odb10` suffix as a comma-separated string.
+provide the names of these lineages _with_ their `_odb10` or `_odb12` suffix as a comma-separated string.
 For instance:
 
 ```bash
 --busco path-to-databases/busco/ --busco_lineages vertebrata_odb10,bacteria_odb10,fungi_odb10
 ```
+
+The basal lineages, `eukaryota`, `bacteria`, and `archaea`, are _always_ included and do not need to be listed.
+
+### BUSCO database path format
+
+**Important**: The `--busco` parameter must be a directory containing the `lineages/` subdirectory, **NOT** to the `lineages/` directory itself. BUSCO databases are always directories, never individual files.
+
+```bash
+# ✅ Correct - points to the parent directory
+--busco /path/to/busco_downloads/
+
+# ❌ Common mistake - includes /lineages at the end
+--busco /path/to/busco_downloads/lineages/
+
+# ❌ Another common mistake - points to a specific lineage
+--busco /path/to/busco_downloads/lineages/eukaryota_odb10/
+```
+
+The pipeline will automatically detect and correct paths ending with `/lineages` or pointing to specific lineage directories (e.g., `eukaryota_odb10`) to prevent common errors where BUSCO tries to access incorrect paths.
+
+### BLAST database path formats
+
+The `--blastn` parameter accepts two formats:
+
+1. **Directory path** (for backwards compatibility):
+
+   ```bash
+   --blastn /path/to/databases/nt_2024_10/
+   ```
+
+   This works only if the directory contains a single BLAST database.
+
+2. **Direct file path** (recommended for clarity):
+   ```bash
+   --blastn /path/to/databases/nt_2024_10/nt.nal
+   ```
+   This is required if your database directory contains multiple BLAST databases. Note: When you specify a direct `.nal` file path, the pipeline automatically uses the parent directory to ensure all associated database files are available.
+
+If multiple databases are found in a directory, the pipeline will fail with a clear error message listing all available databases and suggesting the exact file paths to use.
 
 ### Getting databases ready for the pipeline
 
@@ -151,6 +190,23 @@ cd ..
 tar -cvzf $NT_TAR $NT
 rm -r $NT
 ```
+
+##### Important: Handling directories with multiple BLAST databases
+
+If your database directory contains multiple BLAST databases (e.g., both `nt` and `nr` databases), you must specify the exact path to the `.nal` file to avoid ambiguity:
+
+```bash
+# ❌ This will fail if multiple databases are present
+--blastn /path/to/databases/
+
+# ✅ Specify the exact database file
+--blastn /path/to/databases/nt.nal
+```
+
+The pipeline supports two formats for the `--blastn` parameter:
+
+- **Directory path**: `/path/to/databases/nt_2024_10/` (only works if directory contains a single BLAST database)
+- **Direct file path**: `/path/to/databases/nt_2024_10/nt.nal` (recommended for directories with multiple databases). Note: When you specify a direct `.nal` file path, the pipeline automatically uses the parent directory to ensure all associated database files are available.
 
 #### 3. UniProt reference proteomes database
 
@@ -413,7 +469,7 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 - `shifter`
   - A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
 - `charliecloud`
-  - A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
+  - A generic configuration profile to be used with [Charliecloud](https://charliecloud.io/)
 - `apptainer`
   - A generic configuration profile to be used with [Apptainer](https://apptainer.org/)
 - `wave`

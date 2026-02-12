@@ -16,7 +16,7 @@ workflow COLLATE_STATS {
     cov         // channel: [ val(meta), path(regions.bed.gz) ]
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
 
     // Count BUSCO genes in a region

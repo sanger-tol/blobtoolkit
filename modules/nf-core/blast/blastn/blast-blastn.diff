@@ -18,15 +18,28 @@ Changes in 'blast/blastn/main.nf':
  
      output:
      tuple val(meta), path('*.txt'), emit: txt
-@@ -23,6 +23,7 @@
+@@ -23,24 +23,55 @@
      def prefix = task.ext.prefix ?: "${meta.id}"
      def is_compressed = fasta.getExtension() == "gz" ? true : false
      def fasta_name = is_compressed ? fasta.getBaseName() : fasta
 +    def exclude_taxon = taxid ? "-negative_taxids ${taxid}" : ''
++    def db_name = meta2.db_name ?: ''
  
      """
      if [ "${is_compressed}" == "true" ]; then
-@@ -35,12 +36,37 @@
+         gzip -c -d ${fasta} > ${fasta_name}
+     fi
+ 
+-    DB=`find -L ./ -name "*.nal" | sed 's/\\.nal\$//'`
+-    if [ -z "\$DB" ]; then
+-        DB=`find -L ./ -name "*.nin" | sed 's/\\.nin\$//'`
++    if [ "${db_name}" == "" ]; then
++        DB=`find -L ./ -name "*.nal" | sed 's/\\.nal\$//'`
++        if [ -z "\$DB" ]; then
++            DB=`find -L ./ -name "*.nin" | sed 's/\\.nin\$//'`
++        fi
++    else
++        DB="${db}/${db_name}"
      fi
      echo Using \$DB
  

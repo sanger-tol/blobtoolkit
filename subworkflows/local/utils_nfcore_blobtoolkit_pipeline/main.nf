@@ -10,6 +10,8 @@
 
 include { UTILS_NFSCHEMA_PLUGIN     } from '../../nf-core/utils_nfschema_plugin'
 include { paramsSummaryMap          } from 'plugin/nf-schema'
+include { samplesheetToList         } from 'plugin/nf-schema'
+include { paramsHelp                } from 'plugin/nf-schema'
 include { completionEmail           } from '../../nf-core/utils_nfcore_pipeline'
 include { completionSummary         } from '../../nf-core/utils_nfcore_pipeline'
 include { imNotification            } from '../../nf-core/utils_nfcore_pipeline'
@@ -27,13 +29,17 @@ workflow PIPELINE_INITIALISATION {
     take:
     version           // boolean: Display version and exit
     validate_params   // boolean: Boolean whether to validate parameters against the schema at runtime
-    monochrome_logs   // boolean: Do not use coloured log outputs
+    _monochrome_logs  // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
+    _input            //  string: Path to input samplesheet
+    help              // boolean: Display help message and exit
+    help_full         // boolean: Show the full help message
+    show_hidden       // boolean: Show hidden parameters in the help message
 
     main:
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     //
     // Print version and exit if required and dump pipeline parameters to JSON file
@@ -48,10 +54,39 @@ workflow PIPELINE_INITIALISATION {
     //
     // Validate parameters and generate parameter summary to stdout
     //
+
+    before_text = """
+-\033[2m----------------------------------------------------\033[0m-
+\033[0;34m   _____                               \033[0;32m _______   \033[0;31m _\033[0m
+\033[0;34m  / ____|                              \033[0;32m|__   __|  \033[0;31m| |\033[0m
+\033[0;34m | (___   __ _ _ __   __ _  ___ _ __ \033[0m ___ \033[0;32m| |\033[0;33m ___ \033[0;31m| |\033[0m
+\033[0;34m  \\___ \\ / _` | '_ \\ / _` |/ _ \\ '__|\033[0m|___|\033[0;32m| |\033[0;33m/ _ \\\033[0;31m| |\033[0m
+\033[0;34m  ____) | (_| | | | | (_| |  __/ |        \033[0;32m| |\033[0;33m (_) \033[0;31m| |____\033[0m
+\033[0;34m |_____/ \\__,_|_| |_|\\__, |\\___|_|        \033[0;32m|_|\033[0;33m\\___/\033[0;31m|______|\033[0m
+\033[0;34m                      __/ |\033[0m
+\033[0;34m                     |___/\033[0m
+\033[0;35m  ${workflow.manifest.name} ${workflow.manifest.version}\033[0m
+-\033[2m----------------------------------------------------\033[0m-
+        """
+    after_text = """${workflow.manifest.doi ? "\n* The pipeline\n" : ""}${workflow.manifest.doi.tokenize(",").collect { doi -> "    https://doi.org/${doi.trim().replace('https://doi.org/', '')}" }.join("\n")}${workflow.manifest.doi ? "\n" : ""}
+* The nf-core framework
+    https://doi.org/10.1038/s41587-020-0439-x
+
+* Software dependencies
+    https://github.com/sanger-tol/blobtoolkit/blob/main/CITATIONS.md
+"""
+    command = "nextflow run ${workflow.manifest.name} -profile <docker/singularity/.../institute> --input samplesheet.csv --outdir <OUTDIR>"
+
     UTILS_NFSCHEMA_PLUGIN (
         workflow,
         validate_params,
-        null
+        null,
+        help,
+        help_full,
+        show_hidden,
+        before_text,
+        after_text,
+        command
     )
 
     //
@@ -69,16 +104,15 @@ workflow PIPELINE_INITIALISATION {
         error('--taxdump can take either a JSON file, a tar.gz archive, or a directory')
     }
 
-    ch_fasta = Channel.value([ [ 'id': params.accession ?: file(params.fasta.replace(".gz", "")).baseName ], file(params.fasta) ])
+    ch_fasta = channel.value([ [ 'id': params.accession ?: file(params.fasta.replace(".gz", "")).baseName ], file(params.fasta) ])
 
-    Channel.empty()
-        .concat( Channel.fromPath(params.blastn).map { tuple(["type": "blastn"], it) } )
-        .concat( Channel.fromPath(params.blastx).map { tuple(["type": "blastx"], it) } )
-        .concat( Channel.fromPath(params.blastp).map { tuple(["type": "blastp"], it) } )
-        .concat( params.precomputed_busco ? Channel.fromPath(params.precomputed_busco).map { tuple([ "type": "precomputed_busco"], it ) } : Channel.empty() )
-        .concat( params.busco ? Channel.fromPath(params.busco).map { tuple([ "type": "busco"], it ) } : Channel.empty() )
-        .concat( Channel.fromPath(params.taxdump).map { tuple(["type": "taxdump"], it) } )
-        .set { ch_databases }
+    ch_databases = channel.empty()
+        .concat( channel.fromPath(params.blastn).map { path -> tuple(["type": "blastn"], path) } )
+        .concat( channel.fromPath(params.blastx).map { path -> tuple(["type": "blastx"], path) } )
+        .concat( channel.fromPath(params.blastp).map { path -> tuple(["type": "blastp"], path) } )
+        .concat( params.precomputed_busco ? channel.fromPath(params.precomputed_busco).map { path -> tuple([ "type": "precomputed_busco"], path ) } : channel.empty() )
+        .concat( params.busco ? channel.fromPath(params.busco).map { path -> tuple([ "type": "busco"], path ) } : channel.empty() )
+        .concat( channel.fromPath(params.taxdump).map { path -> tuple(["type": "taxdump"], path) } )
 
     emit:
     versions    = ch_versions
@@ -201,4 +235,3 @@ def methodsDescriptionText(mqc_methods_yaml) {
 
     return description_html.toString()
 }
-

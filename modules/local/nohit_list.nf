@@ -9,7 +9,7 @@ process NOHIT_LIST {
 
     input:
     tuple val(meta), path(blast)      //path to blast output table in txt format
-    tuple val(meta), path(fasta)      //path to genome fasta file
+    tuple val(meta2), path(fasta)      //path to genome fasta file
 
     output:
     tuple val(meta), path ('*.nohit.txt') , emit: nohitlist

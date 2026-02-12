@@ -12,57 +12,44 @@ include { CREATE_BED     } from '../../modules/local/create_bed'
 
 workflow COVERAGE_STATS {
     take:
-    input    // channel: [ val(meta), path(aln) ]
-    fasta    // channel: [ val(meta), path(fasta) ]
+    ch_reads    // channel: [ val(meta), path(aln) ]
+    ch_fasta    // channel: [ val(meta), path(fasta) ]
 
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
 
     // Create aligned BAM and index CSI channel
-    input
-    | branch { meta, aln ->
-        bam : aln.toString().endsWith("bam") == true
-            return [ meta, aln ]
-        cram : aln.toString().endsWith("cram") == true
-            return [ meta, aln, [] ]
-    }
-    | set { ch_aln_idx}
+    ch_aln_idx = ch_reads
+        .branch { meta, aln ->
+            bam : aln.name.endsWith("bam")
+                return [ meta, aln ]
+            cram : aln.name.endsWith("cram")
+                return [ meta, aln, [] ]
+        }
 
-    SAMTOOLS_VIEW ( ch_aln_idx.cram, fasta, [] )
+
+    SAMTOOLS_VIEW ( ch_aln_idx.cram, ch_fasta, [] )
     ch_versions = ch_versions.mix ( SAMTOOLS_VIEW.out.versions.first() )
-
-    SAMTOOLS_VIEW.out.bam
-    | join ( SAMTOOLS_VIEW.out.csi )
-    | set { ch_view }
+    ch_view = SAMTOOLS_VIEW.out.bam.join(SAMTOOLS_VIEW.out.csi)
 
     SAMTOOLS_INDEX ( ch_aln_idx.bam )
     ch_versions = ch_versions.mix ( SAMTOOLS_INDEX.out.versions.first() )
 
-    ch_aln_idx.bam
-    | join ( SAMTOOLS_INDEX.out.csi )
-    | set { ch_index }
-
-    ch_view
-    | mix ( ch_index )
-    | set { ch_bam_csi }
+    ch_index = ch_aln_idx.bam.join(SAMTOOLS_INDEX.out.csi)
+    ch_bam_csi = ch_view.mix(ch_index)
 
 
     // Calculate genome statistics
-    FASTAWINDOWS ( fasta )
+    FASTAWINDOWS ( ch_fasta )
     ch_versions = ch_versions.mix ( FASTAWINDOWS.out.versions.first() )
 
 
     // Compress the TSV files
     PIGZ_COMPRESS (
-        FASTAWINDOWS.out.mononuc
-        | mix ( FASTAWINDOWS.out.dinuc )
-        | mix ( FASTAWINDOWS.out.trinuc )
-        | mix ( FASTAWINDOWS.out.tetranuc )
-        | mix ( FASTAWINDOWS.out.freq )
+        FASTAWINDOWS.out.mononuc.mix(FASTAWINDOWS.out.dinuc).mix(FASTAWINDOWS.out.trinuc).mix(FASTAWINDOWS.out.tetranuc).mix(FASTAWINDOWS.out.freq)
     )
-    ch_versions = ch_versions.mix ( PIGZ_COMPRESS.out.versions.first() )
 
 
     // Create genome windows file in BED format
@@ -76,11 +63,10 @@ workflow COVERAGE_STATS {
 
 
     // Combining  regions_bed in single channel
-    BLOBTK_DEPTH.out.bed
-    | combine ( fasta )
-    | map { meta, bed, meta2, fasta -> [ meta2, bed ] }
-    | groupTuple ()
-    | set { ch_coverage }
+    ch_coverage = BLOBTK_DEPTH.out.bed
+        .combine(ch_fasta)
+        .map { _meta, bed, meta2, _fasta -> [ meta2, bed ] }
+        .groupTuple()
 
 
     emit:

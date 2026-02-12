@@ -41,18 +41,22 @@ workflow BLOBTOOLKIT {
     take:
     ch_fasta
     ch_databases
-    main:
 
-    ch_versions = Channel.empty()
-    ch_multiqc_files = Channel.empty()
+    main:
+    ch_versions         = channel.empty()
+    ch_multiqc_files    = channel.empty()
+
+
     //
     // SUBWORKFLOW: Prepare genome for downstream processing
     //
     PREPARE_GENOME ( ch_fasta )
-    ch_versions = ch_versions.mix ( PREPARE_GENOME.out.versions )
+    ch_versions         = ch_versions.mix ( PREPARE_GENOME.out.versions )
 
-    // Reference genome to be used (as a value channel) throughout the pipeline
-    ch_prepared_genome = PREPARE_GENOME.out.genome.first()
+
+    // NOTE: Reference genome to be used (as a value channel) throughout the pipeline
+    ch_prepared_genome  = PREPARE_GENOME.out.genome.first()
+
 
     //
     // SUBWORKFLOW: Check samplesheet and create channels for downstream analysis
@@ -61,28 +65,31 @@ workflow BLOBTOOLKIT {
         params.input,
         ch_prepared_genome,
         params.taxon,
-        Channel.value(params.busco_lineages ?: []),
+        channel.value(params.busco_lineages ?: []),
         params.lineage_tax_ids,
         ch_databases,
     )
-    ch_versions = ch_versions.mix ( INPUT_CHECK.out.versions )
+    ch_versions         = ch_versions.mix ( INPUT_CHECK.out.versions )
+
 
     //
     // SUBWORKFLOW: Optional read alignment
     //
     if ( params.align ) {
         MINIMAP2_ALIGNMENT ( INPUT_CHECK.out.reads, ch_prepared_genome )
-        ch_versions = ch_versions.mix ( MINIMAP2_ALIGNMENT.out.versions )
-        ch_aligned = MINIMAP2_ALIGNMENT.out.aln
+        ch_versions     = ch_versions.mix ( MINIMAP2_ALIGNMENT.out.versions )
+        ch_aligned      = MINIMAP2_ALIGNMENT.out.aln
     } else {
-        ch_aligned = INPUT_CHECK.out.reads
+        ch_aligned      = INPUT_CHECK.out.reads
     }
+
 
     //
     // SUBWORKFLOW: Calculate genome coverage and statistics
     //
     COVERAGE_STATS ( ch_aligned, ch_prepared_genome )
-    ch_versions = ch_versions.mix ( COVERAGE_STATS.out.versions )
+    ch_versions         = ch_versions.mix ( COVERAGE_STATS.out.versions )
+
 
     //
     // SUBWORKFLOW: Run BUSCO using lineages fetched from GoaT, then run diamond_blastp
@@ -91,33 +98,39 @@ workflow BLOBTOOLKIT {
         ch_prepared_genome,
         INPUT_CHECK.out.busco_lineages,
         INPUT_CHECK.out.busco_db,
+        INPUT_CHECK.out.odb_version,
         INPUT_CHECK.out.blastp,
         INPUT_CHECK.out.taxon_id,
         INPUT_CHECK.out.precomputed_busco,
     )
-    ch_versions = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
+    ch_versions         = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
+
 
     //
     // SUBWORKFLOW: Diamond blastx search of assembly contigs against the UniProt reference proteomes
+    //              BLASTX WILL NOT RUN IF blast_annotations IS SET TO `off` or `blastp`
     //
     RUN_BLASTX (
-        ch_prepared_genome,
+        ch_prepared_genome.filter { params.blast_annotations == "all" || params.blast_annotations == "blastx" },
         BUSCO_DIAMOND.out.first_table,
         INPUT_CHECK.out.blastx,
         INPUT_CHECK.out.taxon_id,
     )
-    ch_versions = ch_versions.mix ( RUN_BLASTX.out.versions )
+    ch_versions         = ch_versions.mix ( RUN_BLASTX.out.versions )
 
 
     //
     // SUBWORKFLOW: Run blastn search on sequences that had no blastx hits
+    //              BLASTN WILL NOT RUN IF blast_annotations IS SET TO `off`, `blastp` or `blastx`
     //
     RUN_BLASTN (
-        RUN_BLASTX.out.blastx_out,
+        RUN_BLASTX.out.blastx_out.filter { params.blast_annotations == "all" },
         ch_prepared_genome,
         INPUT_CHECK.out.blastn,
         INPUT_CHECK.out.taxon_id,
     )
+    ch_versions         = ch_versions.mix ( RUN_BLASTN.out.versions )
+
 
     //
     // SUBWORKFLOW: Collate genome statistics by various window sizes
@@ -129,7 +142,8 @@ workflow BLOBTOOLKIT {
         COVERAGE_STATS.out.mononuc,
         COVERAGE_STATS.out.cov
     )
-    ch_versions = ch_versions.mix ( COLLATE_STATS.out.versions )
+    ch_versions         = ch_versions.mix ( COLLATE_STATS.out.versions )
+
 
     //
     // SUBWORKFLOW: Create BlobTools dataset
@@ -145,20 +159,22 @@ workflow BLOBTOOLKIT {
         RUN_BLASTN.out.blastn_out.ifEmpty([[],[]]),
         INPUT_CHECK.out.taxdump
     )
-    ch_versions = ch_versions.mix ( BLOBTOOLS.out.versions )
+    ch_versions         = ch_versions.mix ( BLOBTOOLS.out.versions )
+
 
     //
     // SUBWORKFLOW: Generate summary and static images
     //
     VIEW ( BLOBTOOLS.out.blobdir )
-    ch_versions = ch_versions.mix(VIEW.out.versions)
+    ch_versions         = ch_versions.mix ( VIEW.out.versions )
+
 
     //
     // Collate and save software versions
     //
     softwareVersionsToYAML(ch_versions)
         .collectFile(
-            storeDir: "${params.outdir}/pipeline_info/blobtoolkit",
+            storeDir: "${params.outdir}/pipeline_info",
             name:  'blobtoolkit_software_'  + 'mqc_'  + 'versions.yml',
             sort: true,
             newLine: true
@@ -179,35 +195,41 @@ workflow BLOBTOOLKIT {
     //
     // MODULE: MultiQC
     //
-    ch_multiqc_config        = Channel.fromPath(
-        "$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-    ch_multiqc_custom_config = params.multiqc_config ?
-        Channel.fromPath(params.multiqc_config, checkIfExists: true) :
-        Channel.empty()
-    ch_multiqc_logo          = params.multiqc_logo ?
-        Channel.fromPath(params.multiqc_logo, checkIfExists: true) :
-        Channel.empty()
+    ch_multiqc_config        = channel.fromPath(
+            "$projectDir/assets/multiqc_config.yml", checkIfExists: true
+        )
 
-    summary_params      = paramsSummaryMap(
-        workflow, parameters_schema: "nextflow_schema.json")
-    ch_workflow_summary = Channel.value(paramsSummaryMultiqc(summary_params))
-    ch_multiqc_files = ch_multiqc_files.mix(
-        ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_multiqc_custom_config = params.multiqc_config ?
+        channel.fromPath(params.multiqc_config, checkIfExists: true) :
+        channel.empty()
+
+    ch_multiqc_logo          = params.multiqc_logo ?
+        channel.fromPath(params.multiqc_logo, checkIfExists: true) :
+        channel.empty()
+
+    summary_params          = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+    ch_workflow_summary     = channel.value(paramsSummaryMultiqc(summary_params))
+    ch_multiqc_files        = ch_multiqc_files.mix(
+        ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml')
+    )
+
     ch_multiqc_custom_methods_description = params.multiqc_methods_description ?
         file(params.multiqc_methods_description, checkIfExists: true) :
         file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-    ch_methods_description                = Channel.value(
-        methodsDescriptionText(ch_multiqc_custom_methods_description))
 
-    ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
-    ch_multiqc_files = ch_multiqc_files.mix(
+    ch_methods_description  = channel.value(
+        methodsDescriptionText(ch_multiqc_custom_methods_description)
+    )
+
+    ch_multiqc_files        = ch_multiqc_files.mix(ch_collated_versions)
+    ch_multiqc_files        = ch_multiqc_files.mix(
         ch_methods_description.collectFile(
             name: 'methods_description_mqc.yaml',
             sort: true
         )
     )
 
-    ch_multiqc_files                      = ch_multiqc_files.mix(BUSCO_DIAMOND.out.multiqc.collect().ifEmpty([]))
+    ch_multiqc_files        = ch_multiqc_files.mix(BUSCO_DIAMOND.out.multiqc.collect().ifEmpty([]))
 
     MULTIQC (
         ch_multiqc_files.collect(),
@@ -219,8 +241,8 @@ workflow BLOBTOOLKIT {
     )
 
     emit:
-    multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
+    multiqc_report          = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
+    versions                = ch_versions                 // channel: [ path(versions.yml) ]
 
 }
 

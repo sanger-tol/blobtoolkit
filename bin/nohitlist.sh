@@ -10,6 +10,3 @@ E=$4
 grep '>' $fasta | \
     grep -v -w -f <(awk -v evalue="$E" '{if($14<evalue){print $1}}' $blast | sort | uniq) | \
     awk '{print $1}' | sed 's/>//' > $prefix.nohit.txt
-
-
-
