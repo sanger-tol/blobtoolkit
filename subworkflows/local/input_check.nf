@@ -58,7 +58,7 @@ workflow INPUT_CHECK {
                         error """
                         ERROR: Multiple .nal files found in blastn database directory: ${db_path}
                         Found: ${nal_files.collect { path -> path.name }.join(', ')}
-                        Please ensure the directory contains only one .nal file.
+                        Please ensure the directory contains only one .nal file or provide the path to the specific .nal you want to use.
                         """
                     } else if (nin_files.size() == 1) {
                         actual_db_path = nin_files[0]
@@ -66,7 +66,7 @@ workflow INPUT_CHECK {
                         error """
                         ERROR: Multiple .nin files found in blastn database directory: ${db_path}
                         Found: ${nin_files.collect { path -> path.name }.join(', ')}
-                        Please ensure the directory contains only one .nin file.
+                        Please ensure the directory contains only one .nin file or provide the path to the specific .nin you want to use.
                         """
                     } else {
                         error """
@@ -204,17 +204,6 @@ workflow INPUT_CHECK {
                 [[type: 'precomputed_busco', id: subdir.name, lineage: lineage], subdir]
             }
         }
-
-    //
-    // LOGIC: Remove any invalid lineages from precomputed_busco
-    //
-    //ch_busco_lineages_list = ch_busco_lineages.flatten()
-    // ch_parsed_busco_filtered = ch_parsed_busco
-    //     .filter { meta, path ->
-    //         ch_busco_lineages.contains(meta.lineage)
-    //     }
-    // ch_parsed_busco_filtered = ch_parsed_busco_filtered.ifEmpty { channel.value([]) }
-
 
     //
     // LOGIC: Get the BUSCO path if set

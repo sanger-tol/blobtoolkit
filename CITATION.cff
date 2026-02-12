@@ -16,6 +16,12 @@ authors:
     orcid: https://orcid.org/0000-0002-3502-1122
     website: https://github.com/rjchallis
   - affiliation: Wellcome Sanger Institute
+    email: jd42@sanger.ac.uk
+    family-names: Downie
+    given-names: Jim
+    orcid: https://orcid.org/0000-0002-7175-0533
+    website: https://github.com/prototaxites
+  - affiliation: Wellcome Sanger Institute
     email: sujaikumar@gmail.com
     family-names: Kumar
     given-names: Sujai
@@ -63,13 +69,13 @@ authors:
     orcid: https://orcid.org/0000-0003-1658-1762
     website: https://github.com/BethYates
 cff-version: 1.2.0
-date-released: "2025-10-03"
+date-released: "2026-02-12"
 doi: 10.5281/zenodo.7949058
 license: MIT
 message: If you use this software, please cite it using the metadata from this file
   and all references from CITATIONS.md .
 repository-code: https://github.com/sanger-tol/blobtoolkit
-title: sanger-tol/blobtoolkit v0.10.0 - Scyther
+title: sanger-tol/blobtoolkit v0.10.0 - Onix
 type: software
 url: https://pipelines.tol.sanger.ac.uk/blobtoolkit
 version: 0.10.0
