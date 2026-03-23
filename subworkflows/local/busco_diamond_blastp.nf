@@ -5,7 +5,7 @@
 include { BUSCO_BUSCO               } from '../../modules/nf-core/busco/busco/main'
 include { BLOBTOOLKIT_EXTRACTBUSCOS } from '../../modules/local/blobtoolkit/extractbuscos'
 include { DIAMOND_BLASTP            } from '../../modules/nf-core/diamond/blastp/main'
-include { RESTRUCTUREBUSCODIR       } from '../../modules/local/restructurebuscodir'
+include { RESTRUCTUREBUSCODIR       } from '../../modules/sanger-tol/restructurebuscodir/main'
 
 
 workflow BUSCO_DIAMOND {
@@ -150,13 +150,10 @@ workflow BUSCO_DIAMOND {
                     outputs.short_summaries_json ?: [],
                     outputs.full_table ?: [],
                     outputs.missing_busco_list ?: [],
-                    outputs.seq_dir ? "${outputs.seq_dir}/single_copy_busco_sequences" : [],
-                    outputs.seq_dir ? "${outputs.seq_dir}/multi_copy_busco_sequences" : [],
-                    outputs.seq_dir ? "${outputs.seq_dir}/fragmented_busco_sequences" : [],
+                    outputs.seq_dir ?: [],
                 ]
             }
     )
-    ch_versions = ch_versions.mix ( RESTRUCTUREBUSCODIR.out.versions.first() )
 
     //
     // LOGIC: Select input for BLOBTOOLKIT_EXTRACTBUSCOS
