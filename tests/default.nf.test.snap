@@ -2,12 +2,6 @@
     "-profile test": {
         "content": [
             {
-                "BLASTN_TAXON": {
-                    "blast": "2.15.0+"
-                },
-                "BLAST_BLASTN": {
-                    "blast": "2.15.0+"
-                },
                 "BLOBTK_DEPTH": {
                     "blobtk": "0.5.1"
                 },
@@ -50,20 +44,11 @@
                 "DIAMOND_BLASTX": {
                     "diamond": "2.1.16"
                 },
-                "FASTAWINDOWS": {
-                    "fasta_windows": "0.2.4"
-                },
                 "GENERATE_CONFIG": {
                     "generate_config.py": 2.0
                 },
-                "GUNZIP": {
-                    "gunzip": 1.1
-                },
                 "NOHIT_LIST": {
                     "nohit_list": 1.0
-                },
-                "RESTRUCTUREBUSCODIR": {
-                    "tar": 1.3
                 },
                 "SAMTOOLS_FLAGSTAT": {
                     "samtools": 1.21
@@ -811,6 +796,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-02-07T01:02:46.82860754"
+        "timestamp": "2026-03-23T18:09:36.75897342"
     }
 }
