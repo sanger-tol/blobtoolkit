@@ -3,8 +3,8 @@
 //
 
 include { GUNZIP                } from '../../modules/nf-core/gunzip/main'
-include { WINDOWMASKER_MKCOUNTS } from '../../modules/nf-core/windowmasker/mkcounts/main'
-include { WINDOWMASKER_USTAT    } from '../../modules/nf-core/windowmasker/ustat/main'
+
+include { REPEAT_MASKING        } from '../sanger-tol/repeat_masking/main'
 
 
 workflow PREPARE_GENOME {
@@ -40,14 +40,12 @@ workflow PREPARE_GENOME {
 
 
     //
-    // MODULES: Mask the genome if needed
+    // SUBWORKFLOW: Mask the genome if needed
     //
     if ( params.mask ) {
-        WINDOWMASKER_MKCOUNTS ( ch_genome )
+        REPEAT_MASKING ( ch_genome )
 
-        WINDOWMASKER_USTAT ( WINDOWMASKER_MKCOUNTS.out.counts, ch_genome )
-
-        ch_fasta = WINDOWMASKER_USTAT.out.intervals
+        ch_fasta = REPEAT_MASKING.out.repeat_intervals
     } else {
         ch_fasta = ch_genome
     }
