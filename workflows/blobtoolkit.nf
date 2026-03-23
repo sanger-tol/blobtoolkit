@@ -72,7 +72,7 @@ workflow BLOBTOOLKIT {
     ch_versions         = ch_versions.mix ( INPUT_CHECK.out.versions )
 
     input_reads = INPUT_CHECK.out.reads.map{
-        meta, reads -> 
+        meta, reads ->
         [ meta + [id : meta.id ?: "${meta.specimen}.${meta.run}"], reads ]
     }
 

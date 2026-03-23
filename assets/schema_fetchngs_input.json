@@ -13,7 +13,7 @@
                 "pattern": "^\\S+$",
                 "errorMessage": "Accession number of the specimen",
                 "meta": ["specimen"]
-            },           
+            },
             "run_accession": {
                 "type": "string",
                 "description": "Accession number",
