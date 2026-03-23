@@ -104,7 +104,6 @@ workflow BUSCO_DIAMOND {
         [],
         []
     )
-    ch_versions = ch_versions.mix ( BUSCO_BUSCO.out.versions.first() )
 
     //
     // LOGIC: Join new and pre-computed BUSCO outputs
@@ -199,7 +198,6 @@ workflow BUSCO_DIAMOND {
         cols,
         taxon_id
     )
-    ch_versions = ch_versions.mix ( DIAMOND_BLASTP.out.versions.first() )
 
 
     //

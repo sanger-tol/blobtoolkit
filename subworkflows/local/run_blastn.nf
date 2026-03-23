@@ -36,7 +36,6 @@ workflow RUN_BLASTN {
         fasta,
         NOHIT_LIST.out.nohitlist.map { _meta, nohit -> nohit } . filter { file -> file.size() > 0 }
     )
-    ch_versions = ch_versions.mix ( SEQTK_SUBSEQ.out.versions.first() )
 
 
     //  Split long contigs into chunks
