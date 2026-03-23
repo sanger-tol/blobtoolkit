@@ -33,7 +33,6 @@ workflow INPUT_CHECK {
         }
 
     UNTAR ( ch_dbs_for_untar.untar )
-    ch_versions = ch_versions.mix( UNTAR.out.versions.first() )
 
 
     //
@@ -130,7 +129,6 @@ workflow INPUT_CHECK {
     SAMTOOLS_FLAGSTAT (
         read_files.map { meta, datafile -> [meta, datafile, []] }
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_FLAGSTAT.out.versions.first())
 
     reads = read_files
         .join(SAMTOOLS_FLAGSTAT.out.flagstat)

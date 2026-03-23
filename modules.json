@@ -13,7 +13,7 @@
                     },
                     "busco/busco": {
                         "branch": "master",
-                        "git_sha": "36c6c8445284e021d95ce30cdf743baef66b21aa",
+                        "git_sha": "25e280b4e6cac8cf6af580e9823264f5bc83cefa",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/busco/busco/busco-busco.diff"
                     },
@@ -24,13 +24,13 @@
                     },
                     "diamond/blastp": {
                         "branch": "master",
-                        "git_sha": "4012b87ef8f242b7aa1eb17e165aa003b86b49c0",
+                        "git_sha": "422966026b45f2852cbe1a919dadc52082bf62f1",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/diamond/blastp/diamond-blastp.diff"
                     },
                     "diamond/blastx": {
                         "branch": "master",
-                        "git_sha": "4012b87ef8f242b7aa1eb17e165aa003b86b49c0",
+                        "git_sha": "8d52ac1b6f035f46c005a27b3510873c2a67ea41",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/diamond/blastx/diamond-blastx.diff"
                     },
@@ -63,39 +63,39 @@
                     },
                     "samtools/flagstat": {
                         "branch": "master",
-                        "git_sha": "2d20463181b1c38981a02e90d3084b5f9fa8d540",
+                        "git_sha": "156feda0cb6589cd29c04902004fa3b53bc00205",
                         "installed_by": ["modules"]
                     },
                     "samtools/index": {
                         "branch": "master",
-                        "git_sha": "b13f07be4c508d6ff6312d354d09f2493243e208",
+                        "git_sha": "156feda0cb6589cd29c04902004fa3b53bc00205",
                         "installed_by": ["modules"]
                     },
                     "samtools/view": {
                         "branch": "master",
-                        "git_sha": "2d20463181b1c38981a02e90d3084b5f9fa8d540",
+                        "git_sha": "156feda0cb6589cd29c04902004fa3b53bc00205",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/samtools/view/samtools-view.diff"
                     },
                     "seqtk/subseq": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "a46713779030a5f508117080cbf4b693dd4c6e33",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/seqtk/subseq/seqtk-subseq.diff"
                     },
                     "untar": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "447f7bc0fa41dfc2400c8cad4c0291880dc060cf",
                         "installed_by": ["modules"]
                     },
                     "windowmasker/mkcounts": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "ed6f7d2e090911f69f0f3af563f5af9ba1fc1fa0",
                         "installed_by": ["modules"]
                     },
                     "windowmasker/ustat": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "ed6f7d2e090911f69f0f3af563f5af9ba1fc1fa0",
                         "installed_by": ["modules"]
                     }
                 }
