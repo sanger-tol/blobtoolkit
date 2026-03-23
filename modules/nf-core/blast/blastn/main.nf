@@ -3,17 +3,19 @@ process BLAST_BLASTN {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/blast:2.15.0--pl5321h6f7f691_1':
-        'biocontainers/blast:2.15.0--pl5321h6f7f691_1' }"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0c/0c86cbb145786bf5c24ea7fb13448da5f7d5cd124fd4403c1da5bc8fc60c2588/data':
+        'community.wave.seqera.io/library/blast:2.17.0--d4fb881691596759' }"
 
     input:
     tuple val(meta) , path(fasta)
     tuple val(meta2), path(db)
-    val taxid
+    path taxidlist
+    val taxids
+    val negative_tax
 
     output:
     tuple val(meta), path('*.txt'), emit: txt
-    path "versions.yml"           , emit: versions
+    tuple val("${task.process}"), val("blastn"), eval("blastn -version 2>&1 | sed 's/^.*blastn: //; s/ .*\$//'"), topic: versions, emit: versions_blastn
 
     when:
     task.ext.when == null || task.ext.when
@@ -23,13 +25,20 @@ process BLAST_BLASTN {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def is_compressed = fasta.getExtension() == "gz" ? true : false
     def fasta_name = is_compressed ? fasta.getBaseName() : fasta
-    def exclude_taxon = taxid ? "-negative_taxids ${taxid}" : ''
+    def negative_tax_cmd = negative_tax ? "negative_" : ""
+    def taxidlist_cmd = taxidlist ? "-${negative_tax_cmd}taxidlist ${taxidlist}" : ""
+    def taxids_cmd = taxids ? "-${negative_tax_cmd}taxids ${taxids}" : ""
+    if (taxidlist_cmd.any() && taxids_cmd.any()) {
+        log.error("ERROR: taxidlist and taxids can not be used at the same time, choose only one argument to use for tax id filtering.")
+    }
     def db_name = meta2.db_name ?: ''
 
     """
     if [ "${is_compressed}" == "true" ]; then
         gzip -c -d ${fasta} > ${fasta_name}
     fi
+
+    export BLASTDB=${db}
 
     if [ "${db_name}" == "" ]; then
         DB=`find -L ./ -name "*.nal" | sed 's/\\.nal\$//'`
@@ -41,22 +50,12 @@ process BLAST_BLASTN {
     fi
     echo Using \$DB
 
-    if [ -n "${taxid}" ]; then
-        # Symlink the tax* files (needed for -taxid options to work)
-        for file in taxdb.btd taxdb.bti taxonomy4blast.sqlite3; do
-            if [ ! -f ${db}/\$file ]; then
-                echo "Error: \$file not found in ${db}"
-                exit 1
-            fi
-            ln -s ${db}/\$file .
-        done
-    fi
-
     timeout 11.9h blastn \\
         -num_threads ${task.cpus} \\
         -db \$DB \\
         -query ${fasta_name} \\
-        ${exclude_taxon} \\
+        ${taxidlist_cmd} \\
+        ${taxids_cmd} \\
         ${args} \\
         -out ${prefix}.txt \\
         2> >( tee "${prefix}.error.log" >&2 ) || true
@@ -72,22 +71,12 @@ process BLAST_BLASTN {
     then
         grep -qF 'BLAST Database error: Taxonomy ID(s) not found.Taxonomy ID(s) not found' "${prefix}.error.log"
     fi
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        blast: \$(blastn -version 2>&1 | sed 's/^.*blastn: //; s/ .*\$//')
-    END_VERSIONS
     """
 
     stub:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.txt
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        blast: \$(blastn -version 2>&1 | sed 's/^.*blastn: //; s/ .*\$//')
-    END_VERSIONS
     """
 }

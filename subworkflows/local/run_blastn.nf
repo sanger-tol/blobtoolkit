@@ -63,8 +63,7 @@ workflow RUN_BLASTN {
     } else {
 
         // run blastn excluding taxon_id
-        BLASTN_TAXON ( ch_chunks, blastn, taxon_id )
-        ch_versions = ch_versions.mix ( BLASTN_TAXON.out.versions.first() )
+        BLASTN_TAXON ( ch_chunks, blastn, [], taxon_id, true )
 
         // check if blastn output table is empty
         ch_blastn_taxon_out = BLASTN_TAXON.out.txt
@@ -80,8 +79,7 @@ workflow RUN_BLASTN {
 
     }
 
-    BLAST_BLASTN ( ch_blast_blastn_input, blastn, [] )
-    ch_versions = ch_versions.mix ( BLAST_BLASTN.out.versions.first() )
+    BLAST_BLASTN ( ch_blast_blastn_input, blastn, [], [], false )
 
     ch_blastn_txt = BLAST_BLASTN.out.txt
         .mix(ch_blastn_taxon_out.not_empty)

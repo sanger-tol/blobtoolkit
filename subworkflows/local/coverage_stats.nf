@@ -43,7 +43,6 @@ workflow COVERAGE_STATS {
 
     // Calculate genome statistics
     FASTAWINDOWS ( ch_fasta )
-    ch_versions = ch_versions.mix ( FASTAWINDOWS.out.versions.first() )
 
 
     // Compress the TSV files
