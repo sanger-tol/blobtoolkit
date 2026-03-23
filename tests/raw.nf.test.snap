@@ -44,28 +44,11 @@
                 "DIAMOND_BLASTX": {
                     "diamond": "2.1.16"
                 },
-                "FASTAWINDOWS": {
-                    "fasta_windows": "0.2.4"
-                },
                 "GENERATE_CONFIG": {
                     "generate_config.py": 2.0
                 },
-                "GUNZIP": {
-                    "gunzip": 1.1
-                },
-                "MINIMAP2_HIC": {
-                    "minimap2": "2.28-r1209",
-                    "samtools": 1.2
-                },
-                "MINIMAP2_ILMN": {
-                    "minimap2": "2.28-r1209",
-                    "samtools": 1.2
-                },
                 "NOHIT_LIST": {
                     "nohit_list": 1.0
-                },
-                "RESTRUCTUREBUSCODIR": {
-                    "tar": 1.3
                 },
                 "SAMTOOLS_FLAGSTAT": {
                     "samtools": 1.21
@@ -588,16 +571,16 @@
                 "length_windows.json.gz:md5,678a72a4c0e6c5cf424b8bade281e07d",
                 "length_windows_100000.json.gz:md5,46acbe7739d52d742d255f0626c28316",
                 "length_windows_1000000.json.gz:md5,f52e4653df6f62e06bad93596e5e5262",
-                "mMelMel1_cov.json.gz:md5,1abe04fd48cdfc651f4ea5e7ef401162",
+                "mMelMel1_cov.json.gz:md5,c79641ecec0d6309103c6db519f7ed70",
                 "mMelMel1_cov_stats.json.gz:md5,ed307f68de4f362220c9a3ae0e868f17",
-                "mMelMel1_cov_windows.json.gz:md5,973a9493c63bb434a7c8f21f76a174c1",
-                "mMelMel1_cov_windows_100000.json.gz:md5,33b64a1b21ff883cf0daef57f8cceb09",
-                "mMelMel1_cov_windows_1000000.json.gz:md5,1246eade143acf7f74462b33de3e406d",
+                "mMelMel1_cov_windows.json.gz:md5,37c8ae773ce81634a2b4993e516097ca",
+                "mMelMel1_cov_windows_100000.json.gz:md5,f5ba43dfdfb788537fcf04ffaac0ec65",
+                "mMelMel1_cov_windows_1000000.json.gz:md5,734f4984b626fba18c383029106418b6",
                 "mMelMel2_cov.json.gz:md5,525c4925ee4058fff73db43547474981",
-                "mMelMel2_cov_stats.json.gz:md5,112607034c24f37b66bacda7f670ba5b",
-                "mMelMel2_cov_windows.json.gz:md5,514127628e230526fc82808b9dfd6831",
-                "mMelMel2_cov_windows_100000.json.gz:md5,64c7d94da2cfa4988ba5a5f1684ec0a3",
-                "mMelMel2_cov_windows_1000000.json.gz:md5,fa0b7642bf2d50edc81f347f8921e115",
+                "mMelMel2_cov_stats.json.gz:md5,f6a29081d16b5f7893632e3e5e21e74f",
+                "mMelMel2_cov_windows.json.gz:md5,96b78b5186ed0cd14c6b6fe3f1b19358",
+                "mMelMel2_cov_windows_100000.json.gz:md5,88a2b2e98049f514256acbc1404f1f91",
+                "mMelMel2_cov_windows_1000000.json.gz:md5,e25b65e56c11071448020d7aff5f1db8",
                 "mMelMel3_cov.json.gz:md5,13d08c07c97a4348fe3f0b63b3850dd2",
                 "mMelMel3_cov_stats.json.gz:md5,32f72cc0912d16479350dd5e9ef8c3eb",
                 "mMelMel3_cov_windows.json.gz:md5,5cd6fa21150b2d545a201b00b2acb1a9",
@@ -651,12 +634,12 @@
                 "multiqc_busco.txt:md5,830c35e280fc188dca95923785954c5c",
                 "multiqc_citations.txt:md5,f7a1be5b698af01c2993c9f76f3647f9",
                 "multiqc_general_stats.txt:md5,8de39eeaae5fbe92fd810cd262f62d58",
-                "mMelMel3.bam:md5,419d42d3125b70722daa4d96c7605bc9",
+                "mMelMel3.bam:md5,e54e35f70a88be6cc4d60536fdf6dbc9",
                 "mMelMel3.coverage.1k.bed.gz:md5,a3fa6ba7bc9bb3ff287e9ddcba1ec318",
-                "mMelMel1.bam:md5,16909deddf491ffb6be63f8980830969",
-                "mMelMel1.coverage.1k.bed.gz:md5,39ff83fc80540efd6c3e446f6e5c9d3c",
-                "mMelMel2.bam:md5,439b522b02fd39a3e288e80e8253ffba",
-                "mMelMel2.coverage.1k.bed.gz:md5,432fc8d88f38d3c4cbca6114ff14cc32",
+                "mMelMel1.bam:md5,b8aaba9d4b634d364d38e5e52185fddb",
+                "mMelMel1.coverage.1k.bed.gz:md5,5be87cb138968507fe771ffee5161175",
+                "mMelMel2.bam:md5,4e7a16d85d2b16d214b7497044c38049",
+                "mMelMel2.coverage.1k.bed.gz:md5,5c150ab4b8b6eb0816535c56b702e777",
                 "GCA_922984935.2.fasta:md5,9ccc14f99004d85bdc29aea036af34e3",
                 "GCA_922984935.2.obinary:md5,571f465e27e107f6e4bb3fa2e833250b"
             ]
@@ -665,6 +648,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-02-12T09:41:19.508904774"
+        "timestamp": "2026-03-23T18:14:24.608191753"
     }
 }
