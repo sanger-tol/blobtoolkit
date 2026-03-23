@@ -105,7 +105,7 @@ workflow INPUT_CHECK {
             .branch { row ->
                 paired: row.fastq_2
                     // Reformat for CAT_CAT
-                    [[id: row.run_accession, row:row], [row.fastq_1, row.fastq_2]]
+                    [[id: "${row.specimen}.${row.run}", row:row], [row.fastq_1, row.fastq_2]]
                 not_paired: true
             }
 
@@ -270,7 +270,9 @@ def check_data_channel(meta, datafile) {
 def create_data_channels_from_fetchngs(LinkedHashMap row) {
     // create meta map
     def meta = [:]
-    meta.id         = row.run_accession
+    meta.id         = row.specimen + "." + row.run
+    meta.specimen   = row.specimen
+    meta.run        = row.run
     meta.layout     = row.library_layout
 
     // Same as https://github.com/blobtoolkit/blobtoolkit/blob/4.3.3/src/blobtoolkit-pipeline/src/lib/functions.py#L30-L39

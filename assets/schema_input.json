@@ -14,6 +14,18 @@
                 "errorMessage": "Sample name must be provided, be unique, and cannot contain spaces",
                 "meta": ["id"]
             },
+            "specimen": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "specimen must be provided and cannot contain spaces",
+                "meta": ["specimen"]
+            },
+            "run": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "run must be provided and cannot contain spaces",
+                "meta": ["run"]
+            },
             "datatype": {
                 "type": "string",
                 "pattern": "^\\S+$",
@@ -35,7 +47,11 @@
                 "meta": ["layout"]
             }
         },
-        "required": ["datafile", "datatype", "sample"]
+        "required": ["datafile", "datatype"],
+        "oneOf": [
+            { "required": ["sample"] },
+            { "required": ["specimen", "run"] }
+        ]
     },
     "uniqueEntries": ["sample"]
 }
