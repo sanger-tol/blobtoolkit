@@ -5,6 +5,7 @@
 include { samplesheetToList         } from 'plugin/nf-schema'
 
 
+include { GUNZIP                    } from '../../modules/nf-core/gunzip/main'
 include { UNTAR                     } from '../../modules/nf-core/untar/main'
 include { CAT_CAT                   } from '../../modules/nf-core/cat/cat/main'
 include { SAMTOOLS_FLAGSTAT         } from '../../modules/nf-core/samtools/flagstat/main'
@@ -237,6 +238,30 @@ workflow INPUT_CHECK {
         .map { _meta, db_path -> db_path }
 
 
+    //
+    // LOGIC: Identify the compressed files
+    //
+    ch_genomes_for_gunzip = fasta
+        .branch { _meta, fa ->
+            gunzip: fa.name.endsWith( ".gz" )
+            skip: true
+        }
+
+
+    //
+    // MODULE: Decompress compressed FASTA files
+    //
+    GUNZIP ( ch_genomes_for_gunzip.gunzip )
+
+
+    //
+    // LOGIC: Extract the genome size for decision making downstream
+    //
+    ch_genome = ch_genomes_for_gunzip.skip
+        .mix(GUNZIP.out.gunzip)
+        .map { meta, fa -> [ meta + [genome_size: fa.size()], fa] }
+
+
     emit:
     reads                                   // channel: [ val(meta), path(datafile) ]
     config = GENERATE_CONFIG.out.yaml       // channel: [ val(meta), path(yaml) ]
@@ -251,6 +276,7 @@ workflow INPUT_CHECK {
     precomputed_busco = ch_parsed_busco     // channel: [ val(meta), path(busco_run_dir) ]
     busco_db = ch_busco_db.first()          // channel: [ path(busco_db) ]
     taxdump = ch_taxdump.first()            // channel: [ path(taxdump) ]
+    genome = ch_genome                      // channel: [ val(meta), path(fasta) ]
     versions = ch_versions                  // channel: [ versions.yml ]
 }
 
