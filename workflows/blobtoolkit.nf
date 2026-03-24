@@ -63,7 +63,7 @@ workflow BLOBTOOLKIT {
     //
     INPUT_CHECK (
         params.input,
-        ch_prepared_genome,
+        ch_fasta, // GENERATE_CONFIG needs the path of the initial file
         params.taxon,
         channel.value(params.busco_lineages ?: []),
         params.lineage_tax_ids,
