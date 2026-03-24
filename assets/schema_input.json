@@ -50,5 +50,5 @@
         "required": ["datafile", "datatype"],
         "oneOf": [{ "required": ["sample"] }, { "required": ["specimen", "run"] }]
     },
-    "uniqueEntries": ["sample"]
+    "uniqueEntries": ["sample", ["specimen", "run"]]
 }
