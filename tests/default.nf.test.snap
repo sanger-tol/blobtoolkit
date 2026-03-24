@@ -713,7 +713,6 @@
                 "full_table.tsv:md5,8b3eca8bbf098b602ad2a17b9da77532",
                 "missing_busco_list.tsv:md5,d5870a7bc71baad79db38e5f3eb546db",
                 "short_summary.tsv:md5,1b63bbba649e4001e50cb44d4d967366",
-                "multiqc_report.html:md5,cc3075c8ce98b1bebea115ba8123cd15",
                 "mMelMel3_hic.coverage.1k.bed.gz:md5,0d03664e2f47d0e66b257ae9b39cebb3",
                 "mMelMel1.coverage.1k.bed.gz:md5,3a112390bc16cadeaf87e0eddaddb069",
                 "mMelMel2.coverage.1k.bed.gz:md5,13e32ac3d05e190408356488462c3ee1",

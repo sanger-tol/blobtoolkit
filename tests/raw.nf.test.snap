@@ -601,7 +601,6 @@
                 "full_table.tsv:md5,3fdd6f0cf1348925ff46d1718af4a5f3",
                 "missing_busco_list.tsv:md5,b47cb4623ce1dba7e932ccf327c7f6eb",
                 "short_summary.tsv:md5,fdea63320824c5bb6e3b3d9b663f1ec9",
-                "multiqc_report.html:md5,086d1dca0359eb50ce67757ee2b254b9",
                 "SAMEA7524440.ERR6688402.bam:md5,6bdbaa469e9085e83267bad5ffcfd437",
                 "SAMEA7524440.ERR6688402.coverage.1k.bed.gz:md5,a3fa6ba7bc9bb3ff287e9ddcba1ec318",
                 "SAMEA7524438.ERR6688599.bam:md5,8d7f43524efbbe712136c35f50e1026f",
