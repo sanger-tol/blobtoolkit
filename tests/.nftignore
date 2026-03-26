@@ -2,5 +2,5 @@ multiqc_report.html
 fastqc/*_fastqc.{html,zip}
 pipeline_info/*.{html,json,txt,yml}
 blobtoolkit/GCA_922984935.2/{meta,summary}.json.gz
-busco/*/short_summary.{json,txt}
+busco/*/*.short_summary.{json,txt}
 busco/*/*.tar.gz

@@ -130,7 +130,7 @@
                 "sanger-tol": {
                     "restructurebuscodir": {
                         "branch": "main",
-                        "git_sha": "2e28234fb0e2970767dab28310c7eb553ad40081",
+                        "git_sha": "8dac7d789fb5ec033c38e69c2553e71cae0dd4c3",
                         "installed_by": ["modules"]
                     }
                 }
