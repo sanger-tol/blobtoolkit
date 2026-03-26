@@ -11,6 +11,11 @@
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/blast/blastn/blast-blastn.diff"
                     },
+                    "blobtk/depth": {
+                        "branch": "master",
+                        "git_sha": "f0ee15907fcece823c1cd5129902405d36108191",
+                        "installed_by": ["modules"]
+                    },
                     "busco/busco": {
                         "branch": "master",
                         "git_sha": "25e280b4e6cac8cf6af580e9823264f5bc83cefa",
