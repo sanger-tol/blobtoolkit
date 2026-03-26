@@ -6,9 +6,8 @@ Changes in 'busco/busco/main.nf':
 +++ modules/nf-core/busco/busco/main.nf
 @@ -1,6 +1,5 @@
  process BUSCO_BUSCO {
--    tag "${meta.id}"
+     tag "${meta.id}"
 -    label 'process_medium'
-+    tag "${meta.id}_${lineage}"
  
      conda "${moduleDir}/environment.yml"
      container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
