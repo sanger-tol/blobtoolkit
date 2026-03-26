@@ -35,7 +35,7 @@ nextflow_process {
 
         then {
 
-            def stable_outputs = getAllFilesFromDir(process.out.clean_busco_dir[0][1], include: ["*.tsv", "short_summary.*"])
+            def stable_outputs = getAllFilesFromDir(process.out.clean_busco_dir[0][1], include: ["*.tsv", "*.short_summary.*"])
             def unstable_outputs = getAllFilesFromDir(process.out.clean_busco_dir[0][1], include: ["*.tar.gz"], relative: true)
 
             assert process.success

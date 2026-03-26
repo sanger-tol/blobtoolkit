@@ -18,38 +18,40 @@ process RESTRUCTUREBUSCODIR {
     task.ext.when == null || task.ext.when
 
     script:
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     mkdir -p ${lineage}
 
-    [ -e "${batch_summary}" ]      && ln -s ../${batch_summary}      ${lineage}/short_summary.tsv
-    [ -e "${short_summary_txt}" ]  && ln -s ../${short_summary_txt}  ${lineage}/short_summary.txt
-    [ -e "${short_summary_json}" ] && ln -s ../${short_summary_json} ${lineage}/short_summary.json
-    [ -e "${full_table}" ]         && ln -s ../${full_table}         ${lineage}/
-    [ -e "${missing_busco_list}" ] && ln -s ../${missing_busco_list} ${lineage}/
+    [ -e "${batch_summary}" ]      && ln -s ../${batch_summary}      ${lineage}/${prefix}.short_summary.tsv
+    [ -e "${short_summary_txt}" ]  && ln -s ../${short_summary_txt}  ${lineage}/${prefix}.short_summary.txt
+    [ -e "${short_summary_json}" ] && ln -s ../${short_summary_json} ${lineage}/${prefix}.short_summary.json
+    [ -e "${full_table}" ]         && ln -s ../${full_table}         ${lineage}/${prefix}.full_table.tsv
+    [ -e "${missing_busco_list}" ] && ln -s ../${missing_busco_list} ${lineage}/${prefix}.missing_busco_list.tsv
 
     if [ -e "${seq_dir}/single_copy_busco_sequences" ]
     then
-        tar czf ${lineage}/single_copy_busco_sequences.tar.gz -C ${seq_dir} single_copy_busco_sequences
-        tar czf ${lineage}/multi_copy_busco_sequences.tar.gz  -C ${seq_dir} multi_copy_busco_sequences
-        tar czf ${lineage}/fragmented_busco_sequences.tar.gz  -C ${seq_dir} fragmented_busco_sequences
+        tar czf ${lineage}/${prefix}.single_copy_busco_sequences.tar.gz -C ${seq_dir} single_copy_busco_sequences
+        tar czf ${lineage}/${prefix}.multi_copy_busco_sequences.tar.gz  -C ${seq_dir} multi_copy_busco_sequences
+        tar czf ${lineage}/${prefix}.fragmented_busco_sequences.tar.gz  -C ${seq_dir} fragmented_busco_sequences
     else
         # Busco was run in --tar mode, the sequences are already compressed
-        ln -s ../${seq_dir}/single_copy_busco_sequences.tar.gz ${lineage}/
-        ln -s ../${seq_dir}/multi_copy_busco_sequences.tar.gz ${lineage}/
-        ln -s ../${seq_dir}/fragmented_busco_sequences.tar.gz ${lineage}/
+        ln -s ../${seq_dir}/single_copy_busco_sequences.tar.gz ${lineage}/${prefix}.single_copy_busco_sequences.tar.gz
+        ln -s ../${seq_dir}/multi_copy_busco_sequences.tar.gz ${lineage}/${prefix}.multi_copy_busco_sequences.tar.gz
+        ln -s ../${seq_dir}/fragmented_busco_sequences.tar.gz ${lineage}/${prefix}.fragmented_busco_sequences.tar.gz
     fi
     """
 
     stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     mkdir -p ${lineage}
-    touch ${lineage}/short_summary.tsv
-    touch ${lineage}/short_summary.txt
-    touch ${lineage}/short_summary.json
-    touch ${lineage}/full_table.tsv
-    touch ${lineage}/missing_busco_list.tsv
-    tar -czf ${lineage}/single_copy_busco_sequences.tar.gz -T /dev/null
-    tar -czf ${lineage}/multi_copy_busco_sequences.tar.gz  -T /dev/null
-    tar -czf ${lineage}/fragmented_busco_sequences.tar.gz  -T /dev/null
+    touch ${lineage}/${prefix}.short_summary.tsv
+    touch ${lineage}/${prefix}.short_summary.txt
+    touch ${lineage}/${prefix}.short_summary.json
+    touch ${lineage}/${prefix}.full_table.tsv
+    touch ${lineage}/${prefix}.missing_busco_list.tsv
+    tar -czf ${lineage}/${prefix}.single_copy_busco_sequences.tar.gz -T /dev/null
+    tar -czf ${lineage}/${prefix}.multi_copy_busco_sequences.tar.gz  -T /dev/null
+    tar -czf ${lineage}/${prefix}.fragmented_busco_sequences.tar.gz  -T /dev/null
     """
 }
