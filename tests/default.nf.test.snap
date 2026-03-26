@@ -2,9 +2,6 @@
     "-profile test": {
         "content": [
             {
-                "BLOBTK_DEPTH": {
-                    "blobtk": "0.5.1"
-                },
                 "BLOBTK_IMAGES": {
                     "blobtk": "0.5.1"
                 },
@@ -775,6 +772,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-03-23T20:12:25.192629522"
+        "timestamp": "2026-03-26T14:39:18.985984034"
     }
 }

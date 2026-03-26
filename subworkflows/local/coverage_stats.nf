@@ -4,7 +4,7 @@
 
 include { SAMTOOLS_VIEW  } from '../../modules/nf-core/samtools/view/main'
 include { SAMTOOLS_INDEX } from '../../modules/nf-core/samtools/index/main'
-include { BLOBTK_DEPTH   } from '../../modules/local/blobtk/depth'
+include { BLOBTK_DEPTH   } from '../../modules/nf-core/blobtk/depth'
 include { FASTAWINDOWS   } from '../../modules/nf-core/fastawindows/main'
 include { PIGZ_COMPRESS  } from '../../modules/nf-core/pigz/compress/main'
 include { CREATE_BED     } from '../../modules/local/create_bed'
@@ -57,7 +57,6 @@ workflow COVERAGE_STATS {
 
     // Calculate coverage
     BLOBTK_DEPTH ( ch_bam_csi )
-    ch_versions = ch_versions.mix ( BLOBTK_DEPTH.out.versions.first() )
 
 
     // Combining  regions_bed in single channel
