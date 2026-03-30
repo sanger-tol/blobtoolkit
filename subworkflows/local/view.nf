@@ -3,7 +3,6 @@
 //
 
 include { BLOBTOOLKIT_SUMMARY } from '../../modules/local/blobtoolkit/summary'
-include { BLOBTK_IMAGES       } from '../../modules/local/blobtk/images'
 include { BLOBTK_PLOT         } from '../../modules/nf-core/blobtk/plot/main'
 
 workflow VIEW {
@@ -23,11 +22,9 @@ workflow VIEW {
 
 
     //
-    // Generate static plots in png/svg format
+    // MODULE: Generate static plots in png/svg format
     //
-    plots = [ "blob", "cumulative", "snail" ]
-
-    plots_v2 = Channel.of(
+    plots = channel.of(
         [
             name: "blob",
             args: "-v blob"
@@ -41,11 +38,6 @@ workflow VIEW {
             args: "-v snail"
         ]
     )
-
-    BLOBTK_IMAGES ( blobdir, plots, params.image_format )
-    ch_versions = ch_versions.mix( BLOBTK_IMAGES.out.versions )
-
-    ch_images = BLOBTK_IMAGES.out.png.mix(BLOBTK_IMAGES.out.svg)
 
     ch_blobtk_plot_input = blobdir
         .combine(plots_v2)
@@ -63,6 +55,8 @@ workflow VIEW {
         ch_blobtk_plot_input.args,
         params.image_format
     )
+
+    ch_images = BLOBTK_PLOT.out.png.mix(BLOBTK_PLOT.out.svg)
 
     emit:
     summary  = BLOBTOOLKIT_SUMMARY.out.json  // channel: [ val(meta), path(json) ]
