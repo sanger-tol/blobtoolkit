@@ -421,15 +421,15 @@
                 "read_mapping",
                 "read_mapping/hic",
                 "read_mapping/hic/mMelMel3_hic",
-                "read_mapping/hic/mMelMel3_hic/mMelMel3_hic.coverage.1k.bed.gz",
+                "read_mapping/hic/mMelMel3_hic/mMelMel3_hic.minimap2.coverage.1k.bed.gz",
                 "read_mapping/illumina",
                 "read_mapping/illumina/mMelMel1",
-                "read_mapping/illumina/mMelMel1/mMelMel1.coverage.1k.bed.gz",
+                "read_mapping/illumina/mMelMel1/mMelMel1.minimap2.coverage.1k.bed.gz",
                 "read_mapping/illumina/mMelMel2",
-                "read_mapping/illumina/mMelMel2/mMelMel2.coverage.1k.bed.gz",
+                "read_mapping/illumina/mMelMel2/mMelMel2.minimap2.coverage.1k.bed.gz",
                 "read_mapping/ont",
                 "read_mapping/ont/mMelMel3_ont",
-                "read_mapping/ont/mMelMel3_ont/mMelMel3_ont.coverage.1k.bed.gz"
+                "read_mapping/ont/mMelMel3_ont/mMelMel3_ont.minimap2.coverage.1k.bed.gz"
             ],
             [
                 "GCA.922984935.2.mononuc.1k.tsv.gz:md5,fcbad31a372540f6cf3765c872e5fdb4",
@@ -691,16 +691,16 @@
                 "missing_busco_list.tsv:md5,d4004c0cc9520a4b99b41c155bb6161a",
                 "full_table.tsv:md5,68154880121436bf71d68ef50b212869",
                 "missing_busco_list.tsv:md5,28015fcb3171212f555aa0800ea6254a",
-                "mMelMel3_hic.coverage.1k.bed.gz:md5,0d03664e2f47d0e66b257ae9b39cebb3",
-                "mMelMel1.coverage.1k.bed.gz:md5,3a112390bc16cadeaf87e0eddaddb069",
-                "mMelMel2.coverage.1k.bed.gz:md5,13e32ac3d05e190408356488462c3ee1",
-                "mMelMel3_ont.coverage.1k.bed.gz:md5,3cd28f4bbfc849a30320715c23606406"
+                "mMelMel3_hic.minimap2.coverage.1k.bed.gz:md5,0d03664e2f47d0e66b257ae9b39cebb3",
+                "mMelMel1.minimap2.coverage.1k.bed.gz:md5,3a112390bc16cadeaf87e0eddaddb069",
+                "mMelMel2.minimap2.coverage.1k.bed.gz:md5,13e32ac3d05e190408356488462c3ee1",
+                "mMelMel3_ont.minimap2.coverage.1k.bed.gz:md5,3cd28f4bbfc849a30320715c23606406"
             ]
         ],
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "25.04.2"
         },
-        "timestamp": "2026-03-24T17:00:27.095255"
+        "timestamp": "2026-03-30T18:06:35.016259"
     }
 }
