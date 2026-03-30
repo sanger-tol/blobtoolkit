@@ -430,19 +430,15 @@
                 "read_mapping",
                 "read_mapping/hic",
                 "read_mapping/hic/mMelMel3_hic",
-                "read_mapping/hic/mMelMel3_hic/mMelMel3_hic",
-                "read_mapping/hic/mMelMel3_hic/mMelMel3_hic/mMelMel3_hic.coverage.1k.bed.gz",
+                "read_mapping/hic/mMelMel3_hic/mMelMel3_hic.coverage.1k.bed.gz",
                 "read_mapping/illumina",
                 "read_mapping/illumina/mMelMel1",
-                "read_mapping/illumina/mMelMel1/mMelMel1",
-                "read_mapping/illumina/mMelMel1/mMelMel1/mMelMel1.coverage.1k.bed.gz",
+                "read_mapping/illumina/mMelMel1/mMelMel1.coverage.1k.bed.gz",
                 "read_mapping/illumina/mMelMel2",
-                "read_mapping/illumina/mMelMel2/mMelMel2",
-                "read_mapping/illumina/mMelMel2/mMelMel2/mMelMel2.coverage.1k.bed.gz",
+                "read_mapping/illumina/mMelMel2/mMelMel2.coverage.1k.bed.gz",
                 "read_mapping/ont",
                 "read_mapping/ont/mMelMel3_ont",
-                "read_mapping/ont/mMelMel3_ont/mMelMel3_ont",
-                "read_mapping/ont/mMelMel3_ont/mMelMel3_ont/mMelMel3_ont.coverage.1k.bed.gz"
+                "read_mapping/ont/mMelMel3_ont/mMelMel3_ont.coverage.1k.bed.gz"
             ],
             [
                 "GCA.922984935.2.mononuc.1k.tsv.gz:md5,fcbad31a372540f6cf3765c872e5fdb4",
