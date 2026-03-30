@@ -121,6 +121,7 @@ workflow INPUT_CHECK {
         read_files = channel
             .fromList(samplesheetToList(samplesheet, "assets/schema_input.json"))
             .map { row -> check_data_channel(row) }
+            .map { meta, reads -> [ meta + [id : meta.id ?: "${meta.specimen}.${meta.run}"], reads ] }
     }
 
 

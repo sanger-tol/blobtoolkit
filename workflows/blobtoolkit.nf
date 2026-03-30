@@ -71,20 +71,15 @@ workflow BLOBTOOLKIT {
     )
     ch_versions         = ch_versions.mix ( INPUT_CHECK.out.versions )
 
-    input_reads = INPUT_CHECK.out.reads.map{
-        meta, reads ->
-        [ meta + [id : meta.id ?: "${meta.specimen}.${meta.run}"], reads ]
-    }
-
     //
     // SUBWORKFLOW: Optional read alignment
     //
     if ( params.align ) {
-        MINIMAP2_ALIGNMENT ( input_reads, ch_prepared_genome )
+        MINIMAP2_ALIGNMENT ( INPUT_CHECK.out.reads, ch_prepared_genome )
         ch_versions     = ch_versions.mix ( MINIMAP2_ALIGNMENT.out.versions )
         ch_aligned      = MINIMAP2_ALIGNMENT.out.aln
     } else {
-        ch_aligned      = input_reads
+        ch_aligned      = INPUT_CHECK.out.reads
     }
 
     //
