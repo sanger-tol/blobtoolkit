@@ -40,7 +40,7 @@ workflow VIEW {
     )
 
     ch_blobtk_plot_input = blobdir
-        .combine(plots_v2)
+        .combine(plots)
         .multiMap { meta, local, btk_args ->
             fasta: [meta, []]
             local_path: local
