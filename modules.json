@@ -16,6 +16,11 @@
                         "git_sha": "f0ee15907fcece823c1cd5129902405d36108191",
                         "installed_by": ["modules"]
                     },
+                    "blobtk/plot": {
+                        "branch": "master",
+                        "git_sha": "3f6bf4bfeffac7de5ee9f1b20fd7b479d4f60dd4",
+                        "installed_by": ["modules"]
+                    },
                     "busco/busco": {
                         "branch": "master",
                         "git_sha": "25e280b4e6cac8cf6af580e9823264f5bc83cefa",
