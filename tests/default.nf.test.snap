@@ -430,15 +430,15 @@
                 "read_mapping",
                 "read_mapping/hic",
                 "read_mapping/hic/mMelMel3_hic",
-                "read_mapping/hic/mMelMel3_hic/mMelMel3_hic.minimap2.coverage.1k.bed.gz",
+                "read_mapping/hic/mMelMel3_hic/mMelMel3_hic.coverage.1k.bed.gz",
                 "read_mapping/illumina",
                 "read_mapping/illumina/mMelMel1",
-                "read_mapping/illumina/mMelMel1/mMelMel1.minimap2.coverage.1k.bed.gz",
+                "read_mapping/illumina/mMelMel1/mMelMel1.coverage.1k.bed.gz",
                 "read_mapping/illumina/mMelMel2",
-                "read_mapping/illumina/mMelMel2/mMelMel2.minimap2.coverage.1k.bed.gz",
+                "read_mapping/illumina/mMelMel2/mMelMel2.coverage.1k.bed.gz",
                 "read_mapping/ont",
                 "read_mapping/ont/mMelMel3_ont",
-                "read_mapping/ont/mMelMel3_ont/mMelMel3_ont.minimap2.coverage.1k.bed.gz"
+                "read_mapping/ont/mMelMel3_ont/mMelMel3_ont.coverage.1k.bed.gz"
             ],
             [
                 "GCA.922984935.2.mononuc.1k.tsv.gz:md5,fcbad31a372540f6cf3765c872e5fdb4",
@@ -709,10 +709,10 @@
                 "full_table.tsv:md5,8b3eca8bbf098b602ad2a17b9da77532",
                 "missing_busco_list.tsv:md5,d5870a7bc71baad79db38e5f3eb546db",
                 "short_summary.tsv:md5,1b63bbba649e4001e50cb44d4d967366",
-                "mMelMel3_hic.minimap2.coverage.1k.bed.gz:md5,0d03664e2f47d0e66b257ae9b39cebb3",
-                "mMelMel1.minimap2.coverage.1k.bed.gz:md5,3a112390bc16cadeaf87e0eddaddb069",
-                "mMelMel2.minimap2.coverage.1k.bed.gz:md5,13e32ac3d05e190408356488462c3ee1",
-                "mMelMel3_ont.minimap2.coverage.1k.bed.gz:md5,3cd28f4bbfc849a30320715c23606406"
+                "mMelMel3_hic.coverage.1k.bed.gz:md5,0d03664e2f47d0e66b257ae9b39cebb3",
+                "mMelMel1.coverage.1k.bed.gz:md5,3a112390bc16cadeaf87e0eddaddb069",
+                "mMelMel2.coverage.1k.bed.gz:md5,13e32ac3d05e190408356488462c3ee1",
+                "mMelMel3_ont.coverage.1k.bed.gz:md5,3cd28f4bbfc849a30320715c23606406"
             ]
         ],
         "meta": {
