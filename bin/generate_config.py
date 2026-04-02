@@ -60,6 +60,7 @@ def parse_args(args=None):
     parser.add_argument("--blastx", help="Path to the blastx database", required=True)
     parser.add_argument("--blastn", help="Path to the blastn database", required=True)
     parser.add_argument("--taxdump", help="Path to the taxonomy database", required=True)
+    parser.add_argument("--window_size", type=int, default=1000, help="Window size (in base pairs) for per-window statistics.")
     parser.add_argument("--version", action="version", version="%(prog)s 2.0")
     args = parser.parse_args(args)
 
@@ -265,6 +266,7 @@ def print_yaml(
     blastx,
     blastn,
     taxdump,
+    window_size: int = 1000,
 ):
     data = {
         "assembly": assembly_info,
@@ -278,7 +280,7 @@ def print_yaml(
             "blast_max_chunks": 10,
             "blast_min_length": 1000,
             "blast_overlap": 0,
-            "stats_chunk": 1000,
+            "stats_chunk": window_size,
             "stats_windows": [0.1, 0.01, 100000, 1000000],
             "taxdump": taxdump,
             "tmp": "/tmp",
@@ -394,6 +396,7 @@ def main(args=None):
         args.blastx,
         args.blastn,
         args.taxdump,
+        args.window_size,
     )
     print_csv(f"{args.output_prefix}.csv", taxon_id, odb_version, odb_arr)
 

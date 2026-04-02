@@ -12,7 +12,7 @@
                 "description": "Sample identifier",
                 "pattern": "^\\S+$",
                 "errorMessage": "Sample name must be unique, cannot contain spaces, and is required when specimen/run are not provided",
-                "meta": ["id"]
+                "meta": ["id", "sample"]
             },
             "specimen": {
                 "type": "string",
