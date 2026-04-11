@@ -56,6 +56,7 @@ def parse_args(args=None):
     parser.add_argument("--read_type", action="append", help="Type of a read set")
     parser.add_argument("--read_layout", action="append", help="Layout of a read set")
     parser.add_argument("--read_path", action="append", help="Path of a read set")
+    parser.add_argument("--revision", type=int, help="Requested rvision (version) of the output blobDir")
     parser.add_argument("--blastp", help="Path to the blastp database", required=True)
     parser.add_argument("--blastx", help="Path to the blastx database", required=True)
     parser.add_argument("--blastn", help="Path to the blastn database", required=True)
@@ -261,6 +262,7 @@ def print_yaml(
     taxon_info: TaxonInfo,
     classification: typing.Dict[str, str],
     reads,
+    revision,
     blastp,
     blastx,
     blastn,
@@ -272,7 +274,7 @@ def print_yaml(
             "paired": [],
             "single": [],
         },
-        "revision": 1,
+        "revision": revision,
         "settings": {
             "blast_chunk": 100000,
             "blast_max_chunks": 10,
@@ -390,6 +392,7 @@ def main(args=None):
         taxon_info,
         classification,
         reads,
+        args.revision,
         args.blastp,
         args.blastx,
         args.blastn,

@@ -5,6 +5,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [[0.11.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.0)] – – [2026-04-]
 
+### Enhancements & fixes
+
+- Added an option to control the version ("revision") of the blobDir.
+  Use when rerunning the pipeline on an assembly.
+
+### Parameters
+
+| Old parameter | New parameter |
+| ------------- | ------------- |
+|               | --revision    |
+
 ### Software dependencies
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
