@@ -81,7 +81,7 @@
                     "windowstats_input.py": "1.0.0"
                 },
                 "Workflow": {
-                    "sanger-tol/blobtoolkit": "v0.10.1"
+                    "sanger-tol/blobtoolkit": "v0.11.0"
                 }
             },
             [
