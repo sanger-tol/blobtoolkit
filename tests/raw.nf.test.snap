@@ -91,6 +91,7 @@
             },
             [
                 "base_content",
+                "base_content/GCA.922984935.2.freq.1k.tsv.gz",
                 "base_content/k1",
                 "base_content/k1/GCA.922984935.2.mononuc.1k.tsv.gz",
                 "base_content/k2",
@@ -378,6 +379,7 @@
                 "repeats/windowmasker/GCA_922984935.2.obinary"
             ],
             [
+                "GCA.922984935.2.freq.1k.tsv.gz:md5,2285d7a7a04ad51284d45a863d61a629",
                 "GCA.922984935.2.mononuc.1k.tsv.gz:md5,2ea0f8ff12a46ef6999c2b0941d38698",
                 "GCA.922984935.2.dinuc.1k.tsv.gz:md5,c57fffa830caf586b88be8ced7d0075d",
                 "GCA.922984935.2.trinuc.1k.tsv.gz:md5,1c1ee422d1ca25ead7bc3d911f861d93",
@@ -601,11 +603,11 @@
                 "full_table.tsv:md5,3fdd6f0cf1348925ff46d1718af4a5f3",
                 "missing_busco_list.tsv:md5,b47cb4623ce1dba7e932ccf327c7f6eb",
                 "short_summary.tsv:md5,fdea63320824c5bb6e3b3d9b663f1ec9",
-                "SAMEA7524440.ERR6688402.minimap2.bam:md5,6bdbaa469e9085e83267bad5ffcfd437",
+                "SAMEA7524440.ERR6688402.minimap2.bam:md5,f4d262e171ecd75188fe4d22e90b7cbf",
                 "SAMEA7524440.ERR6688402.minimap2.coverage.1k.bed.gz:md5,a3fa6ba7bc9bb3ff287e9ddcba1ec318",
-                "SAMEA7524438.ERR6688599.minimap2.bam:md5,8d7f43524efbbe712136c35f50e1026f",
+                "SAMEA7524438.ERR6688599.minimap2.bam:md5,c1462df3bcf88dbbfe74c851e04a9151",
                 "SAMEA7524438.ERR6688599.minimap2.coverage.1k.bed.gz:md5,39ff83fc80540efd6c3e446f6e5c9d3c",
-                "SAMEA7524439.ERR6688600.minimap2.bam:md5,282ddd4264c15aa801e634274d511a9d",
+                "SAMEA7524439.ERR6688600.minimap2.bam:md5,a7ce2ac07516607419bea728431da4d6",
                 "SAMEA7524439.ERR6688600.minimap2.coverage.1k.bed.gz:md5,432fc8d88f38d3c4cbca6114ff14cc32",
                 "GCA_922984935.2.fasta:md5,9ccc14f99004d85bdc29aea036af34e3",
                 "GCA_922984935.2.obinary:md5,571f465e27e107f6e4bb3fa2e833250b"
@@ -615,6 +617,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.2"
         },
-        "timestamp": "2026-03-24T17:01:49.326072"
+        "timestamp": "2026-04-13T11:23:31.183464"
     }
 }
