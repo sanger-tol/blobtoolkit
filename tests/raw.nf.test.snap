@@ -2,6 +2,9 @@
     "-profile test_raw": {
         "content": [
             {
+                "BLOBTK_DEPTH": {
+                    "blobtk": "0.7.1"
+                },
                 "BLOBTK_IMAGES": {
                     "blobtk": "0.5.1"
                 },
@@ -29,14 +32,56 @@
                 "BLOBTOOLKIT_WINDOWSTATS": {
                     "blobtoolkit": "4.4.6"
                 },
+                "BUSCO_BUSCO": {
+                    "busco": "6.0.0"
+                },
                 "CREATE_BED": {
                     "create_bed": 1.03
+                },
+                "DIAMOND_BLASTP": {
+                    "diamond": "2.1.23"
+                },
+                "DIAMOND_BLASTX": {
+                    "diamond": "2.1.16"
+                },
+                "FASTAWINDOWS": {
+                    "fasta_windows": "0.2.4"
                 },
                 "GENERATE_CONFIG": {
                     "generate_config.py": 2.0
                 },
+                "GUNZIP": {
+                    "gunzip": 1.13
+                },
+                "MINIMAP2_HIC": {
+                    "minimap2": "2.29-r1283"
+                },
+                "MINIMAP2_ILMN": {
+                    "minimap2": "2.29-r1283"
+                },
                 "NOHIT_LIST": {
                     "nohit_list": 1.0
+                },
+                "PIGZ_COMPRESS": {
+                    "pigz": 2.8
+                },
+                "RESTRUCTUREBUSCODIR": {
+                    "restructurebuscodir": 1.0
+                },
+                "SAMTOOLS_FLAGSTAT": {
+                    "samtools": "1.23.1"
+                },
+                "SAMTOOLS_INDEX": {
+                    "samtools": "1.23.1"
+                },
+                "UNTAR": {
+                    "untar": 1.34
+                },
+                "WINDOWMASKER_MKCOUNTS": {
+                    "windowmasker": "1.0.0"
+                },
+                "WINDOWMASKER_USTAT": {
+                    "windowmasker": "1.0.0"
                 },
                 "WINDOWSTATS_INPUT": {
                     "windowstats_input.py": "1.0.0"
@@ -563,6 +608,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-03-26T17:08:15.095448756"
+        "timestamp": "2026-04-13T18:05:54.982039389"
     }
 }
