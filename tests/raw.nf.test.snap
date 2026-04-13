@@ -53,6 +53,9 @@
                 "GUNZIP": {
                     "gunzip": 1.13
                 },
+                "MINIMAP2_CCS": {
+                    "minimap2": "2.29-r1283"
+                },
                 "MINIMAP2_HIC": {
                     "minimap2": "2.29-r1283"
                 },
@@ -268,16 +271,16 @@
                 "blobtoolkit/GCA_922984935.2/mMelMel1_cov_windows.json.gz",
                 "blobtoolkit/GCA_922984935.2/mMelMel1_cov_windows_100000.json.gz",
                 "blobtoolkit/GCA_922984935.2/mMelMel1_cov_windows_1000000.json.gz",
-                "blobtoolkit/GCA_922984935.2/mMelMel2_cov.json.gz",
-                "blobtoolkit/GCA_922984935.2/mMelMel2_cov_stats.json.gz",
-                "blobtoolkit/GCA_922984935.2/mMelMel2_cov_windows.json.gz",
-                "blobtoolkit/GCA_922984935.2/mMelMel2_cov_windows_100000.json.gz",
-                "blobtoolkit/GCA_922984935.2/mMelMel2_cov_windows_1000000.json.gz",
                 "blobtoolkit/GCA_922984935.2/mMelMel3_cov.json.gz",
                 "blobtoolkit/GCA_922984935.2/mMelMel3_cov_stats.json.gz",
                 "blobtoolkit/GCA_922984935.2/mMelMel3_cov_windows.json.gz",
                 "blobtoolkit/GCA_922984935.2/mMelMel3_cov_windows_100000.json.gz",
                 "blobtoolkit/GCA_922984935.2/mMelMel3_cov_windows_1000000.json.gz",
+                "blobtoolkit/GCA_922984935.2/mMelMel3_pacbio_cov.json.gz",
+                "blobtoolkit/GCA_922984935.2/mMelMel3_pacbio_cov_stats.json.gz",
+                "blobtoolkit/GCA_922984935.2/mMelMel3_pacbio_cov_windows.json.gz",
+                "blobtoolkit/GCA_922984935.2/mMelMel3_pacbio_cov_windows_100000.json.gz",
+                "blobtoolkit/GCA_922984935.2/mMelMel3_pacbio_cov_windows_1000000.json.gz",
                 "blobtoolkit/GCA_922984935.2/meta.json.gz",
                 "blobtoolkit/GCA_922984935.2/n.json.gz",
                 "blobtoolkit/GCA_922984935.2/n_stats.json.gz",
@@ -362,8 +365,9 @@
                 "read_mapping/illumina",
                 "read_mapping/illumina/mMelMel1.bam",
                 "read_mapping/illumina/mMelMel1.coverage.1k.bed.gz",
-                "read_mapping/illumina/mMelMel2.bam",
-                "read_mapping/illumina/mMelMel2.coverage.1k.bed.gz",
+                "read_mapping/pacbio",
+                "read_mapping/pacbio/mMelMel3_pacbio.bam",
+                "read_mapping/pacbio/mMelMel3_pacbio.coverage.1k.bed.gz",
                 "repeats",
                 "repeats/windowmasker",
                 "repeats/windowmasker/GCA_922984935.2.fasta",
@@ -544,16 +548,16 @@
                 "mMelMel1_cov_windows.json.gz:md5,37c8ae773ce81634a2b4993e516097ca",
                 "mMelMel1_cov_windows_100000.json.gz:md5,f5ba43dfdfb788537fcf04ffaac0ec65",
                 "mMelMel1_cov_windows_1000000.json.gz:md5,734f4984b626fba18c383029106418b6",
-                "mMelMel2_cov.json.gz:md5,525c4925ee4058fff73db43547474981",
-                "mMelMel2_cov_stats.json.gz:md5,f6a29081d16b5f7893632e3e5e21e74f",
-                "mMelMel2_cov_windows.json.gz:md5,96b78b5186ed0cd14c6b6fe3f1b19358",
-                "mMelMel2_cov_windows_100000.json.gz:md5,88a2b2e98049f514256acbc1404f1f91",
-                "mMelMel2_cov_windows_1000000.json.gz:md5,e25b65e56c11071448020d7aff5f1db8",
                 "mMelMel3_cov.json.gz:md5,13d08c07c97a4348fe3f0b63b3850dd2",
                 "mMelMel3_cov_stats.json.gz:md5,32f72cc0912d16479350dd5e9ef8c3eb",
                 "mMelMel3_cov_windows.json.gz:md5,5cd6fa21150b2d545a201b00b2acb1a9",
                 "mMelMel3_cov_windows_100000.json.gz:md5,52afc0385766a3f88efb178f8668de4a",
                 "mMelMel3_cov_windows_1000000.json.gz:md5,de1b4225946d5868758dba58667ee30d",
+                "mMelMel3_pacbio_cov.json.gz:md5,49d7ab34f9b3174cfef693e190eee810",
+                "mMelMel3_pacbio_cov_stats.json.gz:md5,b651f56614a49cc10ff67195a5c9781d",
+                "mMelMel3_pacbio_cov_windows.json.gz:md5,b121921ac2415cc78c600f49abf11e80",
+                "mMelMel3_pacbio_cov_windows_100000.json.gz:md5,5a662b985e1a998041482937b90f7ff8",
+                "mMelMel3_pacbio_cov_windows_1000000.json.gz:md5,da145790a0d826be5c9317a72e153f30",
                 "n.json.gz:md5,6e473436cfdc6db17c039bd0ab936cf0",
                 "n_stats.json.gz:md5,89f1c00382ea35e5193dd49d05a1c44e",
                 "n_windows.json.gz:md5,55acc5e29b5f4fb10dc8dbeccbbffb5f",
@@ -576,7 +580,7 @@
                 "tetrapoda_odb10_count_windows.json.gz:md5,7bd6f953b73e4de0fa514261c1916491",
                 "tetrapoda_odb10_count_windows_100000.json.gz:md5,371f31281e1b55140ded38820ee5bfca",
                 "tetrapoda_odb10_count_windows_1000000.json.gz:md5,fca9e3857f6bad1aca1bd8170c187859",
-                "GCA_922984935.2.blob.png:md5,e0010feb9f829b1ba82d57dab92760d0",
+                "GCA_922984935.2.blob.png:md5,610b83637c80eca41c09e86750e440ae",
                 "GCA_922984935.2.cumulative.png:md5,205c26f2ac2d8ee942f5f53c576e5ab2",
                 "GCA_922984935.2.snail.png:md5,5611c6e48e7b4b273058814eca14f281",
                 "GCA_922984935.2_archaea_odb10.full_table.tsv:md5,be1ed7727a5887d5e6ea3c56f7a85305",
@@ -598,8 +602,8 @@
                 "mMelMel3.coverage.1k.bed.gz:md5,a3fa6ba7bc9bb3ff287e9ddcba1ec318",
                 "mMelMel1.bam:md5,b8aaba9d4b634d364d38e5e52185fddb",
                 "mMelMel1.coverage.1k.bed.gz:md5,5be87cb138968507fe771ffee5161175",
-                "mMelMel2.bam:md5,4e7a16d85d2b16d214b7497044c38049",
-                "mMelMel2.coverage.1k.bed.gz:md5,5c150ab4b8b6eb0816535c56b702e777",
+                "mMelMel3_pacbio.bam:md5,e31b78ab7aa749daa32eaec817fc2ada",
+                "mMelMel3_pacbio.coverage.1k.bed.gz:md5,bc8906fd3cd6c66dce14c17b399d80b1",
                 "GCA_922984935.2.fasta:md5,9ccc14f99004d85bdc29aea036af34e3",
                 "GCA_922984935.2.obinary:md5,571f465e27e107f6e4bb3fa2e833250b"
             ]
@@ -608,6 +612,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-04-13T18:05:54.982039389"
+        "timestamp": "2026-04-14T12:07:05.559884186"
     }
 }
