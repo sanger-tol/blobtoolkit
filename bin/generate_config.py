@@ -60,7 +60,7 @@ def parse_args(args=None):
     parser.add_argument("--blastx", help="Path to the blastx database", required=True)
     parser.add_argument("--blastn", help="Path to the blastn database", required=True)
     parser.add_argument("--taxdump", help="Path to the taxonomy database", required=True)
-    parser.add_argument("--window_size", type=int, default=1000, help="Window size (in base pairs) for per-window statistics.")
+    parser.add_argument("--window_size", type=int, help="Window size (in base pairs) for per-window statistics.")
     parser.add_argument("--version", action="version", version="%(prog)s 2.0")
     args = parser.parse_args(args)
 
@@ -266,7 +266,7 @@ def print_yaml(
     blastx,
     blastn,
     taxdump,
-    window_size: int = 1000,
+    window_size: int,
 ):
     data = {
         "assembly": assembly_info,
