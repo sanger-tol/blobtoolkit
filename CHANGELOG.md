@@ -31,6 +31,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `.nin` file, for instance when multiple databases are mixed up in
   the same directory.
 
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own [Biocontainer](https://biocontainers.pro/#/registry). This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference. Only `Docker` or `Singularity` containers are supported, `conda` is not supported.
+
+| Dependency | Old version | New version |
+| ---------- | ----------- | ----------- |
+| diamond    | 2.1.8       | 2.1.16      |
+
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
+
 ### Parameters
 
 | Old parameter | New parameter       |
@@ -58,6 +68,8 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | ---------- | ----------- | ----------- |
 | busco      | 5.8.3       | 6.0.0       |
 
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
+
 ## [[0.8.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.8.0)] – Sprigatito – [2025-05-19]
 
 ### Enhancements & fixes
@@ -76,6 +88,8 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | ----------- | ----------- | ----------- |
 | blobtoolkit | 4.4.4       | 4.4.6       |
 | busco       | 5.7.1       | 5.8.3       |
+
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
 
 ### Parameters
 
@@ -98,6 +112,8 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | Dependency  | Old version | New version |
 | ----------- | ----------- | ----------- |
 | blobtoolkit | 4.4.4       | 4.4.5       |
+
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
 
 ## [[0.7.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.7.0)] – Psyduck – [2025-03-19]
 
@@ -127,8 +143,11 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | blast       | 2.14.1 and 2.15.0 | only 2.15.0     |
 | blobtoolkit | 4.3.9             | 4.4.4           |
 | busco       | 5.5.0             | 5.7.1           |
+| minimap2    | 2.24              | 2.28            |
 | multiqc     | 1.20 and 1.21     | 1.20 and 1.25.1 |
 | samtools    | 1.18 and 1.19.2   | 1.20 and 1.21   |
+
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
 
 ### Parameters
 
@@ -174,6 +193,8 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | Dependency | Old version | New version |
 | ---------- | ----------- | ----------- |
 | goat       | 0.2.5       |             |
+
+> **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
 
 ## [[0.5.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.5.1)] – Snorlax (patch 1) – [2024-08-22]
 
