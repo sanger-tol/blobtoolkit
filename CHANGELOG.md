@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Enhancements & fixes
 
-- Updated the instructions for building the Uniprot Reference Proteomes
+- Updated the instructions for building the UniProt Reference Proteomes
   database to accommodate duplicated sequences
 
 ## [[0.10.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.10.0)] – Onix – [2026-02-12]
