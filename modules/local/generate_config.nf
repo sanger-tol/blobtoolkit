@@ -42,6 +42,7 @@ process GENERATE_CONFIG {
         $accession_params \\
         --nt $blastn \\
         $input_reads \\
+        --revision ${params.revision} \\
         $input_databases \\
         --output_prefix ${prefix} \\
         $args
