@@ -1,4 +1,7 @@
-Changes in module 'nf-core/seqtk/subseq'
+Changes in component 'nf-core/seqtk/subseq'
+'modules/nf-core/seqtk/subseq/environment.yml' is unchanged
+'modules/nf-core/seqtk/subseq/meta.yml' is unchanged
+Changes in 'seqtk/subseq/main.nf':
 --- modules/nf-core/seqtk/subseq/main.nf
 +++ modules/nf-core/seqtk/subseq/main.nf
 @@ -12,7 +12,7 @@
@@ -7,7 +10,7 @@ Changes in module 'nf-core/seqtk/subseq'
      output:
 -    tuple val(meta), path("*.gz"),  emit: sequences
 +    tuple val(meta), path("*.${ext}"),  emit: sequences
-     path "versions.yml",            emit: versions
+     tuple val("${task.process}"), val('seqtk'), eval("seqtk 2>&1 | sed -n 's/^Version: //p'"), emit: versions_seqtk, topic: versions
  
      when:
 @@ -21,7 +21,7 @@
@@ -19,17 +22,14 @@ Changes in module 'nf-core/seqtk/subseq'
      if ("$sequences" ==~ /.+\.fq|.+\.fq.gz|.+\.fastq|.+\.fastq.gz/) {
          ext = "fq"
      }
-@@ -30,8 +30,7 @@
+@@ -30,17 +30,16 @@
          subseq \\
          $args \\
          $sequences \\
 -        $filter_list | \\
 -        gzip --no-name > ${sequences}${prefix}.${ext}.gz
 +        $filter_list > ${sequences}${prefix}.${ext}
- 
-     cat <<-END_VERSIONS > versions.yml
-     "${task.process}":
-@@ -41,12 +40,12 @@
+     """
  
      stub:
      def prefix = task.ext.prefix ?: "${meta.id}"
@@ -41,8 +41,10 @@ Changes in module 'nf-core/seqtk/subseq'
      """
 -    echo "" | gzip > ${sequences}${prefix}.${ext}.gz
 +    touch ${sequences}${prefix}.${ext}
- 
-     cat <<-END_VERSIONS > versions.yml
-     "${task.process}":
+     """
+ }
 
+'modules/nf-core/seqtk/subseq/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/seqtk/subseq/tests/standard.config' is unchanged
+'modules/nf-core/seqtk/subseq/tests/main.nf.test' is unchanged
 ************************************************************

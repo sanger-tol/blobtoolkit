@@ -1,0 +1,56 @@
+{
+    "Undibacterium_unclassified genome [fasta] w/ index": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.interval:md5,4643a7c3b07e980844758b750305d0d2"
+                    ]
+                ],
+                "repeat_intervals": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.interval:md5,4643a7c3b07e980844758b750305d0d2"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-03-11T15:22:05.946463897"
+    },
+    "Undibacterium_unclassified genome - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.interval:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "repeat_intervals": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.interval:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-03-11T15:22:34.478677095"
+    }
+}

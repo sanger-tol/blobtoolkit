@@ -32,7 +32,6 @@ workflow RUN_BLASTX {
     def outext = 'txt'
     def cols   = 'qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore'
     DIAMOND_BLASTX ( BLOBTOOLKIT_CHUNK.out.chunks, blastx, outext, cols, taxon_id )
-    ch_versions = ch_versions.mix ( DIAMOND_BLASTX.out.versions.first() )
 
 
     //

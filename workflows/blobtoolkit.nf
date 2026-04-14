@@ -7,7 +7,6 @@
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { PREPARE_GENOME     } from '../subworkflows/local/prepare_genome'
 include { MINIMAP2_ALIGNMENT } from '../subworkflows/local/minimap_alignment'
 include { INPUT_CHECK        } from '../subworkflows/local/input_check'
 include { COVERAGE_STATS     } from '../subworkflows/local/coverage_stats'
@@ -18,6 +17,8 @@ include { COLLATE_STATS      } from '../subworkflows/local/collate_stats'
 include { BLOBTOOLS          } from '../subworkflows/local/blobtools'
 include { VIEW               } from '../subworkflows/local/view'
 include { FINALISE_BLOBDIR   } from '../subworkflows/local/finalise_blobdir'
+
+include { REPEAT_MASKING     } from '../subworkflows/sanger-tol/repeat_masking/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,22 +49,11 @@ workflow BLOBTOOLKIT {
 
 
     //
-    // SUBWORKFLOW: Prepare genome for downstream processing
-    //
-    PREPARE_GENOME ( ch_fasta )
-    ch_versions         = ch_versions.mix ( PREPARE_GENOME.out.versions )
-
-
-    // NOTE: Reference genome to be used (as a value channel) throughout the pipeline
-    ch_prepared_genome  = PREPARE_GENOME.out.genome.first()
-
-
-    //
-    // SUBWORKFLOW: Check samplesheet and create channels for downstream analysis
+    // SUBWORKFLOW: Check samplesheet, prepare genome, and create channels for downstream analysis
     //
     INPUT_CHECK (
         params.input,
-        ch_prepared_genome,
+        ch_fasta, // GENERATE_CONFIG needs the path of the initial file
         params.taxon,
         channel.value(params.busco_lineages ?: []),
         params.lineage_tax_ids,
@@ -73,11 +63,26 @@ workflow BLOBTOOLKIT {
 
 
     //
+    // SUBWORKFLOW: Mask the genome if needed
+    //
+    ch_genome = INPUT_CHECK.out.genome
+
+    if ( params.mask ) {
+        REPEAT_MASKING ( ch_genome )
+
+        ch_genome = REPEAT_MASKING.out.repeat_intervals
+    }
+
+
+    // NOTE: Reference genome to be used (as a value channel) throughout the pipeline
+    ch_prepared_genome = ch_genome.first()
+
+
+    //
     // SUBWORKFLOW: Optional read alignment
     //
     if ( params.align ) {
         MINIMAP2_ALIGNMENT ( INPUT_CHECK.out.reads, ch_prepared_genome )
-        ch_versions     = ch_versions.mix ( MINIMAP2_ALIGNMENT.out.versions )
         ch_aligned      = MINIMAP2_ALIGNMENT.out.aln
     } else {
         ch_aligned      = INPUT_CHECK.out.reads
@@ -172,7 +177,25 @@ workflow BLOBTOOLKIT {
     //
     // Collate and save software versions
     //
-    softwareVersionsToYAML(ch_versions)
+    def topic_versions = Channel.topic("versions")
+        .distinct()
+        .branch { entry ->
+            versions_file: entry instanceof Path
+            versions_tuple: true
+        }
+
+    def topic_versions_string = topic_versions.versions_tuple
+        .map { process, tool, version ->
+            [ process[process.lastIndexOf(':')+1..-1], "  ${tool}: ${version}" ]
+        }
+        .groupTuple(by:0)
+        .map { process, tool_versions ->
+            tool_versions.unique().sort()
+            "${process}:\n${tool_versions.join('\n')}"
+        }
+
+    softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
+        .mix(topic_versions_string)
         .collectFile(
             storeDir: "${params.outdir}/pipeline_info",
             name:  'blobtoolkit_software_'  + 'mqc_'  + 'versions.yml',

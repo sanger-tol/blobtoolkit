@@ -16,8 +16,6 @@ workflow MINIMAP2_ALIGNMENT {
 
 
     main:
-    ch_versions = channel.empty()
-
 
     // Branch input by sequencing type
     ch_input = input
@@ -32,19 +30,14 @@ workflow MINIMAP2_ALIGNMENT {
 
     // Align with Minimap2
     MINIMAP2_HIC ( ch_input.hic, fasta, true, false, false, false )
-    ch_versions = ch_versions.mix(MINIMAP2_HIC.out.versions.first())
 
     MINIMAP2_ILMN ( ch_input.illumina, fasta, true, false, false, false )
-    ch_versions = ch_versions.mix(MINIMAP2_ILMN.out.versions.first())
 
     MINIMAP2_CCS ( ch_input.pacbio, fasta, true, false, false, false )
-    ch_versions = ch_versions.mix(MINIMAP2_CCS.out.versions.first())
 
     MINIMAP2_CLR ( ch_input.clr, fasta, true, false, false, false )
-    ch_versions = ch_versions.mix(MINIMAP2_CLR.out.versions.first())
 
     MINIMAP2_ONT ( ch_input.ont, fasta, true, false, false, false )
-    ch_versions = ch_versions.mix(MINIMAP2_ONT.out.versions.first())
 
 
     // Combine aligned reads
@@ -58,5 +51,4 @@ workflow MINIMAP2_ALIGNMENT {
 
     emit:
     aln      = ch_aligned        // channel: [ val(meta), bam ]
-    versions = ch_versions       // channel: [ versions.yml ]
 }
