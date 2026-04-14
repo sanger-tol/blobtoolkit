@@ -60,6 +60,13 @@
                     "description": "Directory containing precomputed BUSCO results (each named as `run_{lineage}_odbxx`), which can be supplied to skip running BUSCO in the pipeline.",
                     "fa_icon": "fas fa-folder-open"
                 },
+                "revision": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "blobDir version number (defaults to 1). Set to a higher value when recomputing the blobDir of an assembly.",
+                    "fa_icon": "fas fa-1",
+                    "minimum": 1
+                },
                 "image_format": {
                     "type": "string",
                     "enum": ["png", "svg"],

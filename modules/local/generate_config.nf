@@ -6,12 +6,12 @@ process GENERATE_CONFIG {
     container "docker.io/genomehubs/blobtoolkit:4.4.6"
 
     input:
+    // Some data files are passed as "val" because we need to know the original paths. Staging would prevent that
     tuple val(meta), val(fasta)
     val taxon_query
     val busco_lin
     tuple val(metabn), path(blastn)
     path lineage_tax_ids
-    // The following are passed as "val" because we need to know the original paths. Staging would prevent that
     val reads
     val db_paths
 
@@ -43,6 +43,7 @@ process GENERATE_CONFIG {
         --nt $blastn \\
         --window_size ${params.window_size} \\
         $input_reads \\
+        --revision ${params.revision} \\
         $input_databases \\
         --output_prefix ${prefix} \\
         $args

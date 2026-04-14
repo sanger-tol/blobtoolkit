@@ -233,12 +233,16 @@ mkdir extract
 curl -L $EBI_URL/$(curl -vs $EBI_URL 2>&1 | awk '/tar.gz/ {print $9}') | \
   tar -xzf - -C extract
 
-# Create a single fasta file with all the fasta files from each subdirectory:
-find extract -type f -name '*.fasta.gz' ! -name '*_DNA.fasta.gz' ! -name '*_additional.fasta.gz' -exec cat '{}' '+' > reference_proteomes.fasta.gz
+# Create a single fasta file with all the unique sequences (determined by their accession) from the fasta
+# files from each subdirectory. It needs up to 32 GB RAM !
+find extract -type f -name '*.fasta.gz' ! -name '*_DNA.fasta.gz' ! -name '*_additional.fasta.gz' -exec zcat '{}' '+' \
+| awk '{ if (/^>/) { if ($1 in seen) {skip=1} else {skip=0; print}; seen[$1]=1 } else { if (!skip) {print} } }' \
+| gzip --best > reference_proteomes.fasta.gz
 
-# create the accession-to-taxid map for all reference proteome sequences:
-find extract -type f -name '*.idmapping.gz' -exec zcat {} + | \
-  awk 'BEGIN {OFS="\t"; print "accession", "accession.version", "taxid", "gi"} $2=="NCBI_TaxID" {print $1, $1, $3, 0}' > reference_proteomes.taxid_map
+# create the accession-to-taxid map for all reference proteome sequences, again removing duplicates:
+find extract -type f -name '*.idmapping.gz' -exec zcat {} + \
+| awk 'BEGIN {OFS="\t"; print "accession", "accession.version", "taxid", "gi"} $2=="NCBI_TaxID" {print $1, $1, $3, 0}' \
+| sort -u > reference_proteomes.taxid_map
 
 # create the taxon aware diamond blast database
 diamond makedb -p 16 --in reference_proteomes.fasta.gz --taxonmap reference_proteomes.taxid_map --taxonnodes $TAXDUMP/nodes.dmp --taxonnames $TAXDUMP/names.dmp -d reference_proteomes.dmnd

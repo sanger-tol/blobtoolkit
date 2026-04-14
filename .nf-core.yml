@@ -24,7 +24,7 @@ lint:
     - .github/workflows/branch.yml
     - .github/CONTRIBUTING.md
     - .github/workflows/linting_comment.yml
-    - .gitignore
+    - .gitattributes
   merge_markers: false
   multiqc_config:
     - report_comment
@@ -44,4 +44,4 @@ template:
   outdir: .
   skip_features:
     - igenomes
-  version: 0.10.0
+  version: "0.11.0"
