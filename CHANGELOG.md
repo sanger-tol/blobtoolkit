@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Use when rerunning the pipeline on an assembly.
 - Added two columns to the samplesheet (`specimen`, `run`) to improve metadata clarity and ensure consistency when aligning reads.
 - Restructured locations and names of output files, see [output.md](/docs/output.md)
-- Added parameter `--window_size` for partition sequences to calculate per-window statistics
+- Added parameter `--window_size` to partition sequences and calculate per-window statistics
 
 ### Parameters
 
