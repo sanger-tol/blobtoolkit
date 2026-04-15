@@ -363,17 +363,17 @@
                 "read_mapping/hic",
                 "read_mapping/hic/SAMEA7524440",
                 "read_mapping/hic/SAMEA7524440/ERR6688402",
-                "read_mapping/hic/SAMEA7524440/ERR6688402/SAMEA7524440.ERR6688402.minimap2.bam",
-                "read_mapping/hic/SAMEA7524440/ERR6688402/SAMEA7524440.ERR6688402.minimap2.coverage.1k.bed.gz",
+                "read_mapping/hic/SAMEA7524440/ERR6688402/GCA_922984935.2.hic.SAMEA7524440.ERR6688402.minimap2.bam",
+                "read_mapping/hic/SAMEA7524440/ERR6688402/GCA_922984935.2.subset.unmasked.fasta.SAMEA7524440.ERR6688402.minimap2.coverage.1k.bed.gz",
                 "read_mapping/illumina",
                 "read_mapping/illumina/SAMEA7524438",
                 "read_mapping/illumina/SAMEA7524438/ERR6688599",
-                "read_mapping/illumina/SAMEA7524438/ERR6688599/SAMEA7524438.ERR6688599.minimap2.bam",
-                "read_mapping/illumina/SAMEA7524438/ERR6688599/SAMEA7524438.ERR6688599.minimap2.coverage.1k.bed.gz",
+                "read_mapping/illumina/SAMEA7524438/ERR6688599/GCA_922984935.2.illumina.SAMEA7524438.ERR6688599.minimap2.bam",
+                "read_mapping/illumina/SAMEA7524438/ERR6688599/GCA_922984935.2.subset.unmasked.fasta.SAMEA7524438.ERR6688599.minimap2.coverage.1k.bed.gz",
                 "read_mapping/illumina/SAMEA7524439",
                 "read_mapping/illumina/SAMEA7524439/ERR6688600",
-                "read_mapping/illumina/SAMEA7524439/ERR6688600/SAMEA7524439.ERR6688600.minimap2.bam",
-                "read_mapping/illumina/SAMEA7524439/ERR6688600/SAMEA7524439.ERR6688600.minimap2.coverage.1k.bed.gz",
+                "read_mapping/illumina/SAMEA7524439/ERR6688600/GCA_922984935.2.illumina.SAMEA7524439.ERR6688600.minimap2.bam",
+                "read_mapping/illumina/SAMEA7524439/ERR6688600/GCA_922984935.2.subset.unmasked.fasta.SAMEA7524439.ERR6688600.minimap2.coverage.1k.bed.gz",
                 "repeats",
                 "repeats/windowmasker",
                 "repeats/windowmasker/GCA_922984935.2.fasta",
@@ -604,12 +604,12 @@
                 "GCA_922984935.2_tetrapoda_odb10.full_table.tsv:md5,3fdd6f0cf1348925ff46d1718af4a5f3",
                 "GCA_922984935.2_tetrapoda_odb10.missing_busco_list.tsv:md5,b47cb4623ce1dba7e932ccf327c7f6eb",
                 "GCA_922984935.2_tetrapoda_odb10.short_summary.tsv:md5,fdea63320824c5bb6e3b3d9b663f1ec9",
-                "SAMEA7524440.ERR6688402.minimap2.bam:md5,dd9d9a1cf4e396c969ae8ac0fde364fe",
-                "SAMEA7524440.ERR6688402.minimap2.coverage.1k.bed.gz:md5,a3fa6ba7bc9bb3ff287e9ddcba1ec318",
-                "SAMEA7524438.ERR6688599.minimap2.bam:md5,50ea35b5a596a55071da11e1d8d64604",
-                "SAMEA7524438.ERR6688599.minimap2.coverage.1k.bed.gz:md5,5be87cb138968507fe771ffee5161175",
-                "SAMEA7524439.ERR6688600.minimap2.bam:md5,a11209488bbc1fc8f2312f9ae3c87670",
-                "SAMEA7524439.ERR6688600.minimap2.coverage.1k.bed.gz:md5,5c150ab4b8b6eb0816535c56b702e777",
+                "GCA_922984935.2.hic.SAMEA7524440.ERR6688402.minimap2.bam:md5,2d4025a4a01ac5c932cc6c4aa4d68601",
+                "GCA_922984935.2.subset.unmasked.fasta.SAMEA7524440.ERR6688402.minimap2.coverage.1k.bed.gz:md5,a3fa6ba7bc9bb3ff287e9ddcba1ec318",
+                "GCA_922984935.2.illumina.SAMEA7524438.ERR6688599.minimap2.bam:md5,540b01bfd9b7eca964afb756fff84ff3",
+                "GCA_922984935.2.subset.unmasked.fasta.SAMEA7524438.ERR6688599.minimap2.coverage.1k.bed.gz:md5,5be87cb138968507fe771ffee5161175",
+                "GCA_922984935.2.illumina.SAMEA7524439.ERR6688600.minimap2.bam:md5,07ae9c2903985d2a4e531493639c4542",
+                "GCA_922984935.2.subset.unmasked.fasta.SAMEA7524439.ERR6688600.minimap2.coverage.1k.bed.gz:md5,5c150ab4b8b6eb0816535c56b702e777",
                 "GCA_922984935.2.fasta:md5,9ccc14f99004d85bdc29aea036af34e3",
                 "GCA_922984935.2.obinary:md5,571f465e27e107f6e4bb3fa2e833250b"
             ]
@@ -618,6 +618,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.2"
         },
-        "timestamp": "2026-04-14T14:38:26.08473"
+        "timestamp": "2026-04-15T05:21:24.807966"
     }
 }
