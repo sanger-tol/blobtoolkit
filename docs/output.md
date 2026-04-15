@@ -92,8 +92,8 @@ Read alignments in BAM format -- only if the pipeline is run with `--align`.
 - `read_mapping/`
   - `<datatype>/`
     - `<specimen>/<run>/`
-      - `<assembly>.<datatype>.<specimen>.<run>.<aligner>.bam`: alignments of that sample's reads in BAM format.
-      - `<assembly>.<datatype>.<specimen>.<run>.<aligner>.bam.csi`: index of the BAM file.
+      - `<assembly>.<datatype>.<specimen>.<run>.minimap2.bam`: alignments of that sample's reads in BAM format.
+      - `<assembly>.<datatype>.<specimen>.<run>.minimap2.bam.csi`: index of the BAM file.
 
 </details>
 
