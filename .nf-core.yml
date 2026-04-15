@@ -25,6 +25,7 @@ lint:
     - .github/CONTRIBUTING.md
     - .github/workflows/linting_comment.yml
     - .gitattributes
+    - .gitignore
   merge_markers: false
   multiqc_config:
     - report_comment
