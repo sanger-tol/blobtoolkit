@@ -229,7 +229,6 @@ workflow INPUT_CHECK {
 
 
     JSONIFY_TAXDUMP( taxdump_dirs.dir )
-    ch_versions = ch_versions.mix(JSONIFY_TAXDUMP.out.versions.first())
 
 
     ch_taxdump = ch_databases.taxdump

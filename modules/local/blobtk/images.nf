@@ -12,7 +12,7 @@ process BLOBTK_IMAGES {
     output:
     tuple val(meta), path('*.png') , optional: true, emit: png
     tuple val(meta), path('*.svg') , optional: true, emit: svg
-    path "versions.yml"            , emit: versions
+    tuple val("${task.process}"), val("blobtk"), eval("blobtk --version | cut -d' ' -f2"), topic: versions, emit: versions_blobtk
 
     when:
     task.ext.when == null || task.ext.when
@@ -32,10 +32,5 @@ process BLOBTK_IMAGES {
         -o ${prefix}.${plot}.${format} \\
         ${legend} \\
         $args
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        blobtk: \$(blobtk --version | cut -d' ' -f2)
-    END_VERSIONS
     """
 }

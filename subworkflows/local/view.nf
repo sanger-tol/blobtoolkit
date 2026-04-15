@@ -27,7 +27,6 @@ workflow VIEW {
     plots = [ "blob", "cumulative", "snail" ]
 
     BLOBTK_IMAGES ( blobdir, plots, params.image_format )
-    ch_versions = ch_versions.mix( BLOBTK_IMAGES.out.versions )
 
     ch_images = BLOBTK_IMAGES.out.png.mix(BLOBTK_IMAGES.out.svg)
 
