@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Old parameter | New parameter |
 | ------------- | ------------- |
+|               | --revision    |
 |               | window_size   |
 
 ### Software dependencies
