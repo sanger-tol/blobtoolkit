@@ -16,7 +16,7 @@ You will need to create a samplesheet with information about the samples you wou
 
 ### Full samplesheet
 
-The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 4 columns to match those defined in the table below.
+The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 6 columns to match those defined in the table below.
 
 A final samplesheet file may look something like the one below.
 
@@ -36,14 +36,14 @@ sample,specimen,run,datatype,datafile,library_layout
 ,specimen2,run1,ont,ont.cram,SINGLE
 ```
 
-| Column           | Description                                                                                                                                                                                                                                              |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`         | Custom sample name. It doesn't have to be an actual _sample_ name. It is used to name the read set on the BlobToolKit viewer and therefore needs to be **unique** across the samplesheet. `sample` is required unless `specimen` and `run` are provided. |
-| `specimen`       | Identifier of the specimen. Usually a BioSpecimen accession (i.e., `SAMEA7521529`). `specimen` is required when aligning reads.                                                                                                                          |
-| `run`            | Identifier of the sequencing run, need. Usually the accession number of the data in INSDC (i.e. `ERR9248445`) and needs to be **unique** across the samplesheet. `run` is required when aligning reads.                                                  |
-| `datatype`       | Type of sequencing data. Must be one of `hic`, `illumina`, `pacbio`, `pacbio_clr` or `ont`.                                                                                                                                                              |
-| `datafile`       | Full path to read data file.                                                                                                                                                                                                                             |
-| `library_layout` | Layout of the library. Must be one of `SINGLE`, `PAIRED`.                                                                                                                                                                                                |
+| Column           | Description                                                                                                                                                                                                                                                   |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`         | Custom sample name. It doesn't have to be an actual _sample_ name. It is used to name the read set on the BlobToolKit viewer and therefore needs to be **unique** across the samplesheet. `sample` is required unless both `specimen` and `run` are provided. |
+| `specimen`       | Identifier of the specimen. Usually a BioSpecimen accession (i.e., `SAMEA7521529`). `specimen` is required when `sample` is not provided, and the (`specimen`, `run`) pair must be **unique** across the samplesheet.                                         |
+| `run`            | Identifier of the sequencing run. Usually the accession number of the data in INSDC (i.e. `ERR9248445`). `run` is required when `sample` is not provided, and the (`specimen`, `run`) pair must be **unique** across the samplesheet.                         |
+| `datatype`       | Type of sequencing data. Must be one of `hic`, `illumina`, `pacbio`, `pacbio_clr` or `ont`.                                                                                                                                                                   |
+| `datafile`       | Full path to read data file.                                                                                                                                                                                                                                  |
+| `library_layout` | Layout of the library. Must be one of `SINGLE`, `PAIRED`.                                                                                                                                                                                                     |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
