@@ -14,6 +14,7 @@ process COMPRESSBLOBDIR {
 
     output:
     tuple val(meta), path(prefix), emit: blobdir
+    // Cannot be migrated to a topic because it runs _after_ the topic has been collected
     path "versions.yml"          , emit: versions
 
     when:
