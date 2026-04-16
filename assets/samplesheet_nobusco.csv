@@ -1,0 +1,2 @@
+sample,specimen,run,datatype,datafile,library_layout
+mMelMel3_hic,,,hic,https://tolit.cog.sanger.ac.uk/test-data/Meles_meles/analysis/mMelMel3.2_paternal_haplotype/read_mapping/hic/GCA_922984935.2.subset.unmasked.hic.mMelMel3.cram,PAIRED
