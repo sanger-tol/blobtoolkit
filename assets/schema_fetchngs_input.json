@@ -90,6 +90,7 @@
             "fastq_aspera": {}
         },
         "required": [
+            "sample_accession",
             "run_accession",
             "instrument_platform",
             "instrument_model",
