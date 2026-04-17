@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added an option to control the version ("revision") of the blobDir.
   Use when rerunning the pipeline on an assembly.
-- Added two columns to the samplesheet (`specimen`, `run`) to improve metadata clarity and ensure consistency when aligning reads.
 - Restructured locations and names of output files, see [output.md](/docs/output.md)
+- The `sample` samplesheet column can now contain `/` to organise the `read_mapping/` outputs in sub-directories.
 - Added parameter `--window_size` to partition sequences and calculate per-window statistics
 
 ### Parameters
