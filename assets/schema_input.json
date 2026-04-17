@@ -11,20 +11,8 @@
                 "type": "string",
                 "description": "Sample identifier",
                 "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be unique, cannot contain spaces, and is required when specimen/run are not provided",
+                "errorMessage": "Sample name must be unique, cannot contain spaces, and is required. `sample` is also used to construct locations to publish output, '/' is allowed",
                 "meta": ["id", "sample"]
-            },
-            "specimen": {
-                "type": "string",
-                "pattern": "^\\S+$",
-                "errorMessage": "Specimen cannot contain spaces, is required when sample is not provided, and must be unique in combination with run",
-                "meta": ["specimen"]
-            },
-            "run": {
-                "type": "string",
-                "pattern": "^\\S+$",
-                "errorMessage": "Run cannot contain spaces, is required when sample is not provided, and must be unique in combination with specimen",
-                "meta": ["run"]
             },
             "datatype": {
                 "type": "string",
@@ -47,8 +35,7 @@
                 "meta": ["layout"]
             }
         },
-        "required": ["datafile", "datatype"],
-        "oneOf": [{ "required": ["sample"] }, { "required": ["specimen", "run"] }]
+        "required": ["sample", "datafile", "datatype"]
     },
-    "uniqueEntries": ["sample", ["specimen", "run"]]
+    "uniqueEntries": ["sample"]
 }

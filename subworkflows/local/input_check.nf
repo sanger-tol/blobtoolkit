@@ -105,7 +105,7 @@ workflow INPUT_CHECK {
             .branch { row ->
                 paired: row.fastq_2
                     // Reformat for CAT_CAT
-                    [[id: "${row.specimen}.${row.run}", row:row], [row.fastq_1, row.fastq_2]]
+                    [[id: "${row.specimen}.${row.run}", sample: "${row.specimen}/${row.run}" , row:row], [row.fastq_1, row.fastq_2]]
                 not_paired: true
             }
 
@@ -121,7 +121,7 @@ workflow INPUT_CHECK {
         read_files = channel
             .fromList(samplesheetToList(samplesheet, "assets/schema_input.json"))
             .map { row -> check_data_channel(row) }
-            .map { meta, reads -> [ meta + [id : meta.id ?: "${meta.specimen}.${meta.run}"], reads ] }
+            .map { meta, reads -> [ meta + [id : meta.id.replaceAll("/",".")], reads ] }
     }
 
 
@@ -295,6 +295,7 @@ def create_data_channels_from_fetchngs(LinkedHashMap row) {
     // create meta map
     def meta = [:]
     meta.id         = row.specimen + "." + row.run
+    meta.sample     = row.specimen + "/" + row.run
     meta.specimen   = row.specimen
     meta.run        = row.run
     meta.layout     = row.library_layout

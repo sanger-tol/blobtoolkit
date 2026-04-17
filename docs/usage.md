@@ -8,7 +8,7 @@
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 6 columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 4 columns, and a header row as shown in the examples below.
 
 ```bash
 --input '[path to samplesheet file]'
@@ -16,34 +16,23 @@ You will need to create a samplesheet with information about the samples you wou
 
 ### Full samplesheet
 
-The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 6 columns to match those defined in the table below.
+The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 4 columns to match those defined in the table below.
 
 A final samplesheet file may look something like the one below.
 
 ```console
-sample,specimen,run,datatype,datafile,library_layout
-sample1,,,hic,hic.cram,PAIRED
-sample2,,,illumina,illumina.cram,PAIRED
-sample3,,,ont,ont.cram,SINGLE
+sample,datatype,datafile,library_layout
+sample1,hic,hic.cram,PAIRED
+sample2,illumina,illumina.cram,PAIRED
+sample3,ont,ont.cram,SINGLE
 ```
 
-or (in case of align=true)
-
-```console
-sample,specimen,run,datatype,datafile,library_layout
-,specimen,run1,hic,hic.cram,PAIRED
-,specimen,run2,illumina,illumina.cram,PAIRED
-,specimen2,run1,ont,ont.cram,SINGLE
-```
-
-| Column           | Description                                                                                                                                                                                                                                                   |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`         | Custom sample name. It doesn't have to be an actual _sample_ name. It is used to name the read set on the BlobToolKit viewer and therefore needs to be **unique** across the samplesheet. `sample` is required unless both `specimen` and `run` are provided. |
-| `specimen`       | Identifier of the specimen. Usually a BioSpecimen accession (i.e., `SAMEA7521529`). `specimen` is required when `sample` is not provided, and the (`specimen`, `run`) pair must be **unique** across the samplesheet.                                         |
-| `run`            | Identifier of the sequencing run. Usually the accession number of the data in INSDC (i.e. `ERR9248445`). `run` is required when `sample` is not provided, and the (`specimen`, `run`) pair must be **unique** across the samplesheet.                         |
-| `datatype`       | Type of sequencing data. Must be one of `hic`, `illumina`, `pacbio`, `pacbio_clr` or `ont`.                                                                                                                                                                   |
-| `datafile`       | Full path to read data file.                                                                                                                                                                                                                                  |
-| `library_layout` | Layout of the library. Must be one of `SINGLE`, `PAIRED`.                                                                                                                                                                                                     |
+| Column           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`         | Custom sample name. This field is require but doesn't have to be an actual _sample_ name. It is used to name the read set on the BlobToolKit viewer and therefore needs to be **unique** across the samplesheet. In addition, `sample` is also used as path to output `read_mapping` analysis. Thus, in case of read alignment, sample is recommended as `specimen/run` (i.e., `SAMEA7521529/ERR9248445`), this `/` is converted to `.` for downstream processes. |
+| `datatype`       | Type of sequencing data, required. Must be one of `hic`, `illumina`, `pacbio`, `pacbio_clr` or `ont`.                                                                                                                                                                                                                                                                                                                                                             |
+| `datafile`       | Full path to read data file.                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `library_layout` | Layout of the library. Must be one of `SINGLE`, `PAIRED`.                                                                                                                                                                                                                                                                                                                                                                                                         |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
