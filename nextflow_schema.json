@@ -74,6 +74,13 @@
                     "fa_icon": "fas fa-image",
                     "default": "png"
                 },
+                "window_size": {
+                    "type": "integer",
+                    "default": 1000,
+                    "description": "Window size (in base pairs) used to partition sequences for calculating per-window statistics",
+                    "fa_icon": "fas fa-chart-bar",
+                    "minimum": 1
+                },
                 "blast_annotations": {
                     "type": "string",
                     "enum": ["all", "blastp", "blastx", "off"],

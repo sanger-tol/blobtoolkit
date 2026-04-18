@@ -61,7 +61,6 @@ workflow BLOBTOOLKIT {
     )
     ch_versions         = ch_versions.mix ( INPUT_CHECK.out.versions )
 
-
     //
     // SUBWORKFLOW: Mask the genome if needed
     //
@@ -87,7 +86,6 @@ workflow BLOBTOOLKIT {
     } else {
         ch_aligned      = INPUT_CHECK.out.reads
     }
-
 
     //
     // SUBWORKFLOW: Calculate genome coverage and statistics
