@@ -14,11 +14,7 @@
                     [
                         "BLOBTK_DEPTH",
                         "blobtk",
-<<<<<<< HEAD
                         "0.8.0"
-=======
-                        "0.7.1"
->>>>>>> dev
                     ]
                 ],
                 "bed": [
@@ -33,26 +29,16 @@
                     [
                         "BLOBTK_DEPTH",
                         "blobtk",
-<<<<<<< HEAD
                         "0.8.0"
-=======
-                        "0.7.1"
->>>>>>> dev
                     ]
                 ]
             }
         ],
         "meta": {
             "nf-test": "0.9.3",
-<<<<<<< HEAD
             "nextflow": "25.10.2"
         },
         "timestamp": "2026-04-28T14:21:29.7758833"
-=======
-            "nextflow": "25.10.0"
-        },
-        "timestamp": "2026-02-27T11:03:02.967972666"
->>>>>>> dev
     },
     "bacteroides fragilis - bam and bai": {
         "content": [
@@ -69,11 +55,7 @@
                     [
                         "BLOBTK_DEPTH",
                         "blobtk",
-<<<<<<< HEAD
                         "0.8.0"
-=======
-                        "0.7.1"
->>>>>>> dev
                     ]
                 ],
                 "bed": [
@@ -88,25 +70,15 @@
                     [
                         "BLOBTK_DEPTH",
                         "blobtk",
-<<<<<<< HEAD
                         "0.8.0"
-=======
-                        "0.7.1"
->>>>>>> dev
                     ]
                 ]
             }
         ],
         "meta": {
             "nf-test": "0.9.3",
-<<<<<<< HEAD
             "nextflow": "25.10.2"
         },
         "timestamp": "2026-04-28T14:21:20.837851071"
-=======
-            "nextflow": "25.10.0"
-        },
-        "timestamp": "2026-02-27T11:02:56.318306565"
->>>>>>> dev
     }
 }

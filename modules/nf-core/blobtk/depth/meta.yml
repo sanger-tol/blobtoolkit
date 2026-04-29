@@ -8,11 +8,7 @@ keywords:
   - blobtoolkit
   - depth
 tools:
-<<<<<<< HEAD
   - blobtk:
-=======
-  - btk:
->>>>>>> dev
       description: |
         BlobTk contains a set of core functions used by BlobToolKit tools.
         Implemented in Rust, these functions are intended to be accessible
@@ -21,11 +17,7 @@ tools:
       homepage: https://github.com/genomehubs/blobtk/
       documentation: https://github.com/genomehubs/blobtk/wiki/
       licence: ["MIT"]
-<<<<<<< HEAD
       identifier: biotools:blobtk
-=======
-      identifier: biotools:btk
->>>>>>> dev
 input:
   - - meta:
         type: map
