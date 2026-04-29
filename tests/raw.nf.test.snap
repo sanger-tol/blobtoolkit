@@ -3,10 +3,10 @@
         "content": [
             {
                 "BLOBTK_DEPTH": {
-                    "blobtk": "0.7.1"
+                    "blobtk": "0.8.0"
                 },
                 "BLOBTK_IMAGES": {
-                    "blobtk": "0.5.1"
+                    "blobtk": "0.8.0"
                 },
                 "BLOBTOOLKIT_CHUNK": {
                     "blobtoolkit": "4.4.6"
