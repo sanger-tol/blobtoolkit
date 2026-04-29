@@ -61,6 +61,21 @@ workflow BLOBTOOLKIT {
     )
     ch_versions         = ch_versions.mix ( INPUT_CHECK.out.versions )
 
+    //
+    // SUBWORKFLOW: Mask the genome if needed
+    //
+    ch_genome = INPUT_CHECK.out.genome
+
+    if ( params.mask ) {
+        REPEAT_MASKING ( ch_genome )
+
+        ch_genome = REPEAT_MASKING.out.repeat_intervals
+    }
+
+
+    // NOTE: Reference genome to be used (as a value channel) throughout the pipeline
+    ch_prepared_genome = ch_genome.first()
+
 
     //
     // SUBWORKFLOW: Mask the genome if needed
@@ -83,12 +98,10 @@ workflow BLOBTOOLKIT {
     //
     if ( params.align ) {
         MINIMAP2_ALIGNMENT ( INPUT_CHECK.out.reads, ch_prepared_genome )
-        ch_versions     = ch_versions.mix ( MINIMAP2_ALIGNMENT.out.versions )
         ch_aligned      = MINIMAP2_ALIGNMENT.out.aln
     } else {
         ch_aligned      = INPUT_CHECK.out.reads
     }
-
 
     //
     // SUBWORKFLOW: Calculate genome coverage and statistics
@@ -178,7 +191,25 @@ workflow BLOBTOOLKIT {
     //
     // Collate and save software versions
     //
-    softwareVersionsToYAML(ch_versions)
+    def topic_versions = Channel.topic("versions")
+        .distinct()
+        .branch { entry ->
+            versions_file: entry instanceof Path
+            versions_tuple: true
+        }
+
+    def topic_versions_string = topic_versions.versions_tuple
+        .map { process, tool, version ->
+            [ process[process.lastIndexOf(':')+1..-1], "  ${tool}: ${version}" ]
+        }
+        .groupTuple(by:0)
+        .map { process, tool_versions ->
+            tool_versions.unique().sort()
+            "${process}:\n${tool_versions.join('\n')}"
+        }
+
+    softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
+        .mix(topic_versions_string)
         .collectFile(
             storeDir: "${params.outdir}/pipeline_info",
             name:  'blobtoolkit_software_'  + 'mqc_'  + 'versions.yml',

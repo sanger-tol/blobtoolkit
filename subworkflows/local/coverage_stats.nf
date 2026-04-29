@@ -24,6 +24,8 @@ workflow COVERAGE_STATS {
     // MODULE: CREATE ALIGNED BAM AND INDEX CSI CHANNEL
     //
     ch_aln_idx = ch_reads
+        .combine ( ch_fasta )
+        .map { meta, aln, fa_meta, _fa -> [meta + [fasta_id: fa_meta.id], aln] }
         .branch { meta, aln ->
             bam : aln.name.endsWith("bam")
                 return [ meta, aln ]

@@ -16,8 +16,6 @@ workflow MINIMAP2_ALIGNMENT {
 
 
     main:
-    ch_versions = channel.empty()
-
 
     //
     // MODULE: BRANCH INPUT BY SEQUENCING TYPE
@@ -55,5 +53,4 @@ workflow MINIMAP2_ALIGNMENT {
 
     emit:
     aln      = ch_aligned        // channel: [ val(meta), bam ]
-    versions = ch_versions       // channel: [ versions.yml ]
 }

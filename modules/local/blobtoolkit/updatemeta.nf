@@ -10,6 +10,7 @@ process BLOBTOOLKIT_UPDATEMETA {
 
     output:
     tuple val(meta), path("*.json"), emit: json
+    // Cannot be migrated to a topic because it runs _after_ the topic has been collected
     path "versions.yml"            , emit: versions
 
     when:

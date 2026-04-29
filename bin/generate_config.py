@@ -56,10 +56,12 @@ def parse_args(args=None):
     parser.add_argument("--read_type", action="append", help="Type of a read set")
     parser.add_argument("--read_layout", action="append", help="Layout of a read set")
     parser.add_argument("--read_path", action="append", help="Path of a read set")
+    parser.add_argument("--revision", type=int, help="Requested revision (version) of the output blobDir")
     parser.add_argument("--blastp", help="Path to the blastp database", required=True)
     parser.add_argument("--blastx", help="Path to the blastx database", required=True)
     parser.add_argument("--blastn", help="Path to the blastn database", required=True)
     parser.add_argument("--taxdump", help="Path to the taxonomy database", required=True)
+    parser.add_argument("--window_size", type=int, help="Window size (in base pairs) for per-window statistics.")
     parser.add_argument("--version", action="version", version="%(prog)s 2.0")
     args = parser.parse_args(args)
 
@@ -261,10 +263,12 @@ def print_yaml(
     taxon_info: TaxonInfo,
     classification: typing.Dict[str, str],
     reads,
+    revision,
     blastp,
     blastx,
     blastn,
     taxdump,
+    window_size: int,
 ):
     data = {
         "assembly": assembly_info,
@@ -272,13 +276,13 @@ def print_yaml(
             "paired": [],
             "single": [],
         },
-        "revision": 1,
+        "revision": revision,
         "settings": {
             "blast_chunk": 100000,
             "blast_max_chunks": 10,
             "blast_min_length": 1000,
             "blast_overlap": 0,
-            "stats_chunk": 1000,
+            "stats_chunk": window_size,
             "stats_windows": [0.1, 0.01, 100000, 1000000],
             "taxdump": taxdump,
             "tmp": "/tmp",
@@ -390,10 +394,12 @@ def main(args=None):
         taxon_info,
         classification,
         reads,
+        args.revision,
         args.blastp,
         args.blastx,
         args.blastn,
         args.taxdump,
+        args.window_size,
     )
     print_csv(f"{args.output_prefix}.csv", taxon_id, odb_version, odb_arr)
 

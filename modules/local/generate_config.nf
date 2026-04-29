@@ -41,7 +41,9 @@ process GENERATE_CONFIG {
         $busco_param \\
         $accession_params \\
         --nt $blastn \\
+        --window_size ${params.window_size} \\
         $input_reads \\
+        --revision ${params.revision} \\
         $input_databases \\
         --output_prefix ${prefix} \\
         $args

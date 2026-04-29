@@ -11,8 +11,8 @@
                 "type": "string",
                 "description": "Sample identifier",
                 "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided, be unique, and cannot contain spaces",
-                "meta": ["id"]
+                "errorMessage": "Sample name must be unique, cannot contain spaces, and is required. `sample` is also used to construct locations to publish output, '/' is allowed",
+                "meta": ["id", "sample"]
             },
             "datatype": {
                 "type": "string",
@@ -35,7 +35,7 @@
                 "meta": ["layout"]
             }
         },
-        "required": ["datafile", "datatype", "sample"]
+        "required": ["sample", "datafile", "datatype"]
     },
     "uniqueEntries": ["sample"]
 }
