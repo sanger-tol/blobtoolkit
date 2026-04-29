@@ -78,22 +78,6 @@ workflow BLOBTOOLKIT {
 
 
     //
-    // SUBWORKFLOW: Mask the genome if needed
-    //
-    ch_genome = INPUT_CHECK.out.genome
-
-    if ( params.mask ) {
-        REPEAT_MASKING ( ch_genome )
-
-        ch_genome = REPEAT_MASKING.out.repeat_intervals
-    }
-
-
-    // NOTE: Reference genome to be used (as a value channel) throughout the pipeline
-    ch_prepared_genome = ch_genome.first()
-
-
-    //
     // SUBWORKFLOW: Optional read alignment
     //
     if ( params.align ) {
