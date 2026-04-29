@@ -15,14 +15,14 @@ workflow VIEW {
 
 
     //
-    // Generate summary file
+    // MODULE: GENERATE SUMMARY FILE
     //
     BLOBTOOLKIT_SUMMARY ( blobdir )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_SUMMARY.out.versions.first() )
 
 
     //
-    // MODULE: Generate static plots in png/svg format
+    // MODULE: GENERATE STATIC PLOTS IN PNG/SVG FORMAT
     //
     plots = channel.of(
         [
@@ -48,6 +48,7 @@ workflow VIEW {
             args: btk_args
         }
 
+
     BLOBTK_PLOT(
         ch_blobtk_plot_input.fasta,
         ch_blobtk_plot_input.local_path,
@@ -55,7 +56,6 @@ workflow VIEW {
         ch_blobtk_plot_input.args,
         params.image_format
     )
-
     ch_images = BLOBTK_PLOT.out.png.mix(BLOBTK_PLOT.out.svg)
 
     emit:

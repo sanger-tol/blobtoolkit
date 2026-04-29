@@ -19,7 +19,9 @@ workflow MINIMAP2_ALIGNMENT {
     ch_versions = channel.empty()
 
 
-    // Branch input by sequencing type
+    //
+    // MODULE: BRANCH INPUT BY SEQUENCING TYPE
+    //
     ch_input = input
         .branch { meta, _reads ->
             hic: meta.datatype == "hic"
