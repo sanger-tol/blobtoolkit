@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Restructured locations and names of output files, see [output.md](/docs/output.md)
 - The `sample` samplesheet column can now contain `/` to organise the `read_mapping/` outputs in sub-directories.
 - Added parameter `--window_size` to partition sequences and calculate per-window statistics
-- Updated `blobtk/images` to `blobtk/plots` (an nf-core module)
+- Updated `blobtk/images` to `blobtk/plot` (an nf-core module)
 
 ### Parameters
 
