@@ -23,8 +23,10 @@ workflow RUN_BLASTN {
     ch_versions = channel.empty()
 
 
-    // Extract no hits fasta
-    // Get list of sequence ids with no hits in diamond blastx search
+    //
+    // MODULE: EXTRACT NO HITS FASTA
+    //         Get list of sequence ids with no hits in diamond blastx search
+    //
     NOHIT_LIST ( blast_table, fasta )
     ch_versions = ch_versions.mix ( NOHIT_LIST.out.versions.first() )
 

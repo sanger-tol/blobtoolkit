@@ -23,16 +23,29 @@ workflow BLOBTOOLS {
 
 
     //
-    // Create Blobtools dataset files
+    // MODULE: CREATE BLOBTOOLS DATASET FILES
     //
-    BLOBTOOLKIT_CREATEBLOBDIR ( windowstats, busco, blastp, config, taxdump )
+    BLOBTOOLKIT_CREATEBLOBDIR (
+        windowstats,
+        busco,
+        blastp,
+        config,
+        taxdump
+    )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_CREATEBLOBDIR.out.versions.first() )
 
 
     //
-    // Update Blobtools dataset files
+    // MODULE: UPDATE BLOBTOOLS DATASET FILES
     //
-    BLOBTOOLKIT_UPDATEBLOBDIR ( BLOBTOOLKIT_CREATEBLOBDIR.out.blobdir, syn_tsv, cat_tsv, blastx, blastn, taxdump )
+    BLOBTOOLKIT_UPDATEBLOBDIR (
+        BLOBTOOLKIT_CREATEBLOBDIR.out.blobdir,
+        syn_tsv,
+        cat_tsv,
+        blastx,
+        blastn,
+        taxdump
+    )
     ch_versions = ch_versions.mix ( BLOBTOOLKIT_UPDATEBLOBDIR.out.versions.first() )
 
 

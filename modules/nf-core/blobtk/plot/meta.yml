@@ -1,12 +1,13 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
-name: "blobtk_depth"
+name: "blobtk_plot"
 description: |
-  Creates a bed file containing the depth of data at intervals of an aligned bam.
+  Creates differing styles of blobplots depending on provided arguments.
 keywords:
-  - bam
-  - gzipped
+  - png
+  - svg
+  - bkt
   - blobtoolkit
-  - depth
+  - plot
 tools:
   - blobtk:
       description: |
@@ -22,34 +23,61 @@ input:
   - - meta:
         type: map
         description: |
-          Groovy Map containing sample information
-          e.g. `[ id:'sample1' ]`
-    - bam:
+          Groovy Map containing sample information and blobtk arguments
+          e.g. `[ id:'sample1']`
+    - fasta:
         type: file
         description: |
-          Algined BAM file.
-        pattern: "*.bam"
+          Input assembly FASTA.
+        pattern: "*.fasta"
         ontologies:
-          - edam: http://edamontology.org/format_2572 # BAM
-    - index:
-        type: file
-        description: |
-          Algined BAM index file.
-        pattern: "*.bai|*.csi"
-        ontologies:
-          - edam: http://edamontology.org/format_3327 # BAI
+          - edam: http://edamontology.org/format_1929 # FASTA
+  - local_path:
+      type: directory
+      description: |
+        A path to a Blob Dir generated as part of a greater pipeline.
+      pattern: "*/"
+  - online_path:
+      type: string
+      description: |
+        A webaddress to a Blob Dir e.g. hosted on a BlobToolKit Viewer.
+      pattern: "*/"
+  - extra_args:
+      type: map
+      description: |
+        Groovy Map containing sample information and blobtk arguments
+        e.g. `[name: 'VIEW', args: "-v"]`
+  - format:
+      type: string
+      description: |
+        Value indicating the output format.
+        e.g. `"png" or "svg"`
 
 output:
-  bed:
+  png:
     - - meta:
           type: map
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "*.regions.bed.gz":
+      - "*.png":
           type: file
           description: |
-            Bed file describing the depth of regions across the genome.
+            Blobplot PNG results of input arguments.
+          ontologies:
+            - edam: http://edamontology.org/format_3603
+  svg:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.svg":
+          type: file
+          description: |
+            Blobplot SVG results of input arguments.
+          ontologies:
+            - edam: http://edamontology.org/format_3604
   versions_blobtk:
     - - ${task.process}:
           type: string

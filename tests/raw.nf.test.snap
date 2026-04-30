@@ -3,10 +3,10 @@
         "content": [
             {
                 "BLOBTK_DEPTH": {
-                    "blobtk": "0.7.1"
+                    "blobtk": "0.8.0"
                 },
-                "BLOBTK_IMAGES": {
-                    "blobtk": "0.5.1"
+                "BLOBTK_PLOT": {
+                    "blobtk": "0.8.0"
                 },
                 "BLOBTOOLKIT_CHUNK": {
                     "blobtoolkit": "4.4.6"
@@ -405,7 +405,7 @@
                 "GCA.922984935.2.dinuc.1k.tsv.gz:md5,c57fffa830caf586b88be8ced7d0075d",
                 "GCA.922984935.2.trinuc.1k.tsv.gz:md5,1c1ee422d1ca25ead7bc3d911f861d93",
                 "GCA.922984935.2.tetranuc.1k.tsv.gz:md5,c2a751c8242fd2b2cb2fbdbde1c728dc",
-                "GCA_922984935.2.synonyms_synonyms.json.gz:md5,1da678113c2a1e368805c79a14ad0531",
+                "GCA_922984935.2.synonyms_synonyms.json.gz:md5,0ffb860b9a146602a84adeaa2690e1cd",
                 "SAMEA7524438.ERR6688599_cov.json.gz:md5,1d5edb9f09c0069fd013b427aa80b2f4",
                 "SAMEA7524438.ERR6688599_cov_stats.json.gz:md5,e5723527916cead4f673fc8dbf82a5cc",
                 "SAMEA7524438.ERR6688599_cov_windows.json.gz:md5,5753f135d7e07b3c3aa439540f732532",
@@ -611,9 +611,9 @@
                 "tetrapoda_odb10_count_windows.json.gz:md5,7bd6f953b73e4de0fa514261c1916491",
                 "tetrapoda_odb10_count_windows_100000.json.gz:md5,371f31281e1b55140ded38820ee5bfca",
                 "tetrapoda_odb10_count_windows_1000000.json.gz:md5,fca9e3857f6bad1aca1bd8170c187859",
-                "GCA_922984935.2.blob.png:md5,9051471f656491686d6739400c0ea6ef",
-                "GCA_922984935.2.cumulative.png:md5,205c26f2ac2d8ee942f5f53c576e5ab2",
-                "GCA_922984935.2.snail.png:md5,5611c6e48e7b4b273058814eca14f281",
+                "GCA_922984935.2.blob.png:md5,26a92c91c0cd30683bf8452dced3da98",
+                "GCA_922984935.2.cumulative.png:md5,09a9043088bbc353fc4cf52380b010a9",
+                "GCA_922984935.2.snail.png:md5,76351383bca0a4567baddec6a575d822",
                 "GCA_922984935.2.archaea_odb10.full_table.tsv:md5,be1ed7727a5887d5e6ea3c56f7a85305",
                 "GCA_922984935.2.archaea_odb10.missing_busco_list.tsv:md5,34a2d0e0b9a128568033289ee4a01f42",
                 "GCA_922984935.2.archaea_odb10.short_summary.tsv:md5,47c3ac371d25193611219f2ab98d1dea",
@@ -646,9 +646,9 @@
             ]
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.2"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2026-04-16T10:32:45.405468"
+        "timestamp": "2026-04-29T19:13:32.762643796"
     }
 }

@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Restructured locations and names of output files, see [output.md](/docs/output.md)
 - The `sample` samplesheet column can now contain `/` to organise the `read_mapping/` outputs in sub-directories.
 - Added parameter `--window_size` to partition sequences and calculate per-window statistics
+- Updated `blobtk/images` to `blobtk/plot` (an nf-core module)
 
 ### Parameters
 
@@ -27,7 +28,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | Dependency | Old version   | New version     |
 | ---------- | ------------- | --------------- |
 | blast      | 2.15.0        | 2.17.0          |
-| blobtk     | 0.5.1         | 0.7.1           |
+| blobtk     | 0.5.1         | 0.8.0           |
 | diamond    | 2.1.16        | 2.1.23          |
 | gunzip     | 1.1           | 1.13            |
 | minimap2   | 2.28          | 2.29            |
