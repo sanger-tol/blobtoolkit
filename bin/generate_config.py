@@ -258,14 +258,16 @@ def get_odb(
             if odb not in valid_odbs:
                 print(f"Invalid requested BUSCO lineage: {odb}", file=sys.stderr)
                 sys.exit(1)
-    # else:
-    #     # Do the intersection to find the ancestors that have a BUSCO lineage
-    #     odb_arr = [
-    #         lineage_tax_ids_dict[anc_taxon_info.taxon_id]
-    #         for anc_taxon_info in taxon_info.lineage
-    #         if anc_taxon_info.taxon_id in lineage_tax_ids_dict
-    #     ]
-    #
+    else:
+        # Invert the dictionary back to taxid: odb_dataset
+        inverse_lineage = {v: k for k, v in lineage_tax_ids_dict.items()}
+        # Do the intersection to find the ancestors that have a BUSCO lineage
+        odb_arr = [
+            inverse_lineage[anc_taxon_info.taxon_id]
+            for anc_taxon_info in taxon_info.lineage
+            if anc_taxon_info.taxon_id in inverse_lineage
+        ]
+
     total_odb_list = odb_arr + basals
 
     print((most_frequent_odb(total_odb_list), total_odb_list))
