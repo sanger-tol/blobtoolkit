@@ -2,6 +2,7 @@
 
 import argparse
 import dataclasses
+import enum
 import os
 import re
 import sqlite3
@@ -80,6 +81,12 @@ def parse_args(args=None):
     parser.add_argument(
         "--window_size", type=int, help="Window size (in base pairs) for per-window statistics."
     )
+    parser.add_argument(
+        "--basal_lineages",
+        enum=["full", "min"],
+        help="Basal lineages to include the busco runs (`full` = `eukaryota`, `bacteria` and `archaea` whilst `min` = `eukaryota`).",
+        default="full",
+    )
     parser.add_argument("--version", action="version", version="%(prog)s 2.0")
     args = parser.parse_args(args)
 
@@ -102,13 +109,13 @@ def parse_args(args=None):
             != 1
         ):
             print(
-                f"The --read_id, --read_type, --read_layout, and --read_path, must be passed the same number of times",
+                "The --read_id, --read_type, --read_layout, and --read_path, must be passed the same number of times",
                 file=sys.stderr,
             )
             sys.exit(1)
     else:
         print(
-            f"The --read_id, --read_type, --read_layout, and --read_path, must be passed the same number of times",
+            "The --read_id, --read_type, --read_layout, and --read_path, must be passed the same number of times",
             file=sys.stderr,
         )
         sys.exit(1)
@@ -197,20 +204,40 @@ def get_odb_version(file_name):
     elif "odb12" in file_name:
         return ["_odb12"]
     elif "mixed" in file_name:
+        # Replace with regex to get all odb versions in file name?
         return ["_odb10", "_odb12"]
     else:
         print(f"Can't recognise the odb version of {file_name}", file=sys.stderr)
         sys.exit(1)
 
 
+def generate_basal_lineages(
+    odb_version: typing.List[str], basal_lineages: str = "full"
+) -> typing.List[str]:
+
+    basal_groups = ["eukaryota"]
+
+    if basal_lineages == "full":
+        basal_groups = ["eukaryota", "bacteria", "archaea"]
+
+    final_basals = []
+    for i in odb_version:
+        for group in basal_groups:
+            final_basals.append(group + i)
+    return final_basals
+
+
 def get_odb(
     taxon_info: TaxonInfo,
     lineage_tax_ids: str,
     requested_buscos: typing.Optional[str],
-) -> typing.List[str]:
+    basal_lineages: str = "full",
+) -> typing.Tuple[str, typing.List[str]]:
 
     # Get the ODB version from the file name
     odb_version = get_odb_version(lineage_tax_ids)
+
+    basals = generate_basal_lineages(odb_version, basal_lineages)
 
     # Read the mapping between the BUSCO lineages and their taxon_id
     with open(lineage_tax_ids) as file_in:
@@ -218,18 +245,16 @@ def get_odb(
         for line in file_in:
             for odb_number in odb_version:
                 arr = line.split()
-                print(arr[1] + odb_number)
                 lineage_tax_ids_dict[str(arr[1] + odb_number)] = int(
                     arr[0]
-                )  # creates a {taxon_id_odbversion} e.g. lepidoptera_odb12
-
-    print(lineage_tax_ids_dict)
+                )  # creates a {taxon_id_odbversion} e.g. lepidoptera_odb12: Taxid
 
     valid_odbs = set(lineage_tax_ids_dict.keys())
-    print(f"valid_odbs: {valid_odbs}")
 
+    odb_arr = []
     if requested_buscos:
         odb_arr = requested_buscos.split(",")
+
         for odb in odb_arr:
             if odb not in valid_odbs:
                 print(f"Invalid requested BUSCO lineage: {odb}", file=sys.stderr)
@@ -241,11 +266,15 @@ def get_odb(
     #         for anc_taxon_info in taxon_info.lineage
     #         if anc_taxon_info.taxon_id in lineage_tax_ids_dict
     #     ]
+    #
+    total_odb_list = odb_arr + basals
 
-    return (most_frequent_odb(odb_arr), odb_arr)
+    print((most_frequent_odb(total_odb_list), total_odb_list))
+
+    return (most_frequent_odb(total_odb_list), total_odb_list)
 
 
-def most_frequent_odb(strings: Iterable[str]) -> Optional[str]:
+def most_frequent_odb(strings: Iterable[str]) -> str:
     """
     Returns the most frequent odb version from an input list of odb lineages
     This acts as the _master_ odb_version for the basal lineages that are figured
