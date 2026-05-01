@@ -2,7 +2,6 @@
 
 import argparse
 import dataclasses
-import enum
 import os
 import re
 import sqlite3
