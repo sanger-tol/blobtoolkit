@@ -82,7 +82,7 @@ def parse_args(args=None):
     )
     parser.add_argument(
         "--basal_lineages",
-        enum=["full", "min"],
+        choices=["full", "min"],
         help="Basal lineages to include the busco runs (`full` = `eukaryota`, `bacteria` and `archaea` whilst `min` = `eukaryota`).",
         default="full",
     )
