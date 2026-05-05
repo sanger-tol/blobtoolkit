@@ -82,9 +82,8 @@ def parse_args(args=None):
     )
     parser.add_argument(
         "--basal_lineages",
-        choices=["full", "min"],
-        help="Basal lineages to include the busco runs (`full` = `eukaryota`, `bacteria` and `archaea` whilst `min` = `eukaryota`).",
-        default="full",
+        help="Comma-separated list of basal lineages to include in the BUSCO runs (e.g. 'eukaryota,bacteria,archaea'). Defaults to 'eukaryota,bacteria,archaea'.",
+        default="eukaryota,bacteria,archaea",
     )
     parser.add_argument("--version", action="version", version="%(prog)s 2.0")
     args = parser.parse_args(args)
@@ -211,12 +210,21 @@ def get_odb_version(file_name):
 
 
 def generate_basal_lineages(
-    odb_version: typing.List[str], basal_lineages: str = "full"
+    odb_version: typing.List[str],
+    basal_lineages: str,
 ) -> typing.List[str]:
+    """
+    Generate the full list of basal BUSCO lineage names by combining the basal groups
+    with the ODB version(s) (e.g. 'eukaryota' + '_odb10' -> 'eukaryota_odb10').
 
-    basal_groups = ["eukaryota"]
+    `basal_lineages` is expected to be a comma-separated string.
+    """
 
-    if basal_lineages == "full":
+    # Normalize to a list of group names
+    basal_groups = [b.strip() for b in basal_lineages.split(",") if b.strip()]
+
+    # Fallback to sensible default if nothing provided
+    if not basal_groups:
         basal_groups = ["eukaryota", "bacteria", "archaea"]
 
     final_basals = []
@@ -230,7 +238,7 @@ def get_odb(
     taxon_info: TaxonInfo,
     lineage_tax_ids: str,
     requested_buscos: typing.Optional[str],
-    basal_lineages: str = "full",
+    basal_lineages: str,
 ) -> typing.Tuple[str, typing.List[str]]:
 
     # Get the ODB version from the file name
@@ -485,7 +493,9 @@ def main(args=None):
     taxon_info = fetch_taxon_info(args.taxon_query)
     classification = get_classification(taxon_info)
 
-    (odb_version, odb_arr) = get_odb(taxon_info, args.lineage_tax_ids, args.busco)
+    (odb_version, odb_arr) = get_odb(
+        taxon_info, args.lineage_tax_ids, args.busco, args.basal_lineages
+    )
     taxon_id = adjust_taxon_id(args.nt, taxon_info)
 
     if sequence_report:
