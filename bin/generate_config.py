@@ -2,20 +2,27 @@
 
 import argparse
 import dataclasses
-import urllib.parse
-import urllib3.util
 import os
-import sys
+import re
 import sqlite3
+import sys
 import typing
+import urllib.parse
+from collections import Counter
+from typing import Iterable, Optional
 
 import requests
 import requests.adapters
+import urllib3.util
 import yaml
 
 NCBI_TAXONOMY_API = "https://api.ncbi.nlm.nih.gov/datasets/v2/taxonomy/taxon/%s"
-GOAT_LOOKUP_API = "https://goat.genomehubs.org/api/v2/lookup?searchTerm=%s&result=taxon&size=10&taxonomy=ncbi"
-GOAT_RECORD_API = "https://goat.genomehubs.org/api/v2/record?recordId=%s&result=taxon&size=10&taxonomy=ncbi"
+GOAT_LOOKUP_API = (
+    "https://goat.genomehubs.org/api/v2/lookup?searchTerm=%s&result=taxon&size=10&taxonomy=ncbi"
+)
+GOAT_RECORD_API = (
+    "https://goat.genomehubs.org/api/v2/record?recordId=%s&result=taxon&size=10&taxonomy=ncbi"
+)
 NCBI_DATASETS_API = "https://api.ncbi.nlm.nih.gov/datasets/v2/genome/accession/%s/dataset_report?filters.assembly_version=all_assemblies"
 NCBI_SEQUENCE_API = "https://api.ncbi.nlm.nih.gov/datasets/v2/genome/accession/%s/sequence_reports"
 
@@ -29,9 +36,12 @@ RANKS = [
     "superkingdom",
 ]
 
+
 # Wrapper around requests.get to use a "session", which can recover from network errors
 def get_http_request_json(url):
-    retry_strategy = urllib3.util.Retry(total=5, backoff_factor=0.1, status_forcelist=[429, 500, 502, 503, 504])
+    retry_strategy = urllib3.util.Retry(
+        total=5, backoff_factor=0.1, status_forcelist=[429, 500, 502, 503, 504]
+    )
     adapter = requests.adapters.HTTPAdapter(max_retries=retry_strategy)
     session = requests.Session()
     session.mount("http://", adapter)
@@ -47,21 +57,34 @@ def parse_args(args=None):
     parser = argparse.ArgumentParser(description=Description)
     parser.add_argument("--fasta", required=True, help="Path to the Fasta file of the assembly.")
     parser.add_argument("--taxon_query", required=True, help="Query string/integer for this taxon.")
-    parser.add_argument("--lineage_tax_ids", required=True, help="Mapping between BUSCO lineages and taxon IDs.")
+    parser.add_argument(
+        "--lineage_tax_ids", required=True, help="Mapping between BUSCO lineages and taxon IDs."
+    )
     parser.add_argument("--output_prefix", required=True, help="Prefix to name the output files.")
-    parser.add_argument("--accession", help="Accession number of the assembly (optional).", default=None)
+    parser.add_argument(
+        "--accession", help="Accession number of the assembly (optional).", default=None
+    )
     parser.add_argument("--busco", help="Requested BUSCO lineages.", default=None)
     parser.add_argument("--nt", required=True, help="Path to the NT database")
     parser.add_argument("--read_id", action="append", help="ID of a read set")
     parser.add_argument("--read_type", action="append", help="Type of a read set")
     parser.add_argument("--read_layout", action="append", help="Layout of a read set")
     parser.add_argument("--read_path", action="append", help="Path of a read set")
-    parser.add_argument("--revision", type=int, help="Requested revision (version) of the output blobDir")
+    parser.add_argument(
+        "--revision", type=int, help="Requested revision (version) of the output blobDir"
+    )
     parser.add_argument("--blastp", help="Path to the blastp database", required=True)
     parser.add_argument("--blastx", help="Path to the blastx database", required=True)
     parser.add_argument("--blastn", help="Path to the blastn database", required=True)
     parser.add_argument("--taxdump", help="Path to the taxonomy database", required=True)
-    parser.add_argument("--window_size", type=int, help="Window size (in base pairs) for per-window statistics.")
+    parser.add_argument(
+        "--window_size", type=int, help="Window size (in base pairs) for per-window statistics."
+    )
+    parser.add_argument(
+        "--basal_lineages",
+        help="Comma-separated list of basal lineages to include in the BUSCO runs (e.g. 'eukaryota,bacteria,archaea'). Defaults to 'eukaryota,bacteria,archaea'.",
+        default="eukaryota,bacteria,archaea",
+    )
     parser.add_argument("--version", action="version", version="%(prog)s 2.0")
     args = parser.parse_args(args)
 
@@ -69,15 +92,34 @@ def parse_args(args=None):
         # All read arguments skipped, OK
         pass
     elif args.read_id and args.read_type and args.read_layout and args.read_path:
-        # All read arguments passed
-        if len(set([len(args.read_id), len(args.read_type), len(args.read_layout), len(args.read_path)])) != 1:
-            print(f"The --read_id, --read_type, --read_layout, and --read_path, must be passed the same number of times", file=sys.stderr)
+        # All read arguments passed
+        if (
+            len(
+                set(
+                    [
+                        len(args.read_id),
+                        len(args.read_type),
+                        len(args.read_layout),
+                        len(args.read_path),
+                    ]
+                )
+            )
+            != 1
+        ):
+            print(
+                "The --read_id, --read_type, --read_layout, and --read_path, must be passed the same number of times",
+                file=sys.stderr,
+            )
             sys.exit(1)
     else:
-        print(f"The --read_id, --read_type, --read_layout, and --read_path, must be passed the same number of times", file=sys.stderr)
+        print(
+            "The --read_id, --read_type, --read_layout, and --read_path, must be passed the same number of times",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     return args
+
 
 def make_dir(path):
     if len(path) > 0:
@@ -120,7 +162,9 @@ def fetch_taxon_info_from_goat(taxon_name: typing.Union[str, int]) -> TaxonInfo:
 
 
 # Using API, get the taxon_ids of the species and all parents
-def fetch_taxon_info_from_ncbi(taxon_name: typing.Union[str, int], with_lineage=True) -> typing.Optional[TaxonInfo]:
+def fetch_taxon_info_from_ncbi(
+    taxon_name: typing.Union[str, int], with_lineage=True
+) -> typing.Optional[TaxonInfo]:
     # "/" has to be double encoded, e.g. "Gymnodinium sp. CCAP1117/9" -> "Gymnodinium%20sp.%20CCAP1117%252F9"
     url_safe_taxon_name = urllib.parse.quote(str(taxon_name).replace("/", "%2F"))
     response = get_http_request_json(NCBI_TAXONOMY_API % url_safe_taxon_name)
@@ -128,7 +172,8 @@ def fetch_taxon_info_from_ncbi(taxon_name: typing.Union[str, int], with_lineage=
         body = response["taxonomy_nodes"][0]["taxonomy"]
         if with_lineage:
             lineage = [
-                fetch_taxon_info_from_ncbi(t, with_lineage=False) for t in reversed(body["lineage"][2:])
+                fetch_taxon_info_from_ncbi(t, with_lineage=False)
+                for t in reversed(body["lineage"][2:])
             ]  # skip root and cellular_organisms
         else:
             lineage = []
@@ -153,47 +198,106 @@ def get_classification(taxon_info: TaxonInfo) -> typing.Dict[str, str]:
 
 def get_odb_version(file_name):
     if "odb10" in file_name:
-        return "_odb10"
+        return ["_odb10"]
     elif "odb12" in file_name:
-        return "_odb12"
+        return ["_odb12"]
+    elif "mixed" in file_name:
+        # Replace with regex to get all odb versions in file name?
+        return ["_odb10", "_odb12"]
     else:
         print(f"Can't recognise the odb version of {file_name}", file=sys.stderr)
         sys.exit(1)
+
+
+def generate_basal_lineages(
+    odb_version: typing.List[str],
+    basal_lineages: str,
+) -> typing.List[str]:
+    """
+    Generate the full list of basal BUSCO lineage names by combining the basal groups
+    with the ODB version(s) (e.g. 'eukaryota' + '_odb10' -> 'eukaryota_odb10').
+
+    `basal_lineages` is expected to be a comma-separated string.
+    """
+
+    # Normalize to a list of group names
+    basal_groups = [b.strip() for b in basal_lineages.split(",") if b.strip()]
+
+    # Fallback to sensible default if nothing provided
+    if not basal_groups:
+        basal_groups = ["eukaryota", "bacteria", "archaea"]
+
+    final_basals = []
+    for i in odb_version:
+        for group in basal_groups:
+            final_basals.append(group + i)
+    return final_basals
 
 
 def get_odb(
     taxon_info: TaxonInfo,
     lineage_tax_ids: str,
     requested_buscos: typing.Optional[str],
-) -> typing.List[str]:
+    basal_lineages: str,
+) -> typing.Tuple[str, typing.List[str]]:
 
     # Get the ODB version from the file name
     odb_version = get_odb_version(lineage_tax_ids)
 
+    basals = generate_basal_lineages(odb_version, basal_lineages)
+
     # Read the mapping between the BUSCO lineages and their taxon_id
     with open(lineage_tax_ids) as file_in:
-        lineage_tax_ids_dict: typing.Dict[int, str] = {}
+        lineage_tax_ids_dict: typing.Dict[str, int] = {}
         for line in file_in:
-            arr = line.split()
-            lineage_tax_ids_dict[int(arr[0])] = arr[1] + odb_version
+            for odb_number in odb_version:
+                arr = line.split()
+                lineage_tax_ids_dict[str(arr[1] + odb_number)] = int(
+                    arr[0]
+                )  # creates a {taxon_id_odbversion} e.g. lepidoptera_odb12: Taxid
 
-    valid_odbs = set(lineage_tax_ids_dict.values())
+    valid_odbs = set(lineage_tax_ids_dict.keys())
 
+    odb_arr = []
     if requested_buscos:
         odb_arr = requested_buscos.split(",")
+
         for odb in odb_arr:
             if odb not in valid_odbs:
                 print(f"Invalid requested BUSCO lineage: {odb}", file=sys.stderr)
                 sys.exit(1)
     else:
+        # Invert the dictionary back to taxid: odb_dataset
+        inverse_lineage = {v: k for k, v in lineage_tax_ids_dict.items()}
         # Do the intersection to find the ancestors that have a BUSCO lineage
         odb_arr = [
-            lineage_tax_ids_dict[anc_taxon_info.taxon_id]
+            inverse_lineage[anc_taxon_info.taxon_id]
             for anc_taxon_info in taxon_info.lineage
-            if anc_taxon_info.taxon_id in lineage_tax_ids_dict
+            if anc_taxon_info.taxon_id in inverse_lineage
         ]
 
-    return (odb_version, odb_arr)
+    total_odb_list = odb_arr + basals
+
+    print((most_frequent_odb(total_odb_list), total_odb_list))
+
+    return (most_frequent_odb(total_odb_list), total_odb_list)
+
+
+def most_frequent_odb(strings: Iterable[str]) -> str:
+    """
+    Returns the most frequent odb version from an input list of odb lineages
+    This acts as the _master_ odb_version for the basal lineages that are figured
+    out later in the pipeline.
+
+    Then again maybe they should be figured out here too?
+    """
+    pattern = re.compile(r"odb\d*")
+    matches = []
+    for s in strings:
+        matches.extend(pattern.findall(s))
+    if not matches:
+        sys.exit("No ODB matches found")
+    return "_" + Counter(matches).most_common(1)[0][0]
 
 
 def get_assembly_info(accession: str) -> typing.Dict[str, typing.Union[str, int]]:
@@ -240,7 +344,9 @@ def get_sequence_report(accession: str):
 def adjust_taxon_id(nt: str, taxon_info: TaxonInfo) -> int:
     con = sqlite3.connect(os.path.join(nt, "taxonomy4blast.sqlite3"))
     cur = con.cursor()
-    for taxon_id in [taxon_info.taxon_id] + [anc_taxon_info.taxon_id for anc_taxon_info in taxon_info.lineage]:
+    for taxon_id in [taxon_info.taxon_id] + [
+        anc_taxon_info.taxon_id for anc_taxon_info in taxon_info.lineage
+    ]:
         res = cur.execute("SELECT * FROM TaxidInfo WHERE taxid = ?", (taxon_id,))
         if res.fetchone():
             return taxon_id
@@ -292,7 +398,12 @@ def print_yaml(
                 "name": "nt",
                 "path": blastn,
             },
-            "defaults": {"evalue": 1e-10, "import_evalue": 1e-25, "max_target_seqs": 10, "taxrule": "buscogenes"},
+            "defaults": {
+                "evalue": 1e-10,
+                "import_evalue": 1e-25,
+                "max_target_seqs": 10,
+                "taxrule": "buscogenes",
+            },
             "diamond_blastp": {
                 "import_max_target_seqs": 100000,
                 "name": "reference_proteomes",
@@ -344,7 +455,9 @@ def print_tsvs(output_prefix, sequence_report):
     synonyms_tsv = f"{output_prefix}.synonyms.tsv"
     with open(categories_tsv, "w") as fhc:
         with open(synonyms_tsv, "w") as fhs:
-            print("identifier", "assembly_role", "assembly_level", "assembly_unit", sep="\t", file=fhc)
+            print(
+                "identifier", "assembly_role", "assembly_level", "assembly_unit", sep="\t", file=fhc
+            )
             print("identifier", "name", "assigned_name", "refseq_accession", sep="\t", file=fhs)
             for rec in sequence_report:
                 print(
@@ -380,13 +493,17 @@ def main(args=None):
     taxon_info = fetch_taxon_info(args.taxon_query)
     classification = get_classification(taxon_info)
 
-    (odb_version, odb_arr) = get_odb(taxon_info, args.lineage_tax_ids, args.busco)
+    (odb_version, odb_arr) = get_odb(
+        taxon_info, args.lineage_tax_ids, args.busco, args.basal_lineages
+    )
     taxon_id = adjust_taxon_id(args.nt, taxon_info)
 
     if sequence_report:
         print_tsvs(args.output_prefix, sequence_report)
 
-    reads = zip(args.read_id, args.read_type, args.read_layout, args.read_path) if args.read_id else []
+    reads = (
+        zip(args.read_id, args.read_type, args.read_layout, args.read_path) if args.read_id else []
+    )
 
     print_yaml(
         f"{args.output_prefix}.yaml",

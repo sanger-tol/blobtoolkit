@@ -14,6 +14,7 @@ process GENERATE_CONFIG {
     path lineage_tax_ids
     val reads
     val db_paths
+    val basal_lineages
 
     output:
     tuple val(meta), path("*.yaml")          , emit: yaml
@@ -46,6 +47,7 @@ process GENERATE_CONFIG {
         --revision ${params.revision} \\
         $input_databases \\
         --output_prefix ${prefix} \\
+        --basal_lineages ${basal_lineages} \\
         $args
 
     cat <<-END_VERSIONS > versions.yml

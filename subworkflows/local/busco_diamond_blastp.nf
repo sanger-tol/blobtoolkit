@@ -13,7 +13,6 @@ workflow BUSCO_DIAMOND {
     fasta        // channel: [ val(meta), path(fasta) ]
     busco_lin    // channel: val([busco_lineages])
     busco_db     // channel: path(busco_db)
-    odb_version  // channel: val(odb_version)
     blastp       // channel: path(blastp_db)
     taxon_id     // channel: val(taxon_id)
     precomputed_busco // channel: [ val(meta}, path(busco_run_dir) ] optional precomputed busco outputs
@@ -26,19 +25,11 @@ workflow BUSCO_DIAMOND {
     // LOGIC: Prepare the BUSCO lineages
     //
 
-    // 0. Initialise the basal lineages according to the odb version
-    def basal_lineages = [ "eukaryota", "bacteria", "archaea" ]
-
-    ch_basal_lineages = channel.from(basal_lineages)
-        .combine(odb_version)
-        .map { lineage, version -> lineage + version }
-
     // Combine the list of relevant lineages with the basal lineages, and with the fasta
     // 1. Convert the list of strings to a channel of a strings
     ch_fasta_with_lineage = busco_lin
         .flatMap()
         // 2. Add the basal lineages, and remove any duplicate introduced
-        .concat(ch_basal_lineages)
         .unique()
         // 3. Add a (0-based) index to record the original order (i.e. by age) – withIndex doesn't work on channels
         .toList()
@@ -158,12 +149,23 @@ workflow BUSCO_DIAMOND {
     // LOGIC: Select input for BLOBTOOLKIT_EXTRACTBUSCOS
     //
 
+    //ch_all_busco_outputs.view { "BUSCO RUNS:$it" }
+
     ch_basal_buscos = ch_all_busco_outputs
         .map { meta, outputs -> [meta.lineage_name, meta, outputs] }
-        // The join is equivalent to selecting the channel items whose lineage is basal
-        .join(ch_basal_lineages)
+        // Filter: require base name followed by "_odb10" or "_odb12"
+        .filter { lineage_name, _meta, _outputs ->
+            // Lineage names come in in the sytle "eukaryota_odb10"
+            // So although the below are the basals we need to regex for the odb version
+            // regex has been made to be odb\\d+ so any future/custom versions will be supported
+            ch_basal_lineages = params.basal_lineages.toString().split(',').collect{ it.trim().toLowerCase() }
+
+            def regex = "^(${ch_basal_lineages.join('|')})_odb\\d+\$"
+            lineage_name?.toLowerCase() ==~ regex
+        }
         // Without flat:false, collect will flatten meta and outputs
         .collect(flat: false) { _lineage_name, _meta, outputs -> outputs.seq_dir }
+
 
     //
     // MODULE: Extract BUSCO genes from the basal lineages

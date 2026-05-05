@@ -48,6 +48,12 @@
                     "description": "Name of the ODB lineages to run BUSCO on. By default, the pipeline will automatically select the correct lineage based on the taxonomy. The three basal lineages `eukaryota`, `bacteria`, and `archaea`, do *not* need to be listed as they are _always_ included.",
                     "fa_icon": "fas fa-bone"
                 },
+                "basal_lineages": {
+                    "type": "string",
+                    "description": "Basal lineages to include in BUSCO runs. Provide a comma-separated string (e.g. 'eukaryota,bacteria,archaea'). Defaults to 'eukaryota,bacteria,archaea'.",
+                    "fa_icon": "fas fa-bone",
+                    "default": "eukaryota,bacteria,archaea"
+                },
                 "busco_gene_predictor": {
                     "type": "string",
                     "enum": ["miniprot", "metaeuk", "augustus"],
