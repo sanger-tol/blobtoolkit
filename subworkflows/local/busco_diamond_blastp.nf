@@ -153,18 +153,19 @@ workflow BUSCO_DIAMOND {
 
     ch_basal_buscos = ch_all_busco_outputs
         .map { meta, outputs -> [meta.lineage_name, meta, outputs] }
-        // Filter out the non-basal lineages (match e.g. "eukaryota", "eukaryota_odb10" or "bacteria_odb12")
+        // Filter: require base name followed by "_odb10" or "_odb12"
         .filter { lineage_name, _meta, _outputs ->
-            def ch_basal_lineages = ["eukaryota", "bacteria", "archaea"]
-            // match base name optionally followed by "_odb10" or "_odb12"
-            def regex = "^(${ch_basal_lineages.join('|')})(?:_odb(?:10|12))?\$"
+            // Lineage names come in in the sytle "eukaryota_odb10"
+            // So although the below are the basals we need to regex for the odb version
+            // regex has been made to be odb\\d+ so any future/custom versions will be supported
+            ch_basal_lineages = params.basal_lineages.toString().split(',').collect{ it.trim().toLowerCase() }
+
+            def regex = "^(${ch_basal_lineages.join('|')})_odb\\d+\$"
             lineage_name?.toLowerCase() ==~ regex
         }
         // Without flat:false, collect will flatten meta and outputs
         .collect(flat: false) { _lineage_name, _meta, outputs -> outputs.seq_dir }
 
-
-    ch_basal_buscos.view { "BASALS:$it" }
 
     //
     // MODULE: Extract BUSCO genes from the basal lineages
