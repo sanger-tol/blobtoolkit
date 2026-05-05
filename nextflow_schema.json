@@ -50,9 +50,9 @@
                 },
                 "basal_lineages": {
                     "type": "string",
-                    "enum": ["full", "min"],
-                    "description": "Choose whether to run all basal lineages (default, `full` = `eukaryota`, `bacteria`, `archaea`) or just the minimal set (`min` = `eukaryota`).",
-                    "fa_icon": "fas fa-bone"
+                    "description": "Basal lineages to include in BUSCO runs. Provide a comma-separated string (e.g. 'eukaryota,bacteria,archaea'). Defaults to 'eukaryota,bacteria,archaea'.",
+                    "fa_icon": "fas fa-bone",
+                    "default": "eukaryota,bacteria,archaea"
                 },
                 "busco_gene_predictor": {
                     "type": "string",
