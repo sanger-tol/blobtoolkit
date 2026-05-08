@@ -9,10 +9,10 @@
                     "blastn": "2.17.0+"
                 },
                 "BLOBTK_DEPTH": {
-                    "blobtk": "0.8.0"
+                    "blobtk": "0.8.1"
                 },
                 "BLOBTK_PLOT": {
-                    "blobtk": "0.8.0"
+                    "blobtk": "0.8.1"
                 },
                 "BLOBTOOLKIT_CHUNK": {
                     "blobtoolkit": "4.4.6"
