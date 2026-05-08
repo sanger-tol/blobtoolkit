@@ -3,7 +3,17 @@ Changes in component 'nf-core/blobtk/plot'
 Changes in 'blobtk/plot/main.nf':
 --- modules/nf-core/blobtk/plot/main.nf
 +++ modules/nf-core/blobtk/plot/main.nf
-@@ -11,10 +11,7 @@
+@@ -1,20 +1,8 @@
+ process BLOBTK_PLOT {
+-    // Linked to issue https://github.com/sanger-tol/genomenote/issues/184
+-    // Depending on the blob dataset in use, the grid option may not
+-    // work at all. This is down to the version of blobtoolkit used to
+-    // generate the blob.
+-    // Adding a check would overly complicate the module so for now
+-    // we can ignore errors, with the knowledge it would only kill
+-    // runs in which the blobdir doesn't have the right data.
+-    errorStrategy 'ignore'
+-
      tag "$prefix"
      label 'process_single'
  
@@ -15,7 +25,7 @@ Changes in 'blobtk/plot/main.nf':
  
      input:
      tuple val(meta), path(fasta)
-@@ -32,6 +29,11 @@
+@@ -32,6 +20,11 @@
      task.ext.when == null || task.ext.when
  
      script:
