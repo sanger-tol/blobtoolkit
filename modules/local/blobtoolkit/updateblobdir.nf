@@ -20,8 +20,9 @@ process BLOBTOOLKIT_UPDATEBLOBDIR {
     task.ext.when == null || task.ext.when
 
     script:
-    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        exit 1, "BLOBTOOLKIT_BLOBDIR module does not support Conda. Please use Docker / Singularity / Podman instead."
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1 &&
+        (workflow.profile.tokenize(',').intersect(['docker', 'singularity', 'podman', 'apptainer']).size() == 0)) {
+        exit 1, "BLOBTOOLKIT_WINDOWSTATS module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
 
     def args = task.ext.args ?: ''

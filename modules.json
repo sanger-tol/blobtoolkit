@@ -14,12 +14,14 @@
                     "blobtk/depth": {
                         "branch": "master",
                         "git_sha": "afe7137ce04ae44c379341ae8223c65ea579c300",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/blobtk/depth/blobtk-depth.diff"
                     },
                     "blobtk/plot": {
                         "branch": "master",
                         "git_sha": "afe7137ce04ae44c379341ae8223c65ea579c300",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/blobtk/plot/blobtk-plot.diff"
                     },
                     "busco/busco": {
                         "branch": "master",

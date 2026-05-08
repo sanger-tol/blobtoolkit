@@ -30,6 +30,10 @@ workflow VIEW {
             args: "-v blob"
         ],
         [
+            name: "grid",
+            args: "-v blob --shape grid -w 0.01 -x position"
+        ],
+        [
             name: "cumulative",
             args: "-v cumulative"
         ],
