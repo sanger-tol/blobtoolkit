@@ -18,7 +18,7 @@ process BLOBTOOLKIT_EXTRACTBUSCOS {
     script:
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1 &&
         (workflow.profile.tokenize(',').intersect(['docker', 'singularity', 'podman', 'apptainer']).size() == 0)) {
-        exit 1, "BLOBTOOLKIT_WINDOWSTATS module does not support Conda. Please use Docker / Singularity / Podman instead."
+        exit 1, "BLOBTOOLKIT_EXTRACTBUSCOS module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
 
     def args = task.ext.args ?: ''
