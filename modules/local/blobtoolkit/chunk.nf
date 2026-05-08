@@ -10,7 +10,7 @@ process BLOBTOOLKIT_CHUNK {
 
     output:
     tuple val(meta), path("*.chunks.fasta"), emit: chunks
-    path "versions.yml"                    , emit: versions
+    tuple val("${task.process}"), val("blobtoolkit"), eval("btk --version | cut -d' ' -f2 | sed 's/v//'"), topic: versions, emit: versions_blobtoolkit
 
     when:
     task.ext.when == null || task.ext.when
@@ -30,10 +30,5 @@ process BLOBTOOLKIT_CHUNK {
         ${busco} \\
         --out ${prefix}.chunks.fasta \\
         $args
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
-    END_VERSIONS
     """
 }

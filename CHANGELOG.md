@@ -12,17 +12,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Restructured locations and names of output files, see [output.md](/docs/output.md)
 - The `sample` samplesheet column can now contain `/` to organise the `read_mapping/` outputs in sub-directories.
 - Added parameter `--window_size` to partition sequences and calculate per-window statistics
-- Updated `blobtk/images` to `blobtk/plot` (an nf-core module)
+- Added parameter `--minimum_window_size` to control the minimum window size for per-window statistics.
+- Updated `blobtk/images` to `blobtk/plot` (an nf-core module), and patched the module for version `0.8.1` which is not yet available via bioconda.
 - Added the `grid` plot generation from `blobtk/plot`.
 - Updated `blast/blastn` db path to be staged as a `BLASTN_DB_DIR` due to an edge case where `:` could cause a malformed path.
-- Expanded the warning that is printed when attempting to run `blobtoolkit` modules with conda but profiles include a container engine as well.
+- Expanded the warning that is printed when attempting to run `blobtoolkit` modules with conda but profiles include a container engine as well. Running using `-profile conda,docker` will no longer stop the pipeline.
+- Versions are now output via topic where possible (e.g. where tools are run prior to version collection).
 
 ### Parameters
 
-| Old parameter | New parameter |
-| ------------- | ------------- |
-|               | --revision    |
-|               | --window_size |
+| Old parameter | New parameter         |
+| ------------- | --------------------- |
+|               | --revision            |
+|               | --window_size         |
+|               | --minimum_window_size |
 
 ### Software dependencies
 

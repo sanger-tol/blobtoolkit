@@ -5,10 +5,11 @@ process BLOBTOOLKIT_WINDOWSTATS {
 
     input:
     tuple val(meta), path(tsv)
+    val minimum_window_size
 
     output:
     tuple val(meta), path('*_window_stats*.tsv') , emit: tsv
-    path "versions.yml"                          , emit: versions
+    tuple val("${task.process}"), val("blobtoolkit"), eval("btk --version | cut -d' ' -f2 | sed 's/v//'"), topic: versions, emit: versions_blobtoolkit
 
     when:
     task.ext.when == null || task.ext.when
@@ -25,11 +26,7 @@ process BLOBTOOLKIT_WINDOWSTATS {
     btk pipeline window-stats \\
             --in ${tsv} \\
             $args \\
-            --out ${prefix}_window_stats.tsv
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
-    END_VERSIONS
+            --out ${prefix}_window_stats.tsv \\
+            --min-window-length ${minimum_window_size}
     """
 }

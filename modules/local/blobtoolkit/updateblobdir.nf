@@ -14,7 +14,7 @@ process BLOBTOOLKIT_UPDATEBLOBDIR {
 
     output:
     tuple val(meta), path(prefix), emit: blobdir
-    path "versions.yml"          , emit: versions
+    tuple val("${task.process}"), val("blobtoolkit"), eval("btk --version | cut -d' ' -f2 | sed 's/v//'"), topic: versions, emit: versions_blobtoolkit
 
     when:
     task.ext.when == null || task.ext.when
@@ -45,10 +45,5 @@ process BLOBTOOLKIT_UPDATEBLOBDIR {
         --threads ${task.cpus} \\
         $args \\
         ${prefix}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
-    END_VERSIONS
     """
 }

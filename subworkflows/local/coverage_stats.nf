@@ -17,9 +17,6 @@ workflow COVERAGE_STATS {
 
 
     main:
-    ch_versions = channel.empty()
-
-
     //
     // MODULE: CREATE ALIGNED BAM AND INDEX CSI CHANNEL
     //
@@ -65,7 +62,6 @@ workflow COVERAGE_STATS {
     // MODULE: CREATE GENOME WINDOWS FILE IN BED FORMAT
     //
     CREATE_BED ( FASTAWINDOWS.out.mononuc )
-    ch_versions = ch_versions.mix ( CREATE_BED.out.versions.first() )
 
 
     //
@@ -88,5 +84,4 @@ workflow COVERAGE_STATS {
     mononuc  = FASTAWINDOWS.out.mononuc    // channel: [ val(meta), path(mononuc) ]
     bed      = CREATE_BED.out.bed          // channel: [ val(meta), path(bed) ]
     cov      = ch_coverage                 // channel: [ val(meta), path(regions.bed.gz) ]
-    versions = ch_versions                 // channel: [ versions.yml ]
 }

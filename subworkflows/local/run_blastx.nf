@@ -15,14 +15,10 @@ workflow RUN_BLASTX {
 
 
     main:
-    ch_versions = channel.empty()
-
-
     //
     // Split the sequences
     //
     BLOBTOOLKIT_CHUNK ( fasta, table )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_CHUNK.out.versions.first() )
 
 
     //
@@ -38,10 +34,8 @@ workflow RUN_BLASTX {
     // Unchunk chunked blastx results
     //
     BLOBTOOLKIT_UNCHUNK ( DIAMOND_BLASTX.out.txt )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_UNCHUNK.out.versions.first() )
 
 
     emit:
     blastx_out = BLOBTOOLKIT_UNCHUNK.out.blast_out  // channel: [ val(meta), path(blastx_out) ]
-    versions   = ch_versions                        // channel: [ versions.yml ]
 }

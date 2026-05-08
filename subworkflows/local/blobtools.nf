@@ -17,11 +17,7 @@ workflow BLOBTOOLS {
     blastn      // channel: [ val(meta), path(txt) ]
     taxdump     // channel: path(taxdump_db)
 
-
     main:
-    ch_versions = channel.empty()
-
-
     //
     // MODULE: CREATE BLOBTOOLS DATASET FILES
     //
@@ -32,7 +28,6 @@ workflow BLOBTOOLS {
         config,
         taxdump
     )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_CREATEBLOBDIR.out.versions.first() )
 
 
     //
@@ -46,10 +41,8 @@ workflow BLOBTOOLS {
         blastn,
         taxdump
     )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_UPDATEBLOBDIR.out.versions.first() )
 
 
     emit:
     blobdir  = BLOBTOOLKIT_UPDATEBLOBDIR.out.blobdir  // channel: [ val(meta), path(dir) ]
-    versions = ch_versions                            // channel: [ versions.yml ]
 }

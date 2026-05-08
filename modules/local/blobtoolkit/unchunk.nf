@@ -9,7 +9,7 @@ process BLOBTOOLKIT_UNCHUNK {
 
     output:
     tuple val(meta), path("*.out"), emit: blast_out
-    path "versions.yml"           , emit: versions
+    tuple val("${task.process}"), val("blobtoolkit"), eval("btk --version | cut -d' ' -f2 | sed 's/v//'"), topic: versions, emit: versions_blobtoolkit
 
     when:
     task.ext.when == null || task.ext.when
