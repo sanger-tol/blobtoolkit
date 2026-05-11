@@ -1,5 +1,5 @@
 process BLOBTOOLKIT_WINDOWSTATS {
-    tag "$meta.id"
+    tag "${meta.id}"
 
     container "docker.io/genomehubs/blobtoolkit:4.4.6"
 

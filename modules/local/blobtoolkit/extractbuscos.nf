@@ -1,5 +1,5 @@
 process BLOBTOOLKIT_EXTRACTBUSCOS {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     container "docker.io/genomehubs/blobtoolkit:4.4.6"

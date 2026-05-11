@@ -1,5 +1,5 @@
 process JSONIFY_TAXDUMP {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     conda "conda-forge::requests=2.28.1 conda-forge::pyyaml=6.0"

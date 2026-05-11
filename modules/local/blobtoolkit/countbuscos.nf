@@ -1,5 +1,5 @@
 process BLOBTOOLKIT_COUNTBUSCOS {
-    tag "$meta2.id"
+    tag "${meta2.id}"
     label 'process_single'
 
     container "docker.io/genomehubs/blobtoolkit:4.4.6"
