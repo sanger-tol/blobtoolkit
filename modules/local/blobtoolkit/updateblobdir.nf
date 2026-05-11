@@ -1,5 +1,5 @@
 process BLOBTOOLKIT_UPDATEBLOBDIR {
-    tag "${meta.id"
+    tag "${meta.id}"
     label 'process_medium'
 
     container "docker.io/genomehubs/blobtoolkit:4.4.6"
