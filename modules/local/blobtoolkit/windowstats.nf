@@ -5,7 +5,6 @@ process BLOBTOOLKIT_WINDOWSTATS {
 
     input:
     tuple val(meta), path(tsv)
-    val minimum_window_size
 
     output:
     tuple val(meta), path('*_window_stats*.tsv') , emit: tsv
@@ -26,7 +25,6 @@ process BLOBTOOLKIT_WINDOWSTATS {
     btk pipeline window-stats \\
             --in ${tsv} \\
             $args \\
-            --out ${prefix}_window_stats.tsv \\
-            --min-window-length ${minimum_window_size}
+            --out ${prefix}_window_stats.tsv
     """
 }
