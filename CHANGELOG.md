@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Restructured locations and names of output files, see [output.md](/docs/output.md)
 - The `sample` samplesheet column can now contain `/` to organise the `read_mapping/` outputs in sub-directories.
 - Added parameter `--window_size` to partition sequences and calculate per-window statistics
-- Added parameter `--minimum_window_size` to control the minimum window size for per-window statistics.
 - Updated `blobtk/images` to `blobtk/plot` (an nf-core module), and patched the module for version `0.8.1` which is not yet available via bioconda.
 - Added the `grid` plot generation from `blobtk/plot`.
 - Updated `blast/blastn` db path to be staged as a `BLASTN_DB_DIR` due to an edge case where `:` could cause a malformed path.
