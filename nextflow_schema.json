@@ -81,13 +81,6 @@
                     "fa_icon": "fas fa-chart-bar",
                     "minimum": 1
                 },
-                "minimum_window_size": {
-                    "type": "integer",
-                    "default": 100000,
-                    "description": "Minimum window size (in base pairs) used to partition sequences for calculating per-window statistics",
-                    "fa_icon": "fas fa-chart-bar",
-                    "minimum": 1
-                },
                 "blast_annotations": {
                     "type": "string",
                     "enum": ["all", "blastp", "blastx", "off"],
