@@ -29,10 +29,5 @@ process BLOBTOOLKIT_EXTRACTBUSCOS {
         $seq_args \\
         --out ${prefix}_buscogenes.fasta \\
         ${args}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
-    END_VERSIONS
     """
 }
