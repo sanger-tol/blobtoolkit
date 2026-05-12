@@ -10,7 +10,7 @@ process BLOBTOOLKIT_EXTRACTBUSCOS {
 
     output:
     tuple val(meta), path("*_buscogenes.fasta"), emit: genes
-
+    tuple val("${task.process}"), val("blobtoolkit"), eval("btk --version | cut -d' ' -f2 | sed 's/v//'"), topic: versions, emit: versions_blobtoolkit
 
     when:
     task.ext.when == null || task.ext.when
