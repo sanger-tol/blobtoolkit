@@ -32,8 +32,7 @@ workflow COLLATE_STATS {
     // MODULE: GENOME STATISTICS BY DIFFERENT WINDOW SIZES
     //
     BLOBTOOLKIT_WINDOWSTATS (
-        WINDOWSTATS_INPUT.out.tsv,
-        params.minimum_window_size
+        WINDOWSTATS_INPUT.out.tsv
     )
 
 
