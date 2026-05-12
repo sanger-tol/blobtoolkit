@@ -23,6 +23,9 @@
                 "BLOBTOOLKIT_CREATEBLOBDIR": {
                     "blobtoolkit": "4.4.6"
                 },
+                "BLOBTOOLKIT_EXTRACTBUSCOS": {
+                    "blobtoolkit": "4.4.6"
+                },
                 "BLOBTOOLKIT_SUMMARY": {
                     "blobtoolkit": "4.4.6"
                 },
@@ -694,7 +697,7 @@
                 "GCA_922984935.2.hic.mMelMel3_hic.coverage.1k.bed.gz:md5,0d03664e2f47d0e66b257ae9b39cebb3"
             ]
         ],
-        "timestamp": "2026-05-12T11:42:46.826266686",
+        "timestamp": "2026-05-12T13:20:54.919611026",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.2"

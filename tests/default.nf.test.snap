@@ -23,6 +23,9 @@
                 "BLOBTOOLKIT_CREATEBLOBDIR": {
                     "blobtoolkit": "4.4.6"
                 },
+                "BLOBTOOLKIT_EXTRACTBUSCOS": {
+                    "blobtoolkit": "4.4.6"
+                },
                 "BLOBTOOLKIT_SUMMARY": {
                     "blobtoolkit": "4.4.6"
                 },
@@ -759,10 +762,10 @@
                 "GCA_922984935.2.ont.mMelMel3_ont.coverage.1k.bed.gz:md5,3cd28f4bbfc849a30320715c23606406"
             ]
         ],
+        "timestamp": "2026-05-12T13:25:38.8483772",
         "meta": {
-            "nf-test": "0.9.3",
+            "nf-test": "0.9.5",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-05-11T16:11:03.023660391"
+        }
     }
 }

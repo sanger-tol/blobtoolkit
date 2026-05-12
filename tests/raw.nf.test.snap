@@ -17,6 +17,9 @@
                 "BLOBTOOLKIT_CREATEBLOBDIR": {
                     "blobtoolkit": "4.4.6"
                 },
+                "BLOBTOOLKIT_EXTRACTBUSCOS": {
+                    "blobtoolkit": "4.4.6"
+                },
                 "BLOBTOOLKIT_SUMMARY": {
                     "blobtoolkit": "4.4.6"
                 },
@@ -674,7 +677,7 @@
                 "GCA_922984935.2.obinary:md5,571f465e27e107f6e4bb3fa2e833250b"
             ]
         ],
-        "timestamp": "2026-05-12T11:53:15.474129594",
+        "timestamp": "2026-05-12T12:43:09.678696917",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.2"
