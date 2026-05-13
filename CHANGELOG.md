@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[0.11.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.0)] – – [2026-04-]
+## [[0.11.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.0)] – Bulbasaur – [2026-05-XX]
 
 ### Enhancements & fixes
 
@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `blast/blastn` db path to be staged as a `BLASTN_DB_DIR` due to an edge case where `:` could cause a malformed path.
 - Expanded the warning that is printed when attempting to run `blobtoolkit` modules with conda but profiles include a container engine as well. Running using `-profile conda,docker` will no longer stop the pipeline.
 - Versions are now output via topic where possible (e.g. where tools are run prior to version collection).
+- Update to allow for \*_odb10 and \*_odb12 datasets to be used concurrently.
+    - This relies on a `mixed_*.txt` file (mixed must be in the file name), containing the taxid to clade mappings.
+    - This was be generated with `cat assets/mapping_taxids-busco_dataset_name.eukaryota_odb{10,12}.*.txt | uniq > mixed_mapping_taxids_odb_10_12.txt`
+- Added the `basal_lineages` parameter to control which clades are considered basal for a particular run. By default, this is "eukaryota,bacteria,archaea". odb* suffixes are added depending on the mapping_taxid file used.
 
 ### Parameters
 
@@ -24,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | ------------- | ------------- |
 |               | --revision    |
 |               | --window_size |
+|               | --basal_lineages |
 
 ### Software dependencies
 
