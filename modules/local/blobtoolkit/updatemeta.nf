@@ -1,5 +1,5 @@
 process BLOBTOOLKIT_UPDATEMETA {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     container "docker.io/genomehubs/blobtoolkit:4.4.6"
@@ -19,7 +19,7 @@ process BLOBTOOLKIT_UPDATEMETA {
     script:
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1 &&
         (workflow.profile.tokenize(',').intersect(['docker', 'singularity', 'podman', 'apptainer']).size() == 0)) {
-        exit 1, "BLOBTOOLKIT_WINDOWSTATS module does not support Conda. Please use Docker / Singularity / Podman instead."
+        exit 1, "BLOBTOOLKIT_UPDATEMETA module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
 
     def args = task.ext.args ?: ''

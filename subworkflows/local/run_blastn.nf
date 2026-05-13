@@ -43,7 +43,6 @@ workflow RUN_BLASTN {
     //  Split long contigs into chunks
     // create chunks
     BLOBTOOLKIT_CHUNK ( SEQTK_SUBSEQ.out.sequences, [[],[]] )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_CHUNK.out.versions.first() )
 
 
     // Check that there are still sequences left after chunking (which excludes masked regions)
@@ -90,7 +89,6 @@ workflow RUN_BLASTN {
     // MODULE: Unchunk chunked blastn results
     //
     BLOBTOOLKIT_UNCHUNK ( ch_blastn_txt )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_UNCHUNK.out.versions.first() )
 
 
     emit:

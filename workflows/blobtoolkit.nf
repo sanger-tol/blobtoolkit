@@ -91,7 +91,6 @@ workflow BLOBTOOLKIT {
     // SUBWORKFLOW: Calculate genome coverage and statistics
     //
     COVERAGE_STATS ( ch_aligned, ch_prepared_genome )
-    ch_versions         = ch_versions.mix ( COVERAGE_STATS.out.versions )
 
 
     //
@@ -105,7 +104,6 @@ workflow BLOBTOOLKIT {
         INPUT_CHECK.out.taxon_id,
         INPUT_CHECK.out.precomputed_busco,
     )
-    ch_versions         = ch_versions.mix ( BUSCO_DIAMOND.out.versions )
 
 
     //
@@ -118,7 +116,6 @@ workflow BLOBTOOLKIT {
         INPUT_CHECK.out.blastx,
         INPUT_CHECK.out.taxon_id,
     )
-    ch_versions         = ch_versions.mix ( RUN_BLASTX.out.versions )
 
 
     //
@@ -144,7 +141,6 @@ workflow BLOBTOOLKIT {
         COVERAGE_STATS.out.mononuc,
         COVERAGE_STATS.out.cov
     )
-    ch_versions         = ch_versions.mix ( COLLATE_STATS.out.versions )
 
 
     //
@@ -161,14 +157,12 @@ workflow BLOBTOOLKIT {
         RUN_BLASTN.out.blastn_out.ifEmpty([[],[]]),
         INPUT_CHECK.out.taxdump
     )
-    ch_versions         = ch_versions.mix ( BLOBTOOLS.out.versions )
 
 
     //
     // SUBWORKFLOW: Generate summary and static images
     //
     VIEW ( BLOBTOOLS.out.blobdir )
-    ch_versions         = ch_versions.mix ( VIEW.out.versions )
 
 
     //

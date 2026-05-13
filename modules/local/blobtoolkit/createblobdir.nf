@@ -13,7 +13,7 @@ process BLOBTOOLKIT_CREATEBLOBDIR {
 
     output:
     tuple val(meta), path(prefix), emit: blobdir
-    path "versions.yml"          , emit: versions
+    tuple val("${task.process}"), val("blobtoolkit"), eval("btk --version | cut -d' ' -f2 | sed 's/v//'"), topic: versions, emit: versions_blobtoolkit
 
     when:
     task.ext.when == null || task.ext.when
@@ -21,7 +21,7 @@ process BLOBTOOLKIT_CREATEBLOBDIR {
     script:
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1 &&
         (workflow.profile.tokenize(',').intersect(['docker', 'singularity', 'podman', 'apptainer']).size() == 0)) {
-        exit 1, "BLOBTOOLKIT_WINDOWSTATS module does not support Conda. Please use Docker / Singularity / Podman instead."
+        exit 1, "BLOBTOOLKIT_CREATEBLOBDIR module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
 
     def args = task.ext.args ?: ''
@@ -39,10 +39,5 @@ process BLOBTOOLKIT_CREATEBLOBDIR {
         --threads ${task.cpus} \\
         $args \\
         ${prefix}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
-    END_VERSIONS
     """
 }

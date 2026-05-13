@@ -5,6 +5,8 @@ nextflow_pipeline {
     tag "pipeline"
     profile "test_raw"
 
+    config './nextflow.config'
+
     test("-profile test_raw") {
 
         when {

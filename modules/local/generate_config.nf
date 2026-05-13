@@ -1,5 +1,5 @@
 process GENERATE_CONFIG {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     conda "conda-forge::requests=2.28.1 conda-forge::pyyaml=6.0"
@@ -21,7 +21,7 @@ process GENERATE_CONFIG {
     tuple val(meta), path("*.csv")           , emit: csv
     tuple val(meta), path("*.synonyms.tsv")  , emit: synonyms_tsv,   optional: true
     tuple val(meta), path("*.categories.tsv"), emit: categories_tsv, optional: true
-    path "versions.yml"                      , emit: versions
+    tuple val("${task.process}"), val("generate_config"), eval("generate_config.py --version | cut -d' ' -f2"), topic: versions, emit: versions_generateconfig
 
     when:
     task.ext.when == null || task.ext.when
@@ -49,10 +49,5 @@ process GENERATE_CONFIG {
         --output_prefix ${prefix} \\
         --basal_lineages ${basal_lineages} \\
         $args
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        generate_config.py: \$(generate_config.py --version | cut -d' ' -f2)
-    END_VERSIONS
     """
 }

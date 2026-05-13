@@ -1,5 +1,5 @@
 process COMPRESSBLOBDIR {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
 
     conda "conda-forge::pigz=2.8"

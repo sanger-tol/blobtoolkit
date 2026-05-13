@@ -11,14 +11,10 @@ workflow VIEW {
 
 
     main:
-    ch_versions = channel.empty()
-
-
     //
     // MODULE: GENERATE SUMMARY FILE
     //
     BLOBTOOLKIT_SUMMARY ( blobdir )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_SUMMARY.out.versions.first() )
 
 
     //
@@ -65,5 +61,4 @@ workflow VIEW {
     emit:
     summary  = BLOBTOOLKIT_SUMMARY.out.json  // channel: [ val(meta), path(json) ]
     images   = ch_images                     // channel: [ val(meta), path(png/svg) ]
-    versions = ch_versions                   // channel: [ versions.yml ]
 }
