@@ -20,11 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Parameters
 
-| Old parameter | New parameter         |
-| ------------- | --------------------- |
-|               | --revision            |
-|               | --window_size         |
-|               | --minimum_window_size |
+| Old parameter | New parameter |
+| ------------- | ------------- |
+|               | --revision    |
+|               | --window_size |
 
 ### Software dependencies
 
