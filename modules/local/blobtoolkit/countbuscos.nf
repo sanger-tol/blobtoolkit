@@ -16,7 +16,7 @@ process BLOBTOOLKIT_COUNTBUSCOS {
     task.ext.when == null || task.ext.when
 
     script:
-    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1 {
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         exit 1, "BLOBTOOLKIT_COUNTBUSCOS module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
 
