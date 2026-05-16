@@ -17,8 +17,7 @@ process BLOBTOOLKIT_UPDATEMETA {
     task.ext.when == null || task.ext.when
 
     script:
-    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1 &&
-        (workflow.profile.tokenize(',').intersect(['docker', 'singularity', 'podman', 'apptainer']).size() == 0)) {
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1 {
         exit 1, "BLOBTOOLKIT_UPDATEMETA module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
 
