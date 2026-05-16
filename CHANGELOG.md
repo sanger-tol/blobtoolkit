@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[0.11.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.0)] – – [2026-04-]
+## [[0.11.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.0)] – Bulbasaur – [2026-05-18]
 
 ### Enhancements & fixes
 
@@ -15,7 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `blobtk/images` to `blobtk/plot` (an nf-core module), and patched the module for version `0.8.1` which is not yet available via bioconda.
 - Added the `grid` plot generation from `blobtk/plot`.
 - Updated `blast/blastn` db path to be staged as a `BLASTN_DB_DIR` due to an edge case where `:` could cause a malformed path.
-- Expanded the warning that is printed when attempting to run `blobtoolkit` modules with conda but profiles include a container engine as well. Running using `-profile conda,docker` will no longer stop the pipeline.
 - Versions are now output via topic where possible (e.g. where tools are run prior to version collection).
 
 ### Parameters
