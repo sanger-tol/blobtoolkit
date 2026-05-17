@@ -8,7 +8,7 @@ process BLAST_BLASTN {
 
     input:
     tuple val(meta) , path(fasta)
-    tuple val(meta2), path(db)
+    tuple val(meta2), path(db, stageAs: "BLASTN_DB_DIR")
     path taxidlist
     val taxids
     val negative_tax

@@ -13,8 +13,15 @@
                     },
                     "blobtk/depth": {
                         "branch": "master",
-                        "git_sha": "f0ee15907fcece823c1cd5129902405d36108191",
-                        "installed_by": ["modules"]
+                        "git_sha": "afe7137ce04ae44c379341ae8223c65ea579c300",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/blobtk/depth/blobtk-depth.diff"
+                    },
+                    "blobtk/plot": {
+                        "branch": "master",
+                        "git_sha": "82f099dea43620d4d9a80b9d7014731d173f28a2",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/blobtk/plot/blobtk-plot.diff"
                     },
                     "busco/busco": {
                         "branch": "master",

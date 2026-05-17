@@ -154,7 +154,6 @@ workflow INPUT_CHECK {
         reads.collect(flat: false).ifEmpty([]),
         db_paths.collect(flat: false),
     )
-    ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions.first())
 
 
     //

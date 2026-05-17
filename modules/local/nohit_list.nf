@@ -1,5 +1,5 @@
 process NOHIT_LIST {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     conda "conda-forge::gawk=5.1.0"

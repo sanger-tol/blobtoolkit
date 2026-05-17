@@ -2,10 +2,7 @@ process BLOBTK_DEPTH {
     tag "${meta.id}"
     label 'process_single'
 
-    conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/24/243d043f1c9e152e75dbb0ef8c64022df50efbcaa4e1bbaea36bebd751e84e93/data' :
-        'community.wave.seqera.io/library/blobtk:0.7.1--e3f63bb2cdc8fb96' }"
+    container "docker.io/genomehubs/blobtk:0.8.1"
 
     input:
     tuple val(meta), path(bam), path(index)
@@ -18,6 +15,12 @@ process BLOBTK_DEPTH {
     task.ext.when == null || task.ext.when
 
     script:
+
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1 &&
+        (workflow.profile.tokenize(',').intersect(['docker', 'singularity', 'podman', 'apptainer']).size() == 0)) {
+        exit 1, "BLOBTK_DEPTH module does not support Conda. Please use Docker / Singularity / Podman instead."
+    }
+
     def args        = task.ext.args ?: ''
     def prefix      = task.ext.prefix ?: "${meta.id}"
     """
@@ -31,10 +34,5 @@ process BLOBTK_DEPTH {
     def prefix      = task.ext.prefix ?: "${meta.id}"
     """
     echo "" | gzip > ${prefix}.regions.bed.gz
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        blobtk: \$(blobtk --version | cut -d' ' -f2)
-    END_VERSIONS
     """
 }

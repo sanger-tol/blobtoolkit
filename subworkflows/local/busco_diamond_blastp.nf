@@ -19,9 +19,6 @@ workflow BUSCO_DIAMOND {
     precomputed_busco // channel: [ val(meta}, path(busco_run_dir) ] optional precomputed busco outputs
 
     main:
-    ch_versions = channel.empty()
-
-
     //
     // LOGIC: Prepare the BUSCO lineages
     //
@@ -172,7 +169,6 @@ workflow BUSCO_DIAMOND {
         fasta,
         ch_basal_buscos
     )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_EXTRACTBUSCOS.out.versions.first() )
 
 
     //
@@ -189,12 +185,12 @@ workflow BUSCO_DIAMOND {
     // MODULE: Hardcoded to match the format expected by blobtools
     //         DIAMOND WILL NOT RUN IF blast_annotations IS SET TO `off`
     //
-    def outext = 'txt'
+    def outfmt = 6
     def cols   = 'qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore'
     DIAMOND_BLASTP (
         ch_busco_genes,
         blastp,
-        outext,
+        outfmt,
         cols,
         taxon_id
     )
@@ -237,5 +233,4 @@ workflow BUSCO_DIAMOND {
     all_tables  = ch_indexed_buscos       // channel: [ val(meta), path(full_tables) ]
     blastp_txt  = DIAMOND_BLASTP.out.txt  // channel: [ val(meta), path(txt) ]
     multiqc                               // channel: [ meta, summary ]
-    versions    = ch_versions             // channel: [ versions.yml ]
 }

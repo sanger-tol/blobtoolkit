@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [[0.11.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.0)] – – [2026-04-]
+## [[0.11.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.0)] – Bulbasaur – [2026-05-18]
 
 ### Enhancements & fixes
 
@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Restructured locations and names of output files, see [output.md](/docs/output.md)
 - The `sample` samplesheet column can now contain `/` to organise the `read_mapping/` outputs in sub-directories.
 - Added parameter `--window_size` to partition sequences and calculate per-window statistics
+- Updated `blobtk/images` to `blobtk/plot` (an nf-core module), and patched the module for version `0.8.1` which is not yet available via bioconda.
+- Added the `grid` plot generation from `blobtk/plot`.
+- Updated `blast/blastn` db path to be staged as a `BLASTN_DB_DIR` due to an edge case where `:` could cause a malformed path.
+- Versions are now output via topic where possible (e.g. where tools are run prior to version collection).
 
 ### Parameters
 
@@ -27,7 +31,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | Dependency | Old version   | New version     |
 | ---------- | ------------- | --------------- |
 | blast      | 2.15.0        | 2.17.0          |
-| blobtk     | 0.5.1         | 0.7.1           |
+| blobtk     | 0.5.1         | 0.8.1           |
 | diamond    | 2.1.16        | 2.1.23          |
 | gunzip     | 1.1           | 1.13            |
 | minimap2   | 2.28          | 2.29            |
