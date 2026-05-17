@@ -1,5 +1,6 @@
 Changes in component 'nf-core/blobtk/plot'
 'modules/nf-core/blobtk/plot/meta.yml' is unchanged
+'modules/nf-core/blobtk/plot/environment.yml' is unchanged
 Changes in 'blobtk/plot/main.nf':
 --- modules/nf-core/blobtk/plot/main.nf
 +++ modules/nf-core/blobtk/plot/main.nf
@@ -25,21 +26,19 @@ Changes in 'blobtk/plot/main.nf':
  
      input:
      tuple val(meta), path(fasta)
-@@ -32,6 +20,11 @@
+@@ -32,6 +20,10 @@
      task.ext.when == null || task.ext.when
  
      script:
 +
-+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1 &&
-+        (workflow.profile.tokenize(',').intersect(['docker', 'singularity', 'podman', 'apptainer']).size() == 0)) {
++    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
 +        exit 1, "BLOBTK_PLOT module does not support Conda. Please use Docker / Singularity / Podman instead."
 +    }
      def args    = task.ext.args ?: ''
  
      if ( online_path && local_path ) {
 
-'modules/nf-core/blobtk/plot/environment.yml' is unchanged
+'modules/nf-core/blobtk/plot/tests/nextflow.config' is unchanged
 'modules/nf-core/blobtk/plot/tests/main.nf.test' is unchanged
 'modules/nf-core/blobtk/plot/tests/main.nf.test.snap' is unchanged
-'modules/nf-core/blobtk/plot/tests/nextflow.config' is unchanged
 ************************************************************
