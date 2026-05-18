@@ -16,8 +16,7 @@ process BLOBTK_DEPTH {
 
     script:
 
-    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1 &&
-        (workflow.profile.tokenize(',').intersect(['docker', 'singularity', 'podman', 'apptainer']).size() == 0)) {
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         exit 1, "BLOBTK_DEPTH module does not support Conda. Please use Docker / Singularity / Podman instead."
     }
 
