@@ -187,12 +187,12 @@ workflow BUSCO_DIAMOND {
     // MODULE: Hardcoded to match the format expected by blobtools
     //         DIAMOND WILL NOT RUN IF blast_annotations IS SET TO `off`
     //
-    def outext = 'txt'
+    def outfmt = 6
     def cols   = 'qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore'
     DIAMOND_BLASTP (
         ch_busco_genes,
         blastp,
-        outext,
+        outfmt,
         cols,
         taxon_id
     )

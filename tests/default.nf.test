@@ -4,8 +4,6 @@ nextflow_pipeline {
     script "../main.nf"
     tag "pipeline"
 
-    config './nextflow.config'
-
     test("-profile test") {
 
         when {
