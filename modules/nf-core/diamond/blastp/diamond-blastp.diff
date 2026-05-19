@@ -12,20 +12,19 @@ Changes in 'diamond/blastp/main.nf':
  
      output:
      tuple val(meta), path('*.{blast,blast.gz}'), optional: true, emit: blast
-@@ -31,6 +32,7 @@
-     def prefix = task.ext.prefix ?: "${meta.id}"
+@@ -33,6 +34,7 @@
+     def prefix = task.ext.prefix ?: "${meta.id}.${meta2.id}"
  
      def columns = blast_columns ? "${blast_columns}" : ''
 +    def exclude_taxon = taxid ? "--taxon-exclude ${taxid}" : ''
      def out_ext = ""
  
      if (outfmt == 0) {
-@@ -65,12 +67,15 @@
+@@ -67,12 +69,14 @@
      }
  
      """
 +    mkdir -p ./blastp_tmp
-+
      diamond \\
          blastp \\
          --threads ${task.cpus} \\
@@ -35,7 +34,7 @@ Changes in 'diamond/blastp/main.nf':
 +        ${exclude_taxon} \\
          ${args} \\
          --out ${prefix}.${out_ext}
- 
+     """
 
 'modules/nf-core/diamond/blastp/tests/main.nf.test.snap' is unchanged
 'modules/nf-core/diamond/blastp/tests/nextflow.config' is unchanged

@@ -7,12 +7,19 @@
     "items": {
         "type": "object",
         "properties": {
+            "sample_accession": {
+                "type": "string",
+                "description": "Accession number",
+                "pattern": "^\\S+$",
+                "errorMessage": "Accession number of the specimen",
+                "meta": ["specimen"]
+            },
             "run_accession": {
                 "type": "string",
                 "description": "Accession number",
                 "pattern": "^\\S+$",
                 "errorMessage": "Accession number of the sequencing run",
-                "meta": ["run_accession"]
+                "meta": ["run"]
             },
             "instrument_platform": {
                 "type": "string",
@@ -57,7 +64,6 @@
             },
             "sample": {},
             "experiment_accession": {},
-            "sample_accession": {},
             "secondary_sample_accession": {},
             "study_accession": {},
             "secondary_study_accession": {},
@@ -84,6 +90,7 @@
             "fastq_aspera": {}
         },
         "required": [
+            "sample_accession",
             "run_accession",
             "instrument_platform",
             "instrument_model",

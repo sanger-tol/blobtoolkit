@@ -1,0 +1,44 @@
+Changes in component 'nf-core/blobtk/plot'
+'modules/nf-core/blobtk/plot/meta.yml' is unchanged
+'modules/nf-core/blobtk/plot/environment.yml' is unchanged
+Changes in 'blobtk/plot/main.nf':
+--- modules/nf-core/blobtk/plot/main.nf
++++ modules/nf-core/blobtk/plot/main.nf
+@@ -1,20 +1,8 @@
+ process BLOBTK_PLOT {
+-    // Linked to issue https://github.com/sanger-tol/genomenote/issues/184
+-    // Depending on the blob dataset in use, the grid option may not
+-    // work at all. This is down to the version of blobtoolkit used to
+-    // generate the blob.
+-    // Adding a check would overly complicate the module so for now
+-    // we can ignore errors, with the knowledge it would only kill
+-    // runs in which the blobdir doesn't have the right data.
+-    errorStrategy 'ignore'
+-
+     tag "$prefix"
+     label 'process_single'
+ 
+-    conda "${moduleDir}/environment.yml"
+-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/08/08833d1b91f41024e06e2cb5a982598531199c04e6544885d42ef2cb0480de18/data' :
+-        'community.wave.seqera.io/library/blobtk:0.8.0--2fe0d833a26e0cd9' }"
++    container "docker.io/genomehubs/blobtk:0.8.1"
+ 
+     input:
+     tuple val(meta), path(fasta)
+@@ -32,6 +20,10 @@
+     task.ext.when == null || task.ext.when
+ 
+     script:
++
++    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
++        exit 1, "BLOBTK_PLOT module does not support Conda. Please use Docker / Singularity / Podman instead."
++    }
+     def args    = task.ext.args ?: ''
+ 
+     if ( online_path && local_path ) {
+
+'modules/nf-core/blobtk/plot/tests/nextflow.config' is unchanged
+'modules/nf-core/blobtk/plot/tests/main.nf.test' is unchanged
+'modules/nf-core/blobtk/plot/tests/main.nf.test.snap' is unchanged
+************************************************************

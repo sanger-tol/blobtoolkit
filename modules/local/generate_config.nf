@@ -1,17 +1,17 @@
 process GENERATE_CONFIG {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     conda "conda-forge::requests=2.28.1 conda-forge::pyyaml=6.0"
     container "docker.io/genomehubs/blobtoolkit:4.4.6"
 
     input:
+    // Some data files are passed as "val" because we need to know the original paths. Staging would prevent that
     tuple val(meta), val(fasta)
     val taxon_query
     val busco_lin
     tuple val(metabn), path(blastn)
     path lineage_tax_ids
-    // The following are passed as "val" because we need to know the original paths. Staging would prevent that
     val reads
     val db_paths
 
@@ -20,7 +20,7 @@ process GENERATE_CONFIG {
     tuple val(meta), path("*.csv")           , emit: csv
     tuple val(meta), path("*.synonyms.tsv")  , emit: synonyms_tsv,   optional: true
     tuple val(meta), path("*.categories.tsv"), emit: categories_tsv, optional: true
-    path "versions.yml"                      , emit: versions
+    tuple val("${task.process}"), val("generate_config"), eval("generate_config.py --version | cut -d' ' -f2"), topic: versions, emit: versions_generateconfig
 
     when:
     task.ext.when == null || task.ext.when
@@ -41,14 +41,11 @@ process GENERATE_CONFIG {
         $busco_param \\
         $accession_params \\
         --nt $blastn \\
+        --window_size ${params.window_size} \\
         $input_reads \\
+        --revision ${params.revision} \\
         $input_databases \\
         --output_prefix ${prefix} \\
         $args
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        generate_config.py: \$(generate_config.py --version | cut -d' ' -f2)
-    END_VERSIONS
     """
 }

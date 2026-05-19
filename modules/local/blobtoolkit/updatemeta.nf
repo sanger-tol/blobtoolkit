@@ -1,5 +1,5 @@
 process BLOBTOOLKIT_UPDATEMETA {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     container "docker.io/genomehubs/blobtoolkit:4.4.6"
@@ -10,6 +10,7 @@ process BLOBTOOLKIT_UPDATEMETA {
 
     output:
     tuple val(meta), path("*.json"), emit: json
+    // Cannot be migrated to a topic because it runs _after_ the topic has been collected
     path "versions.yml"            , emit: versions
 
     when:

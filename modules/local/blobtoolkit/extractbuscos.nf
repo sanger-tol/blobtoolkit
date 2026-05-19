@@ -1,5 +1,5 @@
 process BLOBTOOLKIT_EXTRACTBUSCOS {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     container "docker.io/genomehubs/blobtoolkit:4.4.6"
@@ -10,7 +10,7 @@ process BLOBTOOLKIT_EXTRACTBUSCOS {
 
     output:
     tuple val(meta), path("*_buscogenes.fasta"), emit: genes
-    path "versions.yml"                        , emit: versions
+    tuple val("${task.process}"), val("blobtoolkit"), eval("btk --version | cut -d' ' -f2 | sed 's/v//'"), topic: versions, emit: versions_blobtoolkit
 
     when:
     task.ext.when == null || task.ext.when
@@ -28,10 +28,5 @@ process BLOBTOOLKIT_EXTRACTBUSCOS {
         $seq_args \\
         --out ${prefix}_buscogenes.fasta \\
         ${args}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
-    END_VERSIONS
     """
 }

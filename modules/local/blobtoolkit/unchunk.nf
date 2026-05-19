@@ -1,5 +1,5 @@
 process BLOBTOOLKIT_UNCHUNK {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     container "docker.io/genomehubs/blobtoolkit:4.4.6"
@@ -9,7 +9,7 @@ process BLOBTOOLKIT_UNCHUNK {
 
     output:
     tuple val(meta), path("*.out"), emit: blast_out
-    path "versions.yml"           , emit: versions
+    tuple val("${task.process}"), val("blobtoolkit"), eval("btk --version | cut -d' ' -f2 | sed 's/v//'"), topic: versions, emit: versions_blobtoolkit
 
     when:
     task.ext.when == null || task.ext.when
@@ -26,10 +26,5 @@ process BLOBTOOLKIT_UNCHUNK {
         --in ${blast_table} \\
         --out ${prefix}.out \\
         $args
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        blobtoolkit: \$(btk --version | cut -d' ' -f2 | sed 's/v//')
-    END_VERSIONS
     """
 }

@@ -15,14 +15,10 @@ workflow RUN_BLASTX {
 
 
     main:
-    ch_versions = channel.empty()
-
-
     //
     // Split the sequences
     //
     BLOBTOOLKIT_CHUNK ( fasta, table )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_CHUNK.out.versions.first() )
 
 
     //
@@ -32,17 +28,14 @@ workflow RUN_BLASTX {
     def outext = 'txt'
     def cols   = 'qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore'
     DIAMOND_BLASTX ( BLOBTOOLKIT_CHUNK.out.chunks, blastx, outext, cols, taxon_id )
-    ch_versions = ch_versions.mix ( DIAMOND_BLASTX.out.versions.first() )
 
 
     //
     // Unchunk chunked blastx results
     //
     BLOBTOOLKIT_UNCHUNK ( DIAMOND_BLASTX.out.txt )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_UNCHUNK.out.versions.first() )
 
 
     emit:
     blastx_out = BLOBTOOLKIT_UNCHUNK.out.blast_out  // channel: [ val(meta), path(blastx_out) ]
-    versions   = ch_versions                        // channel: [ versions.yml ]
 }
