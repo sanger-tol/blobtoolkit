@@ -70,9 +70,9 @@ workflow BLOBTOOLKIT {
         REPEAT_MASKING ( ch_genome )
 
         ch_genome = REPEAT_MASKING.out.repeat_intervals
-        // Windowmasker is used with `-outfmt fasta`option, so repeat_intervals is the masked genome
-        // Genome_size is preserved in meta field of repeat_intervals
-        // This is because meta of WINDOWMASKER_USTAT.out.intervals = meta of WINDOWMASKER_MKCOUNTS.out.counts =  meta of ch_reference
+        // Windowmasker is used with `-outfmt fasta` option, so repeat_intervals is the masked genome
+        // genome_size is preserved in the meta field of repeat_intervals
+        // This is because meta of WINDOWMASKER_USTAT.out.intervals = meta of WINDOWMASKER_MKCOUNTS.out.counts = meta of ch_reference
     }
 
 
