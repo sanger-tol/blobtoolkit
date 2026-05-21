@@ -107,6 +107,8 @@ workflow INPUT_CHECK {
                     // Reformat for CAT_CAT
                     [[id: "${row.specimen}.${row.run}", sample: "${row.specimen}/${row.run}" , row:row], [row.fastq_1, row.fastq_2]]
                 not_paired: true
+                    // Construct same meta structure as paired for consistency downstream
+                    [[id: "${row.specimen}.${row.run}", sample: "${row.specimen}/${row.run}" , row:row], row.fastq_1]
             }
 
 
@@ -114,7 +116,7 @@ workflow INPUT_CHECK {
 
         read_files = CAT_CAT.out.file_out
             .map { meta, file -> meta.row + [fastq_1: file] }
-            .mix(reads_pairedness.not_paired)
+            .mix(reads_pairedness.not_paired.map { meta, file -> meta.row + [fastq_1: file] })
             .map { data -> create_data_channels_from_fetchngs(data) }
 
     } else {
