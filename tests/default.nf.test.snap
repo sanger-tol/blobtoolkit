@@ -740,9 +740,9 @@
                 "vertebrata_odb10_count_windows_0.01.json.gz:md5,e6df266bf04c49f05129f82c0a3fedf7",
                 "vertebrata_odb10_count_windows_100000.json.gz:md5,36d6694edc4979b34e0a7a5d1212ecdd",
                 "vertebrata_odb10_count_windows_1000000.json.gz:md5,40f404060aacde76cdf1f4a399daf270",
-                "GCA_922984935.2.blob.png:md5,d68d2d0652dac252bb71349e9b269884",
+                "GCA_922984935.2.blob.png:md5,0835f3d4c68140c369ed13a4f44dd87f",
                 "GCA_922984935.2.cumulative.png:md5,19a55bb091b57e1eed823e56b79acf4b",
-                "GCA_922984935.2.grid.png:md5,d9eb13e08560b54ce80daa45927ac747",
+                "GCA_922984935.2.grid.png:md5,5203a4c308188085cde11d69617e7393",
                 "GCA_922984935.2.snail.png:md5,27b570cec7dc82cda825b48b7655566c",
                 "GCA_922984935.2.archaea_odb10.full_table.tsv:md5,be1ed7727a5887d5e6ea3c56f7a85305",
                 "GCA_922984935.2.archaea_odb10.missing_busco_list.tsv:md5,34a2d0e0b9a128568033289ee4a01f42",
@@ -781,7 +781,7 @@
                 "GCA_922984935.2.ont.SAMEA7524440_test.coverage.1k.bed.gz:md5,3cd28f4bbfc849a30320715c23606406"
             ]
         ],
-        "timestamp": "2026-05-21T09:39:54.337449",
+        "timestamp": "2026-05-22T14:44:56.825678",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.04.2"
