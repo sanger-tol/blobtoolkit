@@ -101,6 +101,12 @@
                 "blobtoolkit",
                 "blobtoolkit/GCA_922984935.2",
                 "blobtoolkit/GCA_922984935.2/GCA_922984935.2.synonyms_synonyms.json.gz",
+                "blobtoolkit/GCA_922984935.2/SAMEA7524441.ERR6688601_cov.json.gz",
+                "blobtoolkit/GCA_922984935.2/SAMEA7524441.ERR6688601_cov_stats.json.gz",
+                "blobtoolkit/GCA_922984935.2/SAMEA7524441.ERR6688601_cov_windows.json.gz",
+                "blobtoolkit/GCA_922984935.2/SAMEA7524441.ERR6688601_cov_windows_0.01.json.gz",
+                "blobtoolkit/GCA_922984935.2/SAMEA7524441.ERR6688601_cov_windows_100000.json.gz",
+                "blobtoolkit/GCA_922984935.2/SAMEA7524441.ERR6688601_cov_windows_1000000.json.gz",
                 "blobtoolkit/GCA_922984935.2/archaea_odb10_busco.json.gz",
                 "blobtoolkit/GCA_922984935.2/archaea_odb10_count.json.gz",
                 "blobtoolkit/GCA_922984935.2/archaea_odb10_count_windows.json.gz",
@@ -282,12 +288,6 @@
                 "blobtoolkit/GCA_922984935.2/length_windows_0.01.json.gz",
                 "blobtoolkit/GCA_922984935.2/length_windows_100000.json.gz",
                 "blobtoolkit/GCA_922984935.2/length_windows_1000000.json.gz",
-                "blobtoolkit/GCA_922984935.2/mMelMel3_hic_cov.json.gz",
-                "blobtoolkit/GCA_922984935.2/mMelMel3_hic_cov_stats.json.gz",
-                "blobtoolkit/GCA_922984935.2/mMelMel3_hic_cov_windows.json.gz",
-                "blobtoolkit/GCA_922984935.2/mMelMel3_hic_cov_windows_0.01.json.gz",
-                "blobtoolkit/GCA_922984935.2/mMelMel3_hic_cov_windows_100000.json.gz",
-                "blobtoolkit/GCA_922984935.2/mMelMel3_hic_cov_windows_1000000.json.gz",
                 "blobtoolkit/GCA_922984935.2/mammalia_odb10_busco.json.gz",
                 "blobtoolkit/GCA_922984935.2/mammalia_odb10_count.json.gz",
                 "blobtoolkit/GCA_922984935.2/mammalia_odb10_count_windows.json.gz",
@@ -427,8 +427,9 @@
                 "pipeline_info/blobtoolkit_software_mqc_versions.yml",
                 "read_mapping",
                 "read_mapping/hic",
-                "read_mapping/hic/mMelMel3_hic",
-                "read_mapping/hic/mMelMel3_hic/GCA_922984935.2.hic.mMelMel3_hic.coverage.1k.bed.gz"
+                "read_mapping/hic/SAMEA7524441",
+                "read_mapping/hic/SAMEA7524441/ERR6688601",
+                "read_mapping/hic/SAMEA7524441/ERR6688601/GCA_922984935.2.hic.SAMEA7524441.ERR6688601.coverage.1k.bed.gz"
             ],
             [
                 "GCA.922984935.2.freq.1k.tsv.gz:md5,3a4c5da5140a45d4de222094a37a1445",
@@ -437,6 +438,12 @@
                 "GCA.922984935.2.trinuc.1k.tsv.gz:md5,6120169d675929da0fec1ec4e3e409e3",
                 "GCA.922984935.2.tetranuc.1k.tsv.gz:md5,342780b7a1fee014b1cca48d7b52249b",
                 "GCA_922984935.2.synonyms_synonyms.json.gz:md5,0ffb860b9a146602a84adeaa2690e1cd",
+                "SAMEA7524441.ERR6688601_cov.json.gz:md5,13d08c07c97a4348fe3f0b63b3850dd2",
+                "SAMEA7524441.ERR6688601_cov_stats.json.gz:md5,1c8ce837a2192a3e4f7e5fd24ef809ce",
+                "SAMEA7524441.ERR6688601_cov_windows.json.gz:md5,ba425bc11f47a1b491bf5efdfbcc7885",
+                "SAMEA7524441.ERR6688601_cov_windows_0.01.json.gz:md5,6ef194f834720f998a62931306088e4a",
+                "SAMEA7524441.ERR6688601_cov_windows_100000.json.gz:md5,d59ef2a8df49ac93aec1b2a940cff553",
+                "SAMEA7524441.ERR6688601_cov_windows_1000000.json.gz:md5,653fb9f4be091fc275438c7ca1b9665e",
                 "archaea_odb10_busco.json.gz:md5,d720747c456c3a9d5f82a213f14c56c2",
                 "archaea_odb10_count.json.gz:md5,db3bfe371d6198e64cade978c5094222",
                 "archaea_odb10_count_windows.json.gz:md5,f6ec3d25d5f03f765ec1e46e4b55e358",
@@ -618,12 +625,6 @@
                 "length_windows_0.01.json.gz:md5,e1b812cf88e5d14a17de502e07ff1e1e",
                 "length_windows_100000.json.gz:md5,46acbe7739d52d742d255f0626c28316",
                 "length_windows_1000000.json.gz:md5,f52e4653df6f62e06bad93596e5e5262",
-                "mMelMel3_hic_cov.json.gz:md5,13d08c07c97a4348fe3f0b63b3850dd2",
-                "mMelMel3_hic_cov_stats.json.gz:md5,1c8ce837a2192a3e4f7e5fd24ef809ce",
-                "mMelMel3_hic_cov_windows.json.gz:md5,6502c1c73b9966ea54f9d21c420e9f21",
-                "mMelMel3_hic_cov_windows_0.01.json.gz:md5,9771d563fad30179853345289c4c818a",
-                "mMelMel3_hic_cov_windows_100000.json.gz:md5,2cf2bf164f29f8f8404ddc5fe0e91498",
-                "mMelMel3_hic_cov_windows_1000000.json.gz:md5,c44f6d9a06fcf18039307cfc283ce01a",
                 "mammalia_odb10_busco.json.gz:md5,20145e7d390df42f8acf9aff5c37d0a9",
                 "mammalia_odb10_count.json.gz:md5,33b96518b11511b0dd12085f5a18ccac",
                 "mammalia_odb10_count_windows.json.gz:md5,ca381ba8998d8db2ad57ff8d56312493",
@@ -669,9 +670,9 @@
                 "vertebrata_odb10_count_windows_0.01.json.gz:md5,2aa575f8efbcccb87f7fc780a706b6f0",
                 "vertebrata_odb10_count_windows_100000.json.gz:md5,a2b8696eb8c406f68b74a5441eb0b3c8",
                 "vertebrata_odb10_count_windows_1000000.json.gz:md5,00ad22466053ac80b33ce62e33119dfc",
-                "GCA_922984935.2.blob.png:md5,0585bff71f9e8162c8418a5a417970be",
+                "GCA_922984935.2.blob.png:md5,1b77dbf10d36af809d92110da4fdaee1",
                 "GCA_922984935.2.cumulative.png:md5,19a55bb091b57e1eed823e56b79acf4b",
-                "GCA_922984935.2.grid.png:md5,120345555674f9d61820eb879012e174",
+                "GCA_922984935.2.grid.png:md5,110996f46f16d95185778bb67c9ad56d",
                 "GCA_922984935.2.snail.png:md5,82c9492f196e66ca14df3e08f0516e7d",
                 "GCA_922984935.2.archaea_odb10.full_table.tsv:md5,be1ed7727a5887d5e6ea3c56f7a85305",
                 "GCA_922984935.2.archaea_odb10.missing_busco_list.tsv:md5,34a2d0e0b9a128568033289ee4a01f42",
@@ -694,13 +695,13 @@
                 "GCA_922984935.2.tetrapoda_odb10.missing_busco_list.tsv:md5,d4004c0cc9520a4b99b41c155bb6161a",
                 "GCA_922984935.2.vertebrata_odb10.full_table.tsv:md5,68154880121436bf71d68ef50b212869",
                 "GCA_922984935.2.vertebrata_odb10.missing_busco_list.tsv:md5,28015fcb3171212f555aa0800ea6254a",
-                "GCA_922984935.2.hic.mMelMel3_hic.coverage.1k.bed.gz:md5,0d03664e2f47d0e66b257ae9b39cebb3"
+                "GCA_922984935.2.hic.SAMEA7524441.ERR6688601.coverage.1k.bed.gz:md5,0d03664e2f47d0e66b257ae9b39cebb3"
             ]
         ],
-        "timestamp": "2026-05-12T13:20:54.919611026",
+        "timestamp": "2026-05-21T09:31:56.012921",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.2"
+            "nextflow": "25.04.2"
         }
     }
 }
