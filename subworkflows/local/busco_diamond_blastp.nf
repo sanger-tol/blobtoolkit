@@ -69,7 +69,7 @@ workflow BUSCO_DIAMOND {
 
 
     //
-    // LOGIC: Format precomputed BUSCO outputs
+    // LOGIC: Format pre-computed BUSCO outputs
     //
     ch_formatted_precomputed = ch_busco_to_run.precomputed
         .map { meta, _fasta ->
