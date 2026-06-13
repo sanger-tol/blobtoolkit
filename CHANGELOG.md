@@ -3,6 +3,12 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[0.10.2](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.10.2)] – Onix (patch 2) – [2026-06-15]
+
+### Enhancements & fixes
+
+- bugfix: stage the database with a custom name to avoid issues when it has colons or other unexpected characters
+
 ## [[0.10.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.10.1)] – Onix (patch 1) – [2026-03-30]
 
 ### Enhancements & fixes
