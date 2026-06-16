@@ -86,7 +86,7 @@
                     "windowstats_input.py": "1.0.0"
                 },
                 "Workflow": {
-                    "sanger-tol/blobtoolkit": "v0.10.1"
+                    "sanger-tol/blobtoolkit": "v0.10.2"
                 }
             },
             [
@@ -424,7 +424,7 @@
                 "GCA_922984935.2_mononuc_windows.tsv.gz:md5,2ea0f8ff12a46ef6999c2b0941d38698",
                 "GCA_922984935.2_tetranuc_windows.tsv.gz:md5,c2a751c8242fd2b2cb2fbdbde1c728dc",
                 "GCA_922984935.2_trinuc_windows.tsv.gz:md5,1c1ee422d1ca25ead7bc3d911f861d93",
-                "GCA_922984935.2.synonyms_synonyms.json.gz:md5,1da678113c2a1e368805c79a14ad0531",
+                "GCA_922984935.2.synonyms_synonyms.json.gz:md5,0ffb860b9a146602a84adeaa2690e1cd",
                 "archaea_odb10_busco.json.gz:md5,d720747c456c3a9d5f82a213f14c56c2",
                 "archaea_odb10_count.json.gz:md5,db3bfe371d6198e64cade978c5094222",
                 "archaea_odb10_count_windows.json.gz:md5,f6ec3d25d5f03f765ec1e46e4b55e358",
@@ -661,10 +661,10 @@
                 "GCA_922984935.2.obinary:md5,571f465e27e107f6e4bb3fa2e833250b"
             ]
         ],
+        "timestamp": "2026-06-13T09:29:47.045310754",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-02-12T09:41:19.508904774"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
     }
 }

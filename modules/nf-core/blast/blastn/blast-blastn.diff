@@ -10,10 +10,12 @@ Changes in 'blast/blastn/main.nf':
  
      conda "${moduleDir}/environment.yml"
      container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-@@ -10,6 +9,7 @@
+@@ -9,7 +8,8 @@
+ 
      input:
      tuple val(meta) , path(fasta)
-     tuple val(meta2), path(db)
+-    tuple val(meta2), path(db)
++    tuple val(meta2), path(db, stageAs: "BLASTN_DB_DIR")
 +    val taxid
  
      output:
