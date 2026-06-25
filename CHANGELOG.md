@@ -39,6 +39,12 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
 
+## [[0.10.2](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.10.2)] – Onix (patch 2) – [2026-06-15]
+
+### Enhancements & fixes
+
+- bugfix: stage the database with a custom name to avoid issues when it has colons or other unexpected characters
+
 ## [[0.10.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.10.1)] – Onix (patch 1) – [2026-03-30]
 
 ### Enhancements & fixes
