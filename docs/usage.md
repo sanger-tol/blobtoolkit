@@ -248,6 +248,7 @@ find extract -type f -name '*.fasta.gz' ! -name '*_DNA.fasta.gz' ! -name '*_addi
 ) > reference_proteomes.taxid_map
 
 # create the taxon aware diamond blast database
+# Tested with v2.1.9
 diamond makedb -p 16 --in reference_proteomes.fasta.gz --taxonmap reference_proteomes.taxid_map --taxonnodes $TAXDUMP/nodes.dmp --taxonnames $TAXDUMP/names.dmp -d reference_proteomes.dmnd
 
 # clean up
