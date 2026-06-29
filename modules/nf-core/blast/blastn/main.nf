@@ -50,6 +50,17 @@ process BLAST_BLASTN {
     fi
     echo Using \$DB
 
+    if [ -n "${taxidlist_cmd}${taxids_cmd}" ]; then
+        # Symlink the tax* files (needed for -taxid options to work)
+        for file in taxdb.btd taxdb.bti taxonomy4blast.sqlite3; do
+            if [ ! -f ${db}/\$file ]; then
+                echo "Error: \$file not found in ${db}"
+                exit 1
+            fi
+            ln -sf ${db}/\$file .
+        done
+    fi
+
     timeout 11.9h blastn \\
         -num_threads ${task.cpus} \\
         -db \$DB \\
