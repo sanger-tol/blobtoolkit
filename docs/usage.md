@@ -240,11 +240,15 @@ find extract -type f -name '*.fasta.gz' ! -name '*_DNA.fasta.gz' ! -name '*_addi
 | gzip --best > reference_proteomes.fasta.gz
 
 # create the accession-to-taxid map for all reference proteome sequences, again removing duplicates:
-find extract -type f -name '*.idmapping.gz' -exec zcat {} + \
-| awk 'BEGIN {OFS="\t"; print "accession", "accession.version", "taxid", "gi"} $2=="NCBI_TaxID" {print $1, $1, $3, 0}' \
-| sort -u > reference_proteomes.taxid_map
+(
+  printf "accession\taccession.version\ttaxid\tgi\n"
+  find extract -type f -name '*.idmapping.gz' -exec zcat '{}' '+' \
+  | awk 'BEGIN {OFS="\t"} $2=="NCBI_TaxID" {print $1, $1, $3, 0}' \
+  | sort -u
+) > reference_proteomes.taxid_map
 
 # create the taxon aware diamond blast database
+# Tested with v2.1.9
 diamond makedb -p 16 --in reference_proteomes.fasta.gz --taxonmap reference_proteomes.taxid_map --taxonnodes $TAXDUMP/nodes.dmp --taxonnames $TAXDUMP/names.dmp -d reference_proteomes.dmnd
 
 # clean up
