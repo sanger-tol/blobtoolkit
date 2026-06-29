@@ -57,7 +57,7 @@ process BLAST_BLASTN {
                 echo "Error: \$file not found in ${db}"
                 exit 1
             fi
-            ln -s ${db}/\$file .
+            ln -sf ${db}/\$file .
         done
     fi
 
