@@ -27,7 +27,7 @@ workflow VIEW {
         ],
         [
             name: "grid",
-            args: "-v blob --shape grid -w 0.01 -x position"
+            args: "-v blob --shape grid -x position"
         ],
         [
             name: "cumulative",
@@ -41,6 +41,12 @@ workflow VIEW {
 
     ch_blobtk_plot_input = blobdir
         .combine(plots)
+        // Only add "-w 0.01" to the grid paramters if there are such windows available
+        .map { meta, local, btk_args ->
+            ((btk_args.name == "grid") && file(local.toUriString() + "/length_windows_0.01.json").exists())
+            ? [meta, local, [name: "grid", args: btk_args.args + " -w 0.01"]]
+            : [meta, local, btk_args]
+        }
         .multiMap { meta, local, btk_args ->
             fasta: [meta, []]
             local_path: local
