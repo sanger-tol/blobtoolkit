@@ -1,5 +1,5 @@
 process WINDOWSTATS_INPUT {
-    tag "$meta.id"
+    tag "${meta.id}"
 
     conda "conda-forge::pandas=1.5.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -14,7 +14,7 @@ process WINDOWSTATS_INPUT {
 
     output:
     tuple val(meta), path("*.tsv"), emit: tsv
-    path "versions.yml"           , emit: versions
+    tuple val("${task.process}"), val("windowstats_input.py"), eval("windowstats_input.py --version | cut -d' ' -f2"), topic: versions, emit: versions_windowstatsinput
 
     when:
     task.ext.when == null || task.ext.when
@@ -30,10 +30,5 @@ process WINDOWSTATS_INPUT {
         --countbusco ${countbusco} \\
         --output ${prefix}.tsv \\
         ${args}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        windowstats_input.py: \$(windowstats_input.py --version | cut -d' ' -f2)
-    END_VERSIONS
     """
 }

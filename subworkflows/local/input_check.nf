@@ -5,6 +5,7 @@
 include { samplesheetToList         } from 'plugin/nf-schema'
 
 
+include { GUNZIP                    } from '../../modules/nf-core/gunzip/main'
 include { UNTAR                     } from '../../modules/nf-core/untar/main'
 include { CAT_CAT                   } from '../../modules/nf-core/cat/cat/main'
 include { SAMTOOLS_FLAGSTAT         } from '../../modules/nf-core/samtools/flagstat/main'
@@ -33,7 +34,6 @@ workflow INPUT_CHECK {
         }
 
     UNTAR ( ch_dbs_for_untar.untar )
-    ch_versions = ch_versions.mix( UNTAR.out.versions.first() )
 
 
     //
@@ -105,7 +105,7 @@ workflow INPUT_CHECK {
             .branch { row ->
                 paired: row.fastq_2
                     // Reformat for CAT_CAT
-                    [[id: row.run_accession, row:row], [row.fastq_1, row.fastq_2]]
+                    [[id: "${row.specimen}.${row.run}", sample: "${row.specimen}/${row.run}" , row:row], [row.fastq_1, row.fastq_2]]
                 not_paired: true
             }
 
@@ -121,6 +121,7 @@ workflow INPUT_CHECK {
         read_files = channel
             .fromList(samplesheetToList(samplesheet, "assets/schema_input.json"))
             .map { row -> check_data_channel(row) }
+            .map { meta, reads -> [ meta + [id : meta.id.replaceAll("/",".")], reads ] }
     }
 
 
@@ -130,7 +131,6 @@ workflow INPUT_CHECK {
     SAMTOOLS_FLAGSTAT (
         read_files.map { meta, datafile -> [meta, datafile, []] }
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_FLAGSTAT.out.versions.first())
 
     reads = read_files
         .join(SAMTOOLS_FLAGSTAT.out.flagstat)
@@ -154,7 +154,6 @@ workflow INPUT_CHECK {
         reads.collect(flat: false).ifEmpty([]),
         db_paths.collect(flat: false),
     )
-    ch_versions = ch_versions.mix(GENERATE_CONFIG.out.versions.first())
 
 
     //
@@ -229,7 +228,6 @@ workflow INPUT_CHECK {
 
 
     JSONIFY_TAXDUMP( taxdump_dirs.dir )
-    ch_versions = ch_versions.mix(JSONIFY_TAXDUMP.out.versions.first())
 
 
     ch_taxdump = ch_databases.taxdump
@@ -237,6 +235,30 @@ workflow INPUT_CHECK {
         .mix(taxdump_dirs.json)
         .mix(JSONIFY_TAXDUMP.out.json)
         .map { _meta, db_path -> db_path }
+
+
+    //
+    // LOGIC: Identify the compressed files
+    //
+    ch_genomes_for_gunzip = fasta
+        .branch { _meta, fa ->
+            gunzip: fa.name.endsWith( ".gz" )
+            skip: true
+        }
+
+
+    //
+    // MODULE: Decompress compressed FASTA files
+    //
+    GUNZIP ( ch_genomes_for_gunzip.gunzip )
+
+
+    //
+    // LOGIC: Extract the genome size for decision making downstream
+    //
+    ch_genome = ch_genomes_for_gunzip.skip
+        .mix(GUNZIP.out.gunzip)
+        .map { meta, fa -> [ meta + [genome_size: fa.size()], fa] }
 
 
     emit:
@@ -253,6 +275,7 @@ workflow INPUT_CHECK {
     precomputed_busco = ch_parsed_busco     // channel: [ val(meta), path(busco_run_dir) ]
     busco_db = ch_busco_db.first()          // channel: [ path(busco_db) ]
     taxdump = ch_taxdump.first()            // channel: [ path(taxdump) ]
+    genome = ch_genome                      // channel: [ val(meta), path(fasta) ]
     versions = ch_versions                  // channel: [ versions.yml ]
 }
 
@@ -270,7 +293,10 @@ def check_data_channel(meta, datafile) {
 def create_data_channels_from_fetchngs(LinkedHashMap row) {
     // create meta map
     def meta = [:]
-    meta.id         = row.run_accession
+    meta.id         = row.specimen + "." + row.run
+    meta.sample     = row.specimen + "/" + row.run
+    meta.specimen   = row.specimen
+    meta.run        = row.run
     meta.layout     = row.library_layout
 
     // Same as https://github.com/blobtoolkit/blobtoolkit/blob/4.3.3/src/blobtoolkit-pipeline/src/lib/functions.py#L30-L39

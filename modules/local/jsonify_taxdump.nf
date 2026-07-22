@@ -1,5 +1,5 @@
 process JSONIFY_TAXDUMP {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     conda "conda-forge::requests=2.28.1 conda-forge::pyyaml=6.0"
@@ -10,7 +10,7 @@ process JSONIFY_TAXDUMP {
 
     output:
     tuple val(meta), path("*.json") , emit: json
-    path "versions.yml"             , emit: versions
+    tuple val("${task.process}"), val('jsonify_taxdump.py'), eval('jsonify_taxdump.py --version 2>&1 | cut -d" " -f2'), emit: versions_jsonify_taxdump, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -23,10 +23,5 @@ process JSONIFY_TAXDUMP {
         $taxdump \\
         $args \\
         > ${prefix}.json
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        jsonify_taxdump.py: \$(jsonify_taxdump.py --version | cut -d' ' -f2)
-    END_VERSIONS
     """
 }

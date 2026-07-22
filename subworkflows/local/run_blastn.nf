@@ -23,8 +23,10 @@ workflow RUN_BLASTN {
     ch_versions = channel.empty()
 
 
-    // Extract no hits fasta
-    // Get list of sequence ids with no hits in diamond blastx search
+    //
+    // MODULE: EXTRACT NO HITS FASTA
+    //         Get list of sequence ids with no hits in diamond blastx search
+    //
     NOHIT_LIST ( blast_table, fasta )
     ch_versions = ch_versions.mix ( NOHIT_LIST.out.versions.first() )
 
@@ -36,13 +38,11 @@ workflow RUN_BLASTN {
         fasta,
         NOHIT_LIST.out.nohitlist.map { _meta, nohit -> nohit } . filter { file -> file.size() > 0 }
     )
-    ch_versions = ch_versions.mix ( SEQTK_SUBSEQ.out.versions.first() )
 
 
     //  Split long contigs into chunks
     // create chunks
     BLOBTOOLKIT_CHUNK ( SEQTK_SUBSEQ.out.sequences, [[],[]] )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_CHUNK.out.versions.first() )
 
 
     // Check that there are still sequences left after chunking (which excludes masked regions)
@@ -63,8 +63,7 @@ workflow RUN_BLASTN {
     } else {
 
         // run blastn excluding taxon_id
-        BLASTN_TAXON ( ch_chunks, blastn, taxon_id )
-        ch_versions = ch_versions.mix ( BLASTN_TAXON.out.versions.first() )
+        BLASTN_TAXON ( ch_chunks, blastn, [], taxon_id, true )
 
         // check if blastn output table is empty
         ch_blastn_taxon_out = BLASTN_TAXON.out.txt
@@ -80,8 +79,7 @@ workflow RUN_BLASTN {
 
     }
 
-    BLAST_BLASTN ( ch_blast_blastn_input, blastn, [] )
-    ch_versions = ch_versions.mix ( BLAST_BLASTN.out.versions.first() )
+    BLAST_BLASTN ( ch_blast_blastn_input, blastn, [], [], false )
 
     ch_blastn_txt = BLAST_BLASTN.out.txt
         .mix(ch_blastn_taxon_out.not_empty)
@@ -91,7 +89,6 @@ workflow RUN_BLASTN {
     // MODULE: Unchunk chunked blastn results
     //
     BLOBTOOLKIT_UNCHUNK ( ch_blastn_txt )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_UNCHUNK.out.versions.first() )
 
 
     emit:

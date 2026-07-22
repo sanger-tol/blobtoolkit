@@ -27,12 +27,12 @@ sample2,illumina,illumina.cram,PAIRED
 sample3,ont,ont.cram,SINGLE
 ```
 
-| Column           | Description                                                                                                                                                                               |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`         | Custom sample name. It doesn't have to be an actual _sample_ name. It is used to name the read set on the BlobToolKit viewer and therefore needs to be **unique** across the samplesheet. |
-| `datatype`       | Type of sequencing data. Must be one of `hic`, `illumina`, `pacbio`, `pacbio_clr` or `ont`.                                                                                               |
-| `datafile`       | Full path to read data file.                                                                                                                                                              |
-| `library_layout` | Layout of the library. Must be one of `SINGLE`, `PAIRED`.                                                                                                                                 |
+| Column           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `sample`         | Custom sample name. This field is required but doesn't have to be an actual _sample_ name. It is used to name the read set on the BlobToolKit viewer and therefore needs to be **unique** across the samplesheet. In addition, `sample` is also used as path to output `read_mapping` analysis. Thus, in case of read alignment, sample is recommended as `specimen/run` (i.e., `SAMEA7521529/ERR9248445`), this `/` is converted to `.` for downstream processes. |
+| `datatype`       | Type of sequencing data, required. Must be one of `hic`, `illumina`, `pacbio`, `pacbio_clr` or `ont`.                                                                                                                                                                                                                                                                                                                                                              |
+| `datafile`       | Full path to read data file.                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `library_layout` | Layout of the library. Must be one of `SINGLE`, `PAIRED`.                                                                                                                                                                                                                                                                                                                                                                                                          |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
@@ -240,11 +240,15 @@ find extract -type f -name '*.fasta.gz' ! -name '*_DNA.fasta.gz' ! -name '*_addi
 | gzip --best > reference_proteomes.fasta.gz
 
 # create the accession-to-taxid map for all reference proteome sequences, again removing duplicates:
-find extract -type f -name '*.idmapping.gz' -exec zcat {} + \
-| awk 'BEGIN {OFS="\t"; print "accession", "accession.version", "taxid", "gi"} $2=="NCBI_TaxID" {print $1, $1, $3, 0}' \
-| sort -u > reference_proteomes.taxid_map
+(
+  printf "accession\taccession.version\ttaxid\tgi\n"
+  find extract -type f -name '*.idmapping.gz' -exec zcat '{}' '+' \
+  | awk 'BEGIN {OFS="\t"} $2=="NCBI_TaxID" {print $1, $1, $3, 0}' \
+  | sort -u
+) > reference_proteomes.taxid_map
 
 # create the taxon aware diamond blast database
+# Tested with v2.1.9
 diamond makedb -p 16 --in reference_proteomes.fasta.gz --taxonmap reference_proteomes.taxid_map --taxonnodes $TAXDUMP/nodes.dmp --taxonnames $TAXDUMP/names.dmp -d reference_proteomes.dmnd
 
 # clean up

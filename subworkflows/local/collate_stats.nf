@@ -16,25 +16,26 @@ workflow COLLATE_STATS {
     cov         // channel: [ val(meta), path(regions.bed.gz) ]
 
     main:
-    ch_versions = channel.empty()
-
-
-    // Count BUSCO genes in a region
+    //
+    // MODULE: COUNT BUSCO GENES IN A REGION
+    //
     BLOBTOOLKIT_COUNTBUSCOS ( busco, bed )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_COUNTBUSCOS.out.versions.first() )
 
 
-    // Combine outputs from Fasta windows, blobtk depth, and count BUSCO genes
+    //
+    // MODULE: COMBINE OUTPUTS FROM FASTA WINDOWS, BLOBTK DEPTH, AND COUNT BUSCO GENES
+    //
     WINDOWSTATS_INPUT ( freq, mononuc, cov, BLOBTOOLKIT_COUNTBUSCOS.out.tsv )
-    ch_versions = ch_versions.mix ( WINDOWSTATS_INPUT.out.versions.first() )
 
 
-    // Genome statistics by different window sizes
-    BLOBTOOLKIT_WINDOWSTATS ( WINDOWSTATS_INPUT.out.tsv )
-    ch_versions = ch_versions.mix ( BLOBTOOLKIT_WINDOWSTATS.out.versions.first() )
+    //
+    // MODULE: GENOME STATISTICS BY DIFFERENT WINDOW SIZES
+    //
+    BLOBTOOLKIT_WINDOWSTATS (
+        WINDOWSTATS_INPUT.out.tsv
+    )
 
 
     emit:
     window_tsv = BLOBTOOLKIT_WINDOWSTATS.out.tsv // channel: [ val(meta), path(window_stats_tsvs) ]
-    versions   = ch_versions                     // channel: [ versions.yml ]
 }
