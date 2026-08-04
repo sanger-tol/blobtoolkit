@@ -24,6 +24,8 @@ lint:
     - .github/workflows/branch.yml
     - .github/CONTRIBUTING.md
     - .github/workflows/linting_comment.yml
+    - .gitattributes
+    - .gitignore
   merge_markers: false
   multiqc_config:
     - report_comment
@@ -31,7 +33,7 @@ lint:
     - manifest.name
     - manifest.homePage
   template_strings: false
-nf_core_version: 3.5.2
+nf_core_version: 4.1.0
 repository_type: pipeline
 template:
   author: priyanka-surana
@@ -43,4 +45,4 @@ template:
   outdir: .
   skip_features:
     - igenomes
-  version: 0.9.0
+  version: 0.11.0
