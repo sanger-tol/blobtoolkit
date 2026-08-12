@@ -1,0 +1,41 @@
+//
+// Collate genome statistics by various window sizes
+//
+
+include { BLOBTOOLKIT_COUNTBUSCOS } from '../../modules/local/blobtoolkit/countbuscos'
+include { WINDOWSTATS_INPUT       } from '../../modules/local/windowstats_input'
+include { BLOBTOOLKIT_WINDOWSTATS } from '../../modules/local/blobtoolkit/windowstats'
+
+
+workflow COLLATE_STATS {
+    take:
+    busco       // channel: [ val(meta), path(full_table) ]
+    bed         // channel: [ val(meta), path(bed) ]
+    freq        // channel: [ val(meta), path(freq) ]
+    mononuc     // channel: [ val(meta), path(mononuc) ]
+    cov         // channel: [ val(meta), path(regions.bed.gz) ]
+
+    main:
+    //
+    // MODULE: COUNT BUSCO GENES IN A REGION
+    //
+    BLOBTOOLKIT_COUNTBUSCOS ( busco, bed )
+
+
+    //
+    // MODULE: COMBINE OUTPUTS FROM FASTA WINDOWS, BLOBTK DEPTH, AND COUNT BUSCO GENES
+    //
+    WINDOWSTATS_INPUT ( freq, mononuc, cov, BLOBTOOLKIT_COUNTBUSCOS.out.tsv )
+
+
+    //
+    // MODULE: GENOME STATISTICS BY DIFFERENT WINDOW SIZES
+    //
+    BLOBTOOLKIT_WINDOWSTATS (
+        WINDOWSTATS_INPUT.out.tsv
+    )
+
+
+    emit:
+    window_tsv = BLOBTOOLKIT_WINDOWSTATS.out.tsv // channel: [ val(meta), path(window_stats_tsvs) ]
+}

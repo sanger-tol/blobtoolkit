@@ -1,9 +1,30 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
+    IMPORT LOCAL MODULES/SUBWORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { FASTQC                 } from '../modules/nf-core/fastqc/main'
+
+//
+// SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
+//
+include { MINIMAP2_ALIGNMENT } from '../subworkflows/local/minimap_alignment'
+include { INPUT_CHECK        } from '../subworkflows/local/input_check'
+include { COVERAGE_STATS     } from '../subworkflows/local/coverage_stats'
+include { BUSCO_DIAMOND      } from '../subworkflows/local/busco_diamond_blastp'
+include { RUN_BLASTX         } from '../subworkflows/local/run_blastx'
+include { RUN_BLASTN         } from '../subworkflows/local/run_blastn'
+include { COLLATE_STATS      } from '../subworkflows/local/collate_stats'
+include { BLOBTOOLS          } from '../subworkflows/local/blobtools'
+include { VIEW               } from '../subworkflows/local/view'
+include { FINALISE_BLOBDIR   } from '../subworkflows/local/finalise_blobdir'
+
+include { REPEAT_MASKING     } from '../subworkflows/sanger-tol/repeat_masking/main'
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT NF-CORE MODULES/SUBWORKFLOWS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -19,21 +40,138 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_blob
 workflow BLOBTOOLKIT {
 
     take:
-    ch_samplesheet // channel: samplesheet read in from --input
     multiqc_config
     multiqc_logo
     multiqc_methods_description
     outdir
+    ch_fasta
+    ch_databases
 
     main:
-
     def ch_versions = channel.empty()
     def ch_multiqc_files = channel.empty()
+
+
     //
-    // MODULE: Run FastQC
+    // SUBWORKFLOW: Check samplesheet, prepare genome, and create channels for downstream analysis
     //
-    FASTQC(ch_samplesheet)
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.map{ _meta, file -> file })
+    INPUT_CHECK (
+        params.input,
+        ch_fasta, // GENERATE_CONFIG needs the path of the initial file
+        params.taxon,
+        channel.value(params.busco_lineages ?: []),
+        params.lineage_tax_ids,
+        ch_databases,
+    )
+    ch_versions         = ch_versions.mix ( INPUT_CHECK.out.versions )
+
+    //
+    // SUBWORKFLOW: Mask the genome if needed
+    //
+    ch_genome = INPUT_CHECK.out.genome
+
+    if ( params.mask ) {
+        REPEAT_MASKING ( ch_genome )
+
+        ch_genome = REPEAT_MASKING.out.repeat_intervals
+        // Windowmasker is used with `-outfmt fasta` option, so repeat_intervals is the masked genome
+        // genome_size is preserved in the meta field of repeat_intervals
+        // This is because meta of WINDOWMASKER_USTAT.out.intervals = meta of WINDOWMASKER_MKCOUNTS.out.counts = meta of ch_reference
+    }
+
+
+    // NOTE: Reference genome to be used (as a value channel) throughout the pipeline
+    ch_prepared_genome = ch_genome.first()
+
+
+    //
+    // SUBWORKFLOW: Optional read alignment
+    //
+    if ( params.align ) {
+        MINIMAP2_ALIGNMENT ( INPUT_CHECK.out.reads, ch_prepared_genome )
+        ch_aligned      = MINIMAP2_ALIGNMENT.out.aln
+    } else {
+        ch_aligned      = INPUT_CHECK.out.reads
+    }
+
+    //
+    // SUBWORKFLOW: Calculate genome coverage and statistics
+    //
+    COVERAGE_STATS ( ch_aligned, ch_prepared_genome )
+
+
+    //
+    // SUBWORKFLOW: Run BUSCO using lineages fetched from GoaT, then run diamond_blastp
+    //
+    BUSCO_DIAMOND (
+        ch_prepared_genome,
+        INPUT_CHECK.out.busco_lineages,
+        INPUT_CHECK.out.busco_db,
+        INPUT_CHECK.out.odb_version,
+        INPUT_CHECK.out.blastp,
+        INPUT_CHECK.out.taxon_id,
+        INPUT_CHECK.out.precomputed_busco,
+    )
+
+
+    //
+    // SUBWORKFLOW: Diamond blastx search of assembly contigs against the UniProt reference proteomes
+    //              BLASTX WILL NOT RUN IF blast_annotations IS SET TO `off` or `blastp`
+    //
+    RUN_BLASTX (
+        ch_prepared_genome.filter { params.blast_annotations == "all" || params.blast_annotations == "blastx" },
+        BUSCO_DIAMOND.out.first_table,
+        INPUT_CHECK.out.blastx,
+        INPUT_CHECK.out.taxon_id,
+    )
+
+
+    //
+    // SUBWORKFLOW: Run blastn search on sequences that had no blastx hits
+    //              BLASTN WILL NOT RUN IF blast_annotations IS SET TO `off`, `blastp` or `blastx`
+    //
+    RUN_BLASTN (
+        RUN_BLASTX.out.blastx_out.filter { params.blast_annotations == "all" },
+        ch_prepared_genome,
+        INPUT_CHECK.out.blastn,
+        INPUT_CHECK.out.taxon_id,
+    )
+    ch_versions         = ch_versions.mix ( RUN_BLASTN.out.versions )
+
+
+    //
+    // SUBWORKFLOW: Collate genome statistics by various window sizes
+    //
+    COLLATE_STATS (
+        BUSCO_DIAMOND.out.all_tables,
+        COVERAGE_STATS.out.bed,
+        COVERAGE_STATS.out.freq,
+        COVERAGE_STATS.out.mononuc,
+        COVERAGE_STATS.out.cov
+    )
+
+
+    //
+    // SUBWORKFLOW: Create BlobTools dataset
+    //
+    BLOBTOOLS (
+        INPUT_CHECK.out.config,
+        INPUT_CHECK.out.synonyms_tsv.ifEmpty([[],[]]),
+        INPUT_CHECK.out.categories_tsv.ifEmpty([[],[]]),
+        COLLATE_STATS.out.window_tsv,
+        BUSCO_DIAMOND.out.all_tables,
+        BUSCO_DIAMOND.out.blastp_txt.ifEmpty([[],[]]),
+        RUN_BLASTX.out.blastx_out.ifEmpty([[],[]]),
+        RUN_BLASTN.out.blastn_out.ifEmpty([[],[]]),
+        INPUT_CHECK.out.taxdump
+    )
+
+
+    //
+    // SUBWORKFLOW: Generate summary and static images
+    //
+    VIEW ( BLOBTOOLS.out.blobdir )
+
 
     //
     // Collate and save software versions
@@ -63,6 +201,17 @@ workflow BLOBTOOLKIT {
             sort: true,
             newLine: true
         )
+
+    //
+    // SUBWORKFLOW: Finalise and publish the blobdir
+    //
+    FINALISE_BLOBDIR (
+        BLOBTOOLS.out.blobdir,
+        ch_collated_versions,
+        VIEW.out.summary
+    )
+    // Don't update ch_versions because it's already been consumed by now
+
 
     //
     // MODULE: MultiQC

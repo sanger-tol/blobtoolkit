@@ -1,0 +1,51 @@
+process GENERATE_CONFIG {
+    tag "${meta.id}"
+    label 'process_single'
+
+    conda "conda-forge::requests=2.28.1 conda-forge::pyyaml=6.0"
+    container "docker.io/genomehubs/blobtoolkit:4.4.6"
+
+    input:
+    // Some data files are passed as "val" because we need to know the original paths. Staging would prevent that
+    tuple val(meta), val(fasta)
+    val taxon_query
+    val busco_lin
+    tuple val(metabn), path(blastn)
+    path lineage_tax_ids
+    val reads
+    val db_paths
+
+    output:
+    tuple val(meta), path("*.yaml")          , emit: yaml
+    tuple val(meta), path("*.csv")           , emit: csv
+    tuple val(meta), path("*.synonyms.tsv")  , emit: synonyms_tsv,   optional: true
+    tuple val(meta), path("*.categories.tsv"), emit: categories_tsv, optional: true
+    tuple val("${task.process}"), val("generate_config"), eval("generate_config.py --version | cut -d' ' -f2"), topic: versions, emit: versions_generateconfig
+
+    when:
+    task.ext.when == null || task.ext.when
+
+    script:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def busco_param = busco_lin ? "--busco '${busco_lin}'" : ""
+    def accession_params = params.accession ? "--accession ${params.accession}" : ""
+    def input_reads = reads.collect{ read_meta, file -> "--read_id ${read_meta.id} --read_type ${read_meta.datatype} --read_layout ${read_meta.layout} --read_path ${file}"}.join(' ')
+    def input_databases = db_paths.collect{ db_meta, file -> "--${db_meta.type} ${file}"}.join(' ')
+
+    """
+    generate_config.py \\
+        --fasta $fasta \\
+        --taxon_query "$taxon_query" \\
+        --lineage_tax_ids $lineage_tax_ids \\
+        $busco_param \\
+        $accession_params \\
+        --nt $blastn \\
+        --window_size ${params.window_size} \\
+        $input_reads \\
+        --revision ${params.revision} \\
+        $input_databases \\
+        --output_prefix ${prefix} \\
+        $args
+    """
+}

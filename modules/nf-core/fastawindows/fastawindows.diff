@@ -1,0 +1,17 @@
+Changes in component 'nf-core/fastawindows'
+'modules/nf-core/fastawindows/environment.yml' is unchanged
+'modules/nf-core/fastawindows/meta.yml' is unchanged
+Changes in 'fastawindows/main.nf':
+--- modules/nf-core/fastawindows/main.nf
++++ modules/nf-core/fastawindows/main.nf
+@@ -1,6 +1,5 @@
+ process FASTAWINDOWS {
+     tag "$meta.id"
+-    label 'process_low'
+ 
+     conda "${moduleDir}/environment.yml"
+     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+
+'modules/nf-core/fastawindows/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/fastawindows/tests/main.nf.test' is unchanged
+************************************************************

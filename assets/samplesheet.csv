@@ -1,3 +1,6 @@
-sample,fastq_1,fastq_2
-SAMPLE_PAIRED_END,/path/to/fastq/files/AEG588A1_S1_L002_R1_001.fastq.gz,/path/to/fastq/files/AEG588A1_S1_L002_R2_001.fastq.gz
-SAMPLE_SINGLE_END,/path/to/fastq/files/AEG588A4_S4_L003_R1_001.fastq.gz,
+sample,datatype,datafile,library_layout
+SAMEA7524441/ERR6688601,hic,https://tolit.cog.sanger.ac.uk/test-data/Meles_meles/analysis/mMelMel3.2_paternal_haplotype/read_mapping/hic/GCA_922984935.2.subset.unmasked.hic.mMelMel3.cram,PAIRED
+SAMEA7524438/ERR6688599,illumina,https://tolit.cog.sanger.ac.uk/test-data/Meles_meles/analysis/mMelMel3.2_paternal_haplotype/read_mapping/illumina/GCA_922984935.2.subset.unmasked.illumina.mMelMel1.cram,PAIRED
+SAMEA7524439/ERR6688600,illumina,https://tolit.cog.sanger.ac.uk/test-data/Meles_meles/analysis/mMelMel3.2_paternal_haplotype/read_mapping/illumina/GCA_922984935.2.subset.unmasked.illumina.mMelMel2.cram,PAIRED
+SAMEA7524440/PAE35587,ont,https://tolit.cog.sanger.ac.uk/test-data/Meles_meles/analysis/mMelMel3.2_paternal_haplotype/read_mapping/ont/GCA_922984935.2.subset.unmasked.ont.mMelMel3.cram,SINGLE
+SAMEA7524440_test,ont,https://tolit.cog.sanger.ac.uk/test-data/Meles_meles/analysis/mMelMel3.2_paternal_haplotype/read_mapping/ont/GCA_922984935.2.subset.unmasked.ont.mMelMel3.cram,SINGLE

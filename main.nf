@@ -4,6 +4,7 @@
     sanger-tol/blobtoolkit
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Github : https://github.com/sanger-tol/blobtoolkit
+    Website: https://pipelines.tol.sanger.ac.uk/blobtoolkit
 ----------------------------------------------------------------------------------------
 */
 
@@ -28,7 +29,8 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_blob
 workflow SANGERTOL_BLOBTOOLKIT {
 
     take:
-    samplesheet // channel: samplesheet read in from --input
+    fasta
+    databases
 
     main:
 
@@ -36,11 +38,12 @@ workflow SANGERTOL_BLOBTOOLKIT {
     // WORKFLOW: Run pipeline
     //
     BLOBTOOLKIT (
-        samplesheet,
         params.multiqc_config,
         params.multiqc_logo,
         params.multiqc_methods_description,
         params.outdir,
+        fasta,
+        databases,
     )
     emit:
     multiqc_report = BLOBTOOLKIT.out.multiqc_report // channel: /path/to/multiqc_report.html
@@ -73,7 +76,8 @@ workflow {
     // WORKFLOW: Run main workflow
     //
     SANGERTOL_BLOBTOOLKIT (
-        PIPELINE_INITIALISATION.out.samplesheet
+        PIPELINE_INITIALISATION.out.fasta,
+        PIPELINE_INITIALISATION.out.databases,
     )
     //
     // SUBWORKFLOW: Run completion tasks
