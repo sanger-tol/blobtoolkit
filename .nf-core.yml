@@ -44,5 +44,6 @@ template:
   org: sanger-tol
   outdir: .
   skip_features:
+    - fastqc
     - igenomes
   version: "0.11.0"
