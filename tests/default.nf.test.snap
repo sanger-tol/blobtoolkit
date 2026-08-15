@@ -84,7 +84,7 @@
                     "windowstats_input.py": "1.0.0"
                 },
                 "Workflow": {
-                    "sanger-tol/blobtoolkit": "v0.11.0"
+                    "sanger-tol/blobtoolkit": "v0.11.1"
                 }
             },
             [
@@ -462,20 +462,20 @@
                 "read_mapping/hic",
                 "read_mapping/hic/SAMEA7524441",
                 "read_mapping/hic/SAMEA7524441/ERR6688601",
-                "read_mapping/hic/SAMEA7524441/ERR6688601/GCA_922984935.2.hic.SAMEA7524441.ERR6688601.coverage.1k.bed.gz",
+                "read_mapping/hic/SAMEA7524441/ERR6688601/GCA_922984935.2.hic.SAMEA7524441.ERR6688601.coverage.1k.bedGraph.gz",
                 "read_mapping/illumina",
                 "read_mapping/illumina/SAMEA7524438",
                 "read_mapping/illumina/SAMEA7524438/ERR6688599",
-                "read_mapping/illumina/SAMEA7524438/ERR6688599/GCA_922984935.2.illumina.SAMEA7524438.ERR6688599.coverage.1k.bed.gz",
+                "read_mapping/illumina/SAMEA7524438/ERR6688599/GCA_922984935.2.illumina.SAMEA7524438.ERR6688599.coverage.1k.bedGraph.gz",
                 "read_mapping/illumina/SAMEA7524439",
                 "read_mapping/illumina/SAMEA7524439/ERR6688600",
-                "read_mapping/illumina/SAMEA7524439/ERR6688600/GCA_922984935.2.illumina.SAMEA7524439.ERR6688600.coverage.1k.bed.gz",
+                "read_mapping/illumina/SAMEA7524439/ERR6688600/GCA_922984935.2.illumina.SAMEA7524439.ERR6688600.coverage.1k.bedGraph.gz",
                 "read_mapping/ont",
                 "read_mapping/ont/SAMEA7524440",
                 "read_mapping/ont/SAMEA7524440/PAE35587",
-                "read_mapping/ont/SAMEA7524440/PAE35587/GCA_922984935.2.ont.SAMEA7524440.PAE35587.coverage.1k.bed.gz",
+                "read_mapping/ont/SAMEA7524440/PAE35587/GCA_922984935.2.ont.SAMEA7524440.PAE35587.coverage.1k.bedGraph.gz",
                 "read_mapping/ont/SAMEA7524440_test",
-                "read_mapping/ont/SAMEA7524440_test/GCA_922984935.2.ont.SAMEA7524440_test.coverage.1k.bed.gz"
+                "read_mapping/ont/SAMEA7524440_test/GCA_922984935.2.ont.SAMEA7524440_test.coverage.1k.bedGraph.gz"
             ],
             [
                 "GCA.922984935.2.freq.1k.tsv.gz:md5,3a4c5da5140a45d4de222094a37a1445",
@@ -774,17 +774,17 @@
                 "GCA_922984935.2.vertebrata_odb10.full_table.tsv:md5,8b3eca8bbf098b602ad2a17b9da77532",
                 "GCA_922984935.2.vertebrata_odb10.missing_busco_list.tsv:md5,d5870a7bc71baad79db38e5f3eb546db",
                 "GCA_922984935.2.vertebrata_odb10.short_summary.tsv:md5,1b63bbba649e4001e50cb44d4d967366",
-                "GCA_922984935.2.hic.SAMEA7524441.ERR6688601.coverage.1k.bed.gz:md5,0d03664e2f47d0e66b257ae9b39cebb3",
-                "GCA_922984935.2.illumina.SAMEA7524438.ERR6688599.coverage.1k.bed.gz:md5,3a112390bc16cadeaf87e0eddaddb069",
-                "GCA_922984935.2.illumina.SAMEA7524439.ERR6688600.coverage.1k.bed.gz:md5,13e32ac3d05e190408356488462c3ee1",
-                "GCA_922984935.2.ont.SAMEA7524440.PAE35587.coverage.1k.bed.gz:md5,3cd28f4bbfc849a30320715c23606406",
-                "GCA_922984935.2.ont.SAMEA7524440_test.coverage.1k.bed.gz:md5,3cd28f4bbfc849a30320715c23606406"
+                "GCA_922984935.2.hic.SAMEA7524441.ERR6688601.coverage.1k.bedGraph.gz:md5,0d03664e2f47d0e66b257ae9b39cebb3",
+                "GCA_922984935.2.illumina.SAMEA7524438.ERR6688599.coverage.1k.bedGraph.gz:md5,3a112390bc16cadeaf87e0eddaddb069",
+                "GCA_922984935.2.illumina.SAMEA7524439.ERR6688600.coverage.1k.bedGraph.gz:md5,13e32ac3d05e190408356488462c3ee1",
+                "GCA_922984935.2.ont.SAMEA7524440.PAE35587.coverage.1k.bedGraph.gz:md5,3cd28f4bbfc849a30320715c23606406",
+                "GCA_922984935.2.ont.SAMEA7524440_test.coverage.1k.bedGraph.gz:md5,3cd28f4bbfc849a30320715c23606406"
             ]
         ],
-        "timestamp": "2026-05-22T14:44:56.825678",
+        "timestamp": "2026-07-24T16:48:34.777416745",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.04.2"
+            "nextflow": "25.10.4"
         }
     }
 }
