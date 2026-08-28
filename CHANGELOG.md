@@ -3,6 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[0.11.2](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.2)] – Bulbasaur (patch 2) – [2026-08-28]
+
+### Enhancements & fixes
+
+- Update NF-Schema to 2.7.2 to expose the `.toBoolean()` method.
+  - More details can be found on the [nf-core blog](https://nf-co.re/blog/2026/parameter-types).
+
 ## [[0.11.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.1)] – Bulbasaur (patch 1) – [2026-08-17]
 
 ### Enhancements & fixes
