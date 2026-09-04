@@ -25,7 +25,8 @@ workflow COLLATE_STATS {
     //
     // MODULE: COMBINE OUTPUTS FROM FASTA WINDOWS, BLOBTK DEPTH, AND COUNT BUSCO GENES
     //
-    WINDOWSTATS_INPUT ( freq, mononuc, cov, BLOBTOOLKIT_COUNTBUSCOS.out.tsv )
+    def sorted_cov = cov.map { meta, files -> tuple(meta, (files instanceof List ? files.sort { f -> f.name } : files)) }
+    WINDOWSTATS_INPUT ( freq, mononuc, sorted_cov, BLOBTOOLKIT_COUNTBUSCOS.out.tsv )
 
 
     //

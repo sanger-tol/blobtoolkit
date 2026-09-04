@@ -615,6 +615,7 @@
                 "length_windows_0.01.json.gz:md5,e1b812cf88e5d14a17de502e07ff1e1e",
                 "length_windows_100000.json.gz:md5,46acbe7739d52d742d255f0626c28316",
                 "length_windows_1000000.json.gz:md5,f52e4653df6f62e06bad93596e5e5262",
+                "meta.json.gz:md5,149a81aa3477de6af10cf6dfc165f4d6",
                 "n.json.gz:md5,6e473436cfdc6db17c039bd0ab936cf0",
                 "n_stats.json.gz:md5,89f1c00382ea35e5193dd49d05a1c44e",
                 "n_windows.json.gz:md5,55acc5e29b5f4fb10dc8dbeccbbffb5f",
@@ -636,6 +637,7 @@
                 "proportion_windows_0.01.json.gz:md5,c8ba00d231866d372dcd95f866080f72",
                 "proportion_windows_100000.json.gz:md5,be11aff205b95d911a6c10b48ed59920",
                 "proportion_windows_1000000.json.gz:md5,e0e29afe516c6149b09d345134fd6908",
+                "summary.json.gz:md5,1a1179baf31ce75d8e0e00cfa24fa883",
                 "tetrapoda_odb10_busco.json.gz:md5,25b7c89472d26e5924dee9f2336db9fd",
                 "tetrapoda_odb10_count.json.gz:md5,3fe44432e5d04afdfc69c040c8fffe5b",
                 "tetrapoda_odb10_count_windows.json.gz:md5,7bd6f953b73e4de0fa514261c1916491",
@@ -677,10 +679,10 @@
                 "GCA_922984935.2.obinary:md5,571f465e27e107f6e4bb3fa2e833250b"
             ]
         ],
-        "timestamp": "2026-07-24T16:58:30.260673255",
+        "timestamp": "2026-09-07T09:20:45.410841614",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.0"
         }
     }
 }
