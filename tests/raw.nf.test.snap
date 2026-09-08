@@ -615,7 +615,6 @@
                 "length_windows_0.01.json.gz:md5,e1b812cf88e5d14a17de502e07ff1e1e",
                 "length_windows_100000.json.gz:md5,46acbe7739d52d742d255f0626c28316",
                 "length_windows_1000000.json.gz:md5,f52e4653df6f62e06bad93596e5e5262",
-                "meta.json.gz:md5,149a81aa3477de6af10cf6dfc165f4d6",
                 "n.json.gz:md5,6e473436cfdc6db17c039bd0ab936cf0",
                 "n_stats.json.gz:md5,89f1c00382ea35e5193dd49d05a1c44e",
                 "n_windows.json.gz:md5,55acc5e29b5f4fb10dc8dbeccbbffb5f",
@@ -677,9 +676,12 @@
                 "GCA_922984935.2.pacbio.SAMEA7524440.ERR6939248.minimap2.coverage.1k.bedGraph.gz:md5,a6b7b26206651aa5ceae5669d19cf28d",
                 "GCA_922984935.2.fasta:md5,9ccc14f99004d85bdc29aea036af34e3",
                 "GCA_922984935.2.obinary:md5,571f465e27e107f6e4bb3fa2e833250b"
+            ],
+            [
+                "meta.json.gz:md5,fa7b6d00d7b7e5fea21ed830fd30789c"
             ]
         ],
-        "timestamp": "2026-09-07T09:20:45.410841614",
+        "timestamp": "2026-09-08T09:37:05.136181471",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.0"

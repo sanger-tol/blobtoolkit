@@ -631,7 +631,6 @@
                 "mammalia_odb10_count_windows_0.01.json.gz:md5,124570cdfe76fc114c9815c40832663a",
                 "mammalia_odb10_count_windows_100000.json.gz:md5,2409695ed2e554836916f3beb48e8b70",
                 "mammalia_odb10_count_windows_1000000.json.gz:md5,a1c529f8254247f39d89161171e04fac",
-                "meta.json.gz:md5,74b8873c512e9c5614bc987be9198eb0",
                 "metazoa_odb10_busco.json.gz:md5,cc4debb0f82188657349ffa2342d0c28",
                 "metazoa_odb10_count.json.gz:md5,33b96518b11511b0dd12085f5a18ccac",
                 "metazoa_odb10_count_windows.json.gz:md5,08be1dd3a0a0c39d5ed47d4cfbb4f67a",
@@ -698,9 +697,12 @@
                 "GCA_922984935.2.vertebrata_odb10.full_table.tsv:md5,68154880121436bf71d68ef50b212869",
                 "GCA_922984935.2.vertebrata_odb10.missing_busco_list.tsv:md5,28015fcb3171212f555aa0800ea6254a",
                 "GCA_922984935.2.hic.SAMEA7524441.ERR6688601.coverage.1k.bedGraph.gz:md5,0d03664e2f47d0e66b257ae9b39cebb3"
+            ],
+            [
+                "meta.json.gz:md5,4060f45cb34c875fc5951100059338e9"
             ]
         ],
-        "timestamp": "2026-09-07T09:17:46.744594344",
+        "timestamp": "2026-09-08T09:14:18.589138664",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.0"
