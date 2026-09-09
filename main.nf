@@ -42,7 +42,7 @@ workflow SANGERTOL_BLOBTOOLKIT {
         params.multiqc_logo,
         params.multiqc_methods_description,
         params.outdir,
-        params.align.toBoolean(),
+        params.align,
         fasta,
         databases,
     )
