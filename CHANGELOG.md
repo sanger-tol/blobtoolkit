@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - More details can be found on the [nf-core blog](https://nf-co.re/blog/2026/parameter-types).
 - Reintroduced BUSCO in the MultiQC report
 - Sort the list of read files to get repeatable outputs across reruns
+- Fixed the resources given to the processes that create the blobDirs
 
 ## [[0.11.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.1)] – Bulbasaur (patch 1) – [2026-08-17]
 
