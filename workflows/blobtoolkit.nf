@@ -44,12 +44,13 @@ workflow BLOBTOOLKIT {
     multiqc_logo
     multiqc_methods_description
     outdir
+    val_align
     ch_fasta
     ch_databases
 
     main:
-    def ch_versions = channel.empty()
-    def ch_multiqc_files = channel.empty()
+    def ch_versions     = channel.empty()
+    def ch_multiqc_files= channel.empty()
 
 
     //
@@ -63,12 +64,12 @@ workflow BLOBTOOLKIT {
         params.lineage_tax_ids,
         ch_databases,
     )
-    ch_versions         = ch_versions.mix ( INPUT_CHECK.out.versions )
+
 
     //
     // SUBWORKFLOW: Mask the genome if needed
     //
-    ch_genome = INPUT_CHECK.out.genome
+    ch_genome           = INPUT_CHECK.out.genome
 
     if ( params.mask ) {
         REPEAT_MASKING ( ch_genome )
@@ -81,18 +82,19 @@ workflow BLOBTOOLKIT {
 
 
     // NOTE: Reference genome to be used (as a value channel) throughout the pipeline
-    ch_prepared_genome = ch_genome.first()
+    ch_prepared_genome  = ch_genome.first()
 
 
     //
     // SUBWORKFLOW: Optional read alignment
     //
-    if ( params.align ) {
+    if ( val_align ) {
         MINIMAP2_ALIGNMENT ( INPUT_CHECK.out.reads, ch_prepared_genome )
         ch_aligned      = MINIMAP2_ALIGNMENT.out.aln
     } else {
         ch_aligned      = INPUT_CHECK.out.reads
     }
+
 
     //
     // SUBWORKFLOW: Calculate genome coverage and statistics
@@ -202,6 +204,7 @@ workflow BLOBTOOLKIT {
             newLine: true
         )
 
+
     //
     // SUBWORKFLOW: Finalise and publish the blobdir
     //
@@ -225,6 +228,7 @@ workflow BLOBTOOLKIT {
         : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
     def ch_methods_description = channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
+
     MULTIQC(
         ch_multiqc_files.flatten().collect().map { files ->
             [
@@ -239,8 +243,9 @@ workflow BLOBTOOLKIT {
             ]
         }
     )
-    emit:multiqc_report = MULTIQC.out.report.map { _meta, report -> [report] }.toList() // channel: /path/to/multiqc_report.html
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
+    emit:
+    multiqc_report      = MULTIQC.out.report.map { _meta, report -> [report] }.toList() // channel: /path/to/multiqc_report.html
+    versions            = ch_versions                 // channel: [ path(versions.yml) ]
 }
 
 /*
