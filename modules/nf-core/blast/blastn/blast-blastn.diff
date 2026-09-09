@@ -52,7 +52,7 @@ Changes in 'blast/blastn/main.nf':
 +                echo "Error: \$file not found in ${db}"
 +                exit 1
 +            fi
-+            ln -s ${db}/\$file .
++            ln -sf ${db}/\$file .
 +        done
 +    fi
 +
@@ -76,7 +76,7 @@ Changes in 'blast/blastn/main.nf':
 +
 +    if [[ -s "${prefix}.error.log" ]]
 +    then
-+        grep -qF 'BLAST Database error: Taxonomy ID(s) not found.Taxonomy ID(s) not found' "${prefix}.error.log"
++        grep -qF 'Taxonomy ID(s) not found in the ' "${prefix}.error.log"
 +    fi
      """
  

@@ -80,7 +80,7 @@ process BLAST_BLASTN {
 
     if [[ -s "${prefix}.error.log" ]]
     then
-        grep -qF 'BLAST Database error: Taxonomy ID(s) not found.Taxonomy ID(s) not found' "${prefix}.error.log"
+        grep -qF 'Taxonomy ID(s) not found in the ' "${prefix}.error.log"
     fi
     """
 
