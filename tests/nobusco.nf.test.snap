@@ -658,6 +658,7 @@
                 "proportion_windows_0.01.json.gz:md5,c8ba00d231866d372dcd95f866080f72",
                 "proportion_windows_100000.json.gz:md5,be11aff205b95d911a6c10b48ed59920",
                 "proportion_windows_1000000.json.gz:md5,e0e29afe516c6149b09d345134fd6908",
+                "summary.json.gz:md5,85ba05ffb0f5ea54592ed90e84d017b0",
                 "tetrapoda_odb10_busco.json.gz:md5,45b153bfd5828afcbee3275d73bda4d6",
                 "tetrapoda_odb10_count.json.gz:md5,3fe44432e5d04afdfc69c040c8fffe5b",
                 "tetrapoda_odb10_count_windows.json.gz:md5,8c5d88c26715e8f48a0ae663d3cbaf2b",
@@ -696,12 +697,15 @@
                 "GCA_922984935.2.vertebrata_odb10.full_table.tsv:md5,68154880121436bf71d68ef50b212869",
                 "GCA_922984935.2.vertebrata_odb10.missing_busco_list.tsv:md5,28015fcb3171212f555aa0800ea6254a",
                 "GCA_922984935.2.hic.SAMEA7524441.ERR6688601.coverage.1k.bedGraph.gz:md5,0d03664e2f47d0e66b257ae9b39cebb3"
+            ],
+            [
+                "meta.json.gz:md5,4060f45cb34c875fc5951100059338e9"
             ]
         ],
-        "timestamp": "2026-07-24T16:52:36.33190519",
+        "timestamp": "2026-09-08T09:14:18.589138664",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.0"
         }
     }
 }
