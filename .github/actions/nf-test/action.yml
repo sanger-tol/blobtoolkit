@@ -81,6 +81,7 @@ runs:
         name: alltests-${{ strategy.job-index }}
         path: .
         retention-days: 5
+        include-hidden-files: true
 
     - name: Run nf-test
       shell: bash
