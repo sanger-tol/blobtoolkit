@@ -1,6 +1,6 @@
 process BLOBTOOLKIT_CREATEBLOBDIR {
     tag "${meta.id}"
-    label 'process_medium'
+    label 'process_single'
 
     container "docker.io/genomehubs/blobtoolkit:4.4.6"
 
@@ -35,7 +35,6 @@ process BLOBTOOLKIT_CREATEBLOBDIR {
         --taxrule buscogenes \\
         ${busco_args} \\
         ${hits_blastp} \\
-        --threads ${task.cpus} \\
         $args \\
         ${prefix}
     """
