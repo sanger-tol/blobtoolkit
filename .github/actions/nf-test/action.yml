@@ -74,12 +74,17 @@ runs:
       run: |
         nextflow run ${GITHUB_WORKSPACE} -profile test_nobusco,${{ inputs.profile }} --outdir ./results/test_nobusco
 
+    - name: "Tar archive"
+      shell: bash
+      run: |
+        tar czf upload.tar.gz results work .nextflow.log .nextflow.log.1 .nextflow.log.2
+
     - name: Upload test results
       if: always()
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
       with:
         name: alltests-${{ strategy.job-index }}
-        path: .
+        path: upload.tar.gz
         retention-days: 5
         include-hidden-files: true
 
