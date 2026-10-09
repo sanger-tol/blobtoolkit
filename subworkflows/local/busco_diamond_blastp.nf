@@ -8,6 +8,9 @@ include { DIAMOND_BLASTP            } from '../../modules/nf-core/diamond/blastp
 include { RESTRUCTUREBUSCODIR       } from '../../modules/sanger-tol/restructurebuscodir/main'
 
 
+// MODIFY SO ONLY THE OUTPUT OF SANGER-TOL BUSCO CAN BE USED AS INPUT TO THE PIPELINE
+// ADD WARNING TO NOTIFY USER
+
 workflow BUSCO_DIAMOND {
     take:
     fasta        // channel: [ val(meta), path(fasta) ]
@@ -44,6 +47,7 @@ workflow BUSCO_DIAMOND {
         .combine(fasta)
         .map { lineage_name, lineage_index, meta, genome -> [meta + [lineage_name: lineage_name, lineage_index: lineage_index], genome] }
 
+
     //
     // LOGIC: Format pre-computed outputs
     //
@@ -69,28 +73,6 @@ workflow BUSCO_DIAMOND {
 
 
     //
-    // LOGIC: Format pre-computed BUSCO outputs
-    //
-    ch_formatted_precomputed = ch_busco_to_run.precomputed
-        .map { meta, _fasta ->
-            def busco_dir = file(meta.busco_dir)
-            [
-                meta,
-                [
-                    batch_summary: [],
-                    short_summaries_txt: file("${busco_dir}/short_summary.txt"),
-                    short_summaries_json: file("${busco_dir}/short_summary.json"),
-                    full_table: file("${busco_dir}/full_table.tsv"),
-                    missing_busco_list: file("${busco_dir}/missing_busco_list.tsv"),
-                    single_copy_proteins: file("${busco_dir}/single_copy_proteins.faa"),
-                    seq_dir: file("${busco_dir}/busco_sequences"),
-                    translated_dir: file("${busco_dir}/translated_proteins"),
-                    busco_dir: busco_dir
-                ]
-            ]
-        }
-
-    //
     // MODULE: Run BUSCO search
     //
     BUSCO_BUSCO(
@@ -101,6 +83,7 @@ workflow BUSCO_DIAMOND {
         [],
         []
     )
+
 
     //
     // LOGIC: Join new and pre-computed BUSCO outputs
@@ -130,7 +113,7 @@ workflow BUSCO_DIAMOND {
                 ]
             ]
         }
-        .mix(ch_formatted_precomputed)
+
 
     //
     // MODULE: Tidy up the BUSCO output directories before publication
@@ -152,9 +135,46 @@ workflow BUSCO_DIAMOND {
     )
 
     //
+    // LOGIC: Format pre-computed BUSCO outputs
+    //
+    ch_formatted_precomputed = ch_busco_to_run.precomputed
+        .map { meta, _fasta ->
+            def busco_dir = file(meta.busco_dir)
+            [
+                meta,
+                file("${busco_dir}/*.${meta.lineage_name}.multi_copy_busco_sequences.tar.gz"),
+                file("${busco_dir}/*.${meta.lineage_name}.single_copy_busco_sequences.tar.gz"),
+                file("${busco_dir}/*.${meta.lineage_name}.fragmented_busco_sequences.tar.gz"),
+                file("${busco_dir}/*.${meta.lineage_name}.full_table.tsv.gz"),
+            ]
+        }
+        .multiMap{ meta, multi, single, frag, full_table_tsv ->
+            busco_seq: tuple(meta, multi, single, frag)
+            full_table: tuple(meta, [full_table: full_table_tsv])
+        }
+
+    //
+    // MODULE: COMBINE THE BUSCO FOLDERS INTO THE EXPECTED FORMAT
+    //
+    // NOTE: THIS IS SOMEWHAT INEFFICIENT BECAUSE IT IS HAPPENING BEFORE FILTERING
+    //       FOR ONLY THE BASAL STUFF SO MOST OF THE OUTPUT IS UNUSED
+    ch_precomputed_buscos = PREPARE_PRECOMPUTED_BUSCOS(ch_formatted_precomputed.busco_seq)
+
+    formatted_precomputed_buscos = ch_precomputed_buscos
+        .map { meta, targz ->
+            [
+                meta.lineage_name,
+                meta,
+                targz,
+            ]
+        }
+        .join(ch_basal_lineages)
+        .collect(flat: false)  { _lineage_name, _meta, outputs -> outputs }
+
+
+    //
     // LOGIC: Select input for BLOBTOOLKIT_EXTRACTBUSCOS
     //
-
     ch_basal_buscos = ch_all_busco_outputs
         .map { meta, outputs -> [meta.lineage_name, meta, outputs] }
         // The join is equivalent to selecting the channel items whose lineage is basal
@@ -165,9 +185,11 @@ workflow BUSCO_DIAMOND {
     //
     // MODULE: Extract BUSCO genes from the basal lineages
     //
+    btk_extract_input = ch_basal_buscos.combine(formatted_precomputed_buscos)
+    btk_extract_input.view{"All BUSCO: $it"}
     BLOBTOOLKIT_EXTRACTBUSCOS (
         fasta,
-        ch_basal_buscos
+        btk_extract_input
     )
 
 
@@ -185,6 +207,9 @@ workflow BUSCO_DIAMOND {
     // MODULE: Hardcoded to match the format expected by blobtools
     //         DIAMOND WILL NOT RUN IF blast_annotations IS SET TO `off`
     //
+    // NOTE:   BLASTP has an issue with sometimes not being deterministic
+    //         Matthieu is checking, we can chack as part of this too.
+    //
     def outfmt = 6
     def cols   = 'qseqid staxids bitscore qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore'
     DIAMOND_BLASTP (
@@ -199,6 +224,9 @@ workflow BUSCO_DIAMOND {
     //
     // MODULE: Order BUSCO results according to the lineage index
     //
+    // NOTE: BRANCH FULL TABLES GO HEREE, should be just a mix
+    precomputed_busco = ch_formatted_precomputed.full_table
+
     ch_indexed_buscos = ch_all_busco_outputs
         // 0. Filter out the BUSCO results that found no gene (seen for archaea/bacteria)
         .filter { _meta, outputs -> outputs.full_table }
@@ -233,4 +261,49 @@ workflow BUSCO_DIAMOND {
     all_tables  = ch_indexed_buscos       // channel: [ val(meta), path(full_tables) ]
     blastp_txt  = DIAMOND_BLASTP.out.txt  // channel: [ val(meta), path(txt) ]
     multiqc                               // channel: [ meta, summary ]
+}
+
+process PREPARE_PRECOMPUTED_BUSCOS {
+    tag "${meta.id}"
+    label 'process_single'
+    container "docker.io/genomehubs/blobtoolkit:4.4.6"
+
+    input:
+    tuple val(meta), path(multi_copy), path(single_copy), path(fragmented)
+
+    output:
+    tuple val(meta), path("busco_sequences.tar.gz"), emit: busco
+
+    when: task.ext.when == null || task.ext.when
+
+    script:
+    """
+    python - <<'PY'
+    import tarfile
+    from pathlib import Path
+
+    output = Path("busco_sequences.tar.gz")
+
+    archives = [
+        Path("${multi_copy}"),
+        Path("${single_copy}"),
+        Path("${fragmented}"),
+    ]
+
+    # Write to a gz file as destination
+    with tarfile.open(output, "w:gz") as dst:
+        # For archive INSIDE the larger archive
+        for archive in archives:
+            # read the gzip file
+            with tarfile.open(archive, "r:gz") as src:
+                for member in src:
+                    # modify the name (member section, e.g. the subfolder) - (group inside extract-busco-genes)
+                    # This is essential thanks to some regex inside of the tool
+                    member.name = f"busco_sequences/{member.name}"
+                    if member.isfile():
+                        with src.extractfile(member) as fh:
+                            dst.addfile(member, fh)
+                    else:
+                        dst.addfile(member)
+    PY """
 }
