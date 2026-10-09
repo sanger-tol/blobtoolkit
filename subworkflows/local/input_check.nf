@@ -22,7 +22,6 @@ workflow INPUT_CHECK {
     databases
 
     main:
-    ch_versions = channel.empty()
 
     //
     // MODULE: Check which need to be decompressed & Untar if needed
@@ -276,7 +275,6 @@ workflow INPUT_CHECK {
     busco_db = ch_busco_db.first()          // channel: [ path(busco_db) ]
     taxdump = ch_taxdump.first()            // channel: [ path(taxdump) ]
     genome = ch_genome                      // channel: [ val(meta), path(fasta) ]
-    versions = ch_versions                  // channel: [ versions.yml ]
 }
 
 // Function to get list of [ meta, datafile ]

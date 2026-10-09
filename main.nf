@@ -14,7 +14,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { BLOBTOOLKIT  } from './workflows/blobtoolkit'
+include { BLOBTOOLKIT             } from './workflows/blobtoolkit'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_blobtoolkit_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_blobtoolkit_pipeline'
 /*
@@ -38,6 +38,11 @@ workflow SANGERTOL_BLOBTOOLKIT {
     // WORKFLOW: Run pipeline
     //
     BLOBTOOLKIT (
+        params.multiqc_config,
+        params.multiqc_logo,
+        params.multiqc_methods_description,
+        params.outdir,
+        params.align,
         fasta,
         databases,
     )
@@ -84,7 +89,6 @@ workflow {
         params.plaintext_email,
         params.outdir,
         params.monochrome_logs,
-        params.hook_url,
         SANGERTOL_BLOBTOOLKIT.out.multiqc_report
     )
 }

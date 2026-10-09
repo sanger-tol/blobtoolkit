@@ -13,7 +13,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         - Join together the pre-computed and pipelines busco results together at `BLOBTOOLKIT_EXTRACTBUSCOS` rather than before `RESTRUCTURE_BUSCOS`
 
 
-## [[0.11.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.0)] – Bulbasaur – [2026-05-18]
+## [[0.11.2](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.2)] – Bulbasaur (patch 2) – [2026-08-28]
+
+### Enhancements & fixes
+
+- Update NF-Schema to 2.7.3 so we can use type casting
+  - More details can be found on the [nf-core blog](https://nf-co.re/blog/2026/parameter-types).
+
+## [[0.11.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.1)] – Bulbasaur (patch 1) – [2026-08-17]
+
+### Enhancements & fixes
+
+- Changed the extension of the coverage file from bed to bedGraph
+- Slack / Teams functionality now moved to Nextflow plugins ([nf-slack](https://github.com/seqeralabs/nf-slack), [nf-teams](https://github.com/nvnieuwk/nf-teams))
+
+## [[0.11.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.0)] – Bulbasaur – [2026-07-21]
 
 ### Enhancements & fixes
 
@@ -48,6 +62,12 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | samtools   | 1.20 and 1.21 | 1.21 and 1.23.1 |
 
 > **NB:** Dependency has been **updated** if both old and new version information is present. </br> **NB:** Dependency has been **added** if just the new version information is present. </br> **NB:** Dependency has been **removed** if version information isn't present.
+
+## [[0.10.2](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.10.2)] – Onix (patch 2) – [2026-06-15]
+
+### Enhancements & fixes
+
+- bugfix: stage the database with a custom name to avoid issues when it has colons or other unexpected characters
 
 ## [[0.10.1](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.10.1)] – Onix (patch 1) – [2026-03-30]
 

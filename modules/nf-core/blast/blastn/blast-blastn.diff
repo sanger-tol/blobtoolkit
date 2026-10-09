@@ -27,7 +27,7 @@ Changes in 'blast/blastn/main.nf':
  
      """
      if [ "${is_compressed}" == "true" ]; then
-@@ -40,21 +40,37 @@
+@@ -40,21 +40,48 @@
  
      export BLASTDB=${db}
  
@@ -45,6 +45,17 @@ Changes in 'blast/blastn/main.nf':
      echo Using \$DB
  
 -    blastn \\
++    if [ -n "${taxidlist_cmd}${taxids_cmd}" ]; then
++        # Symlink the tax* files (needed for -taxid options to work)
++        for file in taxdb.btd taxdb.bti taxonomy4blast.sqlite3; do
++            if [ ! -f ${db}/\$file ]; then
++                echo "Error: \$file not found in ${db}"
++                exit 1
++            fi
++            ln -s ${db}/\$file .
++        done
++    fi
++
 +    timeout 11.9h blastn \\
          -num_threads ${task.cpus} \\
          -db \$DB \\
