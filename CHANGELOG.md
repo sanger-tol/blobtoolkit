@@ -3,6 +3,16 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[0.XX.0](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.XX.0)] – XX – [2026-XX-XX]
+
+### Enhancements & fixes
+
+- The `sanger-tol/blobtoolkit` pipeline was incompatible with the output of `sanger-tol/busco` due to the formatting of the output from said pipeline vs output from `busco/busco` (see [#244](https://github.com/sanger-tol/blobtoolkit/issues/244))
+  - To fix this, the subworkflow `busco_diamond_blastp` has been updated to:
+    - Move pre-computed busco processing closer to where it is used
+    - Trimmed down the file searching to only look for the 4 files required from the pre-computed busco output
+    - Join together the pre-computed and pipelines busco results together at `BLOBTOOLKIT_EXTRACTBUSCOS` rather than before `RESTRUCTURE_BUSCOS`
+
 ## [[0.11.2](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.2)] – Bulbasaur (patch 2) – [2026-08-28]
 
 ### Enhancements & fixes
