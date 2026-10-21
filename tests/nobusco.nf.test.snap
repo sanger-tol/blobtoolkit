@@ -697,12 +697,9 @@
                 "GCA_922984935.2.vertebrata_odb10.full_table.tsv:md5,68154880121436bf71d68ef50b212869",
                 "GCA_922984935.2.vertebrata_odb10.missing_busco_list.tsv:md5,28015fcb3171212f555aa0800ea6254a",
                 "GCA_922984935.2.hic.SAMEA7524441.ERR6688601.coverage.1k.bedGraph.gz:md5,0d03664e2f47d0e66b257ae9b39cebb3"
-            ],
-            [
-                "meta.json.gz:md5,4060f45cb34c875fc5951100059338e9"
             ]
         ],
-        "timestamp": "2026-09-08T09:14:18.589138664",
+        "timestamp": "2026-09-07T09:17:46.744594344",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.0"
