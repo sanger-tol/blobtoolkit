@@ -1,0 +1,89 @@
+Changes in component 'nf-core/blast/blastn'
+'modules/nf-core/blast/blastn/meta.yml' is unchanged
+Changes in 'blast/blastn/main.nf':
+--- modules/nf-core/blast/blastn/main.nf
++++ modules/nf-core/blast/blastn/main.nf
+@@ -1,6 +1,5 @@
+ process BLAST_BLASTN {
+     tag "$meta.id"
+-    label 'process_medium'
+ 
+     conda "${moduleDir}/environment.yml"
+     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+@@ -9,7 +8,7 @@
+ 
+     input:
+     tuple val(meta) , path(fasta)
+-    tuple val(meta2), path(db)
++    tuple val(meta2), path(db, stageAs: "BLASTN_DB_DIR")
+     path taxidlist
+     val taxids
+     val negative_tax
+@@ -32,6 +31,7 @@
+     if (taxidlist_cmd.any() && taxids_cmd.any()) {
+         log.error("ERROR: taxidlist and taxids can not be used at the same time, choose only one argument to use for tax id filtering.")
+     }
++    def db_name = meta2.db_name ?: ''
+ 
+     """
+     if [ "${is_compressed}" == "true" ]; then
+@@ -40,21 +40,48 @@
+ 
+     export BLASTDB=${db}
+ 
+-    DB=`find -L ./ -name "*.nal" | sed 's/\\.nal\$//'`
+-    if [ -z "\$DB" ]; then
+-        DB=`find -L ./ -name "*.nin" | sed 's/\\.nin\$//'`
++    if [ "${db_name}" == "" ]; then
++        DB=`find -L ./ -name "*.nal" | sed 's/\\.nal\$//'`
++        if [ -z "\$DB" ]; then
++            DB=`find -L ./ -name "*.nin" | sed 's/\\.nin\$//'`
++        fi
++    else
++        DB="${db}/${db_name}"
+     fi
+     echo Using \$DB
+ 
+-    blastn \\
++    if [ -n "${taxidlist_cmd}${taxids_cmd}" ]; then
++        # Symlink the tax* files (needed for -taxid options to work)
++        for file in taxdb.btd taxdb.bti taxonomy4blast.sqlite3; do
++            if [ ! -f ${db}/\$file ]; then
++                echo "Error: \$file not found in ${db}"
++                exit 1
++            fi
++            ln -s ${db}/\$file .
++        done
++    fi
++
++    timeout 11.9h blastn \\
+         -num_threads ${task.cpus} \\
+         -db \$DB \\
+         -query ${fasta_name} \\
+         ${taxidlist_cmd} \\
+         ${taxids_cmd} \\
+         ${args} \\
+-        -out ${prefix}.txt
++        -out ${prefix}.txt \\
++        2> >( tee "${prefix}.error.log" >&2 ) || true
+ 
++    # Fallback if blastn fails or times out — make sure output exists
++    if [[ ! -s "${prefix}.txt" ]]
++    then
++        echo "blastn failed or timed out — creating empty output"
++        touch "${prefix}.txt"
++    fi
++
++    if [[ -s "${prefix}.error.log" ]]
++    then
++        grep -qF 'BLAST Database error: Taxonomy ID(s) not found.Taxonomy ID(s) not found' "${prefix}.error.log"
++    fi
+     """
+ 
+     stub:
+
+'modules/nf-core/blast/blastn/environment.yml' is unchanged
+'modules/nf-core/blast/blastn/tests/main.nf.test' is unchanged
+'modules/nf-core/blast/blastn/tests/nextflow.config' is unchanged
+'modules/nf-core/blast/blastn/tests/main.nf.test.snap' is unchanged
+************************************************************

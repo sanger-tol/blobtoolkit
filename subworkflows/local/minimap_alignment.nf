@@ -1,0 +1,56 @@
+//
+// Optional alignment subworkflow using Minimap2
+//
+
+include { MINIMAP2_ALIGN as MINIMAP2_HIC  } from '../../modules/nf-core/minimap2/align/main'
+include { MINIMAP2_ALIGN as MINIMAP2_ILMN } from '../../modules/nf-core/minimap2/align/main'
+include { MINIMAP2_ALIGN as MINIMAP2_CCS  } from '../../modules/nf-core/minimap2/align/main'
+include { MINIMAP2_ALIGN as MINIMAP2_CLR  } from '../../modules/nf-core/minimap2/align/main'
+include { MINIMAP2_ALIGN as MINIMAP2_ONT  } from '../../modules/nf-core/minimap2/align/main'
+
+
+workflow MINIMAP2_ALIGNMENT {
+    take:
+    input      // channel: [ val(meta), path(datafile) ]
+    fasta      // channel: [ val(meta), path(fasta) ]
+
+
+    main:
+
+    //
+    // MODULE: BRANCH INPUT BY SEQUENCING TYPE
+    //
+    ch_input = input
+        .branch { meta, _reads ->
+            hic: meta.datatype == "hic"
+            illumina : meta.datatype == "illumina"
+            pacbio : meta.datatype == "pacbio"
+            clr : meta.datatype == "pacbio_clr"
+            ont : meta.datatype == "ont"
+        }
+
+
+    // Align with Minimap2
+    MINIMAP2_HIC ( ch_input.hic, fasta, true, false, false, false )
+
+    MINIMAP2_ILMN ( ch_input.illumina, fasta, true, false, false, false )
+
+    MINIMAP2_CCS ( ch_input.pacbio, fasta, true, false, false, false )
+
+    MINIMAP2_CLR ( ch_input.clr, fasta, true, false, false, false )
+
+    MINIMAP2_ONT ( ch_input.ont, fasta, true, false, false, false )
+
+
+    // Combine aligned reads
+    ch_aligned = channel.empty()
+        .mix(MINIMAP2_HIC.out.bam)
+        .mix(MINIMAP2_ILMN.out.bam)
+        .mix(MINIMAP2_CCS.out.bam)
+        .mix(MINIMAP2_CLR.out.bam)
+        .mix(MINIMAP2_ONT.out.bam)
+
+
+    emit:
+    aln      = ch_aligned        // channel: [ val(meta), bam ]
+}
