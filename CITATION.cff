@@ -61,13 +61,18 @@ authors:
     given-names: Priyanka
     orcid: https://orcid.org/0000-0002-7167-0875
     website: https://github.com/priyanka-surana
+  - affiliation: Lund University
+    family-names: Tsardakas Renhuldt
+    given-names: Nikos
+    orcid: https://orcid.org/0000-0001-7216-5320
+    website: https://github.com/nikostr
   - affiliation: Wellcome Sanger Institute
     family-names: Yates
     given-names: Bethan
     orcid: https://orcid.org/0000-0003-1658-1762
     website: https://github.com/BethYates
 cff-version: 1.2.0
-date-released: "2026-10-22"
+date-released: "2026-10-23"
 doi: 10.5281/zenodo.7949058
 license: MIT
 message: If you use this software, please cite it using the metadata from this file
