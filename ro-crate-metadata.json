@@ -205,10 +205,10 @@
             },
             "url": [
                 "https://github.com/sanger-tol/blobtoolkit",
-                "https://pipelines.tol.sanger.ac.uk/blobtoolkit/0.11.1/"
+                "https://pipelines.tol.sanger.ac.uk/blobtoolkit/0.11.2/"
             ],
             "version": [
-                "0.11.1"
+                "0.11.2"
             ]
         },
         {

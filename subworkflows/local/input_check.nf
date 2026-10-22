@@ -150,7 +150,7 @@ workflow INPUT_CHECK {
         busco_lin,
         ch_databases.blastn,
         lineage_tax_ids,
-        reads.collect(flat: false).ifEmpty([]),
+        reads.toSortedList { meta_file -> [meta_file[1].name, meta_file[0].sample] },
         db_paths.collect(flat: false),
     )
 
