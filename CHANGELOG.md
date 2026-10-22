@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Enhancements & fixes
 
-- Update NF-Schema to 2.7.3 so we can use type casting
+- Upgraded the template to nf-core v4.2.0, incl. nf-schema to 2.7.3 so we can use type casting
   - More details can be found on the [nf-core blog](https://nf-co.re/blog/2026/parameter-types).
 - Reintroduced BUSCO in the MultiQC report
 - Fixed the resources given to the processes that create the blobDirs and to run blastn

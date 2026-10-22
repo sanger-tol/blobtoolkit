@@ -49,8 +49,8 @@ workflow BLOBTOOLKIT {
     ch_databases
 
     main:
-    def ch_versions     = channel.empty()
-    def ch_multiqc_files= channel.empty()
+    def ch_versions = channel.empty()
+    def ch_multiqc_files = channel.empty()
 
 
     //
