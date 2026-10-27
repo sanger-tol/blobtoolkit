@@ -7,6 +7,7 @@ include { BLOBTOOLKIT_EXTRACTBUSCOS } from '../../modules/local/blobtoolkit/extr
 include { DIAMOND_BLASTP            } from '../../modules/nf-core/diamond/blastp/main'
 include { RESTRUCTUREBUSCODIR       } from '../../modules/sanger-tol/restructurebuscodir/main'
 
+include { GUNZIP                    } from '../../modules/nf-core/gunzip/main'
 
 // MODIFY SO ONLY THE OUTPUT OF SANGER-TOL BUSCO CAN BE USED AS INPUT TO THE PIPELINE
 // ADD WARNING TO NOTIFY USER
@@ -59,13 +60,15 @@ workflow BUSCO_DIAMOND {
             meta, file -> [meta.lineage_name, [meta, file]]
         }
         .join(ch_precomputed_busco, by: 0, remainder: true)
+        // NOTE: FILTER OUT THE PRE_COMPUTED LINEAGES WHICH ARE NOT IN THE BUSCO_LINEAGES + BASAL LIST
+        // i.e. FASTA DATA IS NULL AT THIS STAGE
+        .filter { _lineage, fasta_data, busco_data -> fasta_data != null }
         .map { _lineage, fasta_data, busco_data ->
             def (meta, file) = fasta_data
             def (_busco_meta, busco_dir) = busco_data ?: [null, null]
             [meta + [busco_dir: busco_dir], file]
         }
 
-    // NOTE: Branch based on whether there's a pre-computed BUSCO output
     ch_busco_to_run = ch_combined.branch { meta, _fasta ->
         precomputed: meta.busco_dir != null
         to_compute: true
@@ -150,14 +153,40 @@ workflow BUSCO_DIAMOND {
         }
         .multiMap{ meta, multi, single, frag, full_table_tsv ->
             busco_seq: tuple(meta, multi, single, frag)
-            full_table: tuple(meta, [full_table: full_table_tsv])
+            full_table: tuple(meta, full_table_tsv[0])
         }
+
+    ch_input = ch_formatted_precomputed.full_table
+            .branch { _meta, file ->
+                zipped: file.name.endsWith('.gz')
+                unzipped: !file.name.endsWith('.gz')
+            }
+
+
+    //
+    // MODULE: UNZIP INPUTS IF NEEDED
+    //
+    GUNZIP (
+        ch_input.zipped
+    )
+
+
+    //
+    // LOGIC: MIX CHANELS WHICH MAY OR MAY NOT BE EMPTY INTO A SINGLE QUEUE CHANNEL
+    //
+    unzipped_fulltable = ch_input.unzipped
+        .mix(GUNZIP.out.gunzip)
+
+    unzipped_fulltable.view{ "preformatted: $it" }
 
     //
     // MODULE: COMBINE THE BUSCO FOLDERS INTO THE EXPECTED FORMAT
     //
     // NOTE: THIS IS SOMEWHAT INEFFICIENT BECAUSE IT IS HAPPENING BEFORE FILTERING
     //       FOR ONLY THE BASAL STUFF SO MOST OF THE OUTPUT IS UNUSED
+    //
+    //       This and the following dozen or so lines could do with refactoring to work correctly
+    ch_formatted_precomputed.busco_seq.view{ "precomputed busco seq: $it" }
     ch_precomputed_buscos = PREPARE_PRECOMPUTED_BUSCOS(ch_formatted_precomputed.busco_seq)
 
     formatted_precomputed_buscos = ch_precomputed_buscos
@@ -224,22 +253,24 @@ workflow BUSCO_DIAMOND {
     //
     // MODULE: Order BUSCO results according to the lineage index
     //
-    // NOTE: BRANCH FULL TABLES GO HEREE, should be just a mix
-    precomputed_busco = ch_formatted_precomputed.full_table
-
     ch_indexed_buscos = ch_all_busco_outputs
-        // 0. Filter out the BUSCO results that found no gene (seen for archaea/bacteria)
+        // 0. Mix in the pre-computed BUSCO results
+        .mix(unzipped_fulltable
+            .map { meta, full_table_file -> [meta, [full_table: full_table_file]] }
+        )
+        .view{ "preformatted final: $it" }
+        // 1. Filter out the BUSCO results that found no gene (seen for archaea/bacteria)
         .filter { _meta, outputs -> outputs.full_table }
-        // 1. Extract the necessary information and create a consistent structure
+        // 2. Extract the necessary information and create a consistent structure
         .map { meta, outputs ->
             def cleaned_meta = meta.findAll { pair -> pair.key != "lineage_name" && pair.key != "lineage_index" && pair.key != "busco_dir" }
             def full_table = outputs.full_table
             def lineage_index = meta.lineage_index
             [cleaned_meta, [full_table, lineage_index]]
         }
-        // 2. Group by the cleaned meta information
+        // 3. Group by the cleaned meta information
         .groupTuple(by: 0)
-        // 3. Sort the tables by lineage index and collect only the tables
+        // 4. Sort the tables by lineage index and collect only the tables
         .map { meta, table_positions ->
             [
                 meta,
@@ -249,6 +280,7 @@ workflow BUSCO_DIAMOND {
 
 
     // Select BUSCO results for taxonomically closest database
+    ch_indexed_buscos.view { "ch_indexed_buscos: ${it}" }
     ch_first_table = ch_indexed_buscos
         .map { meta, tables -> [meta, tables[0]] }
 
