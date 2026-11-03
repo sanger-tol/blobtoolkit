@@ -159,6 +159,8 @@ workflow BUSCO_DIAMOND {
         }
 
     ch_input = ch_formatted_precomputed.full_table
+            // NOTE: ADD FILTER TO REMOVE CASES WHERE NO PRECOMPUTED DATA IS ADDED TO RUN
+            .filter { _meta, file -> file != null }
             .branch { _meta, file ->
                 zipped: file.name.endsWith('.gz')
                 unzipped: !file.name.endsWith('.gz')
