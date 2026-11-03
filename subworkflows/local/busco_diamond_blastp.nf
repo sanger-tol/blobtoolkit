@@ -215,7 +215,14 @@ workflow BUSCO_DIAMOND {
     //
     // MODULE: Extract BUSCO genes from the basal lineages
     //
-    btk_extract_input = ch_basal_buscos.combine(formatted_precomputed_buscos)
+    ch_basal_buscos.view { "ch_basal_buscos: ${it}" }
+    formatted_precomputed_buscos.view { "formatted_precomputed_buscos: ${it}" }
+
+    // NOTE: IF PRECOMPUTED ISN'T AVAILABLE (NOT INPUT TO PIPELINE),
+    //       USE EMPTY CHANNEL OR EXTRACTBUSCO CANNOT RUN
+    btk_extract_input = ch_basal_buscos.combine(formatted_precomputed_buscos.ifEmpty([]))
+
+    btk_extract_input.view { "btk_extract_input: ${it}" }
 
     BLOBTOOLKIT_EXTRACTBUSCOS (
         fasta,
