@@ -280,7 +280,6 @@ workflow BUSCO_DIAMOND {
 
 
     // Select BUSCO results for taxonomically closest database
-    ch_indexed_buscos.view { "ch_indexed_buscos: ${it}" }
     ch_first_table = ch_indexed_buscos
         .map { meta, tables -> [meta, tables[0]] }
 
