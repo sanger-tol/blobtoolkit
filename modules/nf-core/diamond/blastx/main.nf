@@ -22,7 +22,6 @@ process DIAMOND_BLASTX {
     tuple val(meta), path('*.sam'), optional: true, emit: sam
     tuple val(meta), path('*.tsv'), optional: true, emit: tsv
     tuple val(meta), path('*.paf'), optional: true, emit: paf
-    tuple val(meta), path("*.log"), emit: log
     tuple val("${task.process}"), val('diamond'), eval("diamond --version | sed 's/diamond version //g'"), emit: versions_diamond, topic: versions
 
     when:
@@ -80,8 +79,6 @@ process DIAMOND_BLASTX {
         ${args} \\
         --out ${prefix}.${out_ext} \\
         --log
-
-    mv diamond.log ${prefix}.log
     """
 
     stub:
@@ -117,6 +114,5 @@ process DIAMOND_BLASTX {
     """
     echo "${args}"
     touch ${prefix}.${out_ext}
-    touch ${prefix}.log
     """
 }

@@ -79,6 +79,7 @@ process DIAMOND_BLASTP {
         ${exclude_taxon} \\
         ${args} \\
         --out ${prefix}.${out_ext}
+    touch done
     """
 
     stub:

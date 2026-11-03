@@ -631,6 +631,7 @@
                 "mammalia_odb10_count_windows_0.01.json.gz:md5,124570cdfe76fc114c9815c40832663a",
                 "mammalia_odb10_count_windows_100000.json.gz:md5,2409695ed2e554836916f3beb48e8b70",
                 "mammalia_odb10_count_windows_1000000.json.gz:md5,a1c529f8254247f39d89161171e04fac",
+                "meta.json.gz:md5,218199b12259d1467a02a8aa9a2a1caf",
                 "metazoa_odb10_busco.json.gz:md5,cc4debb0f82188657349ffa2342d0c28",
                 "metazoa_odb10_count.json.gz:md5,33b96518b11511b0dd12085f5a18ccac",
                 "metazoa_odb10_count_windows.json.gz:md5,08be1dd3a0a0c39d5ed47d4cfbb4f67a",
