@@ -45,10 +45,10 @@
                     "createbed": 1.03
                 },
                 "DIAMOND_BLASTP": {
-                    "diamond": "2.1.23"
+                    "diamond": "2.2.8"
                 },
                 "DIAMOND_BLASTX": {
-                    "diamond": "2.1.16"
+                    "diamond": "2.2.8"
                 },
                 "FASTAWINDOWS": {
                     "fasta_windows": "0.2.4"
@@ -597,14 +597,14 @@
                 "buscoregions_class.json.gz:md5,8c59b975a1c75a14f666f05b6f00e17e",
                 "buscoregions_class_cindex.json.gz:md5,db3bfe371d6198e64cade978c5094222",
                 "buscoregions_class_positions.json.gz:md5,019ea910b487a33024695c1aaebe9e6f",
-                "buscoregions_class_score.json.gz:md5,518f01f442ace3607ae8bc40e98bd64a",
+                "buscoregions_class_score.json.gz:md5,0e0edd287bfe5fd67c48593abe6b1e7d",
                 "buscoregions_class_windows.json.gz:md5,2fc09753686017d89a961b8dbea0f069",
                 "buscoregions_class_windows_0.01.json.gz:md5,9cb8e310231eb9a3d9f7bce2cf47ae03",
                 "buscoregions_class_windows_100000.json.gz:md5,35ee73256661b5744bc85b3f9c70488a",
                 "buscoregions_class_windows_1000000.json.gz:md5,011c5e2a9c92462205f7826db660f046",
                 "buscoregions_family.json.gz:md5,32efbcf400e144106ec2e4c51505ce8f",
                 "buscoregions_family_cindex.json.gz:md5,85ff5c5aa8c4ae77a0b9fec210c61558",
-                "buscoregions_family_positions.json.gz:md5,2cd30bb1f9aa34cd97f7542aebee8662",
+                "buscoregions_family_positions.json.gz:md5,40554fc19374f584baec8d7e210b9bb9",
                 "buscoregions_family_score.json.gz:md5,a9a8457603ff624c90e5690c6a535bc7",
                 "buscoregions_family_windows.json.gz:md5,1d5518b712436125d3e9f886672051ba",
                 "buscoregions_family_windows_0.01.json.gz:md5,88d1c4d3f705b64bf7b24d154c5cca64",
@@ -612,7 +612,7 @@
                 "buscoregions_family_windows_1000000.json.gz:md5,094607360e71c769a0b3617605c5df3f",
                 "buscoregions_genus.json.gz:md5,a7c24d5da2f3351d058bc63eca291318",
                 "buscoregions_genus_cindex.json.gz:md5,85ff5c5aa8c4ae77a0b9fec210c61558",
-                "buscoregions_genus_positions.json.gz:md5,620fb954ce83ccf1c4045ab010034a65",
+                "buscoregions_genus_positions.json.gz:md5,42fda99c2f25af9112c9f53855fbfcae",
                 "buscoregions_genus_score.json.gz:md5,a9a8457603ff624c90e5690c6a535bc7",
                 "buscoregions_genus_windows.json.gz:md5,cccc336f0d0310844a7ef4f8d642abb2",
                 "buscoregions_genus_windows_0.01.json.gz:md5,d5605d55d4e2946083ec76cb981fdf04",
@@ -621,7 +621,7 @@
                 "buscoregions_kingdom.json.gz:md5,c3ad23526d3c8bf348b97c31c46ad3a3",
                 "buscoregions_kingdom_cindex.json.gz:md5,db3bfe371d6198e64cade978c5094222",
                 "buscoregions_kingdom_positions.json.gz:md5,178740f67c832bd3926c4ddbfa7f2bd5",
-                "buscoregions_kingdom_score.json.gz:md5,518f01f442ace3607ae8bc40e98bd64a",
+                "buscoregions_kingdom_score.json.gz:md5,0e0edd287bfe5fd67c48593abe6b1e7d",
                 "buscoregions_kingdom_windows.json.gz:md5,48912762b5976256fd491dc0fafc3244",
                 "buscoregions_kingdom_windows_0.01.json.gz:md5,2998c397781d967594290e9434e11c18",
                 "buscoregions_kingdom_windows_100000.json.gz:md5,d63bc255929e7e06942b9f396a527731",
@@ -629,7 +629,7 @@
                 "buscoregions_order.json.gz:md5,c46179a71beb07b3e14ba0acdf432182",
                 "buscoregions_order_cindex.json.gz:md5,db3bfe371d6198e64cade978c5094222",
                 "buscoregions_order_positions.json.gz:md5,19c3650ca493867ff16c95fbf7777a9f",
-                "buscoregions_order_score.json.gz:md5,518f01f442ace3607ae8bc40e98bd64a",
+                "buscoregions_order_score.json.gz:md5,0e0edd287bfe5fd67c48593abe6b1e7d",
                 "buscoregions_order_windows.json.gz:md5,b71678c819921e70047feed9e476add9",
                 "buscoregions_order_windows_0.01.json.gz:md5,95cecc60ead79077c5f44d2bf32b25c2",
                 "buscoregions_order_windows_100000.json.gz:md5,7b515a4a81ed4fc52a28bef8c41aa9f7",
@@ -637,7 +637,7 @@
                 "buscoregions_phylum.json.gz:md5,66e75f5b36f8f5544a004d8ecdf898b7",
                 "buscoregions_phylum_cindex.json.gz:md5,db3bfe371d6198e64cade978c5094222",
                 "buscoregions_phylum_positions.json.gz:md5,6cf77029e40e55121ea0ecf119831891",
-                "buscoregions_phylum_score.json.gz:md5,518f01f442ace3607ae8bc40e98bd64a",
+                "buscoregions_phylum_score.json.gz:md5,0e0edd287bfe5fd67c48593abe6b1e7d",
                 "buscoregions_phylum_windows.json.gz:md5,5a4958b58f07bd1f9f2dc8f6fccda930",
                 "buscoregions_phylum_windows_0.01.json.gz:md5,06bf7c8213513963ea3f9cf2bff7f918",
                 "buscoregions_phylum_windows_100000.json.gz:md5,2f123ce81b3457ac8f5b78290beffe88",
@@ -645,7 +645,7 @@
                 "buscoregions_positions.json.gz:md5,f4473f11b322da4c6f6de8cab214dfff",
                 "buscoregions_species.json.gz:md5,98372e573d142b24da8b7a0015519674",
                 "buscoregions_species_cindex.json.gz:md5,85ff5c5aa8c4ae77a0b9fec210c61558",
-                "buscoregions_species_positions.json.gz:md5,ae6e9d7b116787b2cf92217ffd30590e",
+                "buscoregions_species_positions.json.gz:md5,0c3678ebe5aecfc59dac4641eeabc4c0",
                 "buscoregions_species_score.json.gz:md5,a9a8457603ff624c90e5690c6a535bc7",
                 "buscoregions_species_windows.json.gz:md5,38c65bf96ed463b35c3b47bd602cfe6f",
                 "buscoregions_species_windows_0.01.json.gz:md5,31a2d838fe457aeb222e61026174d04c",
@@ -701,6 +701,7 @@
                 "mammalia_odb10_count_windows_0.01.json.gz:md5,14628c496d9c25f131d5a416848f10d7",
                 "mammalia_odb10_count_windows_100000.json.gz:md5,18a27007583ceb32e67d5a14514aafed",
                 "mammalia_odb10_count_windows_1000000.json.gz:md5,ca5c60b3121c309636ebcd21bb6e814c",
+                "meta.json.gz:md5,f795c671c826c9757531a935482a1e07",
                 "metazoa_odb10_busco.json.gz:md5,cc4debb0f82188657349ffa2342d0c28",
                 "metazoa_odb10_count.json.gz:md5,33b96518b11511b0dd12085f5a18ccac",
                 "metazoa_odb10_count_windows.json.gz:md5,08be1dd3a0a0c39d5ed47d4cfbb4f67a",
