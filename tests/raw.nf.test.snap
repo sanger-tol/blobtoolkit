@@ -337,8 +337,58 @@
                 "blobtoolkit/plots/GCA_922984935.2.cumulative.png",
                 "blobtoolkit/plots/GCA_922984935.2.grid.png",
                 "blobtoolkit/plots/GCA_922984935.2.snail.png",
-                "busco",
-                "busco/archaea_odb10",
+                [
+                    [
+                        "GCA_922984935.2.subset.phiXspike.archaea_odb10.fragmented_busco_sequences.tar.gz:md5,d1a5194866e9a9a6bf2df43dbed9e13b",
+                        "GCA_922984935.2.subset.phiXspike.archaea_odb10.full_table.tsv.gz:md5,b203dead691630e16cc044dd02dc1c1f",
+                        "GCA_922984935.2.subset.phiXspike.archaea_odb10.missing_busco_list.tsv.gz:md5,21fada9b26fee01762c45385f04cd3b8",
+                        "GCA_922984935.2.subset.phiXspike.archaea_odb10.multi_copy_busco_sequences.tar.gz:md5,ebfa2354396636cfb85ed6f2e5bc28bd",
+                        "GCA_922984935.2.subset.phiXspike.archaea_odb10.short_summary.json:md5,529cdb0e141063de6edb94c314e5fb61",
+                        "GCA_922984935.2.subset.phiXspike.archaea_odb10.short_summary.tsv:md5,34ad8135b33b801c5a08948833499243",
+                        "GCA_922984935.2.subset.phiXspike.archaea_odb10.short_summary.txt:md5,21c329906cae3763d9eb857691c2b0e6",
+                        "GCA_922984935.2.subset.phiXspike.archaea_odb10.single_copy_busco_sequences.tar.gz:md5,8c7c5e47c46438439ea71e5099933e29"
+                    ],
+                    [
+                        "GCA_922984935.2.subset.phiXspike.bacteria_odb10.fragmented_busco_sequences.tar.gz:md5,3e025c8e17b59513fc60329fd8e09e7e",
+                        "GCA_922984935.2.subset.phiXspike.bacteria_odb10.full_table.tsv.gz:md5,7d23cb8fb69ebdef43e6ed83ed978b14",
+                        "GCA_922984935.2.subset.phiXspike.bacteria_odb10.missing_busco_list.tsv.gz:md5,d5e3f157f64f61f6abdb449e4fcc9077",
+                        "GCA_922984935.2.subset.phiXspike.bacteria_odb10.multi_copy_busco_sequences.tar.gz:md5,2d875fc1c65174160e4caa5b236ff7ec",
+                        "GCA_922984935.2.subset.phiXspike.bacteria_odb10.short_summary.json:md5,50ab076357e13ac7544eb4b884a259ee",
+                        "GCA_922984935.2.subset.phiXspike.bacteria_odb10.short_summary.tsv:md5,219bc0068f9ba1219d3d7c7c60ff1246",
+                        "GCA_922984935.2.subset.phiXspike.bacteria_odb10.short_summary.txt:md5,7e0de6772208a939855cd6d4bda793df",
+                        "GCA_922984935.2.subset.phiXspike.bacteria_odb10.single_copy_busco_sequences.tar.gz:md5,6f597fb76e754e8a046d2eb5d2a2faf7"
+                    ],
+                    [
+                        "GCA_922984935.2.subset.phiXspike.carnivora_odb10.fragmented_busco_sequences.tar.gz:md5,d1272e026d0966af66018c6225d9997c",
+                        "GCA_922984935.2.subset.phiXspike.carnivora_odb10.full_table.tsv.gz:md5,8ce91d7fa12baee47b194e7954ada0de",
+                        "GCA_922984935.2.subset.phiXspike.carnivora_odb10.missing_busco_list.tsv.gz:md5,1363314edadf365405475f91fce39f33",
+                        "GCA_922984935.2.subset.phiXspike.carnivora_odb10.multi_copy_busco_sequences.tar.gz:md5,6339aff124dd9a81c2127a9c575fc690",
+                        "GCA_922984935.2.subset.phiXspike.carnivora_odb10.short_summary.json:md5,6fa41d83a88dec3b6e4f5ab9a58a6c5c",
+                        "GCA_922984935.2.subset.phiXspike.carnivora_odb10.short_summary.tsv:md5,f6c86e7e12eb2d5bc4a2313fd8793208",
+                        "GCA_922984935.2.subset.phiXspike.carnivora_odb10.short_summary.txt:md5,ec357fc1fb36e45eaaba124133d17043",
+                        "GCA_922984935.2.subset.phiXspike.carnivora_odb10.single_copy_busco_sequences.tar.gz:md5,e0d8486fc0797c69900e546e8404da09"
+                    ],
+                    [
+                        "GCA_922984935.2.subset.phiXspike.eukaryota_odb10.fragmented_busco_sequences.tar.gz:md5,ed6112e14628f257c9accd42c62c310b",
+                        "GCA_922984935.2.subset.phiXspike.eukaryota_odb10.full_table.tsv.gz:md5,58d567079f8e38f5d6d58cbfac8d6cff",
+                        "GCA_922984935.2.subset.phiXspike.eukaryota_odb10.missing_busco_list.tsv.gz:md5,c78f5f116c6e28148b2a7c83a662d7b4",
+                        "GCA_922984935.2.subset.phiXspike.eukaryota_odb10.multi_copy_busco_sequences.tar.gz:md5,5162945293fdbe87524c3245ffd72f1c",
+                        "GCA_922984935.2.subset.phiXspike.eukaryota_odb10.short_summary.json:md5,f1fdade986fbcc7f1ea0f2b4bd7db26e",
+                        "GCA_922984935.2.subset.phiXspike.eukaryota_odb10.short_summary.tsv:md5,0b3d5131bece35d30b95102788560c05",
+                        "GCA_922984935.2.subset.phiXspike.eukaryota_odb10.short_summary.txt:md5,477ac7da344d0d8f84b2cfbf8c288ded",
+                        "GCA_922984935.2.subset.phiXspike.eukaryota_odb10.single_copy_busco_sequences.tar.gz:md5,0efc9c5ae541985856e45aff841b02c0"
+                    ]
+                ],
+                [
+                    "GCA_922984935.2.subset.phiXspike.archaea_odb10.fragmented_busco_sequences.tar.gz:md5,d1a5194866e9a9a6bf2df43dbed9e13b",
+                    "GCA_922984935.2.subset.phiXspike.archaea_odb10.full_table.tsv.gz:md5,b203dead691630e16cc044dd02dc1c1f",
+                    "GCA_922984935.2.subset.phiXspike.archaea_odb10.missing_busco_list.tsv.gz:md5,21fada9b26fee01762c45385f04cd3b8",
+                    "GCA_922984935.2.subset.phiXspike.archaea_odb10.multi_copy_busco_sequences.tar.gz:md5,ebfa2354396636cfb85ed6f2e5bc28bd",
+                    "GCA_922984935.2.subset.phiXspike.archaea_odb10.short_summary.json:md5,529cdb0e141063de6edb94c314e5fb61",
+                    "GCA_922984935.2.subset.phiXspike.archaea_odb10.short_summary.tsv:md5,34ad8135b33b801c5a08948833499243",
+                    "GCA_922984935.2.subset.phiXspike.archaea_odb10.short_summary.txt:md5,21c329906cae3763d9eb857691c2b0e6",
+                    "GCA_922984935.2.subset.phiXspike.archaea_odb10.single_copy_busco_sequences.tar.gz:md5,8c7c5e47c46438439ea71e5099933e29"
+                ],
                 "busco/archaea_odb10/GCA_922984935.2.archaea_odb10.fragmented_busco_sequences.tar.gz",
                 "busco/archaea_odb10/GCA_922984935.2.archaea_odb10.full_table.tsv",
                 "busco/archaea_odb10/GCA_922984935.2.archaea_odb10.missing_busco_list.tsv",
@@ -347,7 +397,16 @@
                 "busco/archaea_odb10/GCA_922984935.2.archaea_odb10.short_summary.tsv",
                 "busco/archaea_odb10/GCA_922984935.2.archaea_odb10.short_summary.txt",
                 "busco/archaea_odb10/GCA_922984935.2.archaea_odb10.single_copy_busco_sequences.tar.gz",
-                "busco/bacteria_odb10",
+                [
+                    "GCA_922984935.2.subset.phiXspike.bacteria_odb10.fragmented_busco_sequences.tar.gz:md5,3e025c8e17b59513fc60329fd8e09e7e",
+                    "GCA_922984935.2.subset.phiXspike.bacteria_odb10.full_table.tsv.gz:md5,7d23cb8fb69ebdef43e6ed83ed978b14",
+                    "GCA_922984935.2.subset.phiXspike.bacteria_odb10.missing_busco_list.tsv.gz:md5,d5e3f157f64f61f6abdb449e4fcc9077",
+                    "GCA_922984935.2.subset.phiXspike.bacteria_odb10.multi_copy_busco_sequences.tar.gz:md5,2d875fc1c65174160e4caa5b236ff7ec",
+                    "GCA_922984935.2.subset.phiXspike.bacteria_odb10.short_summary.json:md5,50ab076357e13ac7544eb4b884a259ee",
+                    "GCA_922984935.2.subset.phiXspike.bacteria_odb10.short_summary.tsv:md5,219bc0068f9ba1219d3d7c7c60ff1246",
+                    "GCA_922984935.2.subset.phiXspike.bacteria_odb10.short_summary.txt:md5,7e0de6772208a939855cd6d4bda793df",
+                    "GCA_922984935.2.subset.phiXspike.bacteria_odb10.single_copy_busco_sequences.tar.gz:md5,6f597fb76e754e8a046d2eb5d2a2faf7"
+                ],
                 "busco/bacteria_odb10/GCA_922984935.2.bacteria_odb10.fragmented_busco_sequences.tar.gz",
                 "busco/bacteria_odb10/GCA_922984935.2.bacteria_odb10.full_table.tsv",
                 "busco/bacteria_odb10/GCA_922984935.2.bacteria_odb10.missing_busco_list.tsv",
@@ -356,7 +415,16 @@
                 "busco/bacteria_odb10/GCA_922984935.2.bacteria_odb10.short_summary.tsv",
                 "busco/bacteria_odb10/GCA_922984935.2.bacteria_odb10.short_summary.txt",
                 "busco/bacteria_odb10/GCA_922984935.2.bacteria_odb10.single_copy_busco_sequences.tar.gz",
-                "busco/carnivora_odb10",
+                [
+                    "GCA_922984935.2.subset.phiXspike.carnivora_odb10.fragmented_busco_sequences.tar.gz:md5,d1272e026d0966af66018c6225d9997c",
+                    "GCA_922984935.2.subset.phiXspike.carnivora_odb10.full_table.tsv.gz:md5,8ce91d7fa12baee47b194e7954ada0de",
+                    "GCA_922984935.2.subset.phiXspike.carnivora_odb10.missing_busco_list.tsv.gz:md5,1363314edadf365405475f91fce39f33",
+                    "GCA_922984935.2.subset.phiXspike.carnivora_odb10.multi_copy_busco_sequences.tar.gz:md5,6339aff124dd9a81c2127a9c575fc690",
+                    "GCA_922984935.2.subset.phiXspike.carnivora_odb10.short_summary.json:md5,6fa41d83a88dec3b6e4f5ab9a58a6c5c",
+                    "GCA_922984935.2.subset.phiXspike.carnivora_odb10.short_summary.tsv:md5,f6c86e7e12eb2d5bc4a2313fd8793208",
+                    "GCA_922984935.2.subset.phiXspike.carnivora_odb10.short_summary.txt:md5,ec357fc1fb36e45eaaba124133d17043",
+                    "GCA_922984935.2.subset.phiXspike.carnivora_odb10.single_copy_busco_sequences.tar.gz:md5,e0d8486fc0797c69900e546e8404da09"
+                ],
                 "busco/carnivora_odb10/GCA_922984935.2.carnivora_odb10.fragmented_busco_sequences.tar.gz",
                 "busco/carnivora_odb10/GCA_922984935.2.carnivora_odb10.full_table.tsv",
                 "busco/carnivora_odb10/GCA_922984935.2.carnivora_odb10.missing_busco_list.tsv",
@@ -365,7 +433,16 @@
                 "busco/carnivora_odb10/GCA_922984935.2.carnivora_odb10.short_summary.tsv",
                 "busco/carnivora_odb10/GCA_922984935.2.carnivora_odb10.short_summary.txt",
                 "busco/carnivora_odb10/GCA_922984935.2.carnivora_odb10.single_copy_busco_sequences.tar.gz",
-                "busco/eukaryota_odb10",
+                [
+                    "GCA_922984935.2.subset.phiXspike.eukaryota_odb10.fragmented_busco_sequences.tar.gz:md5,ed6112e14628f257c9accd42c62c310b",
+                    "GCA_922984935.2.subset.phiXspike.eukaryota_odb10.full_table.tsv.gz:md5,58d567079f8e38f5d6d58cbfac8d6cff",
+                    "GCA_922984935.2.subset.phiXspike.eukaryota_odb10.missing_busco_list.tsv.gz:md5,c78f5f116c6e28148b2a7c83a662d7b4",
+                    "GCA_922984935.2.subset.phiXspike.eukaryota_odb10.multi_copy_busco_sequences.tar.gz:md5,5162945293fdbe87524c3245ffd72f1c",
+                    "GCA_922984935.2.subset.phiXspike.eukaryota_odb10.short_summary.json:md5,f1fdade986fbcc7f1ea0f2b4bd7db26e",
+                    "GCA_922984935.2.subset.phiXspike.eukaryota_odb10.short_summary.tsv:md5,0b3d5131bece35d30b95102788560c05",
+                    "GCA_922984935.2.subset.phiXspike.eukaryota_odb10.short_summary.txt:md5,477ac7da344d0d8f84b2cfbf8c288ded",
+                    "GCA_922984935.2.subset.phiXspike.eukaryota_odb10.single_copy_busco_sequences.tar.gz:md5,0efc9c5ae541985856e45aff841b02c0"
+                ],
                 "busco/eukaryota_odb10/GCA_922984935.2.eukaryota_odb10.fragmented_busco_sequences.tar.gz",
                 "busco/eukaryota_odb10/GCA_922984935.2.eukaryota_odb10.full_table.tsv",
                 "busco/eukaryota_odb10/GCA_922984935.2.eukaryota_odb10.missing_busco_list.tsv",
@@ -661,26 +738,26 @@
                 "GCA_922984935.2.tetrapoda_odb10.full_table.tsv:md5,3fdd6f0cf1348925ff46d1718af4a5f3",
                 "GCA_922984935.2.tetrapoda_odb10.missing_busco_list.tsv:md5,b47cb4623ce1dba7e932ccf327c7f6eb",
                 "GCA_922984935.2.tetrapoda_odb10.short_summary.tsv:md5,fdea63320824c5bb6e3b3d9b663f1ec9",
-                "GCA_922984935.2.hic.SAMEA7524440.ERR6688402.minimap2.bam:md5,f1d770610a0e18287c0786ffaacb2c76",
+                "GCA_922984935.2.hic.SAMEA7524440.ERR6688402.minimap2.bam:md5,54e5a2c42064bc99ae5514b5030a901d",
                 "GCA_922984935.2.hic.SAMEA7524440.ERR6688402.minimap2.bam.csi:md5,91f9edc38a49c4896fb742ecb979c8b9",
                 "GCA_922984935.2.hic.SAMEA7524440.ERR6688402.minimap2.coverage.1k.bedGraph.gz:md5,a3a3d1b342c23f0126aa9b10255b2186",
-                "GCA_922984935.2.illumina.SAMEA7524438.ERR6688599.minimap2.bam:md5,36909622a8997cc5b0289a75cec8aa75",
-                "GCA_922984935.2.illumina.SAMEA7524438.ERR6688599.minimap2.bam.csi:md5,4317e1fc5169db7a373643294f4afa84",
+                "GCA_922984935.2.illumina.SAMEA7524438.ERR6688599.minimap2.bam:md5,715773afb4720ca961d5b7b70ba577af",
+                "GCA_922984935.2.illumina.SAMEA7524438.ERR6688599.minimap2.bam.csi:md5,f6e1e73188c78c93409cd700cd93ecd1",
                 "GCA_922984935.2.illumina.SAMEA7524438.ERR6688599.minimap2.coverage.1k.bedGraph.gz:md5,8733331c825c9067bf84a371f69b1a13",
-                "GCA_922984935.2.illumina.SAMEA7524439.ERR6688600.minimap2.bam:md5,ea302ace89a53ea1d207f50d2d8bf182",
+                "GCA_922984935.2.illumina.SAMEA7524439.ERR6688600.minimap2.bam:md5,8e9465da5d5b7af97d2f4d7c649ca314",
                 "GCA_922984935.2.illumina.SAMEA7524439.ERR6688600.minimap2.bam.csi:md5,b7bd81c09b9e8a7a40d45428cc771729",
                 "GCA_922984935.2.illumina.SAMEA7524439.ERR6688600.minimap2.coverage.1k.bedGraph.gz:md5,def3cb46931d9573fbb322363f767ca2",
-                "GCA_922984935.2.pacbio.SAMEA7524440.ERR6939248.minimap2.bam:md5,8e58edbf3c58a6d34724648f117e8ac1",
+                "GCA_922984935.2.pacbio.SAMEA7524440.ERR6939248.minimap2.bam:md5,29efc2c3d810f440d2150e8791314444",
                 "GCA_922984935.2.pacbio.SAMEA7524440.ERR6939248.minimap2.bam.csi:md5,906aec47ffeb3b58facb24d6381da7d9",
                 "GCA_922984935.2.pacbio.SAMEA7524440.ERR6939248.minimap2.coverage.1k.bedGraph.gz:md5,a6b7b26206651aa5ceae5669d19cf28d",
                 "GCA_922984935.2.fasta:md5,9ccc14f99004d85bdc29aea036af34e3",
                 "GCA_922984935.2.obinary:md5,571f465e27e107f6e4bb3fa2e833250b"
             ]
         ],
-        "timestamp": "2026-07-24T16:58:30.260673255",
+        "timestamp": "2026-11-06T14:37:00.015931246",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
+            "nextflow": "26.04.0"
         }
     }
 }
