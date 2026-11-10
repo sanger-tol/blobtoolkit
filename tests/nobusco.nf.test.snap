@@ -507,10 +507,6 @@
                 "vertebrata_odb10_count_windows_0.01.json.gz:md5,e6df266bf04c49f05129f82c0a3fedf7",
                 "vertebrata_odb10_count_windows_100000.json.gz:md5,36d6694edc4979b34e0a7a5d1212ecdd",
                 "vertebrata_odb10_count_windows_1000000.json.gz:md5,40f404060aacde76cdf1f4a399daf270",
-                "GCA_922984935.2.blob.png:md5,1b77dbf10d36af809d92110da4fdaee1",
-                "GCA_922984935.2.cumulative.png:md5,19a55bb091b57e1eed823e56b79acf4b",
-                "GCA_922984935.2.grid.png:md5,110996f46f16d95185778bb67c9ad56d",
-                "GCA_922984935.2.snail.png:md5,f5166b669d4afff979ef04a52663c896",
                 "GCA_922984935.2.eutheria_odb10.full_table.tsv:md5,65e415b87c11f539f1c92a2e6b15a972",
                 "GCA_922984935.2.eutheria_odb10.missing_busco_list.tsv:md5,8ab1a37434bfa878b0ef1f9ebf19769e",
                 "GCA_922984935.2.eutheria_odb10.short_summary.tsv:md5,23a8953c44f731a2d7cb6ce858004330",
@@ -532,10 +528,10 @@
                 "GCA_922984935.2.hic.SAMEA7524441.ERR6688601.coverage.1k.bedGraph.gz:md5,0d03664e2f47d0e66b257ae9b39cebb3"
             ]
         ],
-        "timestamp": "2026-11-10T14:24:05.291906",
+        "timestamp": "2026-11-10T15:48:33.606649",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.10.5"
+            "nextflow": "26.04.0"
         }
     }
 }
