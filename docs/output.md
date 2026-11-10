@@ -19,7 +19,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [Read alignments](#read-alignments) - Aligned reads (optional)
 - [Read coverage](#read-coverage) - Read coverage tracks
 - [Base content](#base-content) - _k_-mer statistics (for k &le; 4)
-- [MultiQC report](#multiqc-report) – Aggregate report describing results and QC from the whole pipeline
+- [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
 ### BlobDir
@@ -130,7 +130,7 @@ The `<window_size>` follows the same formatting as in Read coverage.
 
 </details>
 
-### MultiQC report
+### MultiQC
 
 <details markdown="1">
 <summary>Output files</summary>

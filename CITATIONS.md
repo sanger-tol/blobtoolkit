@@ -38,7 +38,7 @@
 
   > Li, Heng. "Minimap2: pairwise alignment for nucleotide sequences." Bioinformatics, vol. 34, no. 18, Sep. 2018, pp. 3094-100, <https://doi.org/10.1093/bioinformatics/bty191>
 
-- [MultiQC](https://multiqc.info)
+- [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
 
   > Ewels, Philip, et al. “MultiQC: Summarize Analysis Results for Multiple Tools and Samples in a Single Report.” Bioinformatics, vol. 32, no. 19, 2016, pp. 3047–3048., <https://doi.org/10.1093/bioinformatics/btw354>
 

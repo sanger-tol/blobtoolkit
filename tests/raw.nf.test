@@ -1,6 +1,6 @@
 nextflow_pipeline {
 
-    name "Test pipeline"
+    name "Test pipeline with fetchngs samplesheet + alignment mode"
     script "../main.nf"
     tag "pipeline"
     profile "test_raw"

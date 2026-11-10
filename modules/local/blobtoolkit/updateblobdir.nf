@@ -1,6 +1,6 @@
 process BLOBTOOLKIT_UPDATEBLOBDIR {
     tag "${meta.id}"
-    label 'process_medium'
+    label 'process_single'
 
     container "docker.io/genomehubs/blobtoolkit:4.4.6"
 
@@ -41,7 +41,6 @@ process BLOBTOOLKIT_UPDATEBLOBDIR {
         ${hits_blastx} \\
         ${hits_blastn} \\
         ${syn} ${cat} ${head} \\
-        --threads ${task.cpus} \\
         $args \\
         ${prefix}
     """

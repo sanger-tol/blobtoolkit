@@ -21,13 +21,14 @@ process COMPRESSBLOBDIR {
     task.ext.when == null || task.ext.when
 
     script:
+    def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     mkdir ${prefix}
     cp ${input}/* ${prefix}/
     cp ${summary_json} ${prefix}/summary.json
     cp ${meta_json} ${prefix}/meta.json
-    pigz --processes $task.cpus ${prefix}/*.json
+    pigz --processes $task.cpus ${args} ${prefix}/*.json
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
