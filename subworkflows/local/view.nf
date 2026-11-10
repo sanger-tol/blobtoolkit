@@ -8,6 +8,7 @@ include { BLOBTK_PLOT         } from '../../modules/nf-core/blobtk/plot/main'
 workflow VIEW {
     take:
     blobdir     // channel: [ val(meta), path(blobdir) ]
+    skip_plots  // boolean: skip the generation of plots
 
 
     main:
@@ -40,6 +41,7 @@ workflow VIEW {
     )
 
     ch_blobtk_plot_input = blobdir
+        .filter { meta, file -> skip_plots }
         .combine(plots)
         // Only add "-w 0.01" to the grid paramters if there are such windows available
         .map { meta, local, btk_args ->

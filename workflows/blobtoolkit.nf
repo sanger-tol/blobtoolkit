@@ -47,6 +47,7 @@ workflow BLOBTOOLKIT {
     val_align
     ch_fasta
     ch_databases
+    val_skip_plot_generation
 
     main:
     def ch_versions = channel.empty()
@@ -172,7 +173,7 @@ workflow BLOBTOOLKIT {
     //
     // SUBWORKFLOW: Generate summary and static images
     //
-    VIEW ( BLOBTOOLS.out.blobdir )
+    VIEW ( BLOBTOOLS.out.blobdir, val_skip_plot_generation )
 
 
     //
