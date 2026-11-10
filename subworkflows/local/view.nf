@@ -41,7 +41,7 @@ workflow VIEW {
     )
 
     ch_blobtk_plot_input = blobdir
-        .filter { meta, file -> skip_plots }
+        .filter { meta, file -> !skip_plots }
         .combine(plots)
         // Only add "-w 0.01" to the grid paramters if there are such windows available
         .map { meta, local, btk_args ->
