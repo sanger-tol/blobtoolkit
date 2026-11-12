@@ -88,6 +88,12 @@
                     "description": "Control whether to use all, `blastp` (for minimal annotations), `blastx` (for both blastp and blastx annotations) or `no` blast annotations.",
                     "fa_icon": "fas fa-file-signature"
                 },
+                "skip_plots": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Control whether to skip the generation of plots.",
+                    "fa_icon": "fas fa-toggle-off"
+                },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",

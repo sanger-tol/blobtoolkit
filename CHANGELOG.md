@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Join together the pre-computed and pipelines busco results together at `BLOBTOOLKIT_EXTRACTBUSCOS` rather than before `RESTRUCTURE_BUSCOS`
     - Addition of the module `BUSCO_PREPARE_PRECOMPUTED` to format the seperated busco sequnce folders into the correct format for `BLOBTOOLKIT_EXTRACTBUSCOS`
     - Added a `GUNZIP` module to unzip the busco `full_table.tsv` if provided as zipped file
+- Added `--skip_plots` option to skip the generation of plots, useful for fragmented assemblies which may create plots that are difficult to read.
+
+### Parameters
+
+| Old parameter | New parameter |
+| ------------- | ------------- |
+|               | --skip_plots  |
 
 ## [[0.11.2](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.2)] – Bulbasaur (patch 2) – [2026-10-23]
 

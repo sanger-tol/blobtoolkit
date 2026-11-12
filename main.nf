@@ -45,6 +45,7 @@ workflow SANGERTOL_BLOBTOOLKIT {
         params.align,
         fasta,
         databases,
+        params.skip_plots,
     )
     emit:
     multiqc_report = BLOBTOOLKIT.out.multiqc_report // channel: /path/to/multiqc_report.html
