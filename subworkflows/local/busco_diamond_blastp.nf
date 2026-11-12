@@ -147,10 +147,10 @@ workflow BUSCO_DIAMOND {
             def busco_dir = file(meta.busco_dir)
             [
                 meta,
-                file("${busco_dir}/*.${meta.lineage_name}.multi_copy_busco_sequences.tar.gz"),
-                file("${busco_dir}/*.${meta.lineage_name}.single_copy_busco_sequences.tar.gz"),
-                file("${busco_dir}/*.${meta.lineage_name}.fragmented_busco_sequences.tar.gz"),
-                file("${busco_dir}/*.${meta.lineage_name}.full_table.tsv.gz"),
+                file("${busco_dir}/*.${meta.lineage_name}.multi_copy_busco_sequences.tar.gz", checkIfExists: true),
+                file("${busco_dir}/*.${meta.lineage_name}.single_copy_busco_sequences.tar.gz", checkIfExists: true),
+                file("${busco_dir}/*.${meta.lineage_name}.fragmented_busco_sequences.tar.gz", checkIfExists: true),
+                file("${busco_dir}/*.${meta.lineage_name}.full_table.tsv.gz", checkIfExists: true),
             ]
         }
         .multiMap{ meta, multi, single, frag, full_table_tsv ->

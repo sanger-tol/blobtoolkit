@@ -6,8 +6,6 @@ process BLOBTOOLKIT_EXTRACTBUSCOS {
 
     input:
     tuple val(meta), path(fasta)
-
-    // NOTE: Start with modifying this to see if we can get it working as busco_sequence
     path seq, stageAs: "lineage??/*"
 
     output:

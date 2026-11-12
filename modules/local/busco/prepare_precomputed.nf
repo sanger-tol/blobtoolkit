@@ -1,6 +1,7 @@
 process BUSCO_PREPARE_PRECOMPUTED {
     tag "${meta.id}"
     label 'process_single'
+    // Technically only Python is needed but using the blobtoolkit container since it's already pulled by the pipeline
     container "docker.io/genomehubs/blobtoolkit:4.4.6"
 
     input:

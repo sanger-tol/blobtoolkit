@@ -10,12 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `sanger-tol/blobtoolkit` pipeline was incompatible with the output of `sanger-tol/busco` due to the formatting of the output from said pipeline vs output from `busco/busco` (see [#244](https://github.com/sanger-tol/blobtoolkit/issues/244))
   - To fix this, the subworkflow `busco_diamond_blastp` has been updated to:
     - Move pre-computed busco processing closer to where it is used
-    - Trimmed down the file searching to only look for the 4 files required from the pre-computed busco output
+    - Only look for the 4 files required from the pre-computed busco output
     - Join together the pre-computed and pipelines busco results together at `BLOBTOOLKIT_EXTRACTBUSCOS` rather than before `RESTRUCTURE_BUSCOS`
     - Addition of the module `BUSCO_PREPARE_PRECOMPUTED` to format the seperated busco sequnce folders into the correct format for `BLOBTOOLKIT_EXTRACTBUSCOS`
     - Added a `GUNZIP` module to unzip the busco `full_table.tsv` if provided as zipped file
 
-## [[0.11.2](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.2)] – Bulbasaur (patch 2) – [2026-08-28]
+## [[0.11.2](https://github.com/sanger-tol/blobtoolkit/releases/tag/0.11.2)] – Bulbasaur (patch 2) – [2026-10-23]
 
 ### Enhancements & fixes
 
