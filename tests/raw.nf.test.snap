@@ -93,7 +93,7 @@
                     "windowstats_input.py": "1.0.0"
                 },
                 "Workflow": {
-                    "sanger-tol/blobtoolkit": "v0.11.2"
+                    "sanger-tol/blobtoolkit": "v0.11.3"
                 }
             },
             [
@@ -636,17 +636,12 @@
                 "proportion_windows_0.01.json.gz:md5,c8ba00d231866d372dcd95f866080f72",
                 "proportion_windows_100000.json.gz:md5,be11aff205b95d911a6c10b48ed59920",
                 "proportion_windows_1000000.json.gz:md5,e0e29afe516c6149b09d345134fd6908",
-                "summary.json.gz:md5,1a1179baf31ce75d8e0e00cfa24fa883",
                 "tetrapoda_odb10_busco.json.gz:md5,25b7c89472d26e5924dee9f2336db9fd",
                 "tetrapoda_odb10_count.json.gz:md5,3fe44432e5d04afdfc69c040c8fffe5b",
                 "tetrapoda_odb10_count_windows.json.gz:md5,7bd6f953b73e4de0fa514261c1916491",
                 "tetrapoda_odb10_count_windows_0.01.json.gz:md5,f1faa069aa8b4ab3a17c9d29033d74bb",
                 "tetrapoda_odb10_count_windows_100000.json.gz:md5,371f31281e1b55140ded38820ee5bfca",
                 "tetrapoda_odb10_count_windows_1000000.json.gz:md5,fca9e3857f6bad1aca1bd8170c187859",
-                "GCA_922984935.2.blob.png:md5,b80b1b83f2eab26d96478afbae0dd346",
-                "GCA_922984935.2.cumulative.png:md5,19a55bb091b57e1eed823e56b79acf4b",
-                "GCA_922984935.2.grid.png:md5,23f3b0fd5dce752bd621c601150024e6",
-                "GCA_922984935.2.snail.png:md5,27b570cec7dc82cda825b48b7655566c",
                 "GCA_922984935.2.archaea_odb10.full_table.tsv:md5,be1ed7727a5887d5e6ea3c56f7a85305",
                 "GCA_922984935.2.archaea_odb10.missing_busco_list.tsv:md5,34a2d0e0b9a128568033289ee4a01f42",
                 "GCA_922984935.2.archaea_odb10.short_summary.tsv:md5,47c3ac371d25193611219f2ab98d1dea",
@@ -678,7 +673,7 @@
                 "GCA_922984935.2.obinary:md5,571f465e27e107f6e4bb3fa2e833250b"
             ]
         ],
-        "timestamp": "2026-09-07T09:20:45.410841614",
+        "timestamp": "2026-11-10T16:29:20.427169",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.0"
