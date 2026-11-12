@@ -7,27 +7,10 @@ nextflow_pipeline {
 
     test("-profile test_nobusco") {
         config "../conf/test_nobusco.config"
-        setup {
-
-            new File("${launchDir}/PRECOMPUTED_BUSCO").mkdir()
-
-            println "\nDownloading the precomputed buscos..."
-            def busco_dataset = "https://tolit.cog.sanger.ac.uk/test-data/Meles_meles/resources/GCA_922984935.2_busco-0.3.3.tar.gz"
-            def command = ['bash', '-c', "curl ${busco_dataset} | tar xzf - -C ${launchDir}/PRECOMPUTED_BUSCO/"]
-            def process = command.execute()
-            process.waitFor()
-
-            if (process.exitValue() != 0) {
-                throw new RuntimeException("Error - failed to download: ${process.err.text}")
-            }
-
-            println "Done"
-        }
 
         when {
             params {
                 outdir = "$outputDir"
-                precomputed_busco = "${launchDir}/PRECOMPUTED_BUSCO/busco"
             }
         }
 
