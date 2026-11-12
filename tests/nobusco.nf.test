@@ -6,7 +6,6 @@ nextflow_pipeline {
     profile "test_nobusco"
 
     test("-profile test_nobusco") {
-        config "../conf/test_nobusco.config"
 
         when {
             params {
